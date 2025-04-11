@@ -14,7 +14,7 @@ public class SignUpMenuController {
 
 
     public void exit() {
-
+        App.setCurrentMenu(Menu.ExitMenu);
     }
 
     public Result showCurrentMenu() {
