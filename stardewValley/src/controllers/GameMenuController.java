@@ -3,6 +3,7 @@ package controllers;
 import models.Result;
 
 public class GameMenuController {
+    Scanner input = new Scanner(System.in);
     public Result newGame(String username1, String username2, String username3) {
 
     }
