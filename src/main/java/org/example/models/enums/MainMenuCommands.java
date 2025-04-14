@@ -3,11 +3,11 @@ package org.example.models.enums;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum MainMenu {
+public enum MainMenuCommands {
     changeMenu("\\s*change\\s+menu\\s+to\\s+(?<menu>\\S+)\\s*");
     String regex;
 
-    MainMenu(String regex) {
+    MainMenuCommands(String regex) {
         this.regex = regex;
     }
 

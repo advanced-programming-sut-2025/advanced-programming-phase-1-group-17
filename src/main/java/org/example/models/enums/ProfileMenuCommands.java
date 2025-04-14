@@ -3,7 +3,7 @@ package org.example.models.enums;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum ProfileMenu {
+public enum ProfileMenuCommands {
 
     changeUsername("\\s*change\\s+username\\s+-u\\s+(?<username>[\\S]+)\\s*"),
     changeNickName("\\s*change\\s+nickname\\s+-u\\s+(?<nickname>[\\S]+)\\s*"),
@@ -12,7 +12,7 @@ public enum ProfileMenu {
 
     String regex;
 
-    ProfileMenu(String regex) {
+    ProfileMenuCommands(String regex) {
         this.regex = regex;
     }
 

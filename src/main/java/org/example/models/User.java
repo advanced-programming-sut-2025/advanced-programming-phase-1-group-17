@@ -6,15 +6,22 @@ import org.example.models.enums.Gender;
 import java.util.ArrayList;
 
 public class User {
-    public static User userOfLogin;
     private String username;
     private String password;
     private String email;
     private String nickName;
     private Gender gender;
-    private Player player;
     private int numOfPlay;
     private int theMostMoneyIngame;
+    public User(){};
+    //for signup
+    public User(String username, String password, String email, String nickName, Gender gender) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.nickName = nickName;
+        this.gender = gender;
+    }
 
     public int getNumOfPlay() {
         return numOfPlay;
@@ -32,22 +39,12 @@ public class User {
         this.theMostMoneyIngame = theMostMoneyIngame;
     }
 
-    private static final ArrayList<User> users = new ArrayList<>();
-
     public Gender getGender() {
         return gender;
     }
 
     public void setGender(Gender gender) {
         this.gender = gender;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public String getNickName() {
@@ -81,12 +78,5 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
-    public static User getUserWithUsername(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
-        }
-        return null;
-    }
+
 }

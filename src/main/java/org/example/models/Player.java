@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Player {
     private PlayerMap playerMap;
+    private User user;
+    private boolean isGuest;
     private int x;
     private int y;
     private double energy;
@@ -15,18 +17,26 @@ public class Player {
     private int miningLevel;
     private int foragingLevel;
     private int fishingLevel;
+    private Game activeGame;
     private Tool currentTool;
     private BackPack backPack;
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
     private ArrayList<Recipe> recipes = new ArrayList<>();
-    private ArrayList<Friends>friends = new ArrayList<>();
+    private ArrayList<Friends> friends = new ArrayList<>();
     private ArrayList<Ability> abilitesLearned = new ArrayList<>();
     int[] levels = {50, 150, 250, 350, 450};
     private double balance;
     private Player partner = null;
-    private int daysSinceBrakUp=0;
+    private int daysSinceBrakUp = 0;
     private boolean isbrokenUp = false;
+
+    public Player(User user, boolean isGuest,Game activeGame) {
+        this.user = user;
+        this.isGuest = isGuest;
+        this.activeGame = activeGame;
+    }
+
     public int getFarmingLevel() {
         return farmingLevel;
     }
@@ -123,5 +133,12 @@ public class Player {
         return playerMap;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 }

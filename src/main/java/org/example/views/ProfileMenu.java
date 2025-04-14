@@ -1,6 +1,7 @@
 package org.example.views;
 
 import org.example.controllers.ProfileMenuController;
+import org.example.models.enums.ProfileMenuCommands;
 import views.AppMenu;
 import java.util.Scanner;
 public class ProfileMenu implements AppMenu {
@@ -11,16 +12,16 @@ public class ProfileMenu implements AppMenu {
             if (command.trim().equals("user info")) {
                 profileMenuController.showUserInfo();
             }
-            else if (org.example.models.enums.ProfileMenu.changeUsername.getMatcher(command).matches()) {
+            else if (ProfileMenuCommands.changeUsername.getMatcher(command).matches()) {
                 System.out.println(profileMenuController.changeUserName(command));
             }
-            else if (org.example.models.enums.ProfileMenu.changeNickName.getMatcher(command).matches()) {
+            else if (ProfileMenuCommands.changeNickName.getMatcher(command).matches()) {
                 System.out.println(profileMenuController.changeNickName(command));
             }
-            else if (org.example.models.enums.ProfileMenu.changeEmail.getMatcher(command).matches()) {
+            else if (ProfileMenuCommands.changeEmail.getMatcher(command).matches()) {
                 System.out.println(profileMenuController.changeEmail(command));
             }
-            else if (org.example.models.enums.ProfileMenu.changePassword.getMatcher(command).matches()) {
+            else if (ProfileMenuCommands.changePassword.getMatcher(command).matches()) {
                 System.out.println(profileMenuController.changePassword(command));
             }
             else {

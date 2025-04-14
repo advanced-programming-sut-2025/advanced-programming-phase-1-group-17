@@ -1,5 +1,4 @@
 package org.example.controllers;
-import org.example.models.Result;
 import org.example.models.*;
 import org.example.models.enums.*;
 
@@ -9,12 +8,12 @@ public class LoginMenuController {
         if (input.trim().endsWith("--stay-logged-in")) {
 
         }
-        String username = LoginMenu.login.getMatcher(input).group("username").trim();
-        String password = LoginMenu.login.getMatcher(input).group("password").trim();
-        if (User.getUserWithUsername(username) != null) {
-            User user = User.getUserWithUsername(username);
+        String username = LoginMenuCommands.login.getMatcher(input).group("username").trim();
+        String password = LoginMenuCommands.login.getMatcher(input).group("password").trim();
+        if (App.getUserWithUsername(username) != null) {
+            User user = App.getUserWithUsername(username);
             if (user.getPassword().equals(password)) {
-                User.userOfLogin = user;
+                App.setLoggedInUser(user);
                 return "you are logged in successfully";
             } else {
                 return "Invalid password";
@@ -25,8 +24,8 @@ public class LoginMenuController {
     }
 
     public String forgotPassword(String input) {
-        String username =LoginMenu.login.getMatcher(input).group("username").trim();
-        if (User.getUserWithUsername(username) != null) {
+        String username = LoginMenuCommands.login.getMatcher(input).group("username").trim();
+        if (App.getUserWithUsername(username) != null) {
             //answer
         }
         else {
