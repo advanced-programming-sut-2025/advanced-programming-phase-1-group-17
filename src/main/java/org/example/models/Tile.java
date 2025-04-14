@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Tile {
     private int x;
     private int y;
+    private boolean isWalkAble;
     private boolean isPlowed = false;
 
     public void plant(String plantName){
