@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class PlayerMap {
     private ArrayList<Tile> Tiles;
     private Farm farm;
-
     private Player player;
     public Player getPlayer () {
         return player;

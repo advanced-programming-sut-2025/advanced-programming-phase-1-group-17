@@ -12,7 +12,7 @@ public class MainMenu implements views.AppMenu {
                 System.out.println("logged out _ you are in login menu");
                 break;
             }
-            else if (org.example.models.enums.MainMenu.changeMenu.getMatcher(command).matches()) {
+            else if (MainMenuCommands.changeMenu.getMatcher(command).matches()) {
                 String output = mainMenuController.changeMenu(command);
                 System.out.println(output);
                 if (output.equals("successfully changeMenu. you are now in gameMenu")) {
