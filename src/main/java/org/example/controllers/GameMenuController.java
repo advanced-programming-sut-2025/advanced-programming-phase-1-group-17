@@ -63,7 +63,7 @@ public class GameMenuController {
     public Result walk(int x, int y) {
     }
 
-    public Result printMap(int x, int y, int size {
+    public Result printMap(int x, int y, int size ){
     }
 
     public Result helpReadingMap() {
