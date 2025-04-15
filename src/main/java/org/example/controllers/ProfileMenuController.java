@@ -1,60 +1,71 @@
 package org.example.controllers;
 
+import org.example.models.App;
 import org.example.models.Result;
+import org.example.models.User;
+import org.example.models.enums.ProfileMenuCommands;
 
 public class ProfileMenuController {
 
-    public String showUserInfo(){
+    public Result showUserInfo() {
         //User user = useri ke logine
-        return use.getUsername() + "\n" + user.getNikcName() + "\n" + user.getTheMostMoneyIngame()+"\n"+user.getNumOfPlay();
+        User user = App.getLoggedInUser();
+        return new Result(true, user.getUsername()
+                + "\n" + user.getNickName()
+                + "\n" + user.getTheMostMoneyIngame()
+                + "\n" + user.getNumOfPlay());
     }
 
-    public String changeUserName(String input){
+    public Result changeUserName(String input) {
         //User user = useri ke logine
-        String newUsername = models.enums.ProfileMenu.changeUserName(input).group("username").trim();
+        User user = App.getLoggedInUser();
+        String newUsername = ProfileMenuCommands.changeUsername.getMatcher(input).group("username").trim();
         // check
         if (!check) {
-            return "invalid username";
+            return new Result(false, "invalid username");
         }
-        user.setUsename(newUsername);
-        return "set successfully";
+        user.setUsername(newUsername);
+        return new Result(true, "set successfully");
     }
 
-    public String changeNickName(String input){
+    public Result changeNickName(String input) {
         //User user = useri ke logine
-        String newNickName = models.enums.ProfileMenu.changeNickName(input).group("nickname").trim();
+        User user = App.getLoggedInUser();
+        String newNickName = ProfileMenuCommands.changeNickName.getMatcher(input).group("nickname").trim();
         // check
         if (!check) {
-            return "invalid nickname";
+            return new Result(false, "invalid nickname");
         }
         user.setNickName(newNickName);
-        return "set successfully";
+        return new Result(true, "set successfully");
     }
 
-    public String changeEmail(String input){
+    public Result changeEmail(String input) {
         //User user = useri ke logine
-        String newEmail = models.enums.ProfileMenu.changeNickName(input).group("email").trim();
+        User user = App.getLoggedInUser();
+        String newEmail = ProfileMenuCommands.changeNickName.getMatcher(input).group("email").trim();
         // check
         if (!check) {
-            return "invalid email";
+            return new Result(false, "invalid email");
         }
         user.setNickName(newEmail);
-        return "set successfully";
+        return new Result(true, "set successfully");
     }
 
-    public String changePassword(String input){
+    public Result changePassword(String input) {
         //User user = useri ke logine
-        String oldPassword =  models.enums.ProfileMenu.changeNickName(input).group("oldPassword").trim();
-        if (!user.getPasswor().equals(oldPassword)){
-            return "your old password is incorrect";
+        User user = App.getLoggedInUser();
+        String oldPassword = ProfileMenuCommands.changeNickName.getMatcher(input).group("oldPassword").trim();
+        if (!user.getPassword().equals(oldPassword)) {
+            return new Result(false, "your old password is incorrect");
         }
-        String newPassword = models.enums.ProfileMenu.changeNickName(input).group("newPassword").trim();
+        String newPassword = ProfileMenuCommands.changeNickName.getMatcher(input).group("newPassword").trim();
         // check
         if (!check) {
-            return "invalid password";
+            return new Result(false, "invalid password");
         }
         user.setPassword(newPassword);
-        return "set successfully";
+        return new Result(true, "set successfully");
     }
 
 }
