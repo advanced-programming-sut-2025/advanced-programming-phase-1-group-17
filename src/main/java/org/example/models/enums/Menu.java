@@ -16,6 +16,7 @@ public enum Menu {
     ExitMenu(new ExitMenu()),
     GameMenu(new GameMenu()),
     ProfileMenu(new ProfileMenu()),
+    AvatarMenu(new AvatarMenu()),
     MainMenu(new MainMenu());
 
     private final views.AppMenu menu;
