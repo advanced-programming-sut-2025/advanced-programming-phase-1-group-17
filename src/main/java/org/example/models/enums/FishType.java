@@ -7,3 +7,4 @@ public enum FishType {
     public Season getSeason() {}
     public int getPrice() {}
 }
+
