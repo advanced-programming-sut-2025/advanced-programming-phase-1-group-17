@@ -1,4 +1,6 @@
-package org.example.models;
+package org.example.models.tools;
+
+import org.example.models.map.Tile;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,10 @@
 package org.example.models;
 
 
+import org.example.models.map.GameMap;
+import org.example.models.map.PlayerMap;
+import org.example.models.map.Tile;
+
 import java.util.ArrayList;
 
 public class Game {
@@ -10,13 +14,15 @@ public class Game {
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
-    private static ArrayList<PlayerMap> playerMaps = new ArrayList<>();
+    private GameMap gameMap;
+
 
     public Game(User user1, User user2, User user3) {
-        players.add(creator = new Player(App.getLoggedInUser(), false,this));
-        players.add(new Player(user1, user1.getUsername().startsWith("guest"),this));
-        players.add(new Player(user2, user2.getUsername().startsWith("guest"),this));
-        players.add(new Player(user3, user3.getUsername().startsWith("guest"),this));
+        players.add(creator = new Player(App.getLoggedInUser(), false, this));
+        players.add(new Player(user1, user1.getUsername().startsWith("guest"), this));
+        players.add(new Player(user2, user2.getUsername().startsWith("guest"), this));
+        players.add(new Player(user3, user3.getUsername().startsWith("guest"), this));
+        this.gameMap = new GameMap(players);
     }
 
     public Player getPlayerByPlayerMap(PlayerMap playerMap) {
@@ -54,11 +60,11 @@ public class Game {
         this.tiles = tiles;
     }
 
-    public static ArrayList<PlayerMap> getPlayerMaps() {
-        return playerMaps;
+    public GameMap getGameMap() {
+        return gameMap;
     }
 
-    public static void setPlayerMaps(ArrayList<PlayerMap> playerMaps) {
-        Game.playerMaps = playerMaps;
+    public void setGameMap(GameMap gameMap) {
+        this.gameMap = gameMap;
     }
 }

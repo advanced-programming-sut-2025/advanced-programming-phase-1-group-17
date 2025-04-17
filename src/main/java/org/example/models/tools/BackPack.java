@@ -1,4 +1,7 @@
-package org.example.models;
+package org.example.models.tools;
+
+import org.example.models.Product;
+import org.example.models.plant.Seed;
 
 import java.util.ArrayList;
 

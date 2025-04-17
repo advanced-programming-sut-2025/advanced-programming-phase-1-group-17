@@ -1,4 +1,4 @@
-package org.example.models;
+package org.example.models.tools;
 
 import org.example.models.enums.ToolMaterial;
 import org.example.models.enums.ToolName;

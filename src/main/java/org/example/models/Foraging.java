@@ -1,4 +1,6 @@
 package org.example.models;
 
-public class Foraging {
+import java.io.Serializable;
+
+public class Foraging implements Placeable {
 }

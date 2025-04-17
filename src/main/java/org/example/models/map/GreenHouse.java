@@ -1,7 +1,11 @@
-package org.example.models;
+package org.example.models.map;
+import org.example.models.Placeable;
+import org.example.models.Player;
+import org.example.models.tools.WaterStorage;
+
 import java.util.ArrayList;
 
-public class GreenHouse {
+public class GreenHouse implements Placeable {
     private ArrayList<Tile> tiles = new ArrayList<>();
     private static ArrayList<GreenHouse> greenHouse = new ArrayList<GreenHouse>();
     private boolean isActive = false;

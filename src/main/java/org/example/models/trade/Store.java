@@ -1,5 +1,6 @@
-package org.example.models;
+package org.example.models.trade;
 
+import org.example.models.Product;
 import org.example.models.enums.StoreType;
 
 import java.util.ArrayList;
