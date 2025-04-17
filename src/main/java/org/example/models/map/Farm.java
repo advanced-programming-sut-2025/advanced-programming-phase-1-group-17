@@ -1,11 +1,12 @@
-package org.example.models;
-
+package org.example.models.map;
+import org.example.models.Animal;
+import org.example.models.Placeable;
 import java.util.ArrayList;
 
-public class Farm {
+public class Farm implements Placeable {
     private GreenHouse greenHouse;
     private ArrayList<Lake> lakes = new ArrayList<>();
-    private Quarry quarrie = new Quarry();
+    private Quarry quarries = new Quarry();
     private Hut hut = new Hut();
     public void randomFill(){}
     private ArrayList<Coop> coops=new ArrayList<>();
@@ -29,11 +30,11 @@ public class Farm {
     }
 
     public Quarry getQuarries() {
-        return quarrie;
+        return quarries;
     }
 
     public void setQuarries(Quarry quarrie) {
-        this.quarrie = quarrie;
+        this.quarries = quarrie;
     }
 
     public Hut getHut() {

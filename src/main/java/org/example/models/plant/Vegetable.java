@@ -1,9 +1,10 @@
-package org.example.models;
+package org.example.models.plant;
 
+import org.example.models.Placeable;
 import org.example.models.enums.Season;
 import org.example.models.enums.VegetableType;
 
-public class Vegetable {
+public class Vegetable implements Placeable {
     private String name;
     private Seed resource;
     private final static int measure = 100;
