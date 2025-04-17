@@ -1,4 +1,8 @@
-package org.example.models;
+package org.example.models.NPCS;
+
+import org.example.models.Player;
+import org.example.models.Product;
+import org.example.models.map.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
