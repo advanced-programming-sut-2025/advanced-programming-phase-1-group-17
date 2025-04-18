@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Game {
     private Player creator;
-    private Player currentPlayer;
+    private Player currentPlayingPlayer;
     private TimeAndDate date;
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
@@ -34,18 +34,18 @@ public class Game {
         return null;
     }
 
-
     public Player getCurrentPlayingPlayer() {
-        return players.get(currentPlayingPlayerIndex);
+        return currentPlayingPlayer;
     }
 
-    public void SwitchPlayer() {
-        if (currentPlayer.equals(players.get(3))) {
+    public void switchPlayer() {
+        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.hasPassedOutToday);
+        if (currentPlayingPlayer.equals(players.get(3))) {
             date.increaseHour();
-            currentPlayer = players.get(0);
+            currentPlayingPlayer = players.get(0);
             currentPlayingPlayerIndex = 0;
         } else {
-            currentPlayer = players.get(++currentPlayingPlayerIndex);
+            currentPlayingPlayer = players.get(++currentPlayingPlayerIndex);
         }
     }
 

@@ -40,7 +40,6 @@ public class GameMenuController {
 
 
     public Result loadGame() {return new Result(false,"t");
-
     }
 
 
@@ -51,7 +50,9 @@ public class GameMenuController {
     public Result removeCurrentGame() {return new Result(false,"t");
     }
 
-    public Result nextTurn(){return new Result(false,"t");
+    public Result nextTurn(){
+        return new Result(true, "Switched to %s".formatted(App.getCurrentGame().
+                getCurrentPlayingPlayer().getUser().getUsername()));
     }
 
     public Result getTime() {return new Result(false,"t");
