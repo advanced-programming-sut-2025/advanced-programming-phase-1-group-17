@@ -34,6 +34,11 @@ public class Game {
         return null;
     }
 
+
+    public Player getCurrentPlayingPlayer() {
+        return players.get(currentPlayingPlayerIndex);
+    }
+
     public void SwitchPlayer() {
         if (currentPlayer.equals(players.get(3))) {
             date.increaseHour();

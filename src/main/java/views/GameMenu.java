@@ -16,7 +16,30 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.newGame(matcher.group("username1"),
                     matcher.group("username2"),
                     matcher.group("username3")));
-        } else {
+        }
+
+        //For Energy
+        else if ((matcher = GameMenuCommands.EnergyShow.getMatcher(command))!= null) {
+            System.out.println(controller.energyShow());
+        } else if ((matcher = GameMenuCommands.EnergySet.getMatcher(command))!= null) {
+            System.out.println(controller.energySet(matcher.group("value")));
+        } else if ((matcher = GameMenuCommands.EnergyUnlimited.getMatcher(command))!= null) {
+            System.out.println(controller.energyUnlimited());
+        }
+
+
+        //For Inventory
+        else if ((matcher = GameMenuCommands.InventoryShow.getMatcher(command))!= null) {
+            System.out.println(controller.inventoryShow());
+        }  else if ((matcher = GameMenuCommands.InventoryTrash.getMatcher(command))!= null) {
+            System.out.println(controller.inventoryTrash(
+                    matcher.group("itemName"),
+                    matcher.group("number")
+            ));
+        }
+
+
+        else {
             System.out.println("invalid command");
         }
 
