@@ -2,6 +2,7 @@ package models;
 
 import models.cooking.Food;
 import models.cooking.Recipe;
+import models.enums.BackPackType;
 import models.map.PlayerMap;
 import models.tools.BackPack;
 import models.tools.Tool;
@@ -14,7 +15,14 @@ public class Player {
     private boolean isGuest;
     private int x;
     private int y;
+
+    //For Energy
     private double energy;
+    private double maxEnergy = 200;
+
+    //For BackPack
+    private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
+
     private int farmingAbility;
     private int miningAbility;
     private int foragingAbility;
@@ -23,24 +31,35 @@ public class Player {
     private int miningLevel;
     private int foragingLevel;
     private int fishingLevel;
+
     private Game activeGame;
+
     private Tool currentTool;
-    private BackPack backPack;
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ArrayList<Friends> friends = new ArrayList<>();
     private ArrayList<Ability> abilitesLearned = new ArrayList<>();
+
     int[] levels = {50, 150, 250, 350, 450};
     private double balance;
     private Player partner = null;
     private int daysSinceBrakUp = 0;
     private boolean isbrokenUp = false;
 
-    public Player(User user, boolean isGuest,Game activeGame) {
+    public Player(User user, boolean isGuest, Game activeGame) {
         this.user = user;
         this.isGuest = isGuest;
         this.activeGame = activeGame;
+        this.energy = maxEnergy;
+    }
+
+    public void setInitialEnergyForTomorrow(boolean isPassedOut) {
+        if (isPassedOut) {
+            energy = maxEnergy * 0.75;
+        } else {
+            energy = maxEnergy;
+        }
     }
 
     public int getFarmingLevel() {
@@ -109,14 +128,7 @@ public class Player {
 
 
     public void passOut() {
-    }
 
-    public double getEnergy() {
-        return energy;
-    }
-
-    public void setEnergy(double energy) {
-        this.energy = energy;
     }
 
     public int getY() {
@@ -146,5 +158,26 @@ public class Player {
     public void setUser(User user) {
         this.user = user;
     }
+
+    //For Energy
+    public double getMaxEnergy() { return maxEnergy; }
+
+    public void setMaxEnergy(double maxEnergy) { this.maxEnergy = maxEnergy; }
+
+    public double getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(double energy) {
+        this.energy = energy;
+    }
+
+
+    //For BackPack
+    public BackPack getBackPack() { return backPack; }
+
+    public void setBackPack(BackPack backPack) { this.backPack = backPack; }
+
+
 
 }
