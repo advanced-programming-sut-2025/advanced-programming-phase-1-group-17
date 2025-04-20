@@ -4,8 +4,6 @@ import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
 
-import java.nio.file.Watchable;
-
 public class TimeAndDate {
     private WeatherType today;
     private WeatherType tomorrow;
