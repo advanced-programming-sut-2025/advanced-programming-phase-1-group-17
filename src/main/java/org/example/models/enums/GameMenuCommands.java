@@ -13,7 +13,8 @@ public enum GameMenuCommands {
 
     //For Inventory
     InventoryShow("\\s*inventory\\s+show\\s*"),
-    InventoryTrash("\\s*inventory\\s+trash\\s+-i\\s+(?<itemName>\\S+)(\\s+-n\\s+(?<number>\\d+))?\\s*");
+    InventoryTrash("\\s*inventory\\s+trash\\s+-i\\s+(?<itemName>\\S+)(\\s+-n\\s+(?<number>\\d+))?\\s*"),
+    Walk("\\s*walk -l <(?<x>\\d+), (?<y>\\d+)>\\s*");
 
 
 
