@@ -34,10 +34,6 @@ public class Game {
         return null;
     }
 
-    public Player getCurrentPlayingPlayer() {
-        return currentPlayingPlayer;
-    }
-
     public void switchPlayer() {
         currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.hasPassedOutToday);
         if (currentPlayingPlayer.equals(players.get(3))) {
@@ -71,5 +67,12 @@ public class Game {
 
     public void setGameMap(GameMap gameMap) {
         this.gameMap = gameMap;
+    }
+
+    public void setCurrentPlayingPlayer(Player currentPlayingPlayer) {
+        this.currentPlayingPlayer = currentPlayingPlayer;
+    }
+    public Player getCurrentPlayingPlayer() {
+        return currentPlayingPlayer;
     }
 }
