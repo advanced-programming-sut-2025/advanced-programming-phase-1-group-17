@@ -1,8 +1,10 @@
 package org.example.controllers;
 
 import org.example.models.*;
+import org.example.models.plant.Seed;
+import org.example.models.tools.BackPack;
+import org.example.models.tools.Tool;
 
-import java.util.regex.Matcher;
 
 public class GameMenuController {
     public Result newGame(String username1, String username2, String username3) {
@@ -38,7 +40,6 @@ public class GameMenuController {
 
 
     public Result loadGame() {return new Result(false,"t");
-
     }
 
 
@@ -49,7 +50,9 @@ public class GameMenuController {
     public Result removeCurrentGame() {return new Result(false,"t");
     }
 
-    public Result nextTurn() {return new Result(false,"t");
+    public Result nextTurn(){
+        return new Result(true, "Switched to %s".formatted(App.getCurrentGame().
+                getCurrentPlayingPlayer().getUser().getUsername()));
     }
 
     public Result getTime() {return new Result(false,"t");
@@ -94,19 +97,97 @@ public class GameMenuController {
     public Result helpReadingMap() {return new Result(false,"t");
     }
 
-    public Result energyShow() {return new Result(false,"t");
+    public Result energyShow() {
+        return new Result(true, "%f".formatted(
+                App.getCurrentGame().getCurrentPlayingPlayer().getEnergy()));
     }
 
-    public Result energySet(String value) {return new Result(false,"t");
+    public Result energySet(String value) {
+        double energy;
+        try{
+            energy = Integer.parseInt(value);
+        } catch (Exception e) {
+            return new Result(false, "You must enter a number");
+        }
+        App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(energy);
+        return new Result(true, "Energy successfully set to %f".formatted(energy));
     }
 
-    public Result energyUnlimited() {return new Result(false,"t");
+    public Result energyUnlimited() {
+        App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(Double.POSITIVE_INFINITY);
+        return new Result(true, "Energy successfully set to infinity");
     }
 
-    public Result inventoryShow() {return new Result(false,"t");
+    public Result inventoryShow() {
+        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+        StringBuilder result = new StringBuilder();
+
+        result.append("Seeds: \n");
+        for (Seed seed : backPack.getSeeds().keySet()) {
+            result.append("%s: %d\n".formatted(seed.getType().name(), backPack.getSeeds().get(seed)));
+        }
+
+        result.append("\nTools: \n");
+        for (Tool tool : backPack.getTools().keySet()) {
+            result.append("%s: %d\n".formatted(tool, backPack.getTools().get(tool)));
+        }
+
+        result.append("Products: \n");
+        for (Product product : backPack.getProducts().keySet()) {
+            result.append("%s: %d\n".formatted(product.getName(), backPack.getProducts().get(product)));
+        }
+        return new Result(true, result.toString().trim());
     }
 
-    public Result inventoryTrash(String itemName, String number) {return new Result(false,"t");
+    public Result inventoryTrash(String itemName, String number) {
+        itemName = itemName.trim().toLowerCase();
+
+        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+        for (Product product : backPack.getProducts().keySet()) {
+            if (product.getName().equals(itemName)) {
+                if (number == null) {
+                    backPack.getProducts().remove(product);
+                    return new Result(true, "Completely deleted %s from your inventory"
+                            .formatted(product.getName()));
+                }
+                else {
+                    backPack.getProducts().compute(product, (k, oldQuantity) -> oldQuantity - Integer.parseInt(number));
+                    return new Result(true, "Deleted %d of %s from your inventory"
+                            .formatted(Integer.parseInt(number), product.getName()));
+                }
+            }
+        }
+
+        for (Seed seed : backPack.getSeeds().keySet()) {
+            if (seed.getType().name().equals(itemName)) {
+                if (number == null) {
+                    backPack.getSeeds().remove(seed);
+                    return new Result(true, "Completely deleted %s from your inventory"
+                            .formatted(seed.getType().name()));
+                }
+                else {
+                    backPack.getSeeds().compute(seed, (k, oldQuantity) -> oldQuantity - Integer.parseInt(number));
+                    return new Result(true, "Deleted %d of %s from your inventory"
+                            .formatted(Integer.parseInt(number), seed.getType().name()));
+                }
+            }
+        }
+
+        for (Tool tool : backPack.getTools().keySet()) {
+            if (tool.getName().name().equals(itemName)) {
+                if (number == null) {
+                    backPack.getTools().remove(tool);
+                    return new Result(true, "Completely deleted %s from your inventory"
+                            .formatted(tool.getName().name()));
+                }
+                else {
+                    backPack.getTools().compute(tool, (k, oldQuantity) -> oldQuantity - Integer.parseInt(number));
+                    return new Result(true, "Deleted %d of %s from your inventory"
+                            .formatted(Integer.parseInt(number), tool.getName().name()));
+                }
+            }
+        }
+        return new Result(false, "Item with this name doesn't exist in your backpack.");
     }
 
     public Result toolEquip(String toolName) {return new Result(false,"t");

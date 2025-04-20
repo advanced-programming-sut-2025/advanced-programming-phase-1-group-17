@@ -4,27 +4,20 @@ import java.util.Scanner;
 
 import org.example.controllers.MainMenuController;
 import org.example.models.App;
-import org.example.models.enums.*;
+import org.example.models.enums.MainMenuCommands;
+import org.example.models.enums.Menu;
 
-public class MainMenu implements views.AppMenu {
+public class MainMenu implements AppMenu {
     MainMenuController mainMenuController = new MainMenuController();
 
     public void run(Scanner scanner) {
         String command = scanner.nextLine();
         if (command.trim().equals("user logout")) {
-            System.out.println("logged out _ you are in login menu");
-            App.setLoggedInUser(null);
-            App.setCurrentMenu(Menu.LoginMenu);
+            System.out.println(mainMenuController.exitMenu());
         } else if (MainMenuCommands.changeMenu.getMatcher(command).matches()) {
-            String output = mainMenuController.changeMenu(command);
-            System.out.println(output);
-            if (output.equals("successfully changeMenu. you are now in gameMenu")) {
-                App.setCurrentMenu(Menu.GameMenu);
-            } else if (output.equals("successfully changeMenu. you are now in profileMenu")) {
-                App.setCurrentMenu(Menu.ProfileMenu);
-            } else if (output.equals("successfully changeMenu. you are now in avatarMenu")) {
-                App.setCurrentMenu(Menu.AvatarMenu);
-            }
+            System.out.println(mainMenuController.changeMenu(command));
+        } else if (command.trim().equals("show current menu")) {
+            System.out.println(App.getCurrentMenu().name());
         } else {
             System.out.println("invalid command");
         }
