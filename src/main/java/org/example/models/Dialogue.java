@@ -2,10 +2,6 @@ package org.example.models;
 
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
-import org.example.models.enums.Season;
-import org.example.models.enums.WeatherType;
-
-import java.util.ArrayList;
 
 public class Dialogue {
     private String message;

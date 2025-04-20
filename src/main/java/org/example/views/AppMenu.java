@@ -1,4 +1,4 @@
-package views;
+package org.example.views;
 
 import java.util.Scanner;
 

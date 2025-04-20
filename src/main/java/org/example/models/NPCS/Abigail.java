@@ -1,6 +1,4 @@
-package models.NPCS;
-
-import org.example.models.NPC;
+package org.example.models.NPCS;
 
 public class Abigail extends NPC {
 }

@@ -1,22 +1,28 @@
 package org.example.models;
 
 
+import org.example.models.map.GameMap;
+import org.example.models.map.PlayerMap;
+import org.example.models.map.Tile;
+
 import java.util.ArrayList;
 
 public class Game {
     private Player creator;
-    private Player currentPlayer;
+    private Player currentPlayingPlayer;
     private TimeAndDate date;
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
-    private static ArrayList<PlayerMap> playerMaps = new ArrayList<>();
+    private GameMap gameMap;
+
 
     public Game(User user1, User user2, User user3) {
-        players.add(creator = new Player(App.getLoggedInUser(), false,this));
-        players.add(new Player(user1, user1.getUsername().startsWith("guest"),this));
-        players.add(new Player(user2, user2.getUsername().startsWith("guest"),this));
-        players.add(new Player(user3, user3.getUsername().startsWith("guest"),this));
+        players.add(creator = new Player(App.getLoggedInUser(), false, this));
+        players.add(new Player(user1, user1.getUsername().startsWith("guest"), this));
+        players.add(new Player(user2, user2.getUsername().startsWith("guest"), this));
+        players.add(new Player(user3, user3.getUsername().startsWith("guest"), this));
+        this.gameMap = new GameMap(players);
     }
 
     public Player getPlayerByPlayerMap(PlayerMap playerMap) {
@@ -28,13 +34,18 @@ public class Game {
         return null;
     }
 
-    public void SwitchPlayer() {
-        if (currentPlayer.equals(players.get(3))) {
+    public Player getCurrentPlayingPlayer() {
+        return currentPlayingPlayer;
+    }
+
+    public void switchPlayer() {
+        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.hasPassedOutToday);
+        if (currentPlayingPlayer.equals(players.get(3))) {
             date.increaseHour();
-            currentPlayer = players.get(0);
+            currentPlayingPlayer = players.get(0);
             currentPlayingPlayerIndex = 0;
         } else {
-            currentPlayer = players.get(++currentPlayingPlayerIndex);
+            currentPlayingPlayer = players.get(++currentPlayingPlayerIndex);
         }
     }
 
@@ -54,11 +65,11 @@ public class Game {
         this.tiles = tiles;
     }
 
-    public static ArrayList<PlayerMap> getPlayerMaps() {
-        return playerMaps;
+    public GameMap getGameMap() {
+        return gameMap;
     }
 
-    public static void setPlayerMaps(ArrayList<PlayerMap> playerMaps) {
-        Game.playerMaps = playerMaps;
+    public void setGameMap(GameMap gameMap) {
+        this.gameMap = gameMap;
     }
 }

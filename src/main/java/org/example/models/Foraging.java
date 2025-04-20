@@ -1,4 +1,4 @@
 package org.example.models;
 
-public class Foraging {
+public class Foraging implements Placeable {
 }

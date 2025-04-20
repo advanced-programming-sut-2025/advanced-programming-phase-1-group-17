@@ -2,11 +2,6 @@ package org.example.models.enums;
 
 
 import org.example.views.*;
-import org.example.views.GameMenu;
-import org.example.views.LoginMenu;
-import org.example.views.MainMenu;
-import org.example.views.ProfileMenu;
-import org.example.views.SignUpMenu;
 
 import java.util.Scanner;
 
@@ -19,9 +14,9 @@ public enum Menu {
     AvatarMenu(new AvatarMenu()),
     MainMenu(new MainMenu());
 
-    private final views.AppMenu menu;
+    private final AppMenu menu;
 
-    Menu(views.AppMenu menu) {
+    Menu(AppMenu menu) {
         this.menu = menu;
     }
 

@@ -2,13 +2,12 @@ package org.example.views;
 
 import java.util.Scanner;
 
-import controllers.SignUpMenuController;
-import org.example.models.enums.*;
+import org.example.controllers.SignUpMenuController;
 import org.example.models.enums.SignUpMenuCommands;
 
 import java.util.regex.Matcher;
 
-public class SignUpMenu implements views.AppMenu {
+public class SignUpMenu implements AppMenu {
     private final SignUpMenuController controller = new SignUpMenuController();
 
     public void run(Scanner scanner) {
@@ -31,6 +30,8 @@ public class SignUpMenu implements views.AppMenu {
                     matcher.group("gender"),
                     scanner
             );
+        } else if ((matcher = SignUpMenuCommands.Exit.getMatcher(input)) != null){
+            controller.exit();
         } else {
             System.out.println("Invalid Command");
         }
