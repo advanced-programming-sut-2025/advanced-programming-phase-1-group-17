@@ -7,6 +7,9 @@ public enum ShippingBinType {
     Iridium(2);
     private double leverage;
     ShippingBinType(double leverage) {}
-    public double getLeverage() {}
+    public double getLeverage() {
+        //TODO
+        return 1.2;
+    }
 
 }

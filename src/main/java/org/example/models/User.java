@@ -1,19 +1,24 @@
 package org.example.models;
 
-import org.example.models.Player;
 import org.example.models.enums.Gender;
-
-import java.util.ArrayList;
 
 public class User {
     private String username;
     private String password;
+    private String passwordHash; //TODO: encoding in signup menu
+
     private String email;
     private String nickName;
     private Gender gender;
+
+    private String securityQuestion;
+    private String securityAnswer;
+
     private int numOfPlay;
-    private int theMostMoneyIngame;
+    private int theMostMoneyInGame;
+
     public User(){};
+
     //for signup
     public User(String username, String password, String email, String nickName, Gender gender) {
         this.username = username;
@@ -31,12 +36,12 @@ public class User {
         this.numOfPlay = numOfPlay;
     }
 
-    public int getTheMostMoneyIngame() {
-        return theMostMoneyIngame;
+    public int getTheMostMoneyInGame() {
+        return theMostMoneyInGame;
     }
 
-    public void setTheMostMoneyIngame(int theMostMoneyIngame) {
-        this.theMostMoneyIngame = theMostMoneyIngame;
+    public void setTheMostMoneyInGame(int theMostMoneyInGame) {
+        this.theMostMoneyInGame = theMostMoneyInGame;
     }
 
     public Gender getGender() {
@@ -79,4 +84,27 @@ public class User {
         this.username = username;
     }
 
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public String getSecurityQuestion() {
+        return securityQuestion;
+    }
+
+    public void setSecurityQuestion(String securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }
 }
