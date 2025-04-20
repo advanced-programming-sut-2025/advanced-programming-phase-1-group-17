@@ -280,6 +280,7 @@ public class GameMenuController {
     public Result showAllProducts() {return new Result(false,"t");
     }
 
+    //test
     public Result showAllAvailableProducts() {return new Result(false,"t");
     }
 
