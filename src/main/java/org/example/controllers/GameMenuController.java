@@ -1,6 +1,7 @@
 package org.example.controllers;
 
 import org.example.models.*;
+import org.example.models.enums.WeatherType;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Tile;
 import org.example.models.plant.Seed;
@@ -8,7 +9,6 @@ import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
 
 import java.util.*;
-
 
 public class GameMenuController {
 
@@ -39,7 +39,7 @@ public class GameMenuController {
         return new Result(true, "new game created Successfully");
     }
 
-    public Result gameMap(String mapNumber) {
+    public Result gameMap(String mapNumber){
         return new Result(true, "t");
     }
 
@@ -64,35 +64,54 @@ public class GameMenuController {
     }
 
     public Result getTime() {
-        return new Result(false, "t");
+        return new Result(true,App.getCurrentGame().getDate().getHour() + " : " +
+                App.getCurrentGame().getDate().getMinute());
     }
 
+
     public Result getDate() {
-        return new Result(false, "t");
+        return new Result(true,App.getCurrentGame().getDate().getDay()+ "/" +
+                App.getCurrentGame().getDate().getMonth() +"/" + App.getCurrentGame().getDate().getYear());
     }
 
     public Result getDateTime() {
-        return new Result(false, "t");
+        StringBuilder sb=new StringBuilder();
+        sb.append(getTime()).append("\n")
+                .append(getDate()).append("\n");
+        return new Result(true,sb.toString());
     }
 
     public Result getDayOfTheWeek() {
-        return new Result(false, "t");
+
+        return new Result(true,App.getCurrentGame().getDate().getDayOfTheWeek().name());
     }
 
     public Result getSeason() {
-        return new Result(false, "t");
+
+        return new Result(true,App.getCurrentGame().getDate().getSeason().name());
     }
 
     public Result changeTime(String input) {
-        return new Result(false, "t");
+        int amount = Integer.parseInt(input);
+        App.getCurrentGame().getDate().setHour(App.getCurrentGame().getDate().getHour() + amount);
+        if(App.getCurrentGame().getDate().getHour()>=22){
+            App.getCurrentGame().getDate().goToNextDay();
+            return new Result(true,"you added too much , its end of the day");
+        }
+        return new Result(true,"added successfully");
     }
 
     public Result changeDate(String input) {
-        return new Result(false, "t");
+        int amount = Integer.parseInt(input);
+        for (int i = 0; i < amount; i++) {
+            App.getCurrentGame().getDate().goToNextDay();
+        }
+        return new Result(true,amount + " days added successfully");
     }
 
     public Result getWeather() {
-        return new Result(false, "t");
+        return new Result(true,App.getCurrentGame()
+                .getDate().getTodayWeatherType().name());
     }
 
     public Result WeatherForeCast(String input) {
@@ -100,7 +119,14 @@ public class GameMenuController {
     }
 
     public Result changeWeather(String input) {
-        return new Result(false, "t");
+
+        try{
+            App.getCurrentGame().getDate().setTomorrow(WeatherType.valueOf(input));
+            return new Result(true, "tomorrow weather changed to "
+                    + App.getCurrentGame().getDate().getTodayWeatherType().name() + "successfully");
+        }catch (Exception e){
+            return new Result(false,"valid options : Sunny,Rainy,Storm,Snow");
+        }
     }
 
     public Result buildGreenHouse() {
@@ -138,7 +164,7 @@ public class GameMenuController {
             if (input.equals("y")) {
                 player.setEnergy(player.getEnergy()- (result.size() / 20));
                 if (player.getEnergy() <= 0) {
-                    //TODO ghash
+                    player.hasPassedOutToday = true;
                     player.setEnergy(0);
                     return new Result(false,"you fainted");
                 }
@@ -239,7 +265,7 @@ public class GameMenuController {
 
     public Result energySet(String value) {
         double energy;
-        try {
+        try{
             energy = Integer.parseInt(value);
         } catch (Exception e) {
             return new Result(false, "You must enter a number");
@@ -323,19 +349,50 @@ public class GameMenuController {
     }
 
     public Result toolEquip(String toolName) {
-        return new Result(false, "t");
+        for(Tool tool : App.getCurrentPlayer().getBackPack().getTools().keySet()) {
+            if(tool.getName().name().equals(toolName)) {
+                App.getCurrentPlayer().setCurrentTool(tool);
+                return new Result(true,"you are using " + tool.getName().name()
+                        + " right now");
+            }
+        }
+        App.getCurrentPlayer().setCurrentTool(null);
+        return new Result(false,"Tool with this name doesn't exist in your backpack.");
     }
 
     public Result currentToolShow(String toolName) {
-        return new Result(false, "t");
+        if(App.getCurrentPlayer().getCurrentTool() == null){
+            return new Result(false,"You are not using any tool right now");
+        }
+        return new Result(true,"your current tool is " +
+                App.getCurrentPlayer().getCurrentTool().getName().name());
     }
 
     public Result toolsShow() {
-        return new Result(false, "t");
+        StringBuilder sb = new StringBuilder();
+        for(Tool tool : App.getCurrentPlayer().getBackPack().getTools().keySet()) {
+            if(tool != null){
+                sb.append(tool.getName().name()).append("\n");
+            }
+        }
+        if(sb.isEmpty()){
+            return new Result(false,"You dont have any tool");
+        }
+        return new Result(true,sb.toString());
     }
 
     public Result toolUpgrade(String toolName) {
-        return new Result(false, "t");
+        if (Tool.findToolByName(toolName) == null) {
+            return new Result(false, "Tool with this name doesn't exist in your backpack.");
+        }
+        Tool tool = Tool.findToolByName(toolName);
+        if (tool.getLevel() == 4) {
+            return new Result(false, toolName + "is alredy at max level");
+        }
+        //TODO money needed for Upgrade
+        tool.setLevel(tool.getLevel() + 1);
+        return new Result(true, toolName + "upgraded to " + tool.getLevel());
+
     }
 
     public Result toolUse(String direction) {
