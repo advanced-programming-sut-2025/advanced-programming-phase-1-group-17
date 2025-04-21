@@ -8,14 +8,45 @@ public class TimeAndDate {
     private WeatherType today;
     private WeatherType tomorrow;
     private int hour, minute;
-    private String day, month, year;
-    private Season season;
-    private DaysOfTheWeek dayOfTheWeek;
-    public void increaseHour() {}
-    public void goToNextDay() {}
+    private int day, month, year;
+    private Season season=Season.Spring;
+    private DaysOfTheWeek dayOfTheWeek=DaysOfTheWeek.Saturday;
+    public void increaseHour() {
+        //TODO when all players playes hour ++;
+        hour++;
+        if(hour >= 22){
+            hour = 9;
+            minute = 0;
+            goToNextDay();
+        }
+    }
+    public void goToNextDay() {
+        changeTomorrowWeatherType();
+        changeDayOfTheWeek();
+        day++;
+        if(day>=28){
+            changeSeason();
+        }
+    }
+    public void changeSeason() {
+        Season[] seasons = Season.values();
+        int currentIndex = season.ordinal();
+        int nextIndex = (currentIndex + 1) % seasons.length;
+
+        season = seasons[nextIndex];
+
+        if (nextIndex == 0) {
+            year++;
+        }
+    }
+    public void changeDayOfTheWeek() {
+        DaysOfTheWeek[] daysOfTheWeek = DaysOfTheWeek.values();
+        int currentDayIndex = dayOfTheWeek.ordinal();
+        dayOfTheWeek = daysOfTheWeek[(currentDayIndex + 1) % daysOfTheWeek.length];
+    }
     public void changeTomorrowWeatherType() {}
 
-    public WeatherType getToday() {
+    public WeatherType getTodayWeatherType() {
         return today;
     }
 
@@ -47,27 +78,27 @@ public class TimeAndDate {
         this.minute = minute;
     }
 
-    public String getDay() {
+    public int getDay() {
         return day;
     }
 
-    public void setDay(String day) {
+    public void setDay(int day) {
         this.day = day;
     }
 
-    public String getMonth() {
+    public int getMonth() {
         return month;
     }
 
-    public void setMonth(String month) {
+    public void setMonth(int month) {
         this.month = month;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
@@ -86,4 +117,5 @@ public class TimeAndDate {
     public void setDayOfTheWeek(DaysOfTheWeek dayOfTheWeek) {
         this.dayOfTheWeek = dayOfTheWeek;
     }
+
 }

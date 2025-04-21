@@ -75,6 +75,10 @@ public class PlayerMap {
     public void setMapType(int type,int index ) {
         int[] coordinateShifters = GameMap.coordinateShifter(index);
         if (type == 1) {
+            for(int i=3;i<8;i++){
+                for(int j=3;j<8;j++){
+                }
+            }
 
         } else if (type == 2) {
 
