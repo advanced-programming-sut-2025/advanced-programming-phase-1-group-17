@@ -7,14 +7,10 @@ import org.example.models.plant.Seed;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class GameMenuController {
-    //for walk
-    static int numOfTiles = 0;
 
     public Result newGame(String username1, String username2, String username3) {
         //TODO handel errors
@@ -119,79 +115,113 @@ public class GameMenuController {
         }
     }
 
-    public boolean isValid(int x, int y, int rows, int cols, boolean[][] visited, Tile tile, Player player) {
-        return x >= 0 && y >= 0 && x < rows && y < cols &&
-                tile.isWalkAble() && !visited[x][y]
-                && tile.getOwner().equals(player);
-    }
-
-    public boolean bfs(int startX, int startY, int endX, int endY, boolean[][] visited, int rows, int cols) {
-        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
-        int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{startX, startY});
-        int numOfTiles2 = 0;
-        while (!queue.isEmpty()) {
-            numOfTiles2++;
-            int[] current = queue.poll();
-            int x = current[0];
-            int y = current[1];
-            if (x == endX && y == endY) {
-                numOfTiles = numOfTiles2;
-                return true;
-            }
-            for (int i = 0; i < 8; i++) {
-                int nextX = x + dx[i];
-                int nextY = y + dy[i];
-                Tile tile = Tile.getTile(nextX, nextY);
-                if (isValid(nextX, nextY, rows, cols, visited, tile, App.getCurrentPlayer())) {
-                    visited[nextX][nextY] = true;
-                    queue.add(new int[]{nextX, nextY});
-                }
-            }
-        }
-        return false;
-    }
-
-    public Result walk(int x, int y, Scanner scanner) {
+    public Result walk (int x ,int y ,Scanner scanner){
+        List result;
         Player player = App.getCurrentPlayer();
-        for (Tile tile : App.getCurrentGame().getTiles()) {
-            if (tile.getX() == x && tile.getY() == y) {
-                if (tile.isWalkAble()) {
-                    //TODO BFS
-                    int rows = 0;
-                    int cols = 0;
-                    boolean[][] visited = new boolean[rows][cols];
-                    visited[x][y] = true;
-                    if (!bfs(player.getX(), player.getY(), x, y, visited, rows, cols)) {
-                        return new Result(false, "there is no way");
-                    } else {
-                        System.out.println("your energy : " + player.getEnergy());
-                        System.out.println("energy needed : " + numOfTiles / 20);
-                        System.out.println("would you still go to your destination? (press y or n)");
-                        String answer = scanner.nextLine();
-                            if (answer.equals("y")) {
-                                if (player.getEnergy() >= numOfTiles / 20) {
-                                    player.setEnergy(player.getEnergy() - numOfTiles / 20);
-                                    //TODO
-                                    return new Result(true, "you have reached your destination");
-                                } else {
-                                    //TODO
-                                }
-                            }
-                            else {
-                                return new Result(false, "walk cancelled");
-                            }
-
-                    }
-                } else {
-                    return new Result(false, "this tile is not walkable");
+        Tile destination = Tile.getTile(x,y);
+        if (destination.getOwner() != player) {
+            return new Result(false, "you can't walk to this tile because this tile is not for you.");
+        }
+        else if (!destination.isWalkAble()) {
+            return new Result(false, "you can't walk to this tile because this tile is not walkable.");
+        }
+        else if ((result = bfs(player.getX(),player.getY(),x,y,player)) == null
+        || result.isEmpty()) {
+            return new Result(false,"you can't walk to this tile because there is not path to this tile");
+        }
+        else {
+            //TODO
+            System.out.println("your energy : " + player.getEnergy());
+            System.out.println("energy needed : " + result.size() / 20);
+            System.out.println("do you want to go to the destination? press y or n and press enter");
+            String input = scanner.nextLine();
+            if (input.equals("y")) {
+                player.setEnergy(player.getEnergy()- (result.size() / 20));
+                if (player.getEnergy() <= 0) {
+                    //TODO ghash
+                    player.setEnergy(0);
+                    return new Result(false,"you fainted");
                 }
-                break;
+                else {
+                    //TODO Walkin the path
+                    player.setX(x);
+                    player.setY(y);
+                    return new Result(true, "you are in the destination now");
+                }
+            }
+            else {
+                return new Result(true,"cancellation...");
+            }
+        }
+    }
+    public boolean isValid(int x, int y,int rows,int cols) {
+        return x >= 0 && x < rows && y >= 0 && y < cols && Tile.getTile(x,y) != null && Tile.getTile(x,y).isWalkAble();
+    }
+    public List<Tile> bfs( int startX, int startY, int endX, int endY,Player player) {
+        int[][] directions = {
+                {0, 1},
+                {1, 0},
+                {0, -1},
+                {-1, 0},
+                {1, 1},
+                {1, -1},
+                {-1, 1},
+                {-1, -1}
+        };
+        //TODO
+        int rows = 0;
+        int cols = 0;
+
+        boolean[][] visited = new boolean[rows][cols];
+        Map<Tile, Tile> parent = new HashMap<>();
+        Queue<Tile> queue = new LinkedList<>();
+
+        Tile start = Tile.getTile(startX, startY);
+        Tile end = Tile.getTile(endX, endY);
+
+        if (start == null || end == null || !start.isWalkAble() || !end.isWalkAble()) {
+            return null;
+        }
+
+        queue.offer(start);
+        visited[startX][startY] = true;
+
+        while (!queue.isEmpty()) {
+            Tile current = queue.poll();
+
+            if (current.getX() == endX && current.getY() == endY) {
+                return buildPath(parent, start, end);
+            }
+
+            for (int[] dir : directions) {
+                int newX = current.getX()  + dir[0];
+                int newY = current.getY() + dir[1];
+
+                if (isValid(newX, newY,rows,cols) && !visited[newX][newY]) {
+                    Tile neighbor = Tile.getTile(newX, newY);
+                    visited[newX][newY] = true;
+                    parent.put(neighbor, current);
+                    queue.offer(neighbor);
+                }
             }
         }
 
-        return new Result(false, "t");
+        return null;
+    }
+    public List<Tile> buildPath(Map<Tile, Tile> parent, Tile start, Tile end) {
+        List<Tile> path = new ArrayList<>();
+        Tile current = end;
+
+        while (current != null && !current.equals(start)) {
+            path.add(current);
+            current = parent.get(current);
+        }
+
+        if (current == null) return null;
+
+        path.add(start);
+        Collections.reverse(path);
+        return path;
     }
 
     public Result printMap(int x, int y, int size) {

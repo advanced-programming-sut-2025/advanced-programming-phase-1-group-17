@@ -45,7 +45,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.buildGreenHouse());
         }
         // move player
-        else if ((matcher = GameMenuCommands.Walk.getMatcher(command)) != null {
+        else if ((matcher = GameMenuCommands.Walk.getMatcher(command)) != null) {
             System.out.println(controller.walk(Integer.parseInt(matcher.group("x"))
                     , Integer.parseInt(matcher.group("y")),scanner));
         }
