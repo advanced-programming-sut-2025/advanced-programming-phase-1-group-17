@@ -1,8 +1,4 @@
 package org.example.views;
-
-import org.example.models.App;
-import org.example.models.enums.Menu;
-
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
