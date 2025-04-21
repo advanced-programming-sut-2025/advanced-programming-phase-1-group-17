@@ -9,7 +9,7 @@ public enum SignUpMenuCommands {
     ShowCurrentMenu("\\s*show\\s+current\\s+menu\\s*"),
     Exit("\\s*menu\\s+exit\\s*"),
     Register("\\s*register\\s+-u\\s+(?<username>\\S+)\\s+-p\\s+(?<password>\\S+)\\s+" +
-            "(?<passwordConfirm>\\S+)\\s+-n\\s+(?<nickname>\\S+)\\s+-e(?<email>\\S+)\\s+-g\\s+(?<gender>\\S+)\\s*"),
+            "(?<passwordConfirm>\\S+)\\s+-n\\s+(?<nickname>\\S+)\\s+-e\\s+(?<email>\\S+)\\s+-g\\s+(?<gender>\\S+)\\s*"),
     Username("[a-zA-Z\\d-]+"),
     Email("^(?!.*[!#$%^&*()=+{}\\[\\]|\\\\:;'\",<>?/])(?=^[a-zA-Z0-9](?!.*\\.\\.)[a-zA-Z0-9._-]*[a-zA-Z0-9]@)" +
             "[a-zA-Z0-9._-]+@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\\.[a-zA-Z]{2,})+$"),
