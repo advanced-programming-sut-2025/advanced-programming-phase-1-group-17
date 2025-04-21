@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 public class GameMap {
     private ArrayList<PlayerMap> playerMaps = new ArrayList<>();
-    private static Tile[][] totalMap=new Tile[2*PlayerMap.getLength()][2*PlayerMap.getWidth()];
 
     public GameMap(ArrayList<Player> players) {
         for (int i = 0; i < 4; i++) {
@@ -34,12 +33,4 @@ public class GameMap {
         this.playerMaps = playerMaps;
     }
     //TODO NPC village
-
-    public static Tile[][] getTotalMap() {
-        return totalMap;
-    }
-
-    public static void setTotalMap(Tile[][] totalMap) {
-        GameMap.totalMap = totalMap;
-    }
 }

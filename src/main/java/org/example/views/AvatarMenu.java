@@ -1,5 +1,4 @@
 package org.example.views;
-
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -10,6 +9,11 @@ public class AvatarMenu implements AppMenu {
 //      if () {
 //
 //      }
+//        else if (command.trim().equals("show current menu")) {
+//            System.out.println(App.getCurrentMenu().name());
+//        }else if (command.trim().equals("menu exit")) {
+//            App.setCurrentMenu(Menu.MainMenu);
+//        }
 //      else {
 //          System.out.print("invalid command");
 //      }

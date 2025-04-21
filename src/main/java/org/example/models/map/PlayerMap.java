@@ -16,6 +16,15 @@ public class PlayerMap {
     private Farm farm;
     private Player player;
     private int type;
+    private GreenHouse greenHouse;
+
+    public GreenHouse getGreenHouse() {
+        return greenHouse;
+    }
+
+    public void setGreenHouse(GreenHouse greenHouse) {
+        this.greenHouse = greenHouse;
+    }
 
     public Player getPlayer() {
         return player;
@@ -75,10 +84,6 @@ public class PlayerMap {
     public void setMapType(int type,int index ) {
         int[] coordinateShifters = GameMap.coordinateShifter(index);
         if (type == 1) {
-            for(int i=3;i<8;i++){
-                for(int j=3;j<8;j++){
-                }
-            }
 
         } else if (type == 2) {
 

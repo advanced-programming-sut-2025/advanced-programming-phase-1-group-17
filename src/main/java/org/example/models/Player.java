@@ -15,6 +15,34 @@ public class Player {
     private final boolean isGuest;
     private int x;
     private int y;
+    //Coin and wood and stone
+    private int wood;
+    private int stone;
+    private int coin;
+
+    public int getWood() {
+        return wood;
+    }
+
+    public void addWood(int wood) {
+        this.wood += wood;
+    }
+
+    public int getStone() {
+        return stone;
+    }
+
+    public void addStone(int stone) {
+        this.stone += stone;
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void addCoin(int coin) {
+        this.coin += coin;
+    }
 
     //For Energy
     private double energy;
@@ -113,4 +141,6 @@ public class Player {
     public void setCurrentTool(Tool currentTool) {
         this.currentTool = currentTool;
     }
+
+
 }

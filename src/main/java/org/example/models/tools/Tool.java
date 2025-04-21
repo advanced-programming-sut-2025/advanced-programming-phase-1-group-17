@@ -1,5 +1,6 @@
 package org.example.models.tools;
 
+import org.example.models.App;
 import org.example.models.enums.ToolMaterial;
 import org.example.models.enums.ToolName;
 
@@ -40,5 +41,13 @@ public class Tool {
         switch(tool.getName()) {
             case Pichaxe:
         }
+    }
+    public static Tool findToolByName(String toolName) {
+        for(Tool tool : App.getCurrentPlayer().getBackPack().getTools().keySet()){
+            if(tool.getName().name().equals(toolName)){
+                return tool;
+            }
+        }
+        return null;
     }
 }
