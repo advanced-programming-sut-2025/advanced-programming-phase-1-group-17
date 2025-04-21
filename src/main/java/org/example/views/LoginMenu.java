@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 
 public class LoginMenu implements AppMenu {
     LoginMenuController loginMenuController = new LoginMenuController();
-    MainMenu mainMenu = new MainMenu();
     public void run(Scanner scanner) {
         String command = scanner.nextLine();
         Matcher matcher;
