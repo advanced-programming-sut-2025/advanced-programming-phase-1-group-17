@@ -1,4 +1,6 @@
-package org.example.models.enums;
+package org.example.models.plant;
+
+import org.example.models.enums.Season;
 
 public enum SeedType {
     // Spring
