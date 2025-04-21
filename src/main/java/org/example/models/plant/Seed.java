@@ -1,7 +1,6 @@
 package org.example.models.plant;
 
 import org.example.models.Placeable;
-import org.example.models.enums.SeedType;
 
 public class Seed implements Placeable {
     private boolean isMixed;

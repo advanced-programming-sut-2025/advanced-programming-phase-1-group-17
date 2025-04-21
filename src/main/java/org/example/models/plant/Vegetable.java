@@ -2,7 +2,6 @@ package org.example.models.plant;
 
 import org.example.models.Placeable;
 import org.example.models.enums.Season;
-import org.example.models.enums.VegetableType;
 
 public class Vegetable implements Placeable {
     private String name;

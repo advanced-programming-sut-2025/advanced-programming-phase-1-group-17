@@ -276,7 +276,7 @@ public class GameMenuController {
     }
 
     public Result toolUse(String direction) {
-
+        return new Result (false,"t");
     }
 
     public Result craftInfo(String name) {return new Result(false,"t");
@@ -333,7 +333,7 @@ public class GameMenuController {
     public Result feedHay(String animalName) {return new Result(false,"t");
     }
 
-    public Result produce() {return new Result(false,"ee");
+    public Result produce() {return new Result(false,"t");
     }
 
     public Result collectProduct(String name) {return new Result(false,"t");

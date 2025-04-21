@@ -25,7 +25,7 @@ public class TimeAndDate {
         changeDayOfTheWeek();
         day++;
         if(day>=28){
-            changeSeason();
+
         }
     }
     public void changeSeason() {
