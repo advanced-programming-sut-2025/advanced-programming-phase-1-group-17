@@ -106,6 +106,9 @@ public class Player {
     public PlayerMap getPlayerMap() {
         return playerMap;
     }
+    public void setPlayerMap(PlayerMap playerMap) {
+        this.playerMap = playerMap;
+    }
 
     public User getUser() {
         return user;
