@@ -10,9 +10,10 @@ public class Tile {
     private int x;
     private int y;
     private Placeable placeable;
-    private boolean isWalkAble;
+    private boolean isWalkAble = true;
     private boolean isPlowed = false;
     private Player owner;
+    private Player whoIsHere;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
 
     public Tile(int x, int y, Player owner) {
@@ -85,5 +86,13 @@ public class Tile {
             }
         }
         return null;
+    }
+
+    public Player getWhoIsHere() {
+        return whoIsHere;
+    }
+
+    public void setWhoIsHere(Player whoIsHere) {
+        this.whoIsHere = whoIsHere;
     }
 }

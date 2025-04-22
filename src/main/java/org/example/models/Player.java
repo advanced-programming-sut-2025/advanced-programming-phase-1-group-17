@@ -13,8 +13,8 @@ public class Player {
     private PlayerMap playerMap;
     private User user;
     private final boolean isGuest;
-    private int x;
-    private int y;
+    private int x ;
+    private int y ;
     //Coin and wood and stone
     private int wood;
     private int stone;
@@ -106,6 +106,7 @@ public class Player {
     public PlayerMap getPlayerMap() {
         return playerMap;
     }
+
     public void setPlayerMap(PlayerMap playerMap) {
         this.playerMap = playerMap;
     }
@@ -119,9 +120,13 @@ public class Player {
     }
 
     //For Energy
-    public double getMaxEnergy() { return maxEnergy; }
+    public double getMaxEnergy() {
+        return maxEnergy;
+    }
 
-    public void setMaxEnergy(double maxEnergy) { this.maxEnergy = maxEnergy; }
+    public void setMaxEnergy(double maxEnergy) {
+        this.maxEnergy = maxEnergy;
+    }
 
     public double getEnergy() {
         return energy;
@@ -133,9 +138,13 @@ public class Player {
 
 
     //For BackPack
-    public BackPack getBackPack() { return backPack; }
+    public BackPack getBackPack() {
+        return backPack;
+    }
 
-    public void setBackPack(BackPack backPack) { this.backPack = backPack; }
+    public void setBackPack(BackPack backPack) {
+        this.backPack = backPack;
+    }
 
     public Tool getCurrentTool() {
         return currentTool;

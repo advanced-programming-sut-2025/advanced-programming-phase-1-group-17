@@ -56,6 +56,8 @@ public class GameMenu implements AppMenu {
             controller.printMap(Integer.parseInt(matcher.group("x"))
                     , Integer.parseInt(matcher.group("y"))
                     , Integer.parseInt(matcher.group("size")));
+        } else if (command.trim().equals("help reading map")) {
+            controller.helpReadingMap();
         } else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
         } else if (command.trim().equals("menu exit")) {

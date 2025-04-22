@@ -24,6 +24,7 @@ public class Game {
         players.add(new Player(user3, user3.getUsername().startsWith("guest"), this));
         App.setCurrentGame(this);
         this.gameMap = new GameMap(players);
+        App.setCurrentPlayer(creator);
     }
 
     public Player getPlayerByPlayerMap(PlayerMap playerMap) {
