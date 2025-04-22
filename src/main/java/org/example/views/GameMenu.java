@@ -1,6 +1,7 @@
 package org.example.views;
 
 import org.example.controllers.GameMenuController;
+import org.example.display;
 import org.example.models.App;
 import org.example.models.enums.GameMenuCommands;
 import org.example.models.enums.Menu;
@@ -19,6 +20,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.newGame(matcher.group("username1"),
                     matcher.group("username2"),
                     matcher.group("username3")));
+            controller.gameMap(scanner);
         }
 
         //For Energy
@@ -47,9 +49,14 @@ public class GameMenu implements AppMenu {
         // move player
         else if ((matcher = GameMenuCommands.Walk.getMatcher(command)) != null) {
             System.out.println(controller.walk(Integer.parseInt(matcher.group("x"))
-                    , Integer.parseInt(matcher.group("y")),scanner));
+                    , Integer.parseInt(matcher.group("y")), scanner));
         }
-        else if (command.trim().equals("show current menu")) {
+        // print map
+        else if ((matcher = GameMenuCommands.printMap.getMatcher(command)) != null) {
+            controller.printMap(Integer.parseInt(matcher.group("x"))
+                    , Integer.parseInt(matcher.group("y"))
+                    , Integer.parseInt(matcher.group("size")));
+        } else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
         } else if (command.trim().equals("menu exit")) {
             App.setCurrentMenu(Menu.MainMenu);
