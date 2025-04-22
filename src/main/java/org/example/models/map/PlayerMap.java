@@ -66,6 +66,8 @@ public class PlayerMap {
         if (index == 0) {
             this.row = 0;
             this.col = 0;
+            owner.setX(1 + row);
+            owner.setY(1 + col);
             for (int i = 0; i < length; i++) {
                 for (int i1 = 0; i1 < width; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
@@ -75,11 +77,14 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
+            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 1) {
             this.row = 0;
             this.col = 50;
-            for (int i = length; i < 2 * length; i++) {
-                for (int i1 = 0; i1 < width; i1++) {
+            owner.setX(1 + row);
+            owner.setY(1 + col);
+            for (int i = row; i < 50 + row; i++) {
+                for (int i1 = col; i1 < 50 + col; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
                     Tiles.add(tile);
                     App.getCurrentGame().addTile(tile);
@@ -87,11 +92,14 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
+            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 2) {
             this.row = 50;
             this.col = 0;
-            for (int i = 0; i < length; i++) {
-                for (int i1 = width; i1 < 2 * width; i1++) {
+            owner.setX(1 + row);
+            owner.setY(1 + col);
+            for (int i = row; i < 50 + row; i++) {
+                for (int i1 = col; i1 < 50 + col; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
                     Tiles.add(tile);
                     App.getCurrentGame().addTile(tile);
@@ -99,9 +107,12 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
+            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 3) {
             this.row = 50;
             this.col = 50;
+            owner.setX(1 + row);
+            owner.setY(1 + col);
             for (int i = length; i < 2 * length; i++) {
                 for (int i1 = width; i1 < 2 * width; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
@@ -111,6 +122,7 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
+            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         }
     }
 
@@ -124,21 +136,25 @@ public class PlayerMap {
             for (int i = 4 + row; i < 8 + row; i++) {
                 for (int j = 4 + col; j < 8 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(hut);
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
-            for (int i = 20 + row; i < 31 + row; i++) {
+            for (int i = 1 + row; i < 12 + row; i++) {
                 for (int j = 20 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(quarry);
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
-            for (int i = 30 + row; i < 36 + row; i++) {
-                for (int j = 10 + col; j < 16 + col; j++) {
+            for (int i = 40 + row; i < 46 + row; i++) {
+                for (int j = 30 + col; j < 36 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
                 for (int j = 2 + col; j < 9 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(greenHouse);
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
         } else if (type == 2) {
@@ -146,29 +162,34 @@ public class PlayerMap {
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
-            for (int i = 4 + row; i < 8 + row; i++) {
-                for (int j = 4 + col; j < 8 + col; j++) {
+            for (int i = 40 + row; i < 44 + row; i++) {
+                for (int j = 40 + col; j < 44 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(hut);
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
-            for (int i = 35 + row; i < 41 + row; i++) {
+            for (int i = 25 + row; i < 31 + row; i++) {
                 for (int j = 35 + col; j < 41 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(quarry);
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 30 + row; i < 36 + row; i++) {
                 for (int j = 10 + col; j < 16 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
-            for (int i = 25 + row; i < 31 + row; i++) {
+            for (int i = row + 1; i < 7 + row; i++) {
                 for (int j = 25 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(1));
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
                 for (int j = 2 + col; j < 9 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(greenHouse);
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
 
@@ -181,16 +202,17 @@ public class PlayerMap {
     }
 
     private void randomFillMap() {
-        int numOfTrees = randomInt(8 , 11);
-        int numOfStones = randomInt(3 , 7);
-        int numOfForagings = randomInt(2 , 6);
+        int numOfTrees = randomInt(8, 11);
+        int numOfStones = randomInt(7, 10);
+        int numOfForagings = randomInt(4, 10);
         while (numOfTrees != 0) {
             int randomIndex_x = randomInt(1 + row, 50 + row);
-            int randomIndex_y = randomInt(1 + col, 50 + col );
+            int randomIndex_y = randomInt(1 + col, 50 + col);
             if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
                 Tree tree = new Tree();
                 trees.add(tree);
                 Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(tree);
+                Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
                 numOfTrees--;
             }
         }
@@ -201,16 +223,18 @@ public class PlayerMap {
                 Stone stone = new Stone();
                 stones.add(stone);
                 Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(stone);
+                Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
                 numOfStones--;
             }
         }
         while (numOfForagings != 0) {
-            int randomIndex_x = randomInt(1 + row, 50 + row );
+            int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 50 + col);
             if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
                 Foraging foraging = new Foraging();
                 foragings.add(foraging);
                 Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(foraging);
+                Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
                 numOfForagings--;
             }
         }
@@ -289,5 +313,21 @@ public class PlayerMap {
 
     public void setQuarry(Quarry quarry) {
         this.quarry = quarry;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
     }
 }

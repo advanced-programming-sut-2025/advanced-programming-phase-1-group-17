@@ -167,30 +167,35 @@ public class GameMenuController {
     }
 
     public Result walk(int x, int y, Scanner scanner) {
-        List result;
+        List<Tile> result;
         Player player = App.getCurrentPlayer();
         Tile destination = Tile.getTile(x, y);
         if (destination.getOwner() != player) {
             return new Result(false, "you can't walk to this tile because this tile is not for you.");
         } else if (!destination.isWalkAble()) {
             return new Result(false, "you can't walk to this tile because this tile is not walkable.");
-        } else if ((result = bfs(player.getX(), player.getY(), x, y, player)) == null
-                || result.isEmpty()) {
+        } else if ((result = bfs(player.getX(), player.getY(), x, y, player)) == null) {
             return new Result(false, "you can't walk to this tile because there is not path to this tile");
         } else {
             //TODO
+            float energy_needed = (float) (result.size() - 1) / 20;
             System.out.println("your energy : " + player.getEnergy());
-            System.out.println("energy needed : " + result.size() / 20);
+            System.out.printf("energy needed : %.2f\n", energy_needed);
             System.out.println("do you want to go to the destination? press y or n and press enter");
             String input = scanner.nextLine();
             if (input.equals("y")) {
-                player.setEnergy(player.getEnergy() - (result.size() / 20));
+                player.setEnergy(player.getEnergy() - energy_needed);
                 if (player.getEnergy() <= 0) {
                     player.hasPassedOutToday = true;
                     player.setEnergy(0);
                     return new Result(false, "you fainted");
                 } else {
                     //TODO Walkin the path
+//                    for (Tile tile : result) {
+//                        System.out.println(tile.getX() + "__" + tile.getY());
+//                    }
+                    Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
+                    Tile.getTile(x, y).setWhoIsHere(player);
                     player.setX(x);
                     player.setY(y);
                     return new Result(true, "you are in the destination now");
@@ -216,9 +221,9 @@ public class GameMenuController {
                 {-1, 1},
                 {-1, -1}
         };
-        //TODO
-        int rows = 0;
-        int cols = 0;
+
+        int rows = 51 + player.getPlayerMap().getRow();
+        int cols = 51 + player.getPlayerMap().getCol();
 
         boolean[][] visited = new boolean[rows][cols];
         Map<Tile, Tile> parent = new HashMap<>();
@@ -226,7 +231,6 @@ public class GameMenuController {
 
         Tile start = Tile.getTile(startX, startY);
         Tile end = Tile.getTile(endX, endY);
-
         if (start == null || end == null || !start.isWalkAble() || !end.isWalkAble()) {
             return null;
         }
@@ -236,7 +240,6 @@ public class GameMenuController {
 
         while (!queue.isEmpty()) {
             Tile current = queue.poll();
-
             if (current.getX() == endX && current.getY() == endY) {
                 return buildPath(parent, start, end);
             }
@@ -274,11 +277,11 @@ public class GameMenuController {
     }
 
     public void printMap(int x, int y, int size) {
-        display.run(x,y,size);
+        display.run(x, y, size);
     }
 
-    public Result helpReadingMap() {
-        return new Result(false, "t");
+    public void helpReadingMap() {
+        display.helpReadingMap();
     }
 
     public Result energyShow() {
