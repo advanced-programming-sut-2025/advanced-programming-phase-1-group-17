@@ -1,4 +1,4 @@
 package org.example.models.plant;
 
-public enum SeedType {
+public interface Plant {
 }
