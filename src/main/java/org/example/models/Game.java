@@ -41,7 +41,7 @@ public class Game {
     }
 
     public void switchPlayer() {
-        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.hasPassedOutToday);
+        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.isHasPassedOutToday());
         if (currentPlayingPlayer.equals(players.get(3))) {
             date.increaseHour();
             currentPlayingPlayer = players.get(0);

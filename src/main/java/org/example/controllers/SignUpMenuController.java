@@ -50,10 +50,11 @@ public class SignUpMenuController {
             System.out.printf("Suggested Username: %s\n", suggestedUsername);
             while (true) {
                 System.out.println("Press [y] to confirm this username, or press [n] to exit.");
-                if (scanner.nextLine().equals("y")) {
+                String input = scanner.nextLine();
+                if (input.equals("y")) {
                     username = suggestedUsername;
                     break;
-                } else if (scanner.nextLine().equals("n")) {
+                } else if (input.equals("n")) {
                     return;
                 }
             }
@@ -61,30 +62,31 @@ public class SignUpMenuController {
             System.out.println(new Result(false, "Username format is invalid."));
             System.out.println(new Result(false, "Username can only contain letters, digits, and -."));
             return;
-        } else if (SignUpMenuCommands.Email.getMatcher(username) == null) {
+        } else if (SignUpMenuCommands.Email.getMatcher(email) == null) {
             System.out.println(new Result(false, "Email format is invalid."));
             return;
+        } else if (password.equalsIgnoreCase("random")) {
+            String randomPassword = handleRandomPasswordInput(scanner);
+            if (randomPassword == null) {
+                return;
+            } else {
+                password = randomPassword;
+            }
         } else if (SignUpMenuCommands.ValidPassword.getMatcher(password) == null) {
-            System.out.println(new Result(false, "Password format is invalid."));
-            System.out.println(new Result(false, "Password can only contain letters, digits, and special characters."));
+            System.out.println(new Result(false, "Password format is invalid. " +
+                    "Password can only contain letters, digits, and special characters."));
+            return;
         } else if (!isPasswordStrong(password).getMessage().isEmpty()) {
             System.out.println(isPasswordStrong(password));
+            return;
         } else if (!password.equals(passwordConfirm)) {
             while (true) {
-                System.out.println("Password Confirm Incorrect! Enter the password again or enter 'exit' to go to signup menu" +
-                        " or Enter 'random' to generate a random password");
-                if (scanner.nextLine().trim().equals(password)) {
+                System.out.println("Password Confirm Incorrect! Enter the password again or enter 'exit' to go to signup menu");
+                String input = scanner.nextLine().trim();
+                if (input.equals(password)) {
                     break;
-                } else if (scanner.nextLine().trim().equals("exit")) {
+                } else if (input.equals("exit")) {
                     return;
-                } else if (scanner.nextLine().trim().equalsIgnoreCase("random")) {
-                    String randomPassword = handleRandomPasswordInput(scanner);
-                    if (randomPassword == null) {
-                        return;
-                    } else {
-                        password = randomPassword;
-                        break;
-                    }
                 }
             }
         }
@@ -99,8 +101,10 @@ public class SignUpMenuController {
         //TODO: SAVING
         User newUser = new User(username, password, email, nickname, gender1);
 
+        System.out.println("Just one more step left to add user!\n");
         chooseSecurityQuestion(newUser, scanner);
         App.getUsers().add(newUser);
+        System.out.println("User successfully added!");
     }
 
 
@@ -114,6 +118,7 @@ public class SignUpMenuController {
                 return similarUsername;
         }
     }
+
     public Result isPasswordStrong(String password) {
         if (password.length() < 8) {
             return new Result(false, "Password must have at least 8 characters");

@@ -1,8 +1,8 @@
 package org.example.models.map;
 
-import org.example.models.Ability;
 import org.example.models.Placeable;
 import org.example.models.Player;
+import org.example.models.plant.Plantable;
 
 import java.util.ArrayList;
 
@@ -10,6 +10,7 @@ public class Tile {
     private int x;
     private int y;
     private Placeable placeable;
+    private Plantable plantable;
     private boolean isWalkAble = true;
     private boolean isPlowed = false;
     private Player owner;
@@ -94,5 +95,15 @@ public class Tile {
 
     public void setWhoIsHere(Player whoIsHere) {
         this.whoIsHere = whoIsHere;
+    }
+
+
+    //For Plant
+    public Plantable getPlantable() {
+        return plantable;
+    }
+
+    public void setPlantable(Plantable plantable) {
+        this.plantable = plantable;
     }
 }

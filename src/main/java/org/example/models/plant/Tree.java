@@ -1,8 +1,6 @@
 package org.example.models.plant;
 
-import org.example.models.Placeable;
-
-public class Tree implements Placeable {
+public class Tree implements Plantable {
     private int growthPeriod;
     private boolean isHitByLightning;
     public int age;
