@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum GameMenuCommands {
-    startNewGame("game new -u (?<username1>\\S+)( (?<username2>\\S+))?( (?<username3>\\S+))?"),
+    startNewGame("\\s*game\\s+new\\s+-u(\\s+(?<username1>\\S+))?(\\s+(?<username2>\\S+))?(\\s+(?<username3>\\S+))?\\s*"),
 
     //For Energy
     EnergyShow("\\s*energy\\s+show\\s*"),
@@ -13,7 +13,11 @@ public enum GameMenuCommands {
 
     //For Inventory
     InventoryShow("\\s*inventory\\s+show\\s*"),
-    InventoryTrash("\\s*inventory\\s+trash\\s+-i\\s+(?<itemName>\\S+)(\\s+-n\\s+(?<number>\\d+))?\\s*");
+    InventoryTrash("\\s*inventory\\s+trash\\s+-i\\s+(?<itemName>\\S+)(\\s+-n\\s+(?<number>\\d+))?\\s*"),
+    Walk("\\s*walk -l <(?<x>\\d+), (?<y>\\d+)>\\s*"),
+    ChooseGameMap("\\s*game\\s+map\\s+(?<mapNumber>\\S+)\\s*"),
+    Int("\\d+"),
+    printMap("\\s*print\\s+map\\s+-l\\s+<(?<x>\\d+),\\s*(?<y>\\d+)>\\s+-s\\s+(?<size>\\d+)\\s*");
 
 
 

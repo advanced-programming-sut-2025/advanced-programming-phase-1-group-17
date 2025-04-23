@@ -13,18 +13,6 @@ public class GameMap {
         }
     }
 
-    public static int[] coordinateShifter(int index) {
-        if (index == 1) {
-            return new int[]{0, 0};
-        } else if (index == 2) {
-            return new int[]{PlayerMap.getLength(), 0};
-        } else if (index == 3) {
-            return new int[]{0, PlayerMap.getWidth() };
-        } else {
-            return new int[]{PlayerMap.getLength(),PlayerMap.getWidth()};
-        }
-    }
-
     public ArrayList<PlayerMap> getPlayerMaps() {
         return playerMaps;
     }

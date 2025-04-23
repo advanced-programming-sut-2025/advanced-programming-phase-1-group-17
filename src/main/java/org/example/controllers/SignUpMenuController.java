@@ -59,7 +59,7 @@ public class SignUpMenuController {
             }
         } else if (SignUpMenuCommands.Username.getMatcher(username) == null) {
             System.out.println(new Result(false, "Username format is invalid."));
-            System.out.println(new Result(false, "Password can only contain letters, digits, and -."));
+            System.out.println(new Result(false, "Username can only contain letters, digits, and -."));
             return;
         } else if (SignUpMenuCommands.Email.getMatcher(username) == null) {
             System.out.println(new Result(false, "Email format is invalid."));
