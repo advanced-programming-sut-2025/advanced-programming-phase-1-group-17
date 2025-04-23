@@ -1,24 +1,31 @@
 package org.example.models.tools;
 
 import org.example.models.App;
+import org.example.models.BackPackable;
 import org.example.models.enums.ToolMaterial;
-import org.example.models.enums.ToolName;
+import org.example.models.enums.ToolType;
 
-public class Tool {
-    private ToolName name;
+public class Tool implements BackPackable {
+    private ToolType type;
     private ToolMaterial material;
     private int level=0;
-    public Tool(ToolName name, ToolMaterial material) {
-        this.name = name;
+
+
+    public Tool(ToolType type, ToolMaterial material) {
+        this.type = type;
         this.material = material;
     }
 
-    public ToolName getName() {
-        return name;
+    public ToolType getToolType() {
+        return type;
     }
 
-    public void setName(ToolName name) {
-        this.name = name;
+    public String getName() {
+        return type.name();
+    }
+
+    public void setType(ToolType type) {
+        this.type = type;
     }
 
     public ToolMaterial getMaterial() {
@@ -38,16 +45,21 @@ public class Tool {
     }
 
     public void toolUse( Tool tool) {
-        switch(tool.getName()) {
+        switch(tool.getToolType()) {
             case Pichaxe:
         }
     }
+
     public static Tool findToolByName(String toolName) {
-        for(Tool tool : App.getCurrentPlayer().getBackPack().getTools().keySet()){
-            if(tool.getName().name().equals(toolName)){
-                return tool;
+        for(BackPackable backPackItem : App.getCurrentPlayer().getBackPack().getBackPackItems().keySet()){
+            if (backPackItem instanceof Tool tool) {
+                if (tool.getToolType().name().equals(toolName)) {
+                    return tool;
+                }
             }
         }
         return null;
     }
+
+
 }

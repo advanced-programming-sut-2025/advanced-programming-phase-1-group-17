@@ -1,8 +1,9 @@
 package org.example.models.plant;
 
+import org.example.models.BackPackable;
 import org.example.models.Placeable;
 
-public class Seed implements Placeable {
+public class Seed implements Placeable, BackPackable {
     private boolean isMixed;
     private SeedType type;
 
@@ -20,5 +21,9 @@ public class Seed implements Placeable {
 
     public void setType(SeedType type) {
         this.type = type;
+    }
+
+    public String getType() {
+        return type.name();
     }
 }

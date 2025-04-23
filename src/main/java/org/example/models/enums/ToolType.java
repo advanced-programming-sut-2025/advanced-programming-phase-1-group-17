@@ -1,6 +1,6 @@
 package org.example.models.enums;
 
-public enum ToolName {
+public enum ToolType {
     Pichaxe,
     Scythe,
     Hoe,

@@ -1,10 +1,10 @@
 package org.example.models;
 
-public class Product {
+public class Product implements BackPackable{
     private String name;
     private double price;
 
-    public String getName() {
+    public String getType() {
         return name;
     }
 
