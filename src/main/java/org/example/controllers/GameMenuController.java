@@ -16,6 +16,7 @@ public class GameMenuController {
 
     public Result newGame(String username1, String username2, String username3) {
         //TODO handel errors
+
         User user1, user2, user3;
         if (username1 == null) {
             user1 = new User();
