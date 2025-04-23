@@ -1,9 +1,10 @@
 package org.example.models;
 
-public class Product {
+public class Product implements BackPackable{
     private String name;
     private double price;
 
+    @Override
     public String getName() {
         return name;
     }
@@ -12,6 +13,7 @@ public class Product {
         this.name = name;
     }
 
+    @Override
     public double getPrice() {
         return price;
     }

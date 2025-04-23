@@ -1,5 +1,6 @@
 package org.example.models.tools;
 
+import org.example.models.BackPackable;
 import org.example.models.Product;
 import org.example.models.enums.BackPackType;
 import org.example.models.plant.Seed;
@@ -9,9 +10,7 @@ import java.util.HashMap;
 public class BackPack {
     //Attention: It seems there is only one backpack of each type in the whole game
 
-    private HashMap<Seed, Integer> seeds = new HashMap<>();
-    private HashMap<Tool, Integer> tools = new HashMap<>();
-    private HashMap<Product, Integer> products = new HashMap<>();
+    private HashMap<BackPackable, Integer> backPackItems = new HashMap<>();
 
     private final BackPackType type;
 
@@ -20,32 +19,15 @@ public class BackPack {
     }
 
     private boolean isBackPackFull() {
-        int itemCount = seeds.size() + tools.size() + products.size();
-        return itemCount >= type.getCapacity();
+        return backPackItems.size() >= type.getCapacity();
     }
 
-    public HashMap<Seed, Integer> getSeeds() {
-        return seeds;
+    public HashMap<BackPackable, Integer> getBackPackItems() {
+        return backPackItems;
     }
 
-    public void setSeeds(HashMap<Seed, Integer> seeds) {
-        this.seeds = seeds;
-    }
-
-    public HashMap<Tool, Integer> getTools() {
-        return tools;
-    }
-
-    public void setTools(HashMap<Tool, Integer> tools) {
-        this.tools = tools;
-    }
-
-    public HashMap<Product, Integer> getProducts() {
-        return products;
-    }
-
-    public void setProducts(HashMap<Product, Integer> products) {
-        this.products = products;
+    public void setBackPackItems(HashMap<BackPackable, Integer> backPackItems) {
+        this.backPackItems = backPackItems;
     }
 
     public BackPackType getType() {

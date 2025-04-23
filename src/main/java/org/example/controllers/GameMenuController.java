@@ -6,7 +6,6 @@ import org.example.models.enums.GameMenuCommands;
 import org.example.models.enums.WeatherType;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Tile;
-import org.example.models.plant.Seed;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
 
@@ -187,7 +186,7 @@ public class GameMenuController {
             if (input.equals("y")) {
                 player.setEnergy(player.getEnergy() - energy_needed);
                 if (player.getEnergy() <= 0) {
-                    player.hasPassedOutToday = true;
+                    player.setHasPassedOutToday(true);
                     player.setEnergy(0);
                     return new Result(false, "you fainted");
                 } else {
@@ -310,20 +309,10 @@ public class GameMenuController {
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
         StringBuilder result = new StringBuilder();
 
-        result.append("Seeds: \n");
-        for (Seed seed : backPack.getSeeds().keySet()) {
-            result.append("%s: %d\n".formatted(seed.getType().name(), backPack.getSeeds().get(seed)));
+        for (BackPackable backPackItem : backPack.getBackPackItems().keySet()) {
+            result.append("%s: %d\n".formatted(backPackItem.getName(), backPack.getBackPackItems().get(backPackItem)));
         }
 
-        result.append("\nTools: \n");
-        for (Tool tool : backPack.getTools().keySet()) {
-            result.append("%s: %d\n".formatted(tool, backPack.getTools().get(tool)));
-        }
-
-        result.append("Products: \n");
-        for (Product product : backPack.getProducts().keySet()) {
-            result.append("%s: %d\n".formatted(product.getName(), backPack.getProducts().get(product)));
-        }
         return new Result(true, result.toString().trim());
     }
 
@@ -331,44 +320,33 @@ public class GameMenuController {
         itemName = itemName.trim().toLowerCase();
 
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-        for (Product product : backPack.getProducts().keySet()) {
-            if (product.getName().equals(itemName)) {
-                if (number == null) {
-                    backPack.getProducts().remove(product);
-                    return new Result(true, "Completely deleted %s from your inventory"
-                            .formatted(product.getName()));
-                } else {
-                    backPack.getProducts().compute(product, (k, oldQuantity) -> oldQuantity - Integer.parseInt(number));
-                    return new Result(true, "Deleted %d of %s from your inventory"
-                            .formatted(Integer.parseInt(number), product.getName()));
-                }
-            }
-        }
+        double refundPercentage = App.getCurrentGame().getCurrentPlayingPlayer().getTrashCan().getTrashCanRefundPercentage() / 100.0;
 
-        for (Seed seed : backPack.getSeeds().keySet()) {
-            if (seed.getType().name().equals(itemName)) {
+        for (BackPackable backPackItem : backPack.getBackPackItems().keySet()) {
+            if (backPackItem.getName().equals(itemName)) {
                 if (number == null) {
-                    backPack.getSeeds().remove(seed);
-                    return new Result(true, "Completely deleted %s from your inventory"
-                            .formatted(seed.getType().name()));
-                } else {
-                    backPack.getSeeds().compute(seed, (k, oldQuantity) -> oldQuantity - Integer.parseInt(number));
-                    return new Result(true, "Deleted %d of %s from your inventory"
-                            .formatted(Integer.parseInt(number), seed.getType().name()));
-                }
-            }
-        }
+                    double refund = backPack.getBackPackItems().get(backPackItem) *
+                            backPackItem.getPrice() * refundPercentage;
+                    App.getCurrentGame().getCurrentPlayingPlayer().addCoin(refund);
 
-        for (Tool tool : backPack.getTools().keySet()) {
-            if (tool.getName().name().equals(itemName)) {
-                if (number == null) {
-                    backPack.getTools().remove(tool);
-                    return new Result(true, "Completely deleted %s from your inventory"
-                            .formatted(tool.getName().name()));
+                    backPack.getBackPackItems().remove(backPackItem);
+
+                    return new Result(true, ("Completely deleted %s from your inventory. You also got %f coins" +
+                            "because you had trash can of type %s")
+                            .formatted(backPackItem.getName(), refund,
+                                    App.getCurrentGame().getCurrentPlayingPlayer().getTrashCan().getName()));
                 } else {
-                    backPack.getTools().compute(tool, (k, oldQuantity) -> oldQuantity - Integer.parseInt(number));
-                    return new Result(true, "Deleted %d of %s from your inventory"
-                            .formatted(Integer.parseInt(number), tool.getName().name()));
+                    int number1 = Integer.parseInt(number);
+                    double refund = number1 * backPackItem.getPrice()
+                            * refundPercentage;
+                    App.getCurrentGame().getCurrentPlayingPlayer().addCoin(refund);
+
+                    backPack.getBackPackItems().compute(backPackItem, (k, oldQuantity) -> oldQuantity - number1);
+
+                    return new Result(true, ("Deleted %d of %s from your inventory. You also got %f coins" +
+                            "because you had trash can of type %s")
+                            .formatted(Integer.parseInt(number), backPackItem.getName(), refund,
+                                    App.getCurrentGame().getCurrentPlayingPlayer().getTrashCan().getName()));
                 }
             }
         }
@@ -376,11 +354,13 @@ public class GameMenuController {
     }
 
     public Result toolEquip(String toolName) {
-        for (Tool tool : App.getCurrentPlayer().getBackPack().getTools().keySet()) {
-            if (tool.getName().name().equals(toolName)) {
-                App.getCurrentPlayer().setCurrentTool(tool);
-                return new Result(true, "you are using " + tool.getName().name()
-                        + " right now");
+        for (BackPackable backPackItem : App.getCurrentPlayer().getBackPack().getBackPackItems().keySet()) {
+            if (backPackItem instanceof Tool tool) {
+                if (tool.getToolType().name().equals(toolName)) {
+                    App.getCurrentPlayer().setCurrentTool(tool);
+                    return new Result(true, "you are using " + tool.getToolType().name()
+                            + " right now");
+                }
             }
         }
         App.getCurrentPlayer().setCurrentTool(null);
@@ -392,14 +372,16 @@ public class GameMenuController {
             return new Result(false, "You are not using any tool right now");
         }
         return new Result(true, "your current tool is " +
-                App.getCurrentPlayer().getCurrentTool().getName().name());
+                App.getCurrentPlayer().getCurrentTool().getToolType().name());
     }
 
     public Result toolsShow() {
         StringBuilder sb = new StringBuilder();
-        for (Tool tool : App.getCurrentPlayer().getBackPack().getTools().keySet()) {
-            if (tool != null) {
-                sb.append(tool.getName().name()).append("\n");
+        for (BackPackable backPackItem : App.getCurrentPlayer().getBackPack().getBackPackItems().keySet()) {
+            if (backPackItem instanceof Tool tool) {
+                if (tool != null) {
+                    sb.append(tool.getToolType().name()).append("\n");
+                }
             }
         }
         if (sb.isEmpty()) {

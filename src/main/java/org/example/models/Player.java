@@ -3,6 +3,8 @@ package org.example.models;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
 import org.example.models.enums.BackPackType;
+import org.example.models.enums.ToolMaterial;
+import org.example.models.enums.ToolType;
 import org.example.models.map.PlayerMap;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
@@ -18,7 +20,7 @@ public class Player {
     //Coin and wood and stone
     private int wood;
     private int stone;
-    private int coin;
+    private double coin;
 
     public int getWood() {
         return wood;
@@ -36,21 +38,24 @@ public class Player {
         this.stone += stone;
     }
 
-    public int getCoin() {
+    public double getCoin() {
         return coin;
     }
 
-    public void addCoin(int coin) {
+    public void addCoin(double coin) {
         this.coin += coin;
     }
 
     //For Energy
     private double energy;
     private double maxEnergy = 200;
-    public boolean hasPassedOutToday = false;
+    private boolean hasPassedOutToday = false;
 
     //For BackPack
     private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
+
+    //For TrashCan
+    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
 
     private Game activeGame;
 
@@ -136,6 +141,13 @@ public class Player {
         this.energy = energy;
     }
 
+    public boolean isHasPassedOutToday() {
+        return hasPassedOutToday;
+    }
+
+    public void setHasPassedOutToday(boolean hasPassedOutToday) {
+        this.hasPassedOutToday = hasPassedOutToday;
+    }
 
     //For BackPack
     public BackPack getBackPack() {
@@ -155,4 +167,12 @@ public class Player {
     }
 
 
+    //For TrashCan
+    public Tool getTrashCan() {
+        return trashCan;
+    }
+
+    public void setTrashCan(Tool trashCan) {
+        this.trashCan = trashCan;
+    }
 }
