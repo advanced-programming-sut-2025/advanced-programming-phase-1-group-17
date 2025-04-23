@@ -4,7 +4,8 @@ public class Product implements BackPackable{
     private String name;
     private double price;
 
-    public String getType() {
+    @Override
+    public String getName() {
         return name;
     }
 
@@ -12,6 +13,7 @@ public class Product implements BackPackable{
         this.name = name;
     }
 
+    @Override
     public double getPrice() {
         return price;
     }

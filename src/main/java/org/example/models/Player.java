@@ -20,7 +20,7 @@ public class Player {
     //Coin and wood and stone
     private int wood;
     private int stone;
-    private int coin;
+    private double coin;
 
     public int getWood() {
         return wood;
@@ -38,11 +38,11 @@ public class Player {
         this.stone += stone;
     }
 
-    public int getCoin() {
+    public double getCoin() {
         return coin;
     }
 
-    public void addCoin(int coin) {
+    public void addCoin(double coin) {
         this.coin += coin;
     }
 

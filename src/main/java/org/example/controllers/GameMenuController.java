@@ -320,16 +320,33 @@ public class GameMenuController {
         itemName = itemName.trim().toLowerCase();
 
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-        for (BackPackable backPackItem: backPack.getBackPackItems().keySet()) {
+        double refundPercentage = App.getCurrentGame().getCurrentPlayingPlayer().getTrashCan().getTrashCanRefundPercentage() / 100.0;
+
+        for (BackPackable backPackItem : backPack.getBackPackItems().keySet()) {
             if (backPackItem.getName().equals(itemName)) {
                 if (number == null) {
+                    double refund = backPack.getBackPackItems().get(backPackItem) *
+                            backPackItem.getPrice() * refundPercentage;
+                    App.getCurrentGame().getCurrentPlayingPlayer().addCoin(refund);
+
                     backPack.getBackPackItems().remove(backPackItem);
-                    return new Result(true, "Completely deleted %s from your inventory"
-                            .formatted(backPackItem.getName()));
+
+                    return new Result(true, ("Completely deleted %s from your inventory. You also got %f coins" +
+                            "because you had trash can of type %s")
+                            .formatted(backPackItem.getName(), refund,
+                                    App.getCurrentGame().getCurrentPlayingPlayer().getTrashCan().getName()));
                 } else {
-                    backPack.getBackPackItems().compute(backPackItem, (k, oldQuantity) -> oldQuantity - Integer.parseInt(number));
-                    return new Result(true, "Deleted %d of %s from your inventory"
-                            .formatted(Integer.parseInt(number), backPackItem.getName()));
+                    int number1 = Integer.parseInt(number);
+                    double refund = number1 * backPackItem.getPrice()
+                            * refundPercentage;
+                    App.getCurrentGame().getCurrentPlayingPlayer().addCoin(refund);
+
+                    backPack.getBackPackItems().compute(backPackItem, (k, oldQuantity) -> oldQuantity - number1);
+
+                    return new Result(true, ("Deleted %d of %s from your inventory. You also got %f coins" +
+                            "because you had trash can of type %s")
+                            .formatted(Integer.parseInt(number), backPackItem.getName(), refund,
+                                    App.getCurrentGame().getCurrentPlayingPlayer().getTrashCan().getName()));
                 }
             }
         }

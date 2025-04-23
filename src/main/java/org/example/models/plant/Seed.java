@@ -6,6 +6,7 @@ import org.example.models.Placeable;
 public class Seed implements Placeable, BackPackable {
     private boolean isMixed;
     private SeedType type;
+    private double price;
 
     public boolean isMixed() {
         return isMixed;
@@ -23,7 +24,17 @@ public class Seed implements Placeable, BackPackable {
         this.type = type;
     }
 
-    public String getType() {
+    @Override
+    public String getName() {
         return type.name();
+    }
+
+    @Override
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }
