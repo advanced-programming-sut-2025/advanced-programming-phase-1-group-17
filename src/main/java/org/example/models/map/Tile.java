@@ -1,22 +1,32 @@
 package org.example.models.map;
 
+import org.example.models.Ability;
 import org.example.models.Placeable;
 import org.example.models.Player;
+
+import java.util.ArrayList;
 
 public class Tile {
     private int x;
     private int y;
     private Placeable placeable;
-    private boolean isWalkAble;
+    private boolean isWalkAble = true;
     private boolean isPlowed = false;
     private Player owner;
-
+    private Player whoIsHere;
+    private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
 
     public Tile(int x, int y, Player owner) {
         this.x = x;
         this.y = y;
         this.owner = owner;
+        tiles.add(this);
     }
+
+    public static ArrayList<Tile> getTiles() {
+        return tiles;
+    }
+
     public void plant(String plantName) {
         isPlowed = false;
     }
@@ -43,5 +53,46 @@ public class Tile {
 
     public void setPlaceable(Placeable placeable) {
         this.placeable = placeable;
+    }
+
+    public boolean isWalkAble() {
+        return isWalkAble;
+    }
+
+    public void setWalkAble(boolean walkAble) {
+        isWalkAble = walkAble;
+    }
+
+    public boolean isPlowed() {
+        return isPlowed;
+    }
+
+    public void setPlowed(boolean plowed) {
+        isPlowed = plowed;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    public static Tile getTile(int x, int y) {
+        for (Tile tile : tiles) {
+            if (tile.getX() == x && tile.getY() == y) {
+                return tile;
+            }
+        }
+        return null;
+    }
+
+    public Player getWhoIsHere() {
+        return whoIsHere;
+    }
+
+    public void setWhoIsHere(Player whoIsHere) {
+        this.whoIsHere = whoIsHere;
     }
 }

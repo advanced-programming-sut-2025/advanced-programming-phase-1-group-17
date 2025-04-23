@@ -22,7 +22,9 @@ public class Game {
         players.add(new Player(user1, user1.getUsername().startsWith("guest"), this));
         players.add(new Player(user2, user2.getUsername().startsWith("guest"), this));
         players.add(new Player(user3, user3.getUsername().startsWith("guest"), this));
+        App.setCurrentGame(this);
         this.gameMap = new GameMap(players);
+        App.setCurrentPlayer(creator);
     }
 
     public Player getPlayerByPlayerMap(PlayerMap playerMap) {
@@ -61,8 +63,8 @@ public class Game {
         return tiles;
     }
 
-    public void setTiles(ArrayList<Tile> tiles) {
-        this.tiles = tiles;
+    public void addTile(Tile tile) {
+        this.tiles.add(tile);
     }
 
     public GameMap getGameMap() {
@@ -78,5 +80,13 @@ public class Game {
 
     public void setDate(TimeAndDate date) {
         this.date = date;
+    }
+    public Tile getTileByIndex(int x , int y) {
+        for (Tile tile : tiles) {
+            if (tile.getX() == x && tile.getY() == y) {
+                return tile;
+            }
+        }
+        return null;
     }
 }
