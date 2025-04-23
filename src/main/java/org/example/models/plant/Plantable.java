@@ -1,4 +1,4 @@
 package org.example.models.plant;
 
-public interface Plant {
+public interface Plantable {
 }

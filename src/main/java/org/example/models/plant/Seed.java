@@ -1,9 +1,8 @@
 package org.example.models.plant;
 
 import org.example.models.BackPackable;
-import org.example.models.Placeable;
 
-public class Seed implements Placeable, BackPackable {
+public class Seed implements BackPackable, Plantable {
     private boolean isMixed;
     private SeedType type;
     private double price;

@@ -2,7 +2,10 @@ package org.example.models.plant;
 
 import org.example.models.enums.Season;
 
-public enum SeedType {
+public enum MixedSeedType {
+    //TODO: delete this and handle in harvesting
+
+
     // Spring
     Cauliflower(Season.Spring, null),
     Parsnip(Season.Spring, null),
@@ -36,7 +39,7 @@ public enum SeedType {
     private final Season season1;
     private final Season season2;
 
-    SeedType(Season season1, Season season2) {
+    MixedSeedType(Season season1, Season season2) {
         this.season1 = season1;
         this.season2 = season2;
     }
