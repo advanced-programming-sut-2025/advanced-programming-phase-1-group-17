@@ -2,6 +2,7 @@ package org.example.models.tools;
 
 import org.example.models.App;
 import org.example.models.BackPackable;
+import org.example.models.BackPackableType;
 import org.example.models.enums.ToolMaterial;
 import org.example.models.enums.ToolType;
 
@@ -52,8 +53,11 @@ public class Tool implements BackPackable {
     }
 
     public static Tool findToolByName(String toolName) {
-        for (BackPackable backPackItem : App.getCurrentPlayer().getBackPack().getBackPackItems().keySet()) {
-            if (backPackItem instanceof Tool tool) {
+        BackPack backPack = App.getCurrentPlayer().getBackPack();
+
+        for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
+            if (backPackableType instanceof ToolType toolType) {
+                Tool tool = (Tool)backPack.getBackPackItems().get(toolType).get(0);
                 if (tool.getToolType().name().equals(toolName)) {
                     return tool;
                 }
@@ -84,5 +88,11 @@ public class Tool implements BackPackable {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+
+    @Override
+    public ToolType getType() {
+        return type;
     }
 }
