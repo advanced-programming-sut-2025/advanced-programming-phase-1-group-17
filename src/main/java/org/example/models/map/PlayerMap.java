@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerMap {
-
-
     private static int width = 50;
     private static int length = 50;
     private int row;
@@ -209,9 +207,10 @@ public class PlayerMap {
             int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 50 + col);
             if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
-                Tree tree = new Tree();
-                trees.add(tree);
-                Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(tree);
+                //TODO: fix the error in the constructor here
+                //Tree tree = new Tree();
+                //trees.add(tree);
+                //Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(tree);
                 Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
                 numOfTrees--;
             }

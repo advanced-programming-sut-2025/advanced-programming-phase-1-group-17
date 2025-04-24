@@ -17,6 +17,7 @@ public class Player {
     private final boolean isGuest;
     private int x ;
     private int y ;
+
     //Coin and wood and stone
     private int wood;
     private int stone;
@@ -54,8 +55,9 @@ public class Player {
     //For BackPack
     private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
 
-    //For TrashCan
+    //For TrashCan & WaterStorage
     private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
+    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
 
     private Game activeGame;
 
@@ -174,5 +176,13 @@ public class Player {
 
     public void setTrashCan(Tool trashCan) {
         this.trashCan = trashCan;
+    }
+
+    public Tool getWateringCan() {
+        return wateringCan;
+    }
+
+    public void setWateringCan(Tool wateringCan) {
+        this.wateringCan = wateringCan;
     }
 }

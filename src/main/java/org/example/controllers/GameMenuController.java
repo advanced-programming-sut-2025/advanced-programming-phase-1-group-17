@@ -8,10 +8,7 @@ import org.example.models.enums.ToolType;
 import org.example.models.enums.WeatherType;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Tile;
-import org.example.models.plant.CropType;
-import org.example.models.plant.FruitType;
-import org.example.models.plant.SeedType;
-import org.example.models.plant.TreeType;
+import org.example.models.plant.*;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
 
@@ -114,7 +111,6 @@ public class GameMenuController {
     }
 
     public Result getDayOfTheWeek() {
-
         return new Result(true, App.getCurrentGame().getDate().getDayOfTheWeek().name());
     }
 
@@ -146,11 +142,10 @@ public class GameMenuController {
     }
 
     public Result WeatherForeCast(String input) {
-        return new Result(false, "t");
+        return new Result(true, App.getCurrentGame().getDate().getTomorrowWeather().name());
     }
 
     public Result changeWeather(String input) {
-
         try {
             App.getCurrentGame().getDate().setTomorrowWeather(WeatherType.valueOf(input));
             return new Result(true, "tomorrow weather changed to "
@@ -351,12 +346,11 @@ public class GameMenuController {
     }
 
 
-
     public Result toolEquip(String toolName) {
         BackPack backPack = App.getCurrentPlayer().getBackPack();
         for (BackPackableType item : backPack.getBackPackItems().keySet()) {
             if (item instanceof ToolType toolType) {
-                Tool tool = (Tool)backPack.getBackPackItems().get(toolType).get(0);
+                Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
                 if (tool.getToolType().getName().equalsIgnoreCase(toolName)) {
                     App.getCurrentPlayer().setCurrentTool(tool);
                     return new Result(true, "You are now using " + tool.getToolType().getName() + ".");
@@ -383,7 +377,7 @@ public class GameMenuController {
 
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
             if (backPackableType instanceof ToolType toolType) {
-                Tool tool = (Tool)backPack.getBackPackItems().get(toolType).get(0);
+                Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
                 if (tool != null) {
                     sb.append(tool.getToolType().name()).append("\n");
                 }
@@ -440,7 +434,7 @@ public class GameMenuController {
                     Base Energy: %d
                     Base Health:
                     Season: """.formatted(
-                            cropType.getTotalHarvestTime(), cropType.isOneTime(),
+                    cropType.getTotalGrowthTime(), cropType.isOneTime(),
                     (cropType.getRegrowthTime() == -1) ? "" : cropType.getRegrowthTime(),
                     cropType.getBaseSellPrice(), cropType.isEdible(), cropType.getEnergy()
             ));
@@ -458,7 +452,7 @@ public class GameMenuController {
         }
 
 
-        for (FruitType fruitType: FruitType.values()) {
+        for (FruitType fruitType : FruitType.values()) {
             TreeType tree = fruitType.getSourceTreeType();
             if (fruitType.name().equals(name)) {
                 result.append("""
@@ -483,8 +477,8 @@ public class GameMenuController {
                     Base Energy: %d
                     Base Health:
                     Season: """.formatted(
-                    tree.getTotalHarvestTime(),
-                            (tree.getFruitHarvestCycle() == -1) ? "" : tree.getFruitHarvestCycle(),
+                    tree.getTotalGrowthTime(),
+                    (tree.getFruitHarvestCycle() == -1) ? "" : tree.getFruitHarvestCycle(),
                     fruitType.getBaseSellPrice(), fruitType.isEdible(), fruitType.getEnergy()
             ));
 
@@ -508,9 +502,10 @@ public class GameMenuController {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         SeedType seedType = App.getSeedType(seed);
 
-        Tile tile = App.getCurrentGame().getTileByIndex(
-                player.getX() + directions[0], player.getY() + directions[1]
-        );
+        int newX = player.getX() + directions[0];
+        int newY = player.getY() + directions[1];
+
+        Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
 
         if (!tile.isPlowed())
             return new Result(false, "The Specified tile is not Plowed");
@@ -518,19 +513,71 @@ public class GameMenuController {
         else if (seedType == null)
             return new Result(false, "No SeedType with this Name");
 
-        player.getBackPack().getBackPackItems().get(seedType)
+        player.getBackPack().useItem(seedType);
+        tile.setPlaceable(new Crop(false, seedType.getCropType(), false, tile));
+
+        return new Result(true,
+                "Successfully planted a plant of type %s in (%d,%d)".formatted(
+                        seedType.name(), newX, newY
+                ));
     }
 
     public Result showPlant(String x, String y) {
-        return new Result(false, "t");
+        int x1 = Integer.parseInt(x);
+        int y1 = Integer.parseInt(y);
+
+        Tile tile = App.getCurrentGame().getTileByIndex(x1, y1);
+        if (tile.getPlaceable() instanceof Tree tree) {
+            return new Result(true, """
+                    Name: %s
+                    Days Left Till Full Growth: %d
+                    Current Stage: %d
+                    Quality:
+                    Fertilizer:""".formatted(tree.getType().name(), tree.getDaysTillFullGrowth(), tree.getCurrentStageIndex()+1)); //TODO: Plant Quality?
+        } else if (tile.getPlaceable() instanceof Crop crop) {
+            return new Result(true, """
+                    Name: %s
+                    Days Left Till Full Growth: %d
+                    Current Stage: %d
+                    Quality:
+                    Fertilizer:""".formatted(crop.getName(), crop.getDaysTillFullGrowth(), crop.getCurrentStageIndex() + 1));
+        }
+        return new Result(false, "There is no plant in this tile");
     }
 
     public Result fertilize(String fertilizer, String direction) {
-        return new Result(false, "t");
+        //TODO: Add different kinds of fertilizers
+
+        int[] directions = App.handleDirection(Integer.parseInt(direction));
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+
+        int newX = player.getX() + directions[0];
+        int newY = player.getY() + directions[1];
+        Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
+
+        //TODO: if we don't have any fertilizer
+        //TODO: delete fertilizer from backPack
+
+        if (tile.getPlaceable() instanceof Tree tree) {
+            tree.setFertilized(true);
+            return new Result(true, "Fertilized successfully");
+        } else if(tile.getPlaceable() instanceof Crop crop) {
+            crop.setFertilized(true);
+            return new Result(true, "Fertilized successfully");
+        }
+
+        return new Result(false, "No plant in this tile");
     }
 
     public Result howMuchWater() {
-        return new Result(false, "t");
+        //TODO: Harvesting with scythe
+        //TODO: Watering Plant when using 'use tool'
+        Tool tool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
+        if (tool.getToolType().equals(ToolType.WateringCan)){
+            return new Result(true, "%d".formatted(tool.getWateringCanStorage()));
+        }
+        //TODO: it must always return how much water is left
+        return new Result(false, "");
     }
 
     public Result craftingShowRecipes() {
