@@ -1,6 +1,8 @@
 package org.example.models.enums;
 
-public enum ToolType {
+import org.example.models.BackPackableType;
+
+public enum ToolType implements BackPackableType {
     Pichaxe,
     Scythe,
     Hoe,
@@ -10,4 +12,14 @@ public enum ToolType {
     MilkPail,
     Shear,
     TrashCan;
+
+    @Override
+    public String getName() {
+        return name();
+    }
+
+    @Override
+    public double getPrice() {
+        return 0;
+    }
 }
