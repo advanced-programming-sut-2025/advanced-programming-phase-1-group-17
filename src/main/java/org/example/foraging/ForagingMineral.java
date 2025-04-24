@@ -1,6 +1,7 @@
 package org.example.foraging;
 
 import org.example.models.BackPackable;
+import org.example.models.BackPackableType;
 
 public enum ForagingMineral implements BackPackable {
     QUARTZ("A clear crystal commonly found in caves and mines.", 25),
@@ -41,5 +42,10 @@ public enum ForagingMineral implements BackPackable {
     @Override
     public String getName() {
         return name();
+    }
+
+    @Override
+    public BackPackableType getType() {
+        return null;
     }
 }

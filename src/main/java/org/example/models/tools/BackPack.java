@@ -38,7 +38,11 @@ public class BackPack {
         return type;
     }
 
-    public void addItemToInventory(BackPackable backPackable) {
+    public void useItem(BackPackableType backPackableType) {
+        backPackItems.get(backPackableType).remove(0);
+    }
 
+    public void addItemToInventory(BackPackable backPackable) {
+        backPackItems.get(backPackable.getType()).add(backPackable);
     }
 }

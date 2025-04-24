@@ -11,11 +11,28 @@ public class Tool implements BackPackable {
     private ToolMaterial material;
     private int level = 0;
     private double price;
+    private int wateringCanStorage = 0;
 
 
     public Tool(ToolType type, ToolMaterial material) {
         this.type = type;
         this.material = material;
+        handleWateringCanStorage();
+    }
+
+    private void handleWateringCanStorage() {
+        if (type.equals(ToolType.WateringCan)) {
+            if (material.equals(ToolMaterial.Basic))
+                wateringCanStorage = 40;
+            else if (material.equals(ToolMaterial.Copper))
+                wateringCanStorage = 55;
+            else if (material.equals(ToolMaterial.Iron))
+                wateringCanStorage = 70;
+            else if (material.equals(ToolMaterial.Gold))
+                wateringCanStorage = 85;
+            else
+                wateringCanStorage = 100; //Iridium
+        }
     }
 
     public ToolType getToolType() {
@@ -94,5 +111,13 @@ public class Tool implements BackPackable {
     @Override
     public ToolType getType() {
         return type;
+    }
+
+    public int getWateringCanStorage() {
+        return wateringCanStorage;
+    }
+
+    public void setWateringCanStorage(int wateringCanStorage) {
+        this.wateringCanStorage = wateringCanStorage;
     }
 }

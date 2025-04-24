@@ -46,11 +46,37 @@ public enum CropType implements BackPackableType {
     Yam(SeedType.YamSeeds, List.of(1, 3, 3, 3), 10, true, -1, 160, true, 45, List.of(Season.Fall), false),
     SweetGemBerry(SeedType.RareSeed, List.of(2, 4, 6, 6, 6), 24, true, -1, 3000, false, -1, List.of(Season.Fall), false),
     Powdermelon(SeedType.PowdermelonSeeds, List.of(1, 2, 1, 2, 1), 7, true, -1, 60, true, 63, List.of(Season.Winter), true),
-    AncientFruit(SeedType.AncientSeeds, List.of(2, 7, 7, 7, 5), 28, false, 7, 550, false, -1, List.of(Season.Spring, Season.Summer, Season.Fall), false);
+    AncientFruit(SeedType.AncientSeeds, List.of(2, 7, 7, 7, 5), 28, false, 7, 550, false, -1, List.of(Season.Spring, Season.Summer, Season.Fall), false),
+
+    // Foraging crops
+    CommonMushroom(null, List.of(0, 0, 0), 0, true, -1, 40, true, 38, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter), false),
+    Daffodil(null, List.of(0, 0, 0), 0, true, -1, 30, true, 0, List.of(Season.Spring), false),
+    Dandelion(null, List.of(0, 0, 0), 0, true, -1, 40, true, 25, List.of(Season.Spring), false),
+    Leek(null, List.of(0, 0, 0), 0, true, -1, 60, true, 40, List.of(Season.Spring), false),
+    Morel(null, List.of(0, 0, 0), 0, true, -1, 150, true, 20, List.of(Season.Spring), false),
+    Salmonberry(null, List.of(0, 0, 0), 0, true, -1, 5, true, 25, List.of(Season.Spring), false),
+    SpringOnion(null, List.of(0, 0, 0), 0, true, -1, 8, true, 13, List.of(Season.Spring), false),
+    WildHorseradish(null, List.of(0, 0, 0), 0, true, -1, 50, true, 13, List.of(Season.Spring), false),
+    FiddleheadFern(null, List.of(0, 0, 0), 0, true, -1, 90, true, 25, List.of(Season.Summer), false),
+    GrapeForage(null, List.of(0, 0, 0), 0, true, -1, 80, true, 38, List.of(Season.Summer), false),
+    RedMushroom(null, List.of(0, 0, 0), 0, true, -1, 75, true, -50, List.of(Season.Summer), false),
+    SpiceBerry(null, List.of(0, 0, 0), 0, true, -1, 80, true, 25, List.of(Season.Summer), false),
+    SweetPea(null, List.of(0, 0, 0), 0, true, -1, 50, true, 0, List.of(Season.Summer), false),
+    Blackberry(null, List.of(0, 0, 0), 0, true, -1, 25, true, 25, List.of(Season.Fall), false),
+    Chanterelle(null, List.of(0, 0, 0), 0, true, -1, 160, true, 75, List.of(Season.Fall), false),
+    Hazelnut(null, List.of(0, 0, 0), 0, true, -1, 40, true, 38, List.of(Season.Fall), false),
+    PurpleMushroom(null, List.of(0, 0, 0), 0, true, -1, 90, true, 30, List.of(Season.Fall), false),
+    WildPlum(null, List.of(0, 0, 0), 0, true, -1, 80, true, 25, List.of(Season.Fall), false),
+    Crocus(null, List.of(0, 0, 0), 0, true, -1, 60, true, 0, List.of(Season.Winter), false),
+    CrystalFruit(null, List.of(0, 0, 0), 0, true, -1, 150, true, 63, List.of(Season.Winter), false),
+    Holly(null, List.of(0, 0, 0), 0, true, -1, 80, true, -37, List.of(Season.Winter), false),
+    SnowYam(null, List.of(0, 0, 0), 0, true, -1, 100, true, 30, List.of(Season.Winter), false),
+    WinterRoot(null, List.of(0, 0, 0), 0, true, -1, 70, true, 25, List.of(Season.Winter), false);
+
 
     private final SeedType Source;
     private final List<Integer> stages;
-    private final int totalHarvestTime;
+    private final int totalGrowthTime;
     private final boolean oneTime;
     private final int regrowthTime;
     private final double baseSellPrice;
@@ -63,7 +89,7 @@ public enum CropType implements BackPackableType {
              double baseSellPrice, boolean isEdible, int energy, List<Season> season, boolean canBecomeGiant) {
         this.Source = Source;
         this.stages = stages;
-        this.totalHarvestTime = totalHarvestTime;
+        this.totalGrowthTime = totalHarvestTime;
         this.oneTime = oneTime;
         this.regrowthTime = regrowthTime;
         this.baseSellPrice = baseSellPrice;
@@ -82,8 +108,8 @@ public enum CropType implements BackPackableType {
         return stages;
     }
 
-    public int getTotalHarvestTime() {
-        return totalHarvestTime;
+    public int getTotalGrowthTime() {
+        return totalGrowthTime;
     }
 
     public boolean isOneTime() {

@@ -48,12 +48,20 @@ public abstract class ForagingController {
         ForagingTree randomForagingTree = ForagingTree.values()[random.nextInt(ForagingTree.values().length)];
 
         TreeType treeType = randomForagingTree.getTreeType();
-        tile.setPlaceable(new Tree(treeType));
+        tile.setPlaceable(new Tree(true, treeType, false, tile));
     }
 
 
     public static void setCropForaging(Tile tile) {
-        new Crop(true, , false);
+        Random random = new Random();
+        ForagingCrop foragingCrop;
+        while (true){
+            int randInt = random.nextInt(ForagingCrop.values().length);
+            foragingCrop = ForagingCrop.values()[randInt];
+            if (foragingCrop.getSeasons().contains(App.getCurrentGame().getDate().getSeason()))
+                break;
+        }
+        tile.setPlaceable(new Crop(true, foragingCrop.getCropType(), false, tile));
     }
 
 
@@ -64,7 +72,7 @@ public abstract class ForagingController {
         Random random = new Random();
         SeedType chosenSeed = validSeeds.get(random.nextInt(validSeeds.size()));
 
-        Crop crop = new Crop(false, chosenSeed.getCropType(), false);
+        Crop crop = new Crop(false, chosenSeed.getCropType(), false, tile);
         tile.setPlowed(false);
         tile.setPlaceable(crop);
     }

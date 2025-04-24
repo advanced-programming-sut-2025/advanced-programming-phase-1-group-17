@@ -22,7 +22,7 @@ public enum TreeType {
 
     private final TreeSourceType source;
     private final List<Integer> stages;
-    private final int totalHarvestTime;
+    private final int totalGrowthTime;
     private final FruitType fruitType;
     private final int fruitHarvestCycle;
     private final List<Season> seasons;
@@ -31,7 +31,7 @@ public enum TreeType {
              FruitType fruitType, int fruitHarvestCycle, List<Season> seasons) {
         this.source = source;
         this.stages = stages;
-        this.totalHarvestTime = totalHarvestTime;
+        this.totalGrowthTime = totalHarvestTime;
         this.fruitType = fruitType;
         this.fruitHarvestCycle = fruitHarvestCycle;
         this.seasons = seasons;
@@ -45,8 +45,8 @@ public enum TreeType {
         return stages;
     }
 
-    public int getTotalHarvestTime() {
-        return totalHarvestTime;
+    public int getTotalGrowthTime() {
+        return totalGrowthTime;
     }
 
     public FruitType getFruitType() {

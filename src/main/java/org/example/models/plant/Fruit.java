@@ -15,4 +15,13 @@ public class Fruit implements BackPackable {
     public String getName() {
         return type.name();
     }
+
+    @Override
+    public FruitType getType() {
+        return type;
+    }
+
+    public void setType(FruitType type) {
+        this.type = type;
+    }
 }
