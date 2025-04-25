@@ -11,18 +11,9 @@ public class App {
     private static User loggedInUser;
     private static Menu currentMenu = Menu.SignUpMenu;
     private static Game currentGame;
-    private static Player currentPlayer;
     private static ArrayList<User> users = new ArrayList<>();
     private static ArrayList<Game> games = new ArrayList<Game>();
 
-
-    public static Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public static void setCurrentPlayer(Player currentPlayer) {
-        App.currentPlayer = currentPlayer;
-    }
 
     public static Menu getCurrentMenu() {
         return currentMenu;

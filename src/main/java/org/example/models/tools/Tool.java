@@ -70,7 +70,7 @@ public class Tool implements BackPackable {
     }
 
     public static Tool findToolByName(String toolName) {
-        BackPack backPack = App.getCurrentPlayer().getBackPack();
+        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
 
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
             if (backPackableType instanceof ToolType toolType) {

@@ -16,6 +16,16 @@ public class TimeAndDate {
     private Season season = Season.Spring;
     private DaysOfTheWeek dayOfTheWeek = DaysOfTheWeek.Saturday;
 
+    public TimeAndDate(){
+        setTodayWeather(getRandomWeather());
+        setTomorrowWeather(getRandomWeather());
+        hour = 9;
+        minute = 0;
+        day = 1;
+        month = 1;
+        year = 1;
+    }
+
     public void increaseHour() {
         hour++;
         if (hour >= 22) {
@@ -27,7 +37,7 @@ public class TimeAndDate {
 
     public void goToNextDay() {
         todayWeather = tomorrowWeather;
-        setTomorrowWeather(getRandomTomorrowWeather());
+        setTomorrowWeather(getRandomWeather());
         PlantGrowthController.growOneDay();
         ForagingController.setForagingForNextDay();
 
@@ -58,11 +68,7 @@ public class TimeAndDate {
         dayOfTheWeek = daysOfTheWeek[(currentDayIndex + 1) % daysOfTheWeek.length];
     }
 
-    public void changeTomorrowWeatherType(WeatherType weatherType) {
-        tomorrowWeather =  weatherType;
-    }
-
-    public WeatherType getRandomTomorrowWeather(){
+    public WeatherType getRandomWeather(){
         Random rand = new Random();
         int randInt = rand.nextInt(4) + 1;
         if (randInt == 1) return WeatherType.Snow;
