@@ -2,6 +2,7 @@ package org.example.models.tools;
 
 import org.example.models.App;
 import org.example.models.BackPackable;
+import org.example.models.BackPackableType;
 import org.example.models.enums.ToolMaterial;
 import org.example.models.enums.ToolType;
 
@@ -10,11 +11,28 @@ public class Tool implements BackPackable {
     private ToolMaterial material;
     private int level = 0;
     private double price;
+    private int wateringCanStorage = 0;
 
 
     public Tool(ToolType type, ToolMaterial material) {
         this.type = type;
         this.material = material;
+        handleWateringCanStorage();
+    }
+
+    private void handleWateringCanStorage() {
+        if (type.equals(ToolType.WateringCan)) {
+            if (material.equals(ToolMaterial.Basic))
+                wateringCanStorage = 40;
+            else if (material.equals(ToolMaterial.Copper))
+                wateringCanStorage = 55;
+            else if (material.equals(ToolMaterial.Iron))
+                wateringCanStorage = 70;
+            else if (material.equals(ToolMaterial.Gold))
+                wateringCanStorage = 85;
+            else
+                wateringCanStorage = 100; //Iridium
+        }
     }
 
     public ToolType getToolType() {
@@ -52,8 +70,11 @@ public class Tool implements BackPackable {
     }
 
     public static Tool findToolByName(String toolName) {
-        for (BackPackable backPackItem : App.getCurrentPlayer().getBackPack().getBackPackItems().keySet()) {
-            if (backPackItem instanceof Tool tool) {
+        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+
+        for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
+            if (backPackableType instanceof ToolType toolType) {
+                Tool tool = (Tool)backPack.getBackPackItems().get(toolType).get(0);
                 if (tool.getToolType().name().equals(toolName)) {
                     return tool;
                 }
@@ -84,5 +105,19 @@ public class Tool implements BackPackable {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+
+    @Override
+    public ToolType getType() {
+        return type;
+    }
+
+    public int getWateringCanStorage() {
+        return wateringCanStorage;
+    }
+
+    public void setWateringCanStorage(int wateringCanStorage) {
+        this.wateringCanStorage = wateringCanStorage;
     }
 }
