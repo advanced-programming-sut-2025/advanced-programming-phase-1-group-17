@@ -78,8 +78,11 @@ public class GameMenuController {
 
 
     public Result exitGame() {
-        return new Result(false, "t");
-
+        if (!App.getCurrentGame().getCurrentPlayingPlayer().equals(App.getCurrentGame()))
+            return new Result(false, "Only the game creator can exit the game.");
+        //TODO: saving the game
+        App.setCurrentMenu(null);
+        return new Result(true, "Game saved successfully.");
     }
 
     public Result removeCurrentGame() {
@@ -106,7 +109,7 @@ public class GameMenuController {
     public Result getDateTime() {
         StringBuilder sb = new StringBuilder();
         sb.append(getTime()).append("\n")
-                .append(getDate()).append("\n");
+                .append(getDate());
         return new Result(true, sb.toString());
     }
 
@@ -118,22 +121,23 @@ public class GameMenuController {
         return new Result(true, App.getCurrentGame().getDate().getSeason().name());
     }
 
-    public Result changeTime(String input) {
-        int amount = Integer.parseInt(input);
-        App.getCurrentGame().getDate().setHour(App.getCurrentGame().getDate().getHour() + amount);
-        if (App.getCurrentGame().getDate().getHour() >= 22) {
-            App.getCurrentGame().getDate().goToNextDay();
-            return new Result(true, "you added too much , its end of the day");
-        }
+    public Result changeTime(String hour) {
+        int amount = Integer.parseInt(hour);
+        for (int i = 0; i < amount; i ++)
+            App.getCurrentGame().getDate().increaseHour();
         return new Result(true, "added successfully");
     }
 
-    public Result changeDate(String input) {
-        int amount = Integer.parseInt(input);
+    public Result changeDate(String day) {
+        int amount = Integer.parseInt(day);
         for (int i = 0; i < amount; i++) {
             App.getCurrentGame().getDate().goToNextDay();
         }
         return new Result(true, amount + " days added successfully");
+    }
+
+    public Result cheatThor(int x, int y) {
+        return new Result(true, "t");
     }
 
     public Result getWeather() {
@@ -141,7 +145,7 @@ public class GameMenuController {
                 .getDate().getTodayWeatherType().name());
     }
 
-    public Result WeatherForeCast(String input) {
+    public Result weatherForeCast() {
         return new Result(true, App.getCurrentGame().getDate().getTomorrowWeather().name());
     }
 
@@ -149,14 +153,14 @@ public class GameMenuController {
         try {
             App.getCurrentGame().getDate().setTomorrowWeather(WeatherType.valueOf(input));
             return new Result(true, "tomorrow weather changed to "
-                    + App.getCurrentGame().getDate().getTodayWeatherType().name() + "successfully");
+                    + App.getCurrentGame().getDate().getTomorrowWeather().name() + " successfully");
         } catch (Exception e) {
             return new Result(false, "valid options : Sunny,Rainy,Storm,Snow");
         }
     }
 
     public Result buildGreenHouse() {
-        Player player = App.getCurrentPlayer();
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         if (player.getCoin() >= 1000 && player.getWood() >= 500) {
             player.addCoin(-1000);
             player.addWood(-500);
@@ -169,7 +173,7 @@ public class GameMenuController {
 
     public Result walk(int x, int y, Scanner scanner) {
         List<Tile> result;
-        Player player = App.getCurrentPlayer();
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         Tile destination = Tile.getTile(x, y);
         if (destination.getOwner() != player) {
             return new Result(false, "you can't walk to this tile because this tile is not for you.");
@@ -347,33 +351,33 @@ public class GameMenuController {
 
 
     public Result toolEquip(String toolName) {
-        BackPack backPack = App.getCurrentPlayer().getBackPack();
+        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
         for (BackPackableType item : backPack.getBackPackItems().keySet()) {
             if (item instanceof ToolType toolType) {
                 Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
                 if (tool.getToolType().getName().equalsIgnoreCase(toolName)) {
-                    App.getCurrentPlayer().setCurrentTool(tool);
+                    App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(tool);
                     return new Result(true, "You are now using " + tool.getToolType().getName() + ".");
                 }
             }
         }
 
-        App.getCurrentPlayer().setCurrentTool(null);
+        App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(null);
         return new Result(false, "Tool with name '" + toolName + "' doesn't exist in your backpack.");
     }
 
 
     public Result currentToolShow(String toolName) {
-        if (App.getCurrentPlayer().getCurrentTool() == null) {
+        if (App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool() == null) {
             return new Result(false, "You are not using any tool right now");
         }
         return new Result(true, "your current tool is " +
-                App.getCurrentPlayer().getCurrentTool().getToolType().name());
+                App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool().getToolType().name());
     }
 
     public Result toolsShow() {
         StringBuilder sb = new StringBuilder();
-        BackPack backPack = App.getCurrentPlayer().getBackPack();
+        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
 
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
             if (backPackableType instanceof ToolType toolType) {

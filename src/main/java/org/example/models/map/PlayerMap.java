@@ -70,7 +70,7 @@ public class PlayerMap {
                 for (int i1 = 0; i1 < width; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
                     Tiles.add(tile);
-                    App.getCurrentGame().addTile(tile);
+                    //App.getCurrentGame().addTile(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
@@ -85,7 +85,7 @@ public class PlayerMap {
                 for (int i1 = col; i1 < 50 + col; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
                     Tiles.add(tile);
-                    App.getCurrentGame().addTile(tile);
+                    //App.getCurrentGame().addTile(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
@@ -100,7 +100,7 @@ public class PlayerMap {
                 for (int i1 = col; i1 < 50 + col; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
                     Tiles.add(tile);
-                    App.getCurrentGame().addTile(tile);
+                    //App.getCurrentGame().addTile(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
@@ -115,7 +115,7 @@ public class PlayerMap {
                 for (int i1 = width; i1 < 2 * width; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
                     Tiles.add(tile);
-                    App.getCurrentGame().addTile(tile);
+                    //App.getCurrentGame().addTile(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
