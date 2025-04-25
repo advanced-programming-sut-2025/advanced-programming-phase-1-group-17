@@ -1,10 +1,7 @@
 package org.example.models.map;
 
-import com.sun.source.tree.WhileLoopTree;
-import org.example.models.App;
-import org.example.models.Foraging;
+import org.example.foraging.ForagingController;
 import org.example.models.Player;
-import org.example.models.enums.StoreType;
 import org.example.models.plant.Tree;
 
 import java.util.ArrayList;
@@ -21,10 +18,7 @@ public class PlayerMap {
     private int type;
     private GreenHouse greenHouse;
     private Hut hut;
-    private ArrayList<Tree> trees = new ArrayList<>();
-    private ArrayList<Foraging> foragings = new ArrayList<>();
     private ArrayList<Lake> lakes = new ArrayList<>();
-    private ArrayList<Stone> stones = new ArrayList<>();
     private Quarry quarry;
 
 
@@ -220,7 +214,6 @@ public class PlayerMap {
             int randomIndex_y = randomInt(1 + col, 50 + col);
             if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
                 Stone stone = new Stone();
-                stones.add(stone);
                 Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(stone);
                 Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
                 numOfStones--;
@@ -230,9 +223,7 @@ public class PlayerMap {
             int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 50 + col);
             if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
-                Foraging foraging = new Foraging();
-                foragings.add(foraging);
-                Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(foraging);
+                ForagingController.setForagingForNextDay();
                 Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
                 numOfForagings--;
             }
@@ -274,36 +265,12 @@ public class PlayerMap {
         this.hut = hut;
     }
 
-    public ArrayList<Tree> getTrees() {
-        return trees;
-    }
-
-    public void setTrees(ArrayList<Tree> trees) {
-        this.trees = trees;
-    }
-
-    public ArrayList<Foraging> getForagings() {
-        return foragings;
-    }
-
-    public void setForagings(ArrayList<Foraging> foragings) {
-        this.foragings = foragings;
-    }
-
     public ArrayList<Lake> getLakes() {
         return lakes;
     }
 
     public void setLakes(ArrayList<Lake> lakes) {
         this.lakes = lakes;
-    }
-
-    public ArrayList<Stone> getStones() {
-        return stones;
-    }
-
-    public void setStones(ArrayList<Stone> stones) {
-        this.stones = stones;
     }
 
     public Quarry getQuarry() {

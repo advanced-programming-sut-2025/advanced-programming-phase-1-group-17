@@ -16,11 +16,13 @@ public abstract class ForagingController {
     public static void setForagingForNextDay(){
         for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
             for (Tile tile : playerMap.getTiles()) {
+                if (tile.getPlaceable() != null)
+                    continue;
                 Random random = new Random();
                 int randInt = random.nextInt(100) + 1;
 
                 if (randInt == 1) {
-                    if (tile.isPlowed() && tile.getPlaceable() == null) {
+                    if (tile.isPlowed()) {
                         setSeedForaging(tile);
                         return;
                     }
