@@ -2,6 +2,8 @@ package org.example.views;
 
 import java.util.Scanner;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import org.example.controllers.SignUpMenuController;
 import org.example.models.enums.SignUpMenuCommands;
 
