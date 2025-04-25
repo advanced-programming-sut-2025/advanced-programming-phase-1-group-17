@@ -1,14 +1,9 @@
 package org.example;
 
 import org.example.models.App;
-import org.example.models.Foraging;
 import org.example.models.Game;
-import org.example.models.Player;
 import org.example.models.map.*;
 import org.example.models.plant.Tree;
-
-import java.util.HashMap;
-import java.util.Scanner;
 
 public class display {
     //TODO khoshgel kardanesh
@@ -45,8 +40,6 @@ public class display {
                 Tile tile = game.getTileByIndex(i, j);
                 if (tile == null) {
                     System.out.print("null");
-                } else if (tile.getPlaceable() instanceof Foraging) {
-                    System.out.print(BOLD + RED + "F" + RESET);
                 } else if (tile.getPlaceable() instanceof Quarry) {
                     System.out.print(BOLD + CYAN + "Q" + RESET);
                 } else if (tile.getPlaceable() instanceof Lake) {
@@ -57,12 +50,15 @@ public class display {
                     System.out.print(BOLD + YELLOW + "H" + RESET);
                 } else if (tile.getPlaceable() instanceof GreenHouse) {
                     System.out.print(BOLD + PURPLE + "G" + RESET);
-                } else if (tile.getPlaceable() instanceof Tree) {
-                    System.out.print(BOLD + GREEN + "T" + RESET);
+                } else if (tile.getPlaceable() instanceof Tree tree) {
+                    if (tree.isForaging())
+                        System.out.print(BOLD + RED + "F" + RESET);
+                    else
+                        System.out.print(BOLD + GREEN + "T" + RESET);
                 } else if (tile.getWhoIsHere() != null) {
                     System.out.print(BOLD + WHITE + "P" + RESET);
                 }
-                //TODO
+                //TODO: Add Crop (with checking isForaging)
                 else {
                     System.out.print(" ");
                 }
