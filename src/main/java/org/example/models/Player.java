@@ -2,7 +2,10 @@ package org.example.models;
 
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
+import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.BackPackType;
+import org.example.models.enums.ToolMaterial;
+import org.example.models.enums.ToolType;
 import org.example.models.map.PlayerMap;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
@@ -13,12 +16,14 @@ public class Player {
     private PlayerMap playerMap;
     private User user;
     private final boolean isGuest;
-    private int x;
-    private int y;
+    private int x ;
+    private int y ;
     //Coin and wood and stone
     private int wood;
     private int stone;
-    private int coin;
+    private double coin;
+
+
 
     public int getWood() {
         return wood;
@@ -36,21 +41,24 @@ public class Player {
         this.stone += stone;
     }
 
-    public int getCoin() {
+    public double getCoin() {
         return coin;
     }
 
-    public void addCoin(int coin) {
+    public void addCoin(double coin) {
         this.coin += coin;
     }
 
     //For Energy
     private double energy;
     private double maxEnergy = 200;
-    public boolean hasPassedOutToday = false;
-
+    private boolean hasPassedOutToday = false;
     //For BackPack
     private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
+
+    //For TrashCan & WaterStorage
+    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
+    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
 
     private Game activeGame;
 
@@ -60,6 +68,23 @@ public class Player {
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ArrayList<Friends> friends = new ArrayList<>();
     private ArrayList<Ability> abilitesLearned = new ArrayList<>();
+    private ArrayList<CraftingRecipe> craftingRecipes = new ArrayList<>();
+
+    public ArrayList<CraftingRecipe> getCraftingRecipes() {
+        return craftingRecipes;
+    }
+
+    public void setCraftingRecipes(ArrayList<CraftingRecipe> craftingRecipes) {
+        this.craftingRecipes = craftingRecipes;
+    }
+
+    public ArrayList<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(ArrayList<Recipe> recipes) {
+        this.recipes = recipes;
+    }
 
     private double balance;
     private Player partner = null;
@@ -107,6 +132,10 @@ public class Player {
         return playerMap;
     }
 
+    public void setPlayerMap(PlayerMap playerMap) {
+        this.playerMap = playerMap;
+    }
+
     public User getUser() {
         return user;
     }
@@ -116,9 +145,13 @@ public class Player {
     }
 
     //For Energy
-    public double getMaxEnergy() { return maxEnergy; }
+    public double getMaxEnergy() {
+        return maxEnergy;
+    }
 
-    public void setMaxEnergy(double maxEnergy) { this.maxEnergy = maxEnergy; }
+    public void setMaxEnergy(double maxEnergy) {
+        this.maxEnergy = maxEnergy;
+    }
 
     public double getEnergy() {
         return energy;
@@ -128,11 +161,22 @@ public class Player {
         this.energy = energy;
     }
 
+    public boolean isHasPassedOutToday() {
+        return hasPassedOutToday;
+    }
+
+    public void setHasPassedOutToday(boolean hasPassedOutToday) {
+        this.hasPassedOutToday = hasPassedOutToday;
+    }
 
     //For BackPack
-    public BackPack getBackPack() { return backPack; }
+    public BackPack getBackPack() {
+        return backPack;
+    }
 
-    public void setBackPack(BackPack backPack) { this.backPack = backPack; }
+    public void setBackPack(BackPack backPack) {
+        this.backPack = backPack;
+    }
 
     public Tool getCurrentTool() {
         return currentTool;
@@ -143,4 +187,20 @@ public class Player {
     }
 
 
+    //For TrashCan
+    public Tool getTrashCan() {
+        return trashCan;
+    }
+
+    public void setTrashCan(Tool trashCan) {
+        this.trashCan = trashCan;
+    }
+
+    public Tool getWateringCan() {
+        return wateringCan;
+    }
+
+    public void setWateringCan(Tool wateringCan) {
+        this.wateringCan = wateringCan;
+    }
 }

@@ -4,7 +4,7 @@ import org.example.models.map.Tile;
 
 import java.util.ArrayList;
 
-public class WaterStorage {
+public class WaterStorage{
     private ArrayList<Tile> tile = new ArrayList<>();
     private double capacity;
 

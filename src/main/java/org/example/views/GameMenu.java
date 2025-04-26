@@ -7,7 +7,6 @@ import org.example.models.enums.Menu;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
-import java.util.zip.CheckedOutputStream;
 
 public class GameMenu implements AppMenu {
     private final GameMenuController controller = new GameMenuController();
@@ -15,10 +14,48 @@ public class GameMenu implements AppMenu {
     public void run(Scanner scanner) {
         String command = scanner.nextLine();
         Matcher matcher;
-        if ((matcher = GameMenuCommands.startNewGame.getMatcher(command)) != null) {
+        if ((matcher = GameMenuCommands.StartNewGame.getMatcher(command)) != null) {
             System.out.println(controller.newGame(matcher.group("username1"),
                     matcher.group("username2"),
                     matcher.group("username3")));
+            controller.gameMap(scanner);
+        } else if ((matcher = GameMenuCommands.ExitGame.getMatcher(command)) != null) {
+            System.out.println(controller.exitGame());
+        } else if ((matcher = GameMenuCommands.LoadGame.getMatcher(command)) != null) {
+            System.out.println(controller.loadGame());
+        } else if ((matcher = GameMenuCommands.NextTurn.getMatcher(command)) != null) {
+            System.out.println(controller.nextTurn());
+        } else if ((matcher = GameMenuCommands.Time.getMatcher(command)) != null) {
+            System.out.println(controller.getTime());
+        } else if ((matcher = GameMenuCommands.Date.getMatcher(command)) != null) {
+            System.out.println(controller.getDate());
+        } else if ((matcher = GameMenuCommands.DateTime.getMatcher(command)) != null) {
+            System.out.println(controller.getDateTime());
+        } else if ((matcher = GameMenuCommands.DayOfTheWeek.getMatcher(command)) != null) {
+            System.out.println(controller.getDayOfTheWeek());
+        } else if ((matcher = GameMenuCommands.CheatAdvanceTime.getMatcher(command)) != null) {
+            System.out.println(controller.changeTime(
+                    matcher.group("hour")
+            ));
+        } else if ((matcher = GameMenuCommands.CheatAdvanceDate.getMatcher(command)) != null) {
+            System.out.println(controller.changeDate(
+                    matcher.group("day")
+            ));
+        } else if ((matcher = GameMenuCommands.Season.getMatcher(command)) != null) {
+            System.out.println(controller.getSeason());
+        } else if ((matcher = GameMenuCommands.CheatThor.getMatcher(command)) != null) {
+            System.out.println(controller.cheatThor(
+                    Integer.parseInt(matcher.group("x")),
+                    Integer.parseInt(matcher.group("y"))
+            ));
+        } else if ((matcher = GameMenuCommands.Weather.getMatcher(command)) != null) {
+            System.out.println(controller.getWeather());
+        } else if ((matcher = GameMenuCommands.WeatherForecast.getMatcher(command)) != null) {
+            System.out.println(controller.weatherForeCast());
+        } else if ((matcher = GameMenuCommands.CheatWeatherSet.getMatcher(command)) != null) {
+            System.out.println(controller.changeWeather(
+                    matcher.group("type")
+            ));
         }
 
         //For Energy
@@ -41,19 +78,36 @@ public class GameMenu implements AppMenu {
             ));
         }
         // build greenhouse
-        else if (command.trim().equals("greenhouse build")) {
+        else if ((matcher = GameMenuCommands.GreenhouseBuild.getMatcher(command)) != null) {
             System.out.println(controller.buildGreenHouse());
         }
         // move player
         else if ((matcher = GameMenuCommands.Walk.getMatcher(command)) != null) {
             System.out.println(controller.walk(Integer.parseInt(matcher.group("x"))
-                    , Integer.parseInt(matcher.group("y")),scanner));
+                    , Integer.parseInt(matcher.group("y")), scanner));
         }
-        else if (command.trim().equals("show current menu")) {
+        // print map
+        else if ((matcher = GameMenuCommands.PrintMap.getMatcher(command)) != null) {
+            controller.printMap(Integer.parseInt(matcher.group("x"))
+                    , Integer.parseInt(matcher.group("y"))
+                    , Integer.parseInt(matcher.group("size")));
+        } else if (command.trim().equals("help reading map")) {
+            controller.helpReadingMap();
+        } else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
         } else if (command.trim().equals("menu exit")) {
             App.setCurrentMenu(Menu.MainMenu);
-        } else {
+        }
+        //cooking
+        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
+            System.out.println(controller);
+        }
+
+
+
+
+
+        else {
             System.out.println("invalid command");
         }
 

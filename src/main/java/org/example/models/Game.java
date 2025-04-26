@@ -10,10 +10,9 @@ import java.util.ArrayList;
 public class Game {
     private Player creator;
     private Player currentPlayingPlayer;
-    private TimeAndDate date;
+    private TimeAndDate date = new TimeAndDate();
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
-    private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private GameMap gameMap;
 
 
@@ -22,7 +21,9 @@ public class Game {
         players.add(new Player(user1, user1.getUsername().startsWith("guest"), this));
         players.add(new Player(user2, user2.getUsername().startsWith("guest"), this));
         players.add(new Player(user3, user3.getUsername().startsWith("guest"), this));
+        App.setCurrentGame(this);
         this.gameMap = new GameMap(players);
+        App.getCurrentGame().setCurrentPlayingPlayer(creator);
     }
 
     public Player getPlayerByPlayerMap(PlayerMap playerMap) {
@@ -39,7 +40,7 @@ public class Game {
     }
 
     public void switchPlayer() {
-        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.hasPassedOutToday);
+        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.isHasPassedOutToday());
         if (currentPlayingPlayer.equals(players.get(3))) {
             date.increaseHour();
             currentPlayingPlayer = players.get(0);
@@ -47,6 +48,10 @@ public class Game {
         } else {
             currentPlayingPlayer = players.get(++currentPlayingPlayerIndex);
         }
+    }
+
+    public void setCurrentPlayingPlayer(Player currentPlayingPlayer) {
+        this.currentPlayingPlayer = currentPlayingPlayer;
     }
 
     public ArrayList<Player> getPlayers() {
@@ -57,14 +62,6 @@ public class Game {
         this.players = players;
     }
 
-    public ArrayList<Tile> getTiles() {
-        return tiles;
-    }
-
-    public void setTiles(ArrayList<Tile> tiles) {
-        this.tiles = tiles;
-    }
-
     public GameMap getGameMap() {
         return gameMap;
     }
@@ -72,6 +69,7 @@ public class Game {
     public void setGameMap(GameMap gameMap) {
         this.gameMap = gameMap;
     }
+
     public TimeAndDate getDate() {
         return date;
     }
@@ -79,4 +77,34 @@ public class Game {
     public void setDate(TimeAndDate date) {
         this.date = date;
     }
+
+    public Player getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Player creator) {
+        this.creator = creator;
+    }
+
+    public int getCurrentPlayingPlayerIndex() {
+        return currentPlayingPlayerIndex;
+    }
+
+    public void setCurrentPlayingPlayerIndex(int currentPlayingPlayerIndex) {
+        this.currentPlayingPlayerIndex = currentPlayingPlayerIndex;
+    }
+
+    public Tile getTileByIndex(int x , int y) {
+        for (PlayerMap playerMap : gameMap.getPlayerMaps()) {
+            for (Tile tile : playerMap.getTiles()) {
+                if (tile.getX() == x && tile.getY() == y) {
+                    return tile;
+                }
+            }
+        }
+        return null;
+    }
+
+
+
 }

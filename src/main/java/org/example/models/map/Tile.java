@@ -1,6 +1,5 @@
 package org.example.models.map;
 
-import org.example.models.Ability;
 import org.example.models.Placeable;
 import org.example.models.Player;
 
@@ -10,9 +9,11 @@ public class Tile {
     private int x;
     private int y;
     private Placeable placeable;
-    private boolean isWalkAble;
+    private boolean isWater=false;
+    private boolean isWalkAble = true;
     private boolean isPlowed = false;
     private Player owner;
+    private Player whoIsHere;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
 
     public Tile(int x, int y, Player owner) {
@@ -78,6 +79,14 @@ public class Tile {
         this.owner = owner;
     }
 
+    public boolean isWater() {
+        return isWater;
+    }
+
+    public void setWater(boolean water) {
+        isWater = water;
+    }
+
     public static Tile getTile(int x, int y) {
         for (Tile tile : tiles) {
             if (tile.getX() == x && tile.getY() == y) {
@@ -85,5 +94,13 @@ public class Tile {
             }
         }
         return null;
+    }
+
+    public Player getWhoIsHere() {
+        return whoIsHere;
+    }
+
+    public void setWhoIsHere(Player whoIsHere) {
+        this.whoIsHere = whoIsHere;
     }
 }
