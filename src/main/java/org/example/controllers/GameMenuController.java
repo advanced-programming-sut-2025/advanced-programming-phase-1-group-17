@@ -5,7 +5,7 @@ import org.example.models.*;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
-import org.example.models.crafting.CraftingRecipe;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.ItemType;
 import org.example.models.enums.GameMenuCommands;
 import org.example.models.enums.Season;
@@ -646,7 +646,7 @@ public class GameMenuController {
             return new Result(false, "No crafting recipes found");
         }
         StringBuilder sb= new StringBuilder();
-        for(CraftingRecipe recipe : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()){
+        for(CraftingItem recipe : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()){
             sb.append(recipe.getTargetItem().getName()).append(" -> ").append("\n");
             for (Map.Entry<ItemType, Integer> entry : recipe.getCraftIngredients().entrySet()) {
                 ItemType item = entry.getKey();
@@ -658,7 +658,19 @@ public class GameMenuController {
     }
 
     public Result craftingCraft(String itemName) {
-        return new Result(false, "t");
+        if(CraftingItem.findItemTypeByName(itemName) == null){
+            return new Result(false, "No crafting recipe found");
+        }
+         CraftingItem recipe = CraftingItem.findItemTypeByName(itemName);
+        if(App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().isBackPackFull()){
+            return new Result(false, "no free space in inventory");
+        }
+        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+        for(BackPackableType backPackableType : backPack.getBackPackItems().keySet()){
+            //TODO enough item or not
+        }
+        backPack.addItemToInventory(recipe);
+
     }
 
     public Result placeItem(String itemName, String direction) {

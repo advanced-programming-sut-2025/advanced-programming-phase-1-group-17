@@ -22,7 +22,7 @@ public class BackPack {
         this.type = type;
     }
 
-    private boolean isBackPackFull() {
+    public boolean isBackPackFull() {
         return backPackItems.size() >= type.getCapacity();
     }
 

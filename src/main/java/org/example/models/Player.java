@@ -2,7 +2,7 @@ package org.example.models;
 
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
-import org.example.models.crafting.CraftingRecipe;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.enums.BackPackType;
 import org.example.models.enums.ToolMaterial;
 import org.example.models.enums.ToolType;
@@ -68,14 +68,14 @@ public class Player {
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ArrayList<Friends> friends = new ArrayList<>();
     private ArrayList<Ability> abilitesLearned = new ArrayList<>();
-    private ArrayList<CraftingRecipe> craftingRecipes = new ArrayList<>();
+    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
 
-    public ArrayList<CraftingRecipe> getCraftingRecipes() {
-        return craftingRecipes;
+    public ArrayList<CraftingItem> getCraftingRecipes() {
+        return craftingItems;
     }
 
-    public void setCraftingRecipes(ArrayList<CraftingRecipe> craftingRecipes) {
-        this.craftingRecipes = craftingRecipes;
+    public void setCraftingRecipes(ArrayList<CraftingItem> craftingItems) {
+        this.craftingItems = craftingItems;
     }
 
     public ArrayList<Recipe> getRecipes() {
