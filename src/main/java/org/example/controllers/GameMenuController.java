@@ -682,7 +682,7 @@ public class GameMenuController {
                 }
             }
         }
-        return new Result(false, "tt");
+        return new Result(false, "ttt");
     }
 
     public Result cookingShowRecipes(){
