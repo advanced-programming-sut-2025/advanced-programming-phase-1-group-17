@@ -203,7 +203,6 @@ public class PlayerMap {
             if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
                 //TODO: fix the error in the constructor here
                 //Tree tree = new Tree();
-                //trees.add(tree);
                 //Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(tree);
                 Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
                 numOfTrees--;

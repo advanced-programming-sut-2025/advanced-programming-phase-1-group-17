@@ -17,8 +17,6 @@ import java.util.*;
 public class GameMenuController {
 
     public Result newGame(String username1, String username2, String username3) {
-        //TODO handel errors
-
         User user1, user2, user3;
         if (username1 == null) {
             user1 = new User();
@@ -123,7 +121,7 @@ public class GameMenuController {
 
     public Result changeTime(String hour) {
         int amount = Integer.parseInt(hour);
-        for (int i = 0; i < amount; i ++)
+        for (int i = 0; i < amount; i++)
             App.getCurrentGame().getDate().increaseHour();
         return new Result(true, "added successfully");
     }
@@ -536,14 +534,12 @@ public class GameMenuController {
                     Name: %s
                     Days Left Till Full Growth: %d
                     Current Stage: %d
-                    Quality:
-                    Fertilizer:""".formatted(tree.getType().name(), tree.getDaysTillFullGrowth(), tree.getCurrentStageIndex()+1)); //TODO: Plant Quality?
+                    Fertilizer:""".formatted(tree.getType().name(), tree.getDaysTillFullGrowth(), tree.getCurrentStageIndex() + 1));
         } else if (tile.getPlaceable() instanceof Crop crop) {
             return new Result(true, """
                     Name: %s
                     Days Left Till Full Growth: %d
                     Current Stage: %d
-                    Quality:
                     Fertilizer:""".formatted(crop.getName(), crop.getDaysTillFullGrowth(), crop.getCurrentStageIndex() + 1));
         }
         return new Result(false, "There is no plant in this tile");
@@ -565,7 +561,7 @@ public class GameMenuController {
         if (tile.getPlaceable() instanceof Tree tree) {
             tree.setFertilized(true);
             return new Result(true, "Fertilized successfully");
-        } else if(tile.getPlaceable() instanceof Crop crop) {
+        } else if (tile.getPlaceable() instanceof Crop crop) {
             crop.setFertilized(true);
             return new Result(true, "Fertilized successfully");
         }
@@ -577,7 +573,7 @@ public class GameMenuController {
         //TODO: Harvesting with scythe
         //TODO: Watering Plant when using 'use tool'
         Tool tool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
-        if (tool.getToolType().equals(ToolType.WateringCan)){
+        if (tool.getToolType().equals(ToolType.WateringCan)) {
             return new Result(true, "%d".formatted(tool.getWateringCanStorage()));
         }
         //TODO: it must always return how much water is left
