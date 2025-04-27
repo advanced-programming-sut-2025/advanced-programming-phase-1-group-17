@@ -1,5 +1,6 @@
 package org.example.models.plant;
 
+import org.example.models.BackPackableType;
 import org.example.models.map.Tile;
 
 public abstract class Plant {
