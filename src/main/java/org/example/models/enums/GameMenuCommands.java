@@ -33,7 +33,18 @@ public enum GameMenuCommands {
     Walk("\\s*walk -l <(?<x>\\d+), (?<y>\\d+)>\\s*"),
     ChooseGameMap("\\s*game\\s+map\\s+(?<mapNumber>\\S+)\\s*"),
     Int("\\d+"),
-    PrintMap("\\s*print\\s+map\\s+-l\\s+<(?<x>\\d+),\\s*(?<y>\\d+)>\\s+-s\\s+(?<size>\\d+)\\s*");
+    PrintMap("\\s*print\\s+map\\s+-l\\s+<(?<x>\\d+),\\s*(?<y>\\d+)>\\s+-s\\s+(?<size>\\d+)\\s*"),
+
+    //For Crafting
+    CraftingShowRecipes("\\s*crafting\\s+show\\s+recipes\\s*"),
+    CraftingCraft("\\s*crafting\\s+craft\\s+(?<itemName>\\S+)\\s*"),
+
+
+    //For Cooking
+    CookingRefrigerator("\\s*cooking\\s+refrigerator\\s+(?<mod>put|pick)\\s+(?<item>\\S+)\\s*"),
+    CookingShowRecipes("\\s*cooking\\s+show\\s+recipe\\s*"),
+    CookingPrepare("\\s*cooking\\s+prepare\\s+(?<recipeName>\\S+)\\s*"),
+    Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*");
 
 
 

@@ -97,7 +97,17 @@ public class GameMenu implements AppMenu {
             System.out.println(App.getCurrentMenu().name());
         } else if (command.trim().equals("menu exit")) {
             App.setCurrentMenu(Menu.MainMenu);
-        } else {
+        }
+        //cooking
+        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
+            System.out.println(controller);
+        }
+
+
+
+
+
+        else {
             System.out.println("invalid command");
         }
 

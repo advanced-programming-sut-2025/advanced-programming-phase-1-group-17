@@ -5,7 +5,7 @@ import org.example.models.enums.AnimalType;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Animal {
+public class Animal implements Placeable {
     private String name;
     private AnimalType type;
     private int price;
