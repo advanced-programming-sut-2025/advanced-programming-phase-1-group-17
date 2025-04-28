@@ -20,7 +20,7 @@ public class Tool implements BackPackable {
         handleWateringCanStorage();
     }
 
-    private void handleWateringCanStorage() {
+    public void handleWateringCanStorage() {
         if (type.equals(ToolType.WateringCan)) {
             if (material.equals(ToolMaterial.Basic))
                 wateringCanStorage = 40;
@@ -65,7 +65,7 @@ public class Tool implements BackPackable {
 
     public void toolUse(Tool tool) {
         switch (tool.getToolType()) {
-            case Pichaxe:
+            case Pickaxe:
         }
     }
 

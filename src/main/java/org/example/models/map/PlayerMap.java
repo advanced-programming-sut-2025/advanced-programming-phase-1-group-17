@@ -141,6 +141,7 @@ public class PlayerMap {
                 for (int j = 30 + col; j < 36 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
                     Tile.getTile(i, j).setWalkAble(false);
+                    Tile.getTile(i, j).setWater(true);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
@@ -170,12 +171,15 @@ public class PlayerMap {
                 for (int j = 10 + col; j < 16 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
                     Tile.getTile(i, j).setWalkAble(false);
+                    Tile.getTile(i, j).setWater(true);
+
                 }
             }
             for (int i = row + 1; i < 7 + row; i++) {
                 for (int j = 25 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(1));
                     Tile.getTile(i, j).setWalkAble(false);
+                    Tile.getTile(i, j).setWater(true);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
@@ -203,6 +207,7 @@ public class PlayerMap {
             if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
                 //TODO: fix the error in the constructor here
                 //Tree tree = new Tree();
+                //trees.add(tree);
                 //Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(tree);
                 Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
                 numOfTrees--;

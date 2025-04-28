@@ -9,6 +9,7 @@ public class Tile {
     private int x;
     private int y;
     private Placeable placeable;
+    private boolean isWater=false;
     private boolean isWalkAble = true;
     private boolean isPlowed = false;
     private Player owner;
@@ -76,6 +77,14 @@ public class Tile {
 
     public void setOwner(Player owner) {
         this.owner = owner;
+    }
+
+    public boolean isWater() {
+        return isWater;
+    }
+
+    public void setWater(boolean water) {
+        isWater = water;
     }
 
     public static Tile getTile(int x, int y) {
