@@ -22,8 +22,38 @@ public class Player {
     private int wood;
     private int stone;
     private double coin;
+    //For Energy
+    private double energy;
+    private double maxEnergy = 200;
+    private boolean hasPassedOutToday = false;
+    //For BackPack
+    private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
+
+    //For TrashCan & WaterStorage
+    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
+
+    private Game activeGame;
+
+    private Tool currentTool;
+    private int vegetableFarmed = 0;
+    private ArrayList<Food> foods = new ArrayList<>();
+    private ArrayList<Recipe> recipes = new ArrayList<>();
+    private ArrayList<Friends> friends = new ArrayList<>();
+    private ArrayList<Ability> abilitesLearned = new ArrayList<>();
+    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
+    private double balance;
+    private Player partner = null;
+    private int daysSinceBrakUp = 0;
+    private boolean isbrokenUp = false;
 
 
+    public ArrayList<CraftingItem> getCraftingRecipes() {
+        return craftingItems;
+    }
+
+    public void setCraftingRecipes(ArrayList<CraftingItem> craftingItems) {
+        this.craftingItems = craftingItems;
+    }
 
     public int getWood() {
         return wood;
@@ -49,34 +79,6 @@ public class Player {
         this.coin += coin;
     }
 
-    //For Energy
-    private double energy;
-    private double maxEnergy = 200;
-    private boolean hasPassedOutToday = false;
-    //For BackPack
-    private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
-
-    //For TrashCan & WaterStorage
-    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
-    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
-
-    private Game activeGame;
-
-    private Tool currentTool;
-    private int vegetableFarmed = 0;
-    private ArrayList<Food> foods = new ArrayList<>();
-    private ArrayList<Recipe> recipes = new ArrayList<>();
-    private ArrayList<Friends> friends = new ArrayList<>();
-    private ArrayList<Ability> abilitesLearned = new ArrayList<>();
-    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
-
-    public ArrayList<CraftingItem> getCraftingRecipes() {
-        return craftingItems;
-    }
-
-    public void setCraftingRecipes(ArrayList<CraftingItem> craftingItems) {
-        this.craftingItems = craftingItems;
-    }
 
     public ArrayList<Recipe> getRecipes() {
         return recipes;
@@ -86,16 +88,13 @@ public class Player {
         this.recipes = recipes;
     }
 
-    private double balance;
-    private Player partner = null;
-    private int daysSinceBrakUp = 0;
-    private boolean isbrokenUp = false;
-
     public Player(User user, boolean isGuest, Game activeGame) {
         this.user = user;
         this.isGuest = isGuest;
         this.activeGame = activeGame;
         this.energy = maxEnergy;
+        backPack.addItemToInventory(new Tool(ToolType.WateringCan, ToolMaterial.Basic));
+);
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {

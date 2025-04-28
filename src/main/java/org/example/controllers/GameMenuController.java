@@ -661,7 +661,7 @@ public class GameMenuController {
         if(CraftingItem.findItemTypeByName(itemName) == null){
             return new Result(false, "No crafting recipe found");
         }
-         CraftingItem recipe = CraftingItem.findItemTypeByName(itemName);
+         CraftingItem item = CraftingItem.findItemTypeByName(itemName);
         if(App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().isBackPackFull()){
             return new Result(false, "no free space in inventory");
         }
@@ -669,12 +669,18 @@ public class GameMenuController {
         for(BackPackableType backPackableType : backPack.getBackPackItems().keySet()){
             //TODO enough item or not
         }
-        backPack.addItemToInventory(recipe);
+        backPack.addItemToInventory(item);
+        return new Result(true,itemName + "crafted successfully");
 
     }
 
     public Result placeItem(String itemName, String direction) {
-        return new Result(false, "t");
+        if(CraftingItem.findItemTypeByName(itemName) == null){
+            return new Result(false, "No item found");
+        }
+        CraftingItem item = CraftingItem.findItemTypeByName(itemName);
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(item);
+
     }
 
     public Result addItem(String itemName, String number) {

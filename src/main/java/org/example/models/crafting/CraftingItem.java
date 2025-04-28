@@ -4,6 +4,7 @@ import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.Placeable;
+import org.example.models.tools.BackPack;
 
 import java.util.HashMap;
 
@@ -29,13 +30,16 @@ public class CraftingItem implements BackPackable , Placeable {
 
 
     public static CraftingItem findItemTypeByName(String itemTypeName) {
-        for(CraftingItem recipe : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()){
-            if(recipe.getTargetItem().getName().equals(itemTypeName)){
-                return recipe;
+        for(CraftingItem Item : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()){
+            if(Item.getTargetItem().getName().equals(itemTypeName)){
+                return Item;
             }
         }
         return null;
-}
+    }
+    public static CraftingItem findItemInBackPack(String itemTypeName) {
+        for(CraftingItem Item : App.getCurrentGame().getCurrentPlayingPlayer()){}
+    }
 
     @Override
     public String getName() {
