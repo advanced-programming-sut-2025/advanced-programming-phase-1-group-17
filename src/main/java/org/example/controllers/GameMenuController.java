@@ -670,7 +670,7 @@ public class GameMenuController {
             //TODO enough item or not
         }
         backPack.addItemToInventory(item);
-        return new Result(true,itemName + " crafted successfully");
+        return new Result(true,itemName + "crafted successfully");
 
     }
 
