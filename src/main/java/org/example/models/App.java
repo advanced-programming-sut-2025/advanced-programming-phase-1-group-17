@@ -1,25 +1,19 @@
 package org.example.models;
 
 import org.example.models.enums.Menu;
+import org.example.models.enums.ToolType;
+import org.example.models.plant.SeedType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class App {
     private static User loggedInUser;
     private static Menu currentMenu = Menu.SignUpMenu;
     private static Game currentGame;
-    private static Player currentPlayer;
     private static ArrayList<User> users = new ArrayList<>();
     private static ArrayList<Game> games = new ArrayList<Game>();
 
-
-    public static Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public static void setCurrentPlayer(Player currentPlayer) {
-        App.currentPlayer = currentPlayer;
-    }
 
     public static Menu getCurrentMenu() {
         return currentMenu;
@@ -66,6 +60,56 @@ public class App {
 
     public static void setLoggedInUser(User loggedInUser) {
         App.loggedInUser = loggedInUser;
+    }
+
+    public static int[] handleDirection(int direction) {
+        //returns (dx, dy)
+        switch (direction) {
+            case 1 -> {
+                return (new int[]{0, 1}); //Up
+            }
+            case 2 -> {
+                return (new int[]{1, 1}); //Up-Right
+            }
+            case 3 -> {
+                return (new int[]{1, 0}); //Right
+            }
+            case 4 -> {
+                return (new int[]{1, -1}); //Down-Right
+            }
+            case 5 -> {
+                return (new int[]{0, -1}); //Down
+            }
+            case 6 -> {
+                return (new int[]{-1, -1}); //Down-Left
+            }
+            case 7 -> {
+                return (new int[]{-1, 0}); //Left
+            }
+            case 8 -> {
+                return (new int[]{-1, 1}); //Up-Left
+            }
+        }
+        return new int[]{10, 10}; // never happens
+    }
+
+
+    public static SeedType getSeedType(String name) {
+        for (SeedType seedType : SeedType.values()) {
+            if (seedType.name().equals(name)) {
+                return seedType;
+            }
+        }
+        return null;
+    }
+
+    public static ToolType getToolTypeByName(String name) {
+        for (ToolType type : ToolType.values()) {
+            if (type.getName().equalsIgnoreCase(name)) {
+                return type;
+            }
+        }
+        return null;
     }
 
 }

@@ -1,33 +1,55 @@
 package org.example.models;
 
+import org.example.foraging.ForagingController;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
+import org.example.models.plant.PlantGrowthController;
+
+import java.util.Random;
 
 public class TimeAndDate {
-    private WeatherType today;
-    private WeatherType tomorrow;
+    private WeatherType todayWeather;
+    private WeatherType tomorrowWeather;
     private int hour, minute;
     private int day, month, year;
-    private Season season=Season.Spring;
-    private DaysOfTheWeek dayOfTheWeek=DaysOfTheWeek.Saturday;
+    private Season season = Season.Spring;
+    private DaysOfTheWeek dayOfTheWeek = DaysOfTheWeek.Saturday;
+
+    public TimeAndDate(){
+        setTodayWeather(getRandomWeather());
+        setTomorrowWeather(getRandomWeather());
+        hour = 9;
+        minute = 0;
+        day = 1;
+        month = 1;
+        year = 1;
+    }
+
     public void increaseHour() {
-        //TODO when all players playes hour ++;
         hour++;
-        if(hour >= 22){
+        if (hour >= 22) {
             hour = 9;
             minute = 0;
             goToNextDay();
         }
     }
+
     public void goToNextDay() {
-        changeTomorrowWeatherType();
+        todayWeather = tomorrowWeather;
+        setTomorrowWeather(getRandomWeather());
+        PlantGrowthController.growOneDay();
+        ForagingController.setForagingForNextDay();
+
+
         changeDayOfTheWeek();
         day++;
-        if(day>=28){
-
+        if (day >= 28) {
+            changeSeason();
+            day = 1;
         }
     }
+
     public void changeSeason() {
         Season[] seasons = Season.values();
         int currentIndex = season.ordinal();
@@ -39,27 +61,36 @@ public class TimeAndDate {
             year++;
         }
     }
+
     public void changeDayOfTheWeek() {
         DaysOfTheWeek[] daysOfTheWeek = DaysOfTheWeek.values();
         int currentDayIndex = dayOfTheWeek.ordinal();
         dayOfTheWeek = daysOfTheWeek[(currentDayIndex + 1) % daysOfTheWeek.length];
     }
-    public void changeTomorrowWeatherType() {}
+
+    public WeatherType getRandomWeather(){
+        Random rand = new Random();
+        int randInt = rand.nextInt(4) + 1;
+        if (randInt == 1) return WeatherType.Snow;
+        else if (randInt == 2) return WeatherType.Rainy;
+        else if (randInt == 3) return WeatherType.Storm;
+        return WeatherType.Sunny;
+    }
 
     public WeatherType getTodayWeatherType() {
-        return today;
+        return todayWeather;
     }
 
-    public void setToday(WeatherType today) {
-        this.today = today;
+    public void setTodayWeather(WeatherType todayWeather) {
+        this.todayWeather = todayWeather;
     }
 
-    public WeatherType getTomorrow() {
-        return tomorrow;
+    public WeatherType getTomorrowWeather() {
+        return tomorrowWeather;
     }
 
-    public void setTomorrow(WeatherType tomorrow) {
-        this.tomorrow = tomorrow;
+    public void setTomorrowWeather(WeatherType tomorrowWeather) {
+        this.tomorrowWeather = tomorrowWeather;
     }
 
     public int getHour() {

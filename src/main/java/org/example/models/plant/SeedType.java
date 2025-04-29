@@ -1,47 +1,68 @@
 package org.example.models.plant;
 
-import org.example.models.enums.Season;
+import org.example.models.BackPackableType;
 
-public enum SeedType {
-    // Spring
-    Cauliflower(Season.Spring, null),
-    Parsnip(Season.Spring, null),
-    Potato(Season.Spring, null),
-    BlueJazz(Season.Spring, null),
-    Tulip(Season.Spring, null),
+public enum SeedType implements BackPackableType {
+    JazzSeeds(CropType.BlueJazz),
+    CarrotSeeds(CropType.Carrot),
+    CauliflowerSeeds(CropType.Cauliflower),
+    CoffeeBean(CropType.CoffeeBean),
+    GarlicSeeds(CropType.Garlic),
+    BeanStarter(CropType.GreenBean),
+    KaleSeeds(CropType.Kale),
+    ParsnipSeeds(CropType.Parsnip),
+    PotatoSeeds(CropType.Potato),
+    RhubarbSeeds(CropType.Rhubarb),
+    StrawberrySeeds(CropType.Strawberry),
+    TulipBulb(CropType.Tulip),
+    RiceShoot(CropType.UnmilledRice),
+    BlueberrySeeds(CropType.Blueberry),
+    CornSeeds(CropType.Corn),
+    HopsStarter(CropType.Hops),
+    PepperSeeds(CropType.HotPepper),
+    MelonSeeds(CropType.Melon),
+    PoppySeeds(CropType.Poppy),
+    RadishSeeds(CropType.Radish),
+    RedCabbageSeeds(CropType.RedCabbage),
+    StarfruitSeeds(CropType.Starfruit),
+    SpangleSeeds(CropType.SummerSpangle),
+    SummerSquashSeeds(CropType.SummerSquash),
+    SunflowerSeeds(CropType.Sunflower),
+    TomatoSeeds(CropType.Tomato),
+    WheatSeeds(CropType.Wheat),
+    AmaranthSeeds(CropType.Amaranth),
+    ArtichokeSeeds(CropType.Artichoke),
+    BeetSeeds(CropType.Beet),
+    BokChoySeeds(CropType.BokChoy),
+    BroccoliSeeds(CropType.Broccoli),
+    CranberrySeeds(CropType.Cranberries),
+    EggplantSeeds(CropType.Eggplant),
+    FairySeeds(CropType.FairyRose),
+    GrapeStarter(CropType.Grape),
+    PumpkinSeeds(CropType.Pumpkin),
+    YamSeeds(CropType.Yam),
+    RareSeed(CropType.SweetGemBerry),
+    PowdermelonSeeds(CropType.Powdermelon),
+    AncientSeeds(CropType.AncientFruit),
+    Mixed(null); // Special case: not tied to a single crop
 
-    // Summer
-    HotPepper(Season.Summer, null),
-    Radish(Season.Summer, null),
-    Wheat(Season.Summer, null),
-    Poppy(Season.Summer, null),
-    SummerSpangle(Season.Summer, null),
+    private final CropType cropType;
 
-    // Fall
-    Artichoke(Season.Fall, null),
-    Eggplant(Season.Fall, null),
-    Pumpkin(Season.Fall, null),
-    FairyRose(Season.Fall, null),
-
-    // Multi-season
-    Corn(Season.Summer, Season.Fall),
-    Sunflower(Season.Summer, Season.Fall),
-
-    // Winter
-    PowderMelon(Season.Winter, null),
-
-    // Special
-    Mixed(Season.Spring, Season.Summer); // Example mixed seed
-
-    private final Season season1;
-    private final Season season2;
-
-    SeedType(Season season1, Season season2) {
-        this.season1 = season1;
-        this.season2 = season2;
+    SeedType(CropType cropType) {
+        this.cropType = cropType;
     }
 
-    public boolean isGrownIn(Season season) {
-        return season == season1 || season == season2;
+    public CropType getCropType() {
+        return cropType;
+    }
+
+    @Override
+    public String getName() {
+        return name();
+    }
+
+    @Override
+    public double getPrice() {
+        return 0;
     }
 }
