@@ -1,6 +1,5 @@
 package org.example.models.map;
 
-import org.example.models.Ability;
 import org.example.models.Placeable;
 import org.example.models.Player;
 
