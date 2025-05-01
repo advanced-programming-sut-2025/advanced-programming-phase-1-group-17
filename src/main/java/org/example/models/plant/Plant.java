@@ -1,8 +1,9 @@
 package org.example.models.plant;
 
+import org.example.models.Placeable;
 import org.example.models.map.Tile;
 
-public abstract class Plant {
+public abstract class Plant implements Placeable {
     Tile tile;
     boolean isFullyGrown;
     boolean isForaging;
@@ -68,6 +69,9 @@ public abstract class Plant {
 
     public void setForaging(boolean foraging) {
         isForaging = foraging;
+    }
+    public void wateringPlant(){
+        this.daysWithoutWater=0;
     }
 
 

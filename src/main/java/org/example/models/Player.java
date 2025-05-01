@@ -1,5 +1,6 @@
 package org.example.models;
 
+import org.example.models.Crafting.CraftingItem;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
 import org.example.models.enums.BackPackType;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 public class Player {
     private PlayerMap playerMap;
     private User user;
-    private final boolean isGuest;
+    private final boolean isGuest = false;
     private int x;
     private int y;
 
@@ -73,17 +74,37 @@ public class Player {
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ArrayList<Friends> friends = new ArrayList<>();
     private ArrayList<Ability> abilitesLearned = new ArrayList<>();
+    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
 
     private double balance;
     private Player partner = null;
     private int daysSinceBrakUp = 0;
     private boolean isbrokenUp = false;
 
+    public ArrayList<CraftingItem> getCraftingRecipes() {
+        return craftingItems;
+    }
+
+    public void setCraftingRecipes(ArrayList<CraftingItem> craftingItems) {
+        this.craftingItems = craftingItems;
+    }
+
+
+    public ArrayList<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(ArrayList<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
     public Player(User user, boolean isGuest, Game activeGame) {
         this.user = user;
         this.isGuest = isGuest;
         this.activeGame = activeGame;
         this.energy = maxEnergy;
+        backPack.addItemToInventory(new Tool(ToolType.WateringCan, ToolMaterial.Basic));
+);
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -203,6 +224,7 @@ public class Player {
     public HashMap<Player, Talk> getTalk() {
         return talk;
     }
+
     public void addTalk(Player player, Talk talk) {
         this.talk.put(player, talk);
     }
