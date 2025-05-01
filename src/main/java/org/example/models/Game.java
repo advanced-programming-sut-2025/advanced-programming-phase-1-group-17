@@ -118,7 +118,7 @@ public class Game {
         this.currentPlayingPlayerIndex = currentPlayingPlayerIndex;
     }
 
-    public Tile getTileByIndex(int x, int y) {
+    public Tile getTileByIndex(int x , int y) {
         for (PlayerMap playerMap : gameMap.getPlayerMaps()) {
             for (Tile tile : playerMap.getTiles()) {
                 if (tile.getX() == x && tile.getY() == y) {

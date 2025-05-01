@@ -7,6 +7,7 @@ import org.example.models.enums.Season;
 import org.example.models.enums.ToolType;
 import org.example.models.enums.WeatherType;
 import org.example.models.map.GreenHouse;
+import org.example.models.map.Stone;
 import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.BackPack;
@@ -420,7 +421,58 @@ public class GameMenuController {
     }
 
     public Result toolUse(String direction) {
-        return new Result(false, "t");
+        int x = App.getCurrentGame().getCurrentPlayingPlayer().getX() + App.handleDirection(Integer.parseInt(direction))[0];
+        int y = App.getCurrentGame().getCurrentPlayingPlayer().getY() + App.handleDirection(Integer.parseInt(direction))[1];
+        Tool tool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
+        Tile tile = Tile.getTile(x,y);
+        if (tile == null) {
+            return new Result(false,"unknown error");
+        }
+
+        if(tool.getToolType().equals(ToolType.Hoe)){
+            if(tile.getPlaceable() == null){
+                tile.setPlowed(true);
+                return new Result(true,"plowed successfully");
+            }
+        }
+        else if(tool.getToolType().equals(ToolType.Pickaxe)){
+            if(tile.getPlaceable() instanceof Stone){
+                tile.setPlaceable(null);
+                return new Result(true,"stone breaked successfully");
+            }
+            else if(tile.isPlowed()){
+                tile.setPlowed(false);
+            }
+
+        }
+
+        else if(tool.getToolType().equals(ToolType.Axe)){
+            if(tile.getPlaceable() instanceof Tree){
+                tile.setPlaceable(null);
+            }
+        }
+        else if(tool.getToolType().equals(ToolType.WateringCan)){
+            if(tile.getPlaceable() instanceof Plant){
+                Plant plant = (Plant) tile.getPlaceable();
+                if(tool.getWateringCanStorage()>0){
+                    plant.wateringPlant();
+                    tool.setWateringCanStorage(tool.getWateringCanStorage() -1 );
+                }
+            }
+            else if(tile.isWater()){
+                tool.handleWateringCanStorage();
+            }
+        }
+        else if(tool.getToolType().equals(ToolType.Scythe)){
+
+        }
+        else if(tool.getToolType().equals(ToolType.MilkPail)){
+            if(tile.getPlaceable() instanceof Animal){
+                Animal animal = (Animal) tile.getPlaceable();
+            }
+        }
+        return new Result(true,"t");
+
     }
 
     public Result craftInfo(String name) {

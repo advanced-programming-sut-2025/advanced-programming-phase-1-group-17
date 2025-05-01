@@ -35,6 +35,17 @@ public enum GameMenuCommands {
     Int("\\d+"),
     PrintMap("\\s*print\\s+map\\s+-l\\s+<(?<x>\\d+),\\s*(?<y>\\d+)>\\s+-s\\s+(?<size>\\d+)\\s*"),
 
+    //For Crafting
+    CraftingShowRecipes("\\s*crafting\\s+show\\s+recipes\\s*"),
+    CraftingCraft("\\s*crafting\\s+craft\\s+(?<itemName>\\S+)\\s*"),
+
+
+    //For Cooking
+    CookingRefrigerator("\\s*cooking\\s+refrigerator\\s+(?<mod>put|pick)\\s+(?<item>\\S+)\\s*"),
+    CookingShowRecipes("\\s*cooking\\s+show\\s+recipe\\s*"),
+    CookingPrepare("\\s*cooking\\s+prepare\\s+(?<recipeName>\\S+)\\s*"),
+    Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*"),
+
     //For friendships
     talk("\\s*talk\\s+-u\\s+(?<username>\\S+)\\s+-m\\s+(?<message>[\\S ]+)\\s*"),
     talkHistory("\\s*talk\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),

@@ -1,10 +1,7 @@
 package org.example.models.map;
 
 import org.example.foraging.ForagingController;
-import org.example.models.App;
 import org.example.models.Player;
-import org.example.models.User;
-import org.example.models.enums.Gender;
 import org.example.models.plant.Tree;
 
 import java.util.ArrayList;
@@ -150,6 +147,7 @@ public class PlayerMap {
                 for (int j = 30 + col; j < 36 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
                     Tile.getTile(i, j).setWalkAble(false);
+                    Tile.getTile(i, j).setWater(true);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
@@ -179,12 +177,14 @@ public class PlayerMap {
                 for (int j = 10 + col; j < 16 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
                     Tile.getTile(i, j).setWalkAble(false);
+                    Tile.getTile(i, j).setWater(true);
                 }
             }
             for (int i = row + 1; i < 7 + row; i++) {
                 for (int j = 25 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(1));
                     Tile.getTile(i, j).setWalkAble(false);
+                    Tile.getTile(i, j).setWater(true);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {

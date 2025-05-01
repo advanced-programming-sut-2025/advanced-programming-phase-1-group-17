@@ -22,7 +22,7 @@ public class BackPack {
         this.type = type;
     }
 
-    private boolean isBackPackFull() {
+    public boolean isBackPackFull() {
         return backPackItems.size() >= type.getCapacity();
     }
 
@@ -38,8 +38,8 @@ public class BackPack {
         return type;
     }
 
-    public void useItem(BackPackableType backPackableType) {
-        backPackItems.get(backPackableType).remove(0);
+    public void useItem(BackPackable backPackable) {
+        backPackItems.get(backPackable.getType()).remove(backPackable);
     }
 
     public void addItemToInventory(BackPackable backPackable) {

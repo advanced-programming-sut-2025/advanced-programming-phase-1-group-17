@@ -108,6 +108,10 @@ public class GameMenu implements AppMenu {
         }else if ((matcher = GameMenuCommands.hug.getMatcher(command))!=null) {
             System.out.println(controller.hug(matcher.group("username").trim()));
         }
+        //cooking
+        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
+            System.out.println(controller);
+        }
         else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
         } else if (command.trim().equals("menu exit")) {
