@@ -33,12 +33,9 @@ public enum GameMenuCommands {
     ToolsShowAvailable("\\s*tools\\s+show\\s+available\\s*"),
     ToolsUpgrade("\\s*tools\\s+upgrade\\s+(?<toolName>\\S+)\\s*"),
     ToolsUse("\\s*tools\\s+use\\s+-d\\s+(?<direction>\\d+)\\s*"),
-
     //For Inventory
     InventoryShow("\\s*inventory\\s+show\\s*"),
     InventoryTrash("\\s*inventory\\s+trash\\s+-i\\s+(?<itemName>\\S+)(\\s+-n\\s+(?<number>\\d+))?\\s*"),
-
-    //For Map
     Walk("\\s*walk -l <(?<x>\\d+), (?<y>\\d+)>\\s*"),
     ChooseGameMap("\\s*game\\s+map\\s+(?<mapNumber>\\S+)\\s*"),
     Int("\\d+"),
@@ -50,7 +47,6 @@ public enum GameMenuCommands {
     ShowPlant("\\s*showplant\\s+-l\\s+(?<x>\\d+), (?<y>\\d+)\\s*"),
     Fertilize("\\s*fertilize\\s+-f\\s+(?<fertilizer>\\S+)\\s+-d\\s+(?<direction>\\d+)\\s*"),
     HowMuchWater("\\s*howmuch\\s+water\\s*"),
-
     //For Crafting
     CraftingShowRecipes("\\s*crafting\\s+show\\s+recipes\\s*"),
     CraftingCraft("\\s*crafting\\s+craft\\s+(?<itemName>\\S+)\\s*"),
@@ -62,11 +58,14 @@ public enum GameMenuCommands {
     CookingPrepare("\\s*cooking\\s+prepare\\s+(?<recipeName>\\S+)\\s*"),
     Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*"),
 
-
     //For artisan
     ArtisanUse("\\s*artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<itemName>\\S+)\\s*"),
-    ArtisanGet("\\s*artisan\\s+get\\s+(?<artisanName>\\S+)\\s*");
-
+    ArtisanGet("\\s*artisan\\s+get\\s+(?<artisanName>\\S+)\\s*"),
+    //For friendships
+    talk("\\s*talk\\s+-u\\s+(?<username>\\S+)\\s+-m\\s+(?<message>[\\S ]+)\\s*"),
+    talkHistory("\\s*talk\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),
+    gift("\\s*gift\\s+-u\\s+(?<username>\\S+)\\s+-i\\s+(?<item>\\S+)\\s+-a\\s+(?<amount>\\d+)\\s*"),
+    hug("\\s*hug\\s+-u\\s+(?<username>\\S+)\\s*");
 
 
     private final String regex;

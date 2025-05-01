@@ -17,11 +17,7 @@ public class User {
     private int numOfPlay;
     private int theMostMoneyInGame;
     private Game activeGame;
-
-    public User() {
-    }
-
-    ;
+    public User(){};
 
     //for signup
     public User(String username, String password, String email, String nickName, Gender gender) {

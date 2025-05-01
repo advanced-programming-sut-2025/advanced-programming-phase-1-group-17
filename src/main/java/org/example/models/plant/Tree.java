@@ -5,6 +5,7 @@ import org.example.models.map.Tile;
 
 public class Tree extends Plant implements Placeable {
     private TreeType type;
+    private boolean isHitByLightning = false;
     private boolean isFertilized = false;
     private boolean isForaging = false;
     private int daysTillNextHarvest;
@@ -63,12 +64,19 @@ public class Tree extends Plant implements Placeable {
         } else
             daysTillNextHarvest--;
     }
-
     public TreeType getType() {
         return type;
     }
 
     public void setType(TreeType type) {
         this.type = type;
+    }
+
+    public boolean isHitByLightning() {
+        return isHitByLightning;
+    }
+
+    public void setHitByLightning(boolean hitByLightning) {
+        isHitByLightning = hitByLightning;
     }
 }

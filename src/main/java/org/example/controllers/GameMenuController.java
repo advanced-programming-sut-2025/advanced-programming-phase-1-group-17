@@ -2,11 +2,11 @@ package org.example.controllers;
 
 import org.example.display;
 import org.example.models.*;
+import org.example.models.Crafting.CraftingItem;
+import org.example.models.Crafting.CraftingItemType;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
-import org.example.models.crafting.CraftingItem;
-import org.example.models.crafting.ItemType;
 import org.example.models.enums.GameMenuCommands;
 import org.example.models.enums.Season;
 import org.example.models.enums.ToolType;
@@ -22,37 +22,40 @@ import java.util.*;
 
 public class GameMenuController {
 
-    public Result newGame(String username1, String username2, String username3, String rest) {
-        if (rest != null && !rest.trim().equals(""))
-            return new Result(false, "you can enter 3 names at most.");
+    public Result newGame(String username1, String username2, String username3,String rest) {
+        //TODO handel errors
+
         User user1, user2, user3;
         if (username1 == null) {
+            if (App.getUserWithUsername("guest0") != null) {
+                App.getUsers().remove(App.getUserWithUsername("guest0"));
+            }
             user1 = new User();
             user1.setUsername("guest0");
+            App.getUsers().add(user1);
         } else {
             user1 = App.getUserWithUsername(username1);
-            if (user1 == null)
-                return new Result(false, "no user with username %s".formatted(username1));
-            if (user1.getActiveGame() != null)
-                return new Result(false, "user with username %s has an active game".formatted(username1));
         }
         if (username2 == null) {
+            if (App.getUserWithUsername("guest1") != null) {
+                App.getUsers().remove(App.getUserWithUsername("guest1"));
+            }
             user2 = new User();
             user2.setUsername("guest1");
+            App.getUsers().add(user2);
         } else {
             user2 = App.getUserWithUsername(username2);
-            if (user2 == null)
-                return new Result(false, "no user with username %s".formatted(username2));
         }
         if (username3 == null) {
+            if (App.getUserWithUsername("guest2") != null) {
+                App.getUsers().remove(App.getUserWithUsername("guest2"));
+            }
             user3 = new User();
             user3.setUsername("guest2");
+            App.getUsers().add(user3);
         } else {
             user3 = App.getUserWithUsername(username3);
-            if (user3 == null)
-                return new Result(false, "no user with username %s".formatted(username3));
         }
-        Tile.getTiles().clear();
         Game game = new Game(user1, user2, user3);
         App.setCurrentGame(game);
         App.getGames().add(game);
@@ -675,8 +678,8 @@ public class GameMenuController {
         StringBuilder sb = new StringBuilder();
         for (CraftingItem recipe : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()) {
             sb.append(recipe.getTargetItem().getName()).append(" -> ").append("\n");
-            for (Map.Entry<ItemType, Integer> entry : recipe.getCraftIngredients().entrySet()) {
-                ItemType item = entry.getKey();
+            for (Map.Entry<CraftingItemType, Integer> entry : recipe.getCraftIngredients().entrySet()) {
+                CraftingItemType item = entry.getKey();
                 int quantity = entry.getValue();
                 sb.append(item).append(": ").append(quantity).append("\n");
             }
@@ -685,10 +688,10 @@ public class GameMenuController {
     }
 
     public Result craftingCraft(String itemName) {
-        if (CraftingItem.findItemTypeByName(itemName) == null) {
+        if (CraftingItem.findCraftingItemTypeByName(itemName) == null) {
             return new Result(false, "No crafting recipe found");
         }
-        CraftingItem item = CraftingItem.findItemTypeByName(itemName);
+        CraftingItem item = CraftingItem.findCraftingItemTypeByName(itemName);
         if (App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().isBackPackFull()) {
             return new Result(false, "no free space in inventory");
         }
@@ -702,7 +705,7 @@ public class GameMenuController {
     }
 
     public Result placeItem(String itemName, String direction) {
-        if (CraftingItem.findItemTypeByName(itemName) == null) {
+        if (CraftingItem.findCraftingItemTypeByName(itemName) == null) {
             return new Result(false, "No item found");
         }
         int[] direction1 = App.handleDirection(Integer.parseInt(direction));
@@ -713,7 +716,7 @@ public class GameMenuController {
             return new Result(false, "tile is full");
         }
 
-        CraftingItem item = CraftingItem.findItemTypeByName(itemName);
+        CraftingItem item = CraftingItem.findCraftingItemTypeByName(itemName);
         App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(item.getType());
         tile.setPlaceable(item);
         return new Result(true, "Item placed Successfully.");
@@ -841,19 +844,91 @@ public class GameMenuController {
     }
 
     public Result friendship() {
-        return new Result(false, "t");
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        String result = "";
+        for (Player player : currentPlayer.getFriendShips().keySet()) {
+            result += "your friendship amount with " + player.getUser().getUsername() + " : " +
+                    currentPlayer.getFriendShips().get(player) + "\n" + "your friendship level : "
+                    + String.valueOf((int) Math.floor(currentPlayer.getFriendShips().get(player) / 100)) + "\n";
+        }
+        return new Result(true, result);
+    }
+
+    public boolean sideBySide(Player currentPlayer, Player player) {
+        int x = currentPlayer.getX();
+        int y = currentPlayer.getY();
+        int x1 = player.getX();
+        int y1 = player.getY();
+        if ((x == x1 && y == y1)
+                || (x == x1 + 1 && y == y1)
+                || (x == x1 - 1 && y == y1)
+                || (x == x1 && y == y1 + 1)
+                || (x == x1 - 1 && y == y1 + 1)
+                || (x == x1 + 1 && y == y1 + 1)
+                || (x == x1 && y == y1 - 1)
+                || (x == x1 + 1 && y == y1 - 1)
+                || (x == x1 - 1 && y == y1 - 1)) {
+            return true;
+        } else return false;
+
     }
 
     public Result talk(String username, String massage) {
-        return new Result(false, "t");
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals(username)) {
+                if (currentPlayer.getTalk().get(player) != null) {
+                    if (sideBySide(currentPlayer, player)) {
+                        currentPlayer.getTalk().get(player).addTalk("you" + " : " + massage + "\n");
+                        player.getTalk().get(currentPlayer).addTalk(currentPlayer.getUser().getUsername()
+                                + " : " + massage + "\n");
+                        player.addFriendShips(currentPlayer, player.getFriendShips().get(currentPlayer) + 20);
+                        currentPlayer.addFriendShips(player, currentPlayer.getFriendShips().get(player) + 20);
+                        return new Result(true, "your message sent to " + player.getUser().getUsername());
+                    } else {
+                        return new Result(false, "you can't talk from this distance");
+                    }
+                } else {
+                    return new Result(false, "there isn't player in this game with this username");
+                }
+            }
+        }
+        return new Result(false, "there isn't player in this game with this username");
     }
 
     public Result talkHistory(String username) {
-        return new Result(false, "t");
+        if (App.getUserWithUsername(username) == null) {
+            return new Result(false, "there isn't player in this game with this username");
+        }
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals(username)) {
+                if (App.getCurrentGame().getCurrentPlayingPlayer().getTalk().get(player) != null) {
+                    return new Result(true,
+                            App.getCurrentGame().getCurrentPlayingPlayer().getTalk().get(player).getTalk());
+                }
+            }
+        }
+        return new Result(false, "there isn't player in this game with this username");
     }
 
     public Result gift(String username, String item, String amount) {
-        return new Result(false, "t");
+        int Amount = Integer.parseInt(amount);
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (App.getUserWithUsername(username) == null) {
+            return new Result(false, "there isn't player in this game with this username");
+        }
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals(username)) {
+                if (currentPlayer.getFriendShips().get(player) != null) {
+                    if (currentPlayer.getFriendShips().get(player) < 100) {
+                        return new Result(false, "your level is less than 1");
+                    } else {
+                        //TODO
+                    }
+                }
+            }
+        }
+        return new Result(false, "there isn't player in this game with this username");
     }
 
     public Result giftList() {
@@ -869,6 +944,26 @@ public class GameMenuController {
     }
 
     public Result hug(String username) {
+        if (App.getUserWithUsername(username) == null) {
+            return new Result(false, "there isn't player in this game with this username");
+        }
+        if (App.getCurrentGame().getCurrentPlayingPlayer().getUser().getUsername().equals(username)) {
+            return new Result(false, "you can't hug yourself");
+        }
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals(username)) {
+                if (sideBySide(player, App.getCurrentGame().getCurrentPlayingPlayer())) {
+                    App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().put(
+                            player, (App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player) + 60));
+                    player.getFriendShips().put(App.getCurrentGame().getCurrentPlayingPlayer(),
+                            App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player));
+                    return new Result(true, "you hug your friend ^^");
+                }
+                else {
+                    return new Result(false, "you can't hug your friend from this distance");
+                }
+            }
+        }
         return new Result(false, "t");
     }
 
@@ -923,5 +1018,6 @@ public class GameMenuController {
     public Result questFinish(String index) {
         return new Result(false, "t");
     }
+
 
 }
