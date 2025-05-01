@@ -115,6 +115,12 @@ public class PlayerMap {
                 }
             }
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
+//            Player NPCOwner = new Player(new User("NPC","NPC","NPC","NPC",Gender.Male),true, App.getCurrentGame());
+//            for (int i = 26 ; i <= 75 ; i++) {
+//                for (int j = 101; j <= 150 ; j++) {
+//                    Tile tile = new Tile(i , j ,NPCOwner);
+//                }
+//            }
         }
     }
 
@@ -172,7 +178,6 @@ public class PlayerMap {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
                     Tile.getTile(i, j).setWalkAble(false);
                     Tile.getTile(i, j).setWater(true);
-
                 }
             }
             for (int i = row + 1; i < 7 + row; i++) {
@@ -204,32 +209,42 @@ public class PlayerMap {
         while (numOfTrees != 0) {
             int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 50 + col);
-            if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
-                //TODO: fix the error in the constructor here
-                //Tree tree = new Tree();
-                //trees.add(tree);
-                //Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(tree);
-                Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
+            Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+            if (tile.getPlaceable() == null) {
+                Tree tree = new Tree(false, ForagingController.getRandomTreeType(), false, tile);
+                tile.setPlaceable(tree);
+                tile.setWalkAble(false);
                 numOfTrees--;
             }
         }
         while (numOfStones != 0) {
             int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 50 + col);
-            if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
+            Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+            if (tile.getPlaceable() == null) {
                 Stone stone = new Stone();
-                Tile.getTile(randomIndex_x, randomIndex_y).setPlaceable(stone);
-                Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
+                tile.setPlaceable(stone);
+                tile.setWalkAble(false);
                 numOfStones--;
             }
         }
+        int counter = 0;
         while (numOfForagings != 0) {
             int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 50 + col);
-            if (Tile.getTile(randomIndex_x, randomIndex_y).getPlaceable() == null) {
-                ForagingController.setForagingForNextDay();
-                Tile.getTile(randomIndex_x, randomIndex_y).setWalkAble(false);
+            Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+            if (tile.getPlaceable() == null) {
+                if (counter < 2)
+                    ForagingController.setTreeForaging(tile);
+                else if (counter < 4)
+                    ForagingController.setCropForaging(tile);
+                else if (counter < 6)
+                    ForagingController.setSeedForaging(tile);
+                else
+                    ForagingController.setMineralForaging(tile);
+                tile.setWalkAble(false);
                 numOfForagings--;
+                counter ++;
             }
         }
     }

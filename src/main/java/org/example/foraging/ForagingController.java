@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class ForagingController {
-    public static void setForagingForNextDay(){
+    public static void setForagingForNextDay() {
         for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
             for (Tile tile : playerMap.getTiles()) {
                 if (tile.getPlaceable() != null)
@@ -30,8 +30,7 @@ public abstract class ForagingController {
                     if (randInt == 1) {
                         setCropForaging(tile);
                         return;
-                    }
-                    else if (randInt == 2) {
+                    } else if (randInt == 2) {
                         setTreeForaging(tile);
                         return;
                     }
@@ -45,11 +44,14 @@ public abstract class ForagingController {
         //TODO
     }
 
-    public static void setTreeForaging(Tile tile) {
+    public static TreeType getRandomTreeType() {
         Random random = new Random();
         ForagingTree randomForagingTree = ForagingTree.values()[random.nextInt(ForagingTree.values().length)];
+        return randomForagingTree.getTreeType();
+    }
 
-        TreeType treeType = randomForagingTree.getTreeType();
+    public static void setTreeForaging(Tile tile) {
+        TreeType treeType = getRandomTreeType();
         tile.setPlaceable(new Tree(true, treeType, false, tile));
     }
 
@@ -57,12 +59,10 @@ public abstract class ForagingController {
     public static void setCropForaging(Tile tile) {
         Random random = new Random();
         ForagingCrop foragingCrop;
-        while (true){
+        do {
             int randInt = random.nextInt(ForagingCrop.values().length);
             foragingCrop = ForagingCrop.values()[randInt];
-            if (foragingCrop.getSeasons().contains(App.getCurrentGame().getDate().getSeason()))
-                break;
-        }
+        } while (!foragingCrop.getSeasons().contains(App.getCurrentGame().getDate().getSeason()));
         tile.setPlaceable(new Crop(true, foragingCrop.getCropType(), false, tile));
     }
 
