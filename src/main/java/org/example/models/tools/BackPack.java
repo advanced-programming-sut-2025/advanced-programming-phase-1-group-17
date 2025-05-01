@@ -38,11 +38,14 @@ public class BackPack {
         return type;
     }
 
-    public void useItem(BackPackable backPackable) {
-        backPackItems.get(backPackable.getType()).remove(backPackable);
+    public void useItem(BackPackableType backPackableType) {
+        if (backPackItems.get(backPackableType) == null || backPackItems.get(backPackableType).isEmpty())
+            return;
+        backPackItems.get(backPackableType).remove(0);
     }
 
     public void addItemToInventory(BackPackable backPackable) {
+        backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
         backPackItems.get(backPackable.getType()).add(backPackable);
     }
 }
