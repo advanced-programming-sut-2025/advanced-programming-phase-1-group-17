@@ -74,6 +74,8 @@ public class Crop extends Plant implements BackPackable, Placeable {
     }
 
     public int getDaysTillFullGrowth() {
+        if (isFullyGrown || !this.isWateredToday)
+            return 0;
         int daysPassed = 0;
         for (int i = 0; i < currentStageIndex; i++){
             daysPassed += type.getStages().get(i);
@@ -93,10 +95,13 @@ public class Crop extends Plant implements BackPackable, Placeable {
             return;
 
         this.daysWithoutWater++;
-        if (this.daysWithoutWater >= 2)
+        if (this.daysWithoutWater >= 2) {
             tile.setPlaceable(null);
+            return;
+        }
 
         //stage Handling
+        //TODO: isWateredToday
         this.whichDayOfStage++;
         if (this.whichDayOfStage > this.type.getStages().get(this.currentStageIndex)) {
             if (this.currentStageIndex > this.type.getStages().size()) {

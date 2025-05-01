@@ -4,13 +4,14 @@ import org.example.models.Placeable;
 import org.example.models.map.Tile;
 
 public abstract class Plant implements Placeable {
-    Tile tile;
-    boolean isFullyGrown;
-    boolean isForaging;
-    int currentStageIndex = 0;
-    int whichDayOfStage = 1;
-    boolean isFertilized;
-    int daysWithoutWater = 0;
+    protected boolean isWateredToday = false;
+    protected Tile tile;
+    protected boolean isFullyGrown;
+    protected boolean isForaging;
+    protected int currentStageIndex = 0;
+    protected int whichDayOfStage = 1;
+    protected boolean isFertilized;
+    protected int daysWithoutWater = 0;
 
     Plant(boolean isForaging, boolean isFertilized, Tile tile) {
         this.isFertilized = isFertilized;
@@ -19,7 +20,12 @@ public abstract class Plant implements Placeable {
     }
 
     public abstract int getDaysTillFullGrowth();
+
     public abstract void goToNextDay();
+
+    public Tile getTile() {
+        return tile;
+    }
 
     public void setFertilized(boolean fertilized) {
         isFertilized = fertilized;
@@ -70,8 +76,10 @@ public abstract class Plant implements Placeable {
     public void setForaging(boolean foraging) {
         isForaging = foraging;
     }
-    public void wateringPlant(){
-        this.daysWithoutWater=0;
+
+    public void wateringPlant() {
+        this.daysWithoutWater = 0;
+        isWateredToday = true;
     }
 
 

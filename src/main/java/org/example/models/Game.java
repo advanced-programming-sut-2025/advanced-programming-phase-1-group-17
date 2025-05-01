@@ -17,10 +17,10 @@ public class Game {
 
 
     public Game(User user1, User user2, User user3) {
-        players.add(creator = new Player(App.getLoggedInUser(), false, this));
-        players.add(new Player(user1, user1.getUsername().startsWith("guest"), this));
-        players.add(new Player(user2, user2.getUsername().startsWith("guest"), this));
-        players.add(new Player(user3, user3.getUsername().startsWith("guest"), this));
+        players.add(creator = new Player(App.getLoggedInUser(), false));
+        players.add(new Player(user1, user1.getUsername().startsWith("guest")));
+        players.add(new Player(user2, user2.getUsername().startsWith("guest")));
+        players.add(new Player(user3, user3.getUsername().startsWith("guest")));
         for (int i = 0; i < players.size(); i++) {
             if (i != 0) {
                 players.get(0).addTalk(players.get(i),new Talk(players.get(i)));
@@ -65,6 +65,8 @@ public class Game {
 
     public void switchPlayer() {
         currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.isHasPassedOutToday());
+        if (currentPlayingPlayer.getEnergy() == Double.POSITIVE_INFINITY)
+            currentPlayingPlayer.setEnergy(currentPlayingPlayer.getMaxEnergy());
         if (currentPlayingPlayer.equals(players.get(3))) {
             date.increaseHour();
             currentPlayingPlayer = players.get(0);
