@@ -1,37 +1,36 @@
-package org.example.models.crafting;
+package org.example.models.Crafting;
 
 import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.Placeable;
-import org.example.models.tools.BackPack;
 
 import java.util.HashMap;
 
 public class CraftingItem implements BackPackable, Placeable {
-    private ItemType targetItem;
-    private HashMap<ItemType, Integer> craftIngredients = new HashMap<>();
+    private CraftingItemType targetItem;
+    private HashMap<CraftingItemType, Integer> craftIngredients = new HashMap<>();
 
-    public ItemType getTargetItem() {
+    public CraftingItemType getTargetItem() {
         return targetItem;
     }
 
-    public void setTargetItem(ItemType targetItem) {
+    public void setTargetItem(CraftingItemType targetItem) {
         this.targetItem = targetItem;
     }
 
-    public HashMap<ItemType, Integer> getCraftIngredients() {
+    public HashMap<CraftingItemType, Integer> getCraftIngredients() {
         return craftIngredients;
     }
 
-    public void setCraftIngredients(HashMap<ItemType, Integer> craftIngredients) {
+    public void setCraftIngredients(HashMap<CraftingItemType, Integer> craftIngredients) {
         this.craftIngredients = craftIngredients;
     }
 
 
-    public static CraftingItem findItemTypeByName(String itemTypeName) {
+    public static CraftingItem findCraftingItemTypeByName(String CraftingItemTypeName) {
         for (CraftingItem Item : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()) {
-            if (Item.getTargetItem().getName().equals(itemTypeName)) {
+            if (Item.getTargetItem().getName().equals(CraftingItemTypeName)) {
                 return Item;
             }
         }

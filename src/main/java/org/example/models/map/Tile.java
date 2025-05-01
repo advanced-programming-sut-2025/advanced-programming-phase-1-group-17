@@ -104,7 +104,6 @@ public class Tile {
     public void setWhoIsHere(Player whoIsHere) {
         this.whoIsHere = whoIsHere;
     }
-
     public boolean isLightninged() {
         return isLightninged;
     }

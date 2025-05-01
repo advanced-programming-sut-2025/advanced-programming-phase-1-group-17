@@ -115,6 +115,12 @@ public class PlayerMap {
                 }
             }
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
+//            Player NPCOwner = new Player(new User("NPC","NPC","NPC","NPC",Gender.Male),true, App.getCurrentGame());
+//            for (int i = 26 ; i <= 75 ; i++) {
+//                for (int j = 101; j <= 150 ; j++) {
+//                    Tile tile = new Tile(i , j ,NPCOwner);
+//                }
+//            }
         }
     }
 
@@ -172,7 +178,6 @@ public class PlayerMap {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
                     Tile.getTile(i, j).setWalkAble(false);
                     Tile.getTile(i, j).setWater(true);
-
                 }
             }
             for (int i = row + 1; i < 7 + row; i++) {

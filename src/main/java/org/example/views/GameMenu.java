@@ -68,6 +68,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.energyUnlimited());
         }
 
+
         //Tool
         else if ((matcher = GameMenuCommands.ToolsEquip.getMatcher(command))!= null) {
             System.out.println(controller.toolEquip(
@@ -86,8 +87,6 @@ public class GameMenu implements AppMenu {
                     matcher.group("direction")
             ));
         }
-
-
         //For Inventory
         else if ((matcher = GameMenuCommands.InventoryShow.getMatcher(command)) != null) {
             System.out.println(controller.inventoryShow());
@@ -97,7 +96,6 @@ public class GameMenu implements AppMenu {
                     matcher.group("number")
             ));
         }
-
         //For plants
         else if ((matcher = GameMenuCommands.CraftInfo.getMatcher(command)) != null) {
             System.out.println(controller.craftInfo(
@@ -131,7 +129,6 @@ public class GameMenu implements AppMenu {
                     matcher.group("itemName")
             ));
         }
-
         // build greenhouse
         else if ((matcher = GameMenuCommands.GreenhouseBuild.getMatcher(command)) != null) {
             System.out.println(controller.buildGreenHouse());
@@ -148,12 +145,7 @@ public class GameMenu implements AppMenu {
                     , Integer.parseInt(matcher.group("size")));
         } else if (command.trim().equals("help reading map")) {
             controller.helpReadingMap();
-        } else if (command.trim().equals("show current menu")) {
-            System.out.println(App.getCurrentMenu().name());
-        } else if (command.trim().equals("menu exit")) {
-            App.setCurrentMenu(Menu.MainMenu);
         }
-
         //cooking
         else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
             System.out.println(controller);
@@ -180,10 +172,42 @@ public class GameMenu implements AppMenu {
                     matcher.group("artisanName")
             ));
         }
+        // friendship
+        else if (command.trim().equals("friendships")) {
+            System.out.println(controller.friendship());
+        } else if ((matcher = GameMenuCommands.talk.getMatcher(command)) != null) {
+            System.out.println(controller.talk(matcher.group("username"), matcher.group("message").trim()));
+        } else if ((matcher = GameMenuCommands.talkHistory.getMatcher(command)) != null) {
+            System.out.println(controller.talkHistory(matcher.group("username").trim()));
+        } else if ((matcher = GameMenuCommands.gift.getMatcher(command)) != null) {
+            System.out.println(controller.gift(matcher.group("username").trim()
+                    , matcher.group("item").trim()
+                    , matcher.group("amount").trim()));
+        }else if ((matcher = GameMenuCommands.hug.getMatcher(command))!=null) {
+            System.out.println(controller.hug(matcher.group("username").trim()));
+        }
+        //cooking
+        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
+            System.out.println(controller);
+        }
+        else if (command.trim().equals("show current menu")) {
+            System.out.println(App.getCurrentMenu().name());
+        } else if (command.trim().equals("menu exit")) {
+            App.setCurrentMenu(Menu.MainMenu);
+        }
+        //cooking
+        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
+            System.out.println(controller);
+        }
+
+
+
 
 
         else {
             System.out.println("invalid command");
         }
+
     }
+
 }
