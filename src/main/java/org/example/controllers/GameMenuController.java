@@ -2,6 +2,11 @@ package org.example.controllers;
 
 import org.example.display;
 import org.example.models.*;
+import org.example.models.Crafting.CraftingItem;
+import org.example.models.Crafting.CraftingItemType;
+import org.example.models.cooking.Food;
+import org.example.models.cooking.FoodType;
+import org.example.models.cooking.Recipe;
 import org.example.models.enums.GameMenuCommands;
 import org.example.models.enums.Season;
 import org.example.models.enums.ToolType;
@@ -17,7 +22,7 @@ import java.util.*;
 
 public class GameMenuController {
 
-    public Result newGame(String username1, String username2, String username3) {
+    public Result newGame(String username1, String username2, String username3,String rest) {
         //TODO handel errors
 
         User user1, user2, user3;
@@ -150,7 +155,11 @@ public class GameMenuController {
     }
 
     public Result cheatThor(int x, int y) {
-        return new Result(true, "t");
+        Tile tile = App.getCurrentGame().getTileByIndex(x, y);
+        if (tile == null)
+            return new Result(false, "tile not found");
+        tile.setLightninged(true);
+        return new Result(true, "Successfully lightninged.");
     }
 
     public Result getWeather() {
@@ -380,7 +389,7 @@ public class GameMenuController {
     }
 
 
-    public Result currentToolShow(String toolName) {
+    public Result currentToolShow() {
         if (App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool() == null) {
             return new Result(false, "You are not using any tool right now");
         }
@@ -388,7 +397,7 @@ public class GameMenuController {
                 App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool().getToolType().name());
     }
 
-    public Result toolsShow() {
+    public Result toolsShowAvailable() {
         StringBuilder sb = new StringBuilder();
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
 
@@ -421,70 +430,83 @@ public class GameMenuController {
     }
 
     public Result toolUse(String direction) {
-        int x = App.getCurrentGame().getCurrentPlayingPlayer().getX() + App.handleDirection(Integer.parseInt(direction))[0];
-        int y = App.getCurrentGame().getCurrentPlayingPlayer().getY() + App.handleDirection(Integer.parseInt(direction))[1];
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        int x = player.getX() + App.handleDirection(Integer.parseInt(direction))[0];
+        int y = player.getY() + App.handleDirection(Integer.parseInt(direction))[1];
+
         Tool tool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
-        Tile tile = Tile.getTile(x,y);
+        Tile tile = Tile.getTile(x, y);
+
         if (tile == null) {
-            return new Result(false,"unknown error");
+            return new Result(false, "unknown error");
         }
 
-        if(tool.getToolType().equals(ToolType.Hoe)){
-            if(tile.getPlaceable() == null){
+        if (tool.getToolType().equals(ToolType.Hoe)) {
+            if (tile.getPlaceable() == null) {
                 tile.setPlowed(true);
-                return new Result(true,"plowed successfully");
+                return new Result(true, "plowed successfully");
             }
-        }
-        else if(tool.getToolType().equals(ToolType.Pickaxe)){
-            if(tile.getPlaceable() instanceof Stone){
+        } else if (tool.getToolType().equals(ToolType.Pickaxe)) {
+            if (tile.getPlaceable() instanceof Stone) {
                 tile.setPlaceable(null);
-                return new Result(true,"stone breaked successfully");
-            }
-            else if(tile.isPlowed()){
+                return new Result(true, "stone breaked successfully");
+            } else if (tile.isPlowed()) {
                 tile.setPlowed(false);
             }
 
-        }
-
-        else if(tool.getToolType().equals(ToolType.Axe)){
-            if(tile.getPlaceable() instanceof Tree){
+        } else if (tool.getToolType().equals(ToolType.Axe)) {
+            if (tile.getPlaceable() instanceof Tree) {
                 tile.setPlaceable(null);
             }
-        }
-        else if(tool.getToolType().equals(ToolType.WateringCan)){
-            if(tile.getPlaceable() instanceof Plant){
-                Plant plant = (Plant) tile.getPlaceable();
-                if(tool.getWateringCanStorage()>0){
+        } else if (tool.getToolType().equals(ToolType.WateringCan)) {
+            if (tile.getPlaceable() instanceof Plant plant) {
+                if (tool.getWateringCanStorage() > 0) {
                     plant.wateringPlant();
-                    tool.setWateringCanStorage(tool.getWateringCanStorage() -1 );
+                    tool.setWateringCanStorage(tool.getWateringCanStorage() - 1);
                 }
-            }
-            else if(tile.isWater()){
+            } else if (tile.isWater()) {
                 tool.handleWateringCanStorage();
             }
-        }
-        else if(tool.getToolType().equals(ToolType.Scythe)){
-
-        }
-        else if(tool.getToolType().equals(ToolType.MilkPail)){
-            if(tile.getPlaceable() instanceof Animal){
+        } else if (tool.getToolType().equals(ToolType.Scythe)) {
+            //TODO: Alaf
+            player.setEnergy(player.getEnergy() - 2);
+            if (tile.getPlaceable() instanceof Plant plant) {
+                player.getAbilities().increaseFarmingAbility(5);
+                if (plant instanceof Tree tree) {
+                    if (tree.getTile().isLightninged()) {
+                        //TODO: gives Coal instead of fruit
+                    }
+                    tree.setFullyGrown(false);
+                    player.getBackPack().addItemToInventory(
+                            new Fruit(tree.getType().getFruitType())
+                    );
+                    tree.setFullyGrown(false);
+                } else if (plant instanceof Crop crop) {
+                    if (crop.isFullyGrown()) {
+                        player.getBackPack().addItemToInventory(crop);
+                        crop.getTile().setPlaceable(null);
+                    }
+                }
+            }
+        } else if (tool.getToolType().equals(ToolType.MilkPail)) {
+            if (tile.getPlaceable() instanceof Animal) {
                 Animal animal = (Animal) tile.getPlaceable();
             }
         }
-        return new Result(true,"t");
-
+        return new Result(true, "Tool used.");
     }
 
     public Result craftInfo(String name) {
         StringBuilder result = new StringBuilder();
 
         for (CropType cropType : CropType.values()) {
-            if (cropType.name().equals(name)) {
-                result.append("""
-                        Name: %s
-                        Source: %s""".formatted(cropType.name(), cropType.getSource().name()));
+            if (!cropType.name().equals(name)) {
+                continue;
             }
-            result.append("Stages: ");
+            result.append("""
+                    Name: %s
+                    Source: %s""".formatted(cropType.name(), cropType.getSource().name()));
+            result.append("\nStages: ");
             int counter = 1;
             for (Integer stage : cropType.getStages()) {
                 result.append("%s".formatted(stage));
@@ -497,7 +519,7 @@ public class GameMenuController {
                     Total Harvest Time: %d
                     One Time: %s
                     Regrowth Time: %s
-                    Base Sell Price: %f
+                    Base Sell Price: %.0f
                     Is Edible: %s
                     Base Energy: %d
                     Base Health:
@@ -510,12 +532,12 @@ public class GameMenuController {
             counter = 1;
             for (Season season : cropType.getSeasons()) {
                 result.append("%s".formatted(season));
-                if (counter != cropType.getStages().size())
+                if (counter != cropType.getSeasons().size())
                     result.append("-");
                 counter++;
             }
 
-            result.append("Can Become Giant: %s".formatted(cropType.isCanBecomeGiant()));
+            result.append("\nCan Become Giant: %s".formatted(cropType.isCanBecomeGiant()));
             return new Result(true, result.toString());
         }
 
@@ -523,11 +545,12 @@ public class GameMenuController {
         for (FruitType fruitType : FruitType.values()) {
             TreeType tree = fruitType.getSourceTreeType();
             if (fruitType.name().equals(name)) {
-                result.append("""
-                        Name: %s
-                        Source: %s""".formatted(fruitType.name(), tree.getSource().name()));
+                break;
             }
-            result.append("Stages: ");
+            result.append("""
+                    Name: %s
+                    Source: %s""".formatted(fruitType.name(), tree.getSource().name()));
+            result.append("\nStages: ");
             int counter = 1;
             for (Integer stage : tree.getStages()) {
                 result.append("%s".formatted(stage));
@@ -540,7 +563,7 @@ public class GameMenuController {
                     Total Harvest Time: %d
                     One Time: False
                     Regrowth Time: %s
-                    Base Sell Price: %f
+                    Base Sell Price: %.0f
                     Is Edible: %s
                     Base Energy: %d
                     Base Health:
@@ -553,7 +576,7 @@ public class GameMenuController {
             counter = 1;
             for (Season season : tree.getSeasons()) {
                 result.append("%s".formatted(season));
-                if (counter != tree.getStages().size())
+                if (counter != tree.getSeasons().size())
                     result.append("-");
                 counter++;
             }
@@ -649,23 +672,99 @@ public class GameMenuController {
     }
 
     public Result craftingShowRecipes() {
-        return new Result(false, "t");
+        if (App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes().isEmpty()) {
+            return new Result(false, "No crafting recipes found");
+        }
+        StringBuilder sb = new StringBuilder();
+        for (CraftingItem recipe : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()) {
+            sb.append(recipe.getTargetItem().getName()).append(" -> ").append("\n");
+            for (Map.Entry<CraftingItemType, Integer> entry : recipe.getCraftIngredients().entrySet()) {
+                CraftingItemType item = entry.getKey();
+                int quantity = entry.getValue();
+                sb.append(item).append(": ").append(quantity).append("\n");
+            }
+        }
+        return new Result(true, sb.toString());
     }
 
     public Result craftingCraft(String itemName) {
-        return new Result(false, "t");
+        if (CraftingItem.findCraftingItemTypeByName(itemName) == null) {
+            return new Result(false, "No crafting recipe found");
+        }
+        CraftingItem item = CraftingItem.findCraftingItemTypeByName(itemName);
+        if (App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().isBackPackFull()) {
+            return new Result(false, "no free space in inventory");
+        }
+        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+        for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
+            //TODO enough item or not
+        }
+        backPack.addItemToInventory(item);
+        return new Result(true, itemName + "crafted successfully");
+
     }
 
     public Result placeItem(String itemName, String direction) {
-        return new Result(false, "t");
+        if (CraftingItem.findCraftingItemTypeByName(itemName) == null) {
+            return new Result(false, "No item found");
+        }
+        int[] direction1 = App.handleDirection(Integer.parseInt(direction));
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile tile = App.getCurrentGame().getTileByIndex(player.getX() + direction1[0],
+                player.getY() + direction1[1]);
+        if (tile.getPlaceable() != null) {
+            return new Result(false, "tile is full");
+        }
+
+        CraftingItem item = CraftingItem.findCraftingItemTypeByName(itemName);
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(item.getType());
+        tile.setPlaceable(item);
+        return new Result(true, "Item placed Successfully.");
     }
 
     public Result addItem(String itemName, String number) {
         return new Result(false, "t");
     }
 
+    public Result cookingRefrigerator(String mode, String itemName) {
+        if (mode.equals("put")) {
+            BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+
+            for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
+                if (backPackableType instanceof FoodType foodType) {
+                    Food food = (Food) backPack.getBackPackItems().get(foodType).get(0);
+                    if (food.getFoodtype().getName().equals(itemName)) {
+
+                    }
+                }
+            }
+        }
+        return new Result(false, "ttt");
+    }
+
+    public Result cookingShowRecipes() {
+        if (App.getCurrentGame().getCurrentPlayingPlayer().getRecipes().isEmpty()) {
+            return new Result(false, "you dont have any resipes");
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Recipe recipe : App.getCurrentGame().getCurrentPlayingPlayer().getRecipes()) {
+            sb.append(recipe.getFoodToBeCooked().getName()).append(" : ");
+            for (Food food : recipe.getIngredients()) {
+                sb.append(food.getName()).append(", ");
+            }
+            sb.append("\n");
+        }
+        return new Result(true, sb.toString());
+    }
+
     public Result cookingPrepare(String recipeName) {
-        return new Result(false, "t");
+        if (Recipe.findRecipe(recipeName) == null) {
+            return new Result(false, "Recipe not found");
+        }
+        Recipe recipe = Recipe.findRecipe(recipeName);
+        //TODO if player have ingridiant food should be cooked
+        App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(App.getCurrentGame().getCurrentPlayingPlayer().getEnergy() - 3);
+        return new Result(true, "t");
     }
 
     public Result eat(String foodName) {
@@ -716,11 +815,11 @@ public class GameMenuController {
         return new Result(false, "t");
     }
 
-    public Result artisianUse(String artisianName, String itemName) {
+    public Result artisanUse(String artisanName, String itemName) {
         return new Result(false, "t");
     }
 
-    public Result artisianGet(String artisianName) {
+    public Result artisanGet(String artisanName) {
         return new Result(false, "t");
     }
 

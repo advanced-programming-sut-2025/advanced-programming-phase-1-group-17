@@ -63,31 +63,31 @@ public class App {
     }
 
     public static int[] handleDirection(int direction) {
-        //returns (dx, dy)
+        //returns (dy, dx)
         switch (direction) {
             case 1 -> {
-                return (new int[]{0, 1}); //Up
+                return (new int[]{-1, 0}); //Up
             }
             case 2 -> {
-                return (new int[]{1, 1}); //Up-Right
+                return (new int[]{-1, 1}); //Up-Right
             }
             case 3 -> {
-                return (new int[]{1, 0}); //Right
+                return (new int[]{0, 1}); //Right
             }
             case 4 -> {
-                return (new int[]{1, -1}); //Down-Right
+                return (new int[]{1, 1}); //Down-Right
             }
             case 5 -> {
-                return (new int[]{0, -1}); //Down
+                return (new int[]{1, 0}); //Down
             }
             case 6 -> {
-                return (new int[]{-1, -1}); //Down-Left
+                return (new int[]{1, -1}); //Down-Left
             }
             case 7 -> {
-                return (new int[]{-1, 0}); //Left
+                return (new int[]{0, -1}); //Left
             }
             case 8 -> {
-                return (new int[]{-1, 1}); //Up-Left
+                return (new int[]{1, -1}); //Up-Left
             }
         }
         return new int[]{10, 10}; // never happens

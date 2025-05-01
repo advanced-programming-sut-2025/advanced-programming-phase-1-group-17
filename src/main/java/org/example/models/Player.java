@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class Player {
     private PlayerMap playerMap;
     private User user;
-    private final boolean isGuest = false;
+    private boolean isGuest = false;
     private int x;
     private int y;
 
@@ -73,7 +73,7 @@ public class Player {
     private ArrayList<Food> foods = new ArrayList<>();
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ArrayList<Friends> friends = new ArrayList<>();
-    private ArrayList<Ability> abilitesLearned = new ArrayList<>();
+    private Ability abilities = new Ability();
     private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
 
     private double balance;
@@ -89,6 +89,21 @@ public class Player {
         this.craftingItems = craftingItems;
     }
 
+    public int getVegetableFarmed() {
+        return vegetableFarmed;
+    }
+
+    public void setVegetableFarmed(int vegetableFarmed) {
+        this.vegetableFarmed = vegetableFarmed;
+    }
+
+    public Ability getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(Ability abilities) {
+        this.abilities = abilities;
+    }
 
     public ArrayList<Recipe> getRecipes() {
         return recipes;
@@ -98,13 +113,14 @@ public class Player {
         this.recipes = recipes;
     }
 
-    public Player(User user, boolean isGuest, Game activeGame) {
+    public Player(User user, boolean isGuest) {
         this.user = user;
         this.isGuest = isGuest;
-        this.activeGame = activeGame;
         this.energy = maxEnergy;
-        backPack.addItemToInventory(new Tool(ToolType.WateringCan, ToolMaterial.Basic));
-);
+        Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
+        backPack.addItemToInventory(wateringCan);
+        backPack.addItemToInventory(new Tool(ToolType.Scythe, null));
+        this.currentTool = wateringCan;
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
