@@ -15,6 +15,7 @@ public class Tile {
     private Player owner;
     private Player whoIsHere;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
+    private boolean isLightninged = false;
 
     public Tile(int x, int y, Player owner) {
         this.x = x;
@@ -102,5 +103,12 @@ public class Tile {
 
     public void setWhoIsHere(Player whoIsHere) {
         this.whoIsHere = whoIsHere;
+    }
+    public boolean isLightninged() {
+        return isLightninged;
+    }
+
+    public void setLightninged(boolean lightninged) {
+        isLightninged = lightninged;
     }
 }
