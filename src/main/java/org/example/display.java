@@ -3,6 +3,7 @@ package org.example;
 import org.example.models.App;
 import org.example.models.Game;
 import org.example.models.map.*;
+import org.example.models.plant.Crop;
 import org.example.models.plant.Tree;
 
 public class display {
@@ -51,14 +52,13 @@ public class display {
                 } else if (tile.getPlaceable() instanceof GreenHouse) {
                     System.out.print(BOLD + PURPLE + "G" + RESET);
                 } else if (tile.getPlaceable() instanceof Tree tree) {
-                    if (tree.isForaging())
-                        System.out.print(BOLD + RED + "F" + RESET);
-                    else
-                        System.out.print(BOLD + GREEN + "T" + RESET);
+                    System.out.print(BOLD + GREEN + "T" + RESET);
+                } else if (tile.getPlaceable() instanceof Crop){
+                    System.out.print(BOLD + RED + "C" + RESET);
                 } else if (tile.getWhoIsHere() != null) {
                     System.out.print(BOLD + WHITE + "P" + RESET);
                 }
-                //TODO: Add Crop (with checking isForaging)
+                //TODO: Add Stone and Minerals
                 else {
                     System.out.print(" ");
                 }

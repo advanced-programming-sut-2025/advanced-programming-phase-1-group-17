@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum GameMenuCommands {
-    StartNewGame("\\s*game\\s+new\\s+-u(\\s+(?<username1>\\S+))?(\\s+(?<username2>\\S+))?(\\s+(?<username3>\\S+))?\\s*"),
+    StartNewGame("\\s*game\\s+new\\s+-u(\\s+(?<username1>\\S+))?(\\s+(?<username2>\\S+))?(\\s+(?<username3>\\S+))?(\\s+(?<rest>\\S+))?\\s*"),
 
     ExitGame("\\s*exit\\s+game\\s*"),
     LoadGame("\\s*load\\s+game\\s*"),
@@ -27,13 +27,29 @@ public enum GameMenuCommands {
     EnergySet("\\s*energy\\s+set\\s+-v\\s+(?<value>\\d+)\\s*"),
     EnergyUnlimited("\\s*energy\\s+unlimited\\s*"),
 
+    //Tool
+    ToolsEquip("\\s*tools\\s+equip\\s+(?<toolName>\\S+)\\s*"),
+    ToolsShowCurrent("\\s*tools\\s+show\\s+current\\s*"),
+    ToolsShowAvailable("\\s*tools\\s+show\\s+available\\s*"),
+    ToolsUpgrade("\\s*tools\\s+upgrade\\s+(?<toolName>\\S+)\\s*"),
+    ToolsUse("\\s*tools\\s+use\\s+-d\\s+(?<direction>\\d+)\\s*"),
+
     //For Inventory
     InventoryShow("\\s*inventory\\s+show\\s*"),
     InventoryTrash("\\s*inventory\\s+trash\\s+-i\\s+(?<itemName>\\S+)(\\s+-n\\s+(?<number>\\d+))?\\s*"),
+
+    //For Map
     Walk("\\s*walk -l <(?<x>\\d+), (?<y>\\d+)>\\s*"),
     ChooseGameMap("\\s*game\\s+map\\s+(?<mapNumber>\\S+)\\s*"),
     Int("\\d+"),
     PrintMap("\\s*print\\s+map\\s+-l\\s+<(?<x>\\d+),\\s*(?<y>\\d+)>\\s+-s\\s+(?<size>\\d+)\\s*"),
+
+    //For Plants
+    CraftInfo("\\s*craftinfo\\s+-n\\s+(?<craftName>\\S+)\\s*"),
+    Plant("\\s*plant\\s+-s\\s+(?<seed>\\S+)\\s+-d\\s+(?<direction>\\d+)\\s*"),
+    ShowPlant("\\s*showplant\\s+-l\\s+(?<x>\\d+), (?<y>\\d+)\\s*"),
+    Fertilize("\\s*fertilize\\s+-f\\s+(?<fertilizer>\\S+)\\s+-d\\s+(?<direction>\\d+)\\s*"),
+    HowMuchWater("\\s*howmuch\\s+water\\s*"),
 
     //For Crafting
     CraftingShowRecipes("\\s*crafting\\s+show\\s+recipes\\s*"),
@@ -44,7 +60,12 @@ public enum GameMenuCommands {
     CookingRefrigerator("\\s*cooking\\s+refrigerator\\s+(?<mod>put|pick)\\s+(?<item>\\S+)\\s*"),
     CookingShowRecipes("\\s*cooking\\s+show\\s+recipe\\s*"),
     CookingPrepare("\\s*cooking\\s+prepare\\s+(?<recipeName>\\S+)\\s*"),
-    Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*");
+    Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*"),
+
+
+    //For artisan
+    ArtisanUse("\\s*artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<itemName>\\S+)\\s*"),
+    ArtisanGet("\\s*artisan\\s+get\\s+(?<artisanName>\\S+)\\s*");
 
 
 

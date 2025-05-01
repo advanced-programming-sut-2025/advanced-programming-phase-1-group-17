@@ -5,6 +5,9 @@ import org.example.models.BackPackable;
 public class Fruit implements BackPackable {
     private FruitType type;
 
+    public Fruit(FruitType type) {
+        this.type = type;
+    }
 
     @Override
     public double getPrice() {

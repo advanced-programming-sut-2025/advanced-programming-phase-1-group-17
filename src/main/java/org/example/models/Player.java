@@ -32,14 +32,12 @@ public class Player {
     //For TrashCan & WaterStorage
     private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
 
-    private Game activeGame;
-
     private Tool currentTool;
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ArrayList<Friends> friends = new ArrayList<>();
-    private ArrayList<Ability> abilitesLearned = new ArrayList<>();
+    private Ability abilities = new Ability();
     private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
     private double balance;
     private Player partner = null;
@@ -53,6 +51,22 @@ public class Player {
 
     public void setCraftingRecipes(ArrayList<CraftingItem> craftingItems) {
         this.craftingItems = craftingItems;
+    }
+
+    public int getVegetableFarmed() {
+        return vegetableFarmed;
+    }
+
+    public void setVegetableFarmed(int vegetableFarmed) {
+        this.vegetableFarmed = vegetableFarmed;
+    }
+
+    public Ability getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(Ability abilities) {
+        this.abilities = abilities;
     }
 
     public int getWood() {
@@ -88,13 +102,14 @@ public class Player {
         this.recipes = recipes;
     }
 
-    public Player(User user, boolean isGuest, Game activeGame) {
+    public Player(User user, boolean isGuest) {
         this.user = user;
         this.isGuest = isGuest;
-        this.activeGame = activeGame;
         this.energy = maxEnergy;
-        backPack.addItemToInventory(new Tool(ToolType.WateringCan, ToolMaterial.Basic));
-);
+        Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
+        backPack.addItemToInventory(wateringCan);
+        backPack.addItemToInventory(new Tool(ToolType.Scythe, null));
+        this.currentTool = wateringCan;
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -193,13 +208,5 @@ public class Player {
 
     public void setTrashCan(Tool trashCan) {
         this.trashCan = trashCan;
-    }
-
-    public Tool getWateringCan() {
-        return wateringCan;
-    }
-
-    public void setWateringCan(Tool wateringCan) {
-        this.wateringCan = wateringCan;
     }
 }
