@@ -38,10 +38,33 @@ public class BackPack {
         return type;
     }
 
-    public void useItem(BackPackableType backPackableType) {
-        if (backPackItems.get(backPackableType) == null || backPackItems.get(backPackableType).isEmpty())
-            return;
-        backPackItems.get(backPackableType).remove(0);
+    public BackPackable useItem(String item) {
+        BackPackableType backPackType = null;
+        for (BackPackableType b : backPackItems.keySet()) {
+            if (b.getName().equals(item)) {
+                backPackType = b;
+                break;
+            }
+        }
+        if (backPackType == null) {
+            return null;
+        }
+        else if (backPackItems.get(backPackType).isEmpty()) {
+            return null;
+        }
+        else {
+            BackPackable b = backPackItems.get(backPackType).get(0);
+            backPackItems.get(backPackType).remove(0);
+            return b;
+        }
+    }
+    public int getInventorySize(String item) {
+        for (BackPackableType b : backPackItems.keySet()) {
+            if (b.getName().equals(item)) {
+                return backPackItems.get(b).size();
+            }
+        }
+        return 0;
     }
 
     public void addItemToInventory(BackPackable backPackable) {

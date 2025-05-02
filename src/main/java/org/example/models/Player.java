@@ -1,6 +1,6 @@
 package org.example.models;
 
-import org.example.models.Crafting.CraftingItem;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
 import org.example.models.enums.BackPackType;
@@ -28,6 +28,7 @@ public class Player {
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
+    private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
 
 
     public int getWood() {
@@ -243,5 +244,17 @@ public class Player {
 
     public void addTalk(Player player, Talk talk) {
         this.talk.put(player, talk);
+    }
+
+    public void addGift(Player player) {
+        this.gifts.put(player, new ArrayList<>());
+    }
+
+    public HashMap<Player, ArrayList<Gift>> getGifts() {
+        return gifts;
+    }
+
+    public void setGifts(HashMap<Player, ArrayList<Gift>> gifts) {
+        this.gifts = gifts;
     }
 }
