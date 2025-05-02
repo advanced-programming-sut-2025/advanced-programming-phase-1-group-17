@@ -4,6 +4,8 @@ import org.example.models.App;
 import org.example.models.Game;
 import org.example.models.NPCS.*;
 import org.example.models.map.*;
+import org.example.models.plant.Crop;
+import org.example.models.plant.Seed;
 import org.example.models.plant.Tree;
 
 public class display {
@@ -54,11 +56,10 @@ public class display {
                     System.out.print(BOLD + YELLOW + "H" + RESET);
                 } else if (tile.getPlaceable() instanceof GreenHouse) {
                     System.out.print(BOLD + PURPLE + "G" + RESET);
-                } else if (tile.getPlaceable() instanceof Tree tree) {
-                    if (tree.isForaging())
-                        System.out.print(BOLD + RED + "F" + RESET);
-                    else
-                        System.out.print(BOLD + GREEN + "T" + RESET);
+                } else if (tile.getPlaceable() instanceof Tree) {
+                    System.out.print(BOLD + GREEN + "T" + RESET);
+                } else if (tile.getPlaceable() instanceof Crop) {
+                    System.out.print(BOLD + RED + "C" + RESET);
                 }
                 //TODO: Add Crop (with checking isForaging)
                 else if (tile.getPlaceable() instanceof Abigail) {
@@ -71,6 +72,8 @@ public class display {
                     System.out.print(BOLD + RED + "R" + RESET);
                 } else if (tile.getPlaceable() instanceof Sebastian) {
                     System.out.print(BOLD + YELLOW + "S" + RESET);
+                } else if (tile.getPlaceable() instanceof Seed) {
+                    System.out.printf(BOLD + GREEN + "S"+ RESET);
                 } else {
                     System.out.print(" ");
                 }
@@ -99,7 +102,8 @@ public class display {
     }
 
     public static void helpReadingMap() {
-        System.out.println(BOLD + RED + "F" + RESET + " : is foraging");
+        System.out.println(BOLD + RED + "C" + RESET + " : is Crop");
+        System.out.println(BOLD + GREEN + "S" + RESET + " : is Seed");
         System.out.println(BOLD + CYAN + "Q" + RESET + " : is quarry");
         System.out.println(BOLD + BLUE + "L" + RESET + " : is lake");
         System.out.println(BOLD + CHOCOLATE + "S" + RESET + " : is stone");
