@@ -65,7 +65,9 @@ public enum GameMenuCommands {
     talk("\\s*talk\\s+-u\\s+(?<username>\\S+)\\s+-m\\s+(?<message>[\\S ]+)\\s*"),
     talkHistory("\\s*talk\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),
     gift("\\s*gift\\s+-u\\s+(?<username>\\S+)\\s+-i\\s+(?<item>\\S+)\\s+-a\\s+(?<amount>\\d+)\\s*"),
-    hug("\\s*hug\\s+-u\\s+(?<username>\\S+)\\s*");
+    hug("\\s*hug\\s+-u\\s+(?<username>\\S+)\\s*"),
+    giftRate("\\s*gift\\s+rate\\s+-i\\s+(?<giftNumber>\\S+)\\s+-r\\s+(?<rate>\\S+)\\s*"),
+    giftHistory("\\s*gift\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),;
 
 
     private final String regex;

@@ -2,15 +2,12 @@ package org.example.controllers;
 
 import org.example.display;
 import org.example.models.*;
-import org.example.models.Crafting.CraftingItem;
-import org.example.models.Crafting.CraftingItemType;
+import org.example.models.crafting.CraftingItem;
+import org.example.models.crafting.CraftingItemType;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
-import org.example.models.enums.GameMenuCommands;
-import org.example.models.enums.Season;
-import org.example.models.enums.ToolType;
-import org.example.models.enums.WeatherType;
+import org.example.models.enums.*;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Stone;
 import org.example.models.map.Tile;
@@ -22,7 +19,7 @@ import java.util.*;
 
 public class GameMenuController {
 
-    public Result newGame(String username1, String username2, String username3,String rest) {
+    public Result newGame(String username1, String username2, String username3, String rest) {
         //TODO handel errors
 
         User user1, user2, user3;
@@ -604,7 +601,7 @@ public class GameMenuController {
         else if (seedType == null)
             return new Result(false, "No SeedType with this Name");
 
-        player.getBackPack().useItem(seedType);
+        player.getBackPack().useItem(seedType.getName());
         tile.setPlaceable(new Crop(false, seedType.getCropType(), false, tile));
 
         return new Result(true,
@@ -717,7 +714,7 @@ public class GameMenuController {
         }
 
         CraftingItem item = CraftingItem.findCraftingItemTypeByName(itemName);
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(item.getType());
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(item.getType().getName());
         tile.setPlaceable(item);
         return new Result(true, "Item placed Successfully.");
     }
@@ -917,13 +914,32 @@ public class GameMenuController {
         if (App.getUserWithUsername(username) == null) {
             return new Result(false, "there isn't player in this game with this username");
         }
+
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
                 if (currentPlayer.getFriendShips().get(player) != null) {
-                    if (currentPlayer.getFriendShips().get(player) < 100) {
-                        return new Result(false, "your level is less than 1");
+                    if (sideBySide(currentPlayer, player)) {
+                        if (currentPlayer.getFriendShips().get(player) < 100) {
+                            return new Result(false, "your level is less than 1");
+                        } else {
+                            if (currentPlayer.getBackPack().getInventorySize(item) < Amount) {
+                                return new Result(false, "insufficient inventory");
+                            } else {
+                                for (int i = 0; i < Amount; i++) {
+                                    BackPackable backPackable = currentPlayer.getBackPack().useItem(item);
+                                    player.getBackPack().addItemToInventory(backPackable);
+                                }
+                                Gift gift = new Gift(currentPlayer, player, item, Amount);
+                                currentPlayer.getGifts().get(player).add(gift);
+                                player.getGifts().get(currentPlayer).add(gift);
+                                return new Result(true, "your gift was received by " + player.getUser().getUsername()
+                                        + "\n" + player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
+                                        + "\n" + "your gift : " + item + "\n" + "your gift amount : " + amount + "\n"
+                                        + "please rate this gift between one and five Whenever you have time ");
+                            }
+                        }
                     } else {
-                        //TODO
+                        return new Result(false, "you can't gift from this distance");
                     }
                 }
             }
@@ -932,15 +948,60 @@ public class GameMenuController {
     }
 
     public Result giftList() {
-        return new Result(false, "t");
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        String result = "";
+        for (Player player : currentPlayer.getGifts().keySet()) {
+            result += player.getUser().getUsername() + "\n";
+            for (Gift gift : currentPlayer.getGifts().get(player)) {
+                if (currentPlayer.equals(gift.getPlayerWhoGetGift())) {
+                    result += gift.getItem() + " : " + gift.getAmount() + " ---> " + gift.getGiftNumber() + "\n";
+                }
+            }
+        }
+        return new Result(true, result);
     }
 
     public Result giftRate(String giftNumber, String rate) {
-        return new Result(false, "t");
+        if (GameMenuCommands.Int.getMatcher(rate) == null || GameMenuCommands.Int.getMatcher(giftNumber) == null) {
+            return new Result(true, "your rate or giftNumber is not valid");
+        } else if (Integer.parseInt(rate) > 5 || Integer.parseInt(rate) < 1) {
+            return new Result(true, "your rate is not valid");
+        } else {
+            Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+            for (Player player : currentPlayer.getGifts().keySet()) {
+                for (Gift gift : currentPlayer.getGifts().get(player)) {
+                    if (gift.getGiftNumber() == Integer.parseInt(giftNumber) && gift.getPlayerWhoGetGift() == currentPlayer) {
+                        if (!gift.getRateGiven()) {
+                            gift.setRateGiven(true);
+                            currentPlayer.getFriendShips().put(player, currentPlayer.getFriendShips().get(player) + (Integer.parseInt(rate) - 3) * 30 + 15);
+                            player.getFriendShips().put(currentPlayer, currentPlayer.getFriendShips().get(player));
+                            return new Result(true, "your rate was recorded as " + Integer.parseInt(rate));
+                        } else {
+                            return new Result(true, "you rate to this gift previously");
+                        }
+                    }
+                }
+            }
+
+
+        }
+        return new Result(false, "you have not received a gift with this giftNumber");
     }
 
     public Result giftHistory(String username) {
-        return new Result(false, "t");
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals(username)) {
+                String result = "";
+                result += player.getUser().getUsername() + "\n";
+                for (Gift gift : currentPlayer.getGifts().get(player)) {
+                    result += "whoGetGift : " + gift.getPlayerWhoGetGift() + "\n" + gift.getItem() + " : " + gift.getAmount() + " ---> " + gift.getGiftNumber() + "\n";
+                }
+                return new Result(true, result);
+            }
+        }
+        return new Result(false, "this username there is not in this game");
+
     }
 
     public Result hug(String username) {
@@ -958,8 +1019,7 @@ public class GameMenuController {
                     player.getFriendShips().put(App.getCurrentGame().getCurrentPlayingPlayer(),
                             App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player));
                     return new Result(true, "you hug your friend ^^");
-                }
-                else {
+                } else {
                     return new Result(false, "you can't hug your friend from this distance");
                 }
             }
