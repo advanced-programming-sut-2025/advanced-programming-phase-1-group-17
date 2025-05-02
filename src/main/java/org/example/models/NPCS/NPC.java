@@ -7,7 +7,7 @@ import org.example.models.map.Tile;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-abstract public class NPC {
+abstract public class NPC{
     private String name;
     private HashMap<Player,Integer> friendshipLevel = new HashMap<>();
     private HashMap<Player,Integer> friendshipPoint;

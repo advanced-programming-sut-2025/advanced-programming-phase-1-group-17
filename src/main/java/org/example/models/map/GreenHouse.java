@@ -46,4 +46,12 @@ public class GreenHouse implements Placeable {
     public void setNeed_a_scarecrow(boolean need_a_scarecrow) {
         this.need_a_scarecrow = need_a_scarecrow;
     }
+
+    public static ArrayList<GreenHouse> getGreenHouse() {
+        return greenHouse;
+    }
+
+    public static void setGreenHouse(ArrayList<GreenHouse> greenHouse) {
+        GreenHouse.greenHouse = greenHouse;
+    }
 }

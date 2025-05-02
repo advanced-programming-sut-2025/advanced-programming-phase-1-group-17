@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.models.App;
 import org.example.models.Game;
+import org.example.models.NPCS.*;
 import org.example.models.map.*;
 import org.example.models.plant.Tree;
 
@@ -26,20 +27,23 @@ public class display {
             return;
         }
         if (x == 1) {
+            System.out.print("    ");
             for (int i = 0; i < size + 2; i++) {
                 System.out.print("-");
             }
             System.out.println();
         }
         for (int i = x; i < x + size; i++) {
-            System.out.print("|");
+            System.out.printf("%3d|", i);
             for (int j = y; j < y + size; j++) {
-                if (j == 51) {
+                if (j == 101) {
                     System.out.print("|");
                 }
                 Tile tile = game.getTileByIndex(i, j);
                 if (tile == null) {
                     System.out.print("null");
+                } else if (tile.getWhoIsHere() != null) {
+                    System.out.print(BOLD + WHITE + "P" + RESET);
                 } else if (tile.getPlaceable() instanceof Quarry) {
                     System.out.print(BOLD + CYAN + "Q" + RESET);
                 } else if (tile.getPlaceable() instanceof Lake) {
@@ -55,11 +59,19 @@ public class display {
                         System.out.print(BOLD + RED + "F" + RESET);
                     else
                         System.out.print(BOLD + GREEN + "T" + RESET);
-                } else if (tile.getWhoIsHere() != null) {
-                    System.out.print(BOLD + WHITE + "P" + RESET);
                 }
                 //TODO: Add Crop (with checking isForaging)
-                else {
+                else if (tile.getPlaceable() instanceof Abigail) {
+                    System.out.print(BOLD + BLUE + "A" + RESET);
+                } else if (tile.getPlaceable() instanceof Harvey) {
+                    System.out.print(BOLD + GREEN + "H" + RESET);
+                } else if (tile.getPlaceable() instanceof Lia) {
+                    System.out.print(BOLD + WHITE + "L" + RESET);
+                } else if (tile.getPlaceable() instanceof Robin) {
+                    System.out.print(BOLD + RED + "R" + RESET);
+                } else if (tile.getPlaceable() instanceof Sebastian) {
+                    System.out.print(BOLD + YELLOW + "S" + RESET);
+                } else {
                     System.out.print(" ");
                 }
             }
@@ -70,15 +82,22 @@ public class display {
                     System.out.print("-");
                 }
             }
+            if (i == 150) {
+                System.out.println();
+                for (int t = 0; t < size + 2; t++) {
+                    System.out.print("-");
+                }
+            }
             System.out.println();
         }
-        if ((x + size == 101)) {
+        if ((x + size == 201)) {
             for (int i = 0; i < size + 2; i++) {
                 System.out.print("-");
             }
             System.out.println();
         }
     }
+
     public static void helpReadingMap() {
         System.out.println(BOLD + RED + "F" + RESET + " : is foraging");
         System.out.println(BOLD + CYAN + "Q" + RESET + " : is quarry");
@@ -88,5 +107,10 @@ public class display {
         System.out.println(BOLD + PURPLE + "G" + RESET + " : is greenhouse");
         System.out.println(BOLD + GREEN + "T" + RESET + " : is tree");
         System.out.println(BOLD + WHITE + "P" + RESET + " : is player");
+        System.out.println(BOLD + BLUE + "A" + RESET + " : is Abigail Home");
+        System.out.println(BOLD + WHITE + "L" + RESET + " : is Lia Home");
+        System.out.println(BOLD + RED + "R" + RESET + " : is Robin Home");
+        System.out.println(BOLD + GREEN + "H" + RESET + " : is Harvey Home");
+        System.out.println(BOLD + YELLOW + "S" + RESET + " : is Sebastian Home");
     }
 }
