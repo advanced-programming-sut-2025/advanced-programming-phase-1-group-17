@@ -73,7 +73,7 @@ public enum ArtisanProductType implements BackPackableType {
             mapOf(entry(IngredientGroup.Grapes, 1)), 600, CraftingItemType.Dehydrator),
 
     SmokedFish("Smoked Fish", "A whole fish, smoked to perfection.", 0, 0, 1,
-            mapOf(entry(org.example.models.enums.FishType.AnyFish, 1)), 0, CraftingItemType.FishSmoker); // dynamic price
+            mapOf(entry(IngredientGroup.AnyFish, 1)), 0, CraftingItemType.FishSmoker); // dynamic price
 
     private final String name;
     private final String description;
