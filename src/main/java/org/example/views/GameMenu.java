@@ -18,8 +18,8 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.newGame(matcher.group("username1"),
                     matcher.group("username2"),
                     matcher.group("username3"),
-                    matcher.group("rest")));
-            controller.gameMap(scanner);
+                    matcher.group("rest"),
+                    scanner));
         } else if ((matcher = GameMenuCommands.ExitGame.getMatcher(command)) != null) {
             System.out.println(controller.exitGame());
         } else if ((matcher = GameMenuCommands.LoadGame.getMatcher(command)) != null) {
@@ -165,7 +165,7 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.ArtisanUse.getMatcher(command)) != null) {
             System.out.println(controller.artisanUse(
                     matcher.group("artisanUse"),
-                    matcher.group("itemName")
+                    matcher.group("itemNames")
             ));
         } else if ((matcher = GameMenuCommands.ArtisanGet.getMatcher(command)) != null) {
             System.out.println(controller.artisanGet(
@@ -200,14 +200,8 @@ public class GameMenu implements AppMenu {
             System.out.println(controller);
         }
 
-
-
-
-
         else {
             System.out.println("invalid command");
         }
-
     }
-
 }

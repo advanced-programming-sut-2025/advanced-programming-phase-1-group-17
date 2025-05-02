@@ -19,7 +19,7 @@ public class GreenHouse implements Placeable {
         greenHouse.add(this);
         this.player = player;
         //TODO
-
+        
     }
     public void changeDay() {}
     public GreenHouse getGreenHouse(Player player) {

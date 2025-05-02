@@ -4,16 +4,11 @@ import org.example.models.BackPackable;
 import org.example.models.Placeable;
 
 public class Seed implements BackPackable, Placeable {
-    private boolean isMixed; //may be deleted in the future
     private SeedType type;
     private double price;
 
-    public boolean isMixed() {
-        return isMixed;
-    }
-
-    public void setMixed(boolean mixed) {
-        isMixed = mixed;
+    public Seed(SeedType type) {
+        this.type = type;
     }
 
     public SeedType getType() {

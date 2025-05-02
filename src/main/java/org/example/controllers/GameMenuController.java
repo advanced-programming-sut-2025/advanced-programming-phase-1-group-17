@@ -2,15 +2,15 @@ package org.example.controllers;
 
 import org.example.display;
 import org.example.models.*;
-import org.example.models.Crafting.CraftingItem;
-import org.example.models.Crafting.CraftingItemType;
+import org.example.models.artisan.ArtisanProduct;
+import org.example.models.artisan.ArtisanProductType;
+import org.example.models.artisan.IngredientGroup;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
-import org.example.models.enums.GameMenuCommands;
-import org.example.models.enums.Season;
-import org.example.models.enums.ToolType;
-import org.example.models.enums.WeatherType;
+import org.example.models.crafting.CraftingItem;
+import org.example.models.crafting.CraftingItemType;
+import org.example.models.enums.*;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Stone;
 import org.example.models.map.Tile;
@@ -22,20 +22,20 @@ import java.util.*;
 
 public class GameMenuController {
 
-    public Result newGame(String username1, String username2, String username3,String rest) {
-        //TODO handel errors
+    public Result newGame(String username1, String username2, String username3, String rest, Scanner scanner) {
+        if (rest != null && !rest.trim().isEmpty())
+            return new Result(false, "you can't give more than 3 names");
 
         User user1, user2, user3;
         if (username1 == null) {
-            if (App.getUserWithUsername("guest0") != null) {
-                App.getUsers().remove(App.getUserWithUsername("guest0"));
-            }
-            user1 = new User();
-            user1.setUsername("guest0");
-            App.getUsers().add(user1);
-        } else {
-            user1 = App.getUserWithUsername(username1);
+            return new Result(false, "you must give at least 1 username");
         }
+        user1 = App.getUserWithUsername(username1);
+        if (user1 == null)
+            return new Result(false, "no user exists with username %s".formatted(username1));
+        if (user1.getActiveGame() != null)
+            return new Result(false, "user with username %s has an active game".formatted(username1));
+
         if (username2 == null) {
             if (App.getUserWithUsername("guest1") != null) {
                 App.getUsers().remove(App.getUserWithUsername("guest1"));
@@ -45,6 +45,10 @@ public class GameMenuController {
             App.getUsers().add(user2);
         } else {
             user2 = App.getUserWithUsername(username2);
+            if (user2 == null)
+                return new Result(false, "no user exists with username %s".formatted(username2));
+            if (user2.getActiveGame() != null)
+                return new Result(false, "user with username %s has an active game".formatted(username2));
         }
         if (username3 == null) {
             if (App.getUserWithUsername("guest2") != null) {
@@ -55,10 +59,15 @@ public class GameMenuController {
             App.getUsers().add(user3);
         } else {
             user3 = App.getUserWithUsername(username3);
+            if (user3 == null)
+                return new Result(false, "no user exists with username %s".formatted(username3));
+            if (user3.getActiveGame() != null)
+                return new Result(false, "user with username %s has an active game".formatted(username3));
         }
         Game game = new Game(user1, user2, user3);
         App.setCurrentGame(game);
         App.getGames().add(game);
+        gameMap(scanner);
         return new Result(true, "new game created Successfully");
     }
 
@@ -815,9 +824,149 @@ public class GameMenuController {
         return new Result(false, "t");
     }
 
-    public Result artisanUse(String artisanName, String itemName) {
-        return new Result(false, "t");
+    public Result artisanUse(String artisanName, String itemNames) {
+        // 1. Find artisan tool by name
+        CraftingItemType artisan = null;
+        for (CraftingItemType type : CraftingItemType.values()) {
+            if (type.name().equalsIgnoreCase(artisanName)) {
+                artisan = type;
+                break;
+            }
+        }
+
+        if (artisan == null) {
+            return new Result(false, "No artisan found with name '%s'".formatted(artisanName));
+        }
+
+        // 2. Check ownership of artisan tool
+        BackPack playerBackPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+        if (!playerBackPack.getBackPackItems().containsKey(artisan)) {
+            return new Result(false, "You do not own the artisan tool '%s'.".formatted(artisan.getName()));
+        }
+
+        // 3. Parse input ingredient names into BackPackableTypes
+        String[] tokens = itemNames.trim().split("\\s+");
+        Map<BackPackableType, Integer> provided = new HashMap<>();
+        for (String token : tokens) {
+            Optional<BackPackableType> maybeIngredient = parseBackPackable(token);
+            if (maybeIngredient.isEmpty()) {
+                return new Result(false, "Ingredient '%s' not recognized.".formatted(token));
+            }
+            BackPackableType type = maybeIngredient.get();
+            provided.put(type, provided.getOrDefault(type, 0) + 1);
+        }
+
+        // 4. Try to match an ArtisanProductType with given artisan and provided ingredients
+        for (ArtisanProductType product : ArtisanProductType.values()) {
+            if (!product.getArtisan().equals(artisan)) continue;
+
+            for (BackPackableType ingredient : product.getIngredients()) {
+                if (ingredient.getName().equalsIgnoreCase())
+            }
+            //            // 1. Convert required ingredients (Map) to List
+//            List<BackPackableType> requiredList = toIngredientList(provided);
+//
+//// 2. Check if provided ingredients match the required ingredients
+//            if (!matchesIngredients(requiredList, provided)) continue;
+
+
+            // 5. Check if player has enough of each required ingredient
+            for (Map.Entry<Object, Integer> entry : product.getIngredients().entrySet()) {
+                int required = entry.getValue();
+
+                if (entry.getKey() instanceof BackPackableType type) {
+                    int owned = playerBackPack.getBackPackItems()
+                            .getOrDefault(type, new ArrayList<>()).size();
+                    if (owned < required) {
+                        return new Result(false, "Not enough of '%s'.".formatted(type.getName()));
+                    }
+                } else if (entry.getKey() instanceof IngredientGroup group) {
+                    int available = group.countInBackPack(playerBackPack);
+                    if (available < required) {
+                        return new Result(false, "Not enough items from group '%s'.".formatted(group.getName()));
+                    }
+                }
+            }
+
+            // 6. Remove used items from backpack
+            for (Map.Entry<Object, Integer> entry : product.getIngredients().entrySet()) {
+                int amount = entry.getValue();
+                if (entry.getKey() instanceof BackPackableType type) {
+                    for (int i = 0; i < amount; i++) {
+                        playerBackPack.useItem(type);
+                    }
+                } else if (entry.getKey() instanceof IngredientGroup group) {
+                    group.removeFromBackPack(amount, playerBackPack);
+                }
+            }
+
+            // 7. Start artisan production
+            App.getCurrentGame().getCurrentPlayingPlayer()
+                    .getArtisanItemsInProgress().add(new ArtisanProduct(product));
+            return new Result(true, "'%s' is now being produced.".formatted(product.getName()));
+        }
+
+        return new Result(false, "No matching artisan product found for '%s' with given ingredients.".formatted(artisanName));
     }
+
+
+    private boolean matchesIngredients(Map<BackPackableType, Integer> required, Map<Object, Integer> provided) {
+        for (Map.Entry<BackPackableType, Integer> entry : required.entrySet()) {
+            int needed = entry.getValue();
+            int available = 0;
+
+            if (entry.getKey() instanceof BackPackableType type) {
+                available = provided.getOrDefault(type, 0);
+            } else if (entry.getKey() instanceof IngredientGroup group) {
+                for (Map.Entry<BackPackableType, Integer> e : provided.entrySet()) {
+                    if (group.matches(e.getKey())) {
+                        available += e.getValue();
+                    }
+                }
+            }
+
+            if (available < needed) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    private List<BackPackableType> toIngredientList(Map<Object, Integer> requiredIngredients) {
+        List<BackPackableType> list = new ArrayList<>();
+        for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
+            // Add the correct quantity of each ingredient
+            for (int i = 0; i < entry.getValue(); i++) {
+                list.add((BackPackableType) entry.getKey());
+            }
+        }
+        return list;
+    }
+
+
+    private Optional<BackPackableType> parseBackPackable(String name) {
+        List<Class<? extends Enum<?>>> enumClasses = List.of(
+                FruitType.class,
+                FishType.class,
+                AnimalProductType.class,
+                CraftingItemType.class,
+                SeedType.class,
+                CropType.class
+                // Add more if needed
+        );
+
+        for (Class<? extends Enum<?>> enumClass : enumClasses) {
+            for (Object constant : enumClass.getEnumConstants()) {
+                if (((Enum<?>) constant).name().equalsIgnoreCase(name)) {
+                    return Optional.of((BackPackableType) constant);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+
 
     public Result artisanGet(String artisanName) {
         return new Result(false, "t");
@@ -958,8 +1107,7 @@ public class GameMenuController {
                     player.getFriendShips().put(App.getCurrentGame().getCurrentPlayingPlayer(),
                             App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player));
                     return new Result(true, "you hug your friend ^^");
-                }
-                else {
+                } else {
                     return new Result(false, "you can't hug your friend from this distance");
                 }
             }

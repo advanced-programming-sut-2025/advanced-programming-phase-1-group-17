@@ -1,8 +1,9 @@
 package org.example.models;
 
-import org.example.models.Crafting.CraftingItem;
+import org.example.models.artisan.ArtisanProduct;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.enums.BackPackType;
 import org.example.models.enums.ToolMaterial;
 import org.example.models.enums.ToolType;
@@ -29,6 +30,33 @@ public class Player {
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
 
+    private ArrayList<ArtisanProduct> artisanItemsInProgress = new ArrayList();
+
+    //For Energy
+    private double energy;
+    private double maxEnergy = 200;
+    private boolean hasPassedOutToday = false;
+
+    //For BackPack
+    private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
+
+    //For TrashCan & WaterStorage
+    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
+    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
+    private Tool currentTool;
+
+    private int vegetableFarmed = 0;
+    private ArrayList<Food> foods = new ArrayList<>();
+    private ArrayList<Recipe> recipes = new ArrayList<>();
+    private ArrayList<Friends> friends = new ArrayList<>();
+    private Ability abilities = new Ability();
+    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
+
+    private double balance;
+    private Player partner = null;
+    private int daysSinceBrakUp = 0;
+    private boolean isbrokenUp = false;
+
 
     public int getWood() {
         return wood;
@@ -53,33 +81,6 @@ public class Player {
     public void addCoin(double coin) {
         this.coin += coin;
     }
-
-    //For Energy
-    private double energy;
-    private double maxEnergy = 200;
-    private boolean hasPassedOutToday = false;
-
-    //For BackPack
-    private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
-
-    //For TrashCan & WaterStorage
-    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
-    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
-
-    private Game activeGame;
-
-    private Tool currentTool;
-    private int vegetableFarmed = 0;
-    private ArrayList<Food> foods = new ArrayList<>();
-    private ArrayList<Recipe> recipes = new ArrayList<>();
-    private ArrayList<Friends> friends = new ArrayList<>();
-    private Ability abilities = new Ability();
-    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
-
-    private double balance;
-    private Player partner = null;
-    private int daysSinceBrakUp = 0;
-    private boolean isbrokenUp = false;
 
     public ArrayList<CraftingItem> getCraftingRecipes() {
         return craftingItems;
@@ -120,6 +121,9 @@ public class Player {
         Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
         backPack.addItemToInventory(wateringCan);
         backPack.addItemToInventory(new Tool(ToolType.Scythe, null));
+        backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic));
+        backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic));
+        backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic));
         this.currentTool = wateringCan;
     }
 
@@ -243,5 +247,13 @@ public class Player {
 
     public void addTalk(Player player, Talk talk) {
         this.talk.put(player, talk);
+    }
+
+    public ArrayList<ArtisanProduct> getArtisanItemsInProgress() {
+        return artisanItemsInProgress;
+    }
+
+    public void setArtisanItemsInProgress(ArrayList<ArtisanProduct> artisanItemsInProgress) {
+        this.artisanItemsInProgress = artisanItemsInProgress;
     }
 }

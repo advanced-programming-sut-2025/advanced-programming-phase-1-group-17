@@ -1,9 +1,10 @@
-package org.example.models.Crafting;
+package org.example.models.crafting;
 
 import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.Placeable;
+import org.example.models.crafting.CraftingItemType;
 
 import java.util.HashMap;
 
