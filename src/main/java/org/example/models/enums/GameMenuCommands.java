@@ -67,7 +67,11 @@ public enum GameMenuCommands {
     gift("\\s*gift\\s+-u\\s+(?<username>\\S+)\\s+-i\\s+(?<item>\\S+)\\s+-a\\s+(?<amount>\\d+)\\s*"),
     hug("\\s*hug\\s+-u\\s+(?<username>\\S+)\\s*"),
     giftRate("\\s*gift\\s+rate\\s+-i\\s+(?<giftNumber>\\S+)\\s+-r\\s+(?<rate>\\S+)\\s*"),
-    giftHistory("\\s*gift\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),;
+    giftHistory("\\s*gift\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),
+    flower("flower\\s+-u\\s+(?<username>\\S+)\\s*"),
+    askMarriage("\\s*ask\\s+marriage\\s+-u\\s+(?<username>\\S+)\\s+-r\\s+(?<ring>\\d+)\\s*"),
+    respond("\\s*respond\\s+(?<accept>accept|reject)\\s+-u\\s+(?<username>\\S+)\\s*"),
+    deleteMessage("\\s*delete\\s+message\\s+(?<index>\\d+)\\s*");
 
 
     private final String regex;

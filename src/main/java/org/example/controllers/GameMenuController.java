@@ -180,9 +180,9 @@ public class GameMenuController {
 
     public Result buildGreenHouse() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (player.getCoin() >= 1000 && player.getWood() >= 500) {
-            player.addCoin(-1000);
-            player.addWood(-500);
+        if (player.getBackPack().getCoin() >= 1000 && player.getBackPack().getWood() >= 500) {
+            player.getBackPack().addCoin(-1000);
+            player.getBackPack().addWood(-500);
             player.getPlayerMap().setGreenHouse(new GreenHouse(player));
             return new Result(true, "GreenHouse created Successfully");
         } else {
@@ -194,7 +194,7 @@ public class GameMenuController {
         List<Tile> result;
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         Tile destination = Tile.getTile(x, y);
-        if (destination.getOwner() != player) {
+        if (!(destination.getOwner().equals(player.getPartner()) || destination.getOwner().equals(player))) {
             return new Result(false, "you can't walk to this tile because this tile is not for you.");
         } else if (!destination.isWalkAble()) {
             return new Result(false, "you can't walk to this tile because this tile is not walkable.");
@@ -230,8 +230,13 @@ public class GameMenuController {
         }
     }
 
-    public boolean isValid(int x, int y, int rows, int cols) {
-        return x >= 0 && x < rows && y >= 0 && y < cols && Tile.getTile(x, y) != null && Tile.getTile(x, y).isWalkAble();
+    public boolean isValid(int x, int y, Player player) {
+        if (x > 0 && x < 200 && y > 0 && y < 200) {
+            return (Tile.getTile(x, y).getOwner().equals(player) || Tile.getTile(x, y).getOwner().equals(player.getPartner()))
+                    && Tile.getTile(x, y) != null && Tile.getTile(x, y).isWalkAble();
+        } else {
+            return false;
+        }
     }
 
     public List<Tile> bfs(int startX, int startY, int endX, int endY, Player player) {
@@ -246,10 +251,10 @@ public class GameMenuController {
                 {-1, -1}
         };
 
-        int rows = 51 + player.getPlayerMap().getRow();
-        int cols = 51 + player.getPlayerMap().getCol();
+//        int rows = 51 + player.getPlayerMap().getRow();
+//        int cols = 51 + player.getPlayerMap().getCol();
 
-        boolean[][] visited = new boolean[rows][cols];
+        boolean[][] visited = new boolean[200][200];
         Map<Tile, Tile> parent = new HashMap<>();
         Queue<Tile> queue = new LinkedList<>();
 
@@ -272,7 +277,7 @@ public class GameMenuController {
                 int newX = current.getX() + dir[0];
                 int newY = current.getY() + dir[1];
 
-                if (isValid(newX, newY, rows, cols) && !visited[newX][newY]) {
+                if (isValid(newX, newY, player) && !visited[newX][newY]) {
                     Tile neighbor = Tile.getTile(newX, newY);
                     visited[newX][newY] = true;
                     parent.put(neighbor, current);
@@ -359,7 +364,7 @@ public class GameMenuController {
                     backPack.getBackPackItems().remove(type);
                 }
 
-                App.getCurrentGame().getCurrentPlayingPlayer().addCoin(refund);
+                App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addCoin(refund);
                 return new Result(true, String.format("Deleted %d of %s from inventory. Got %.2f coins.",
                         numberToRemove, type.getName(), refund));
             }
@@ -867,7 +872,6 @@ public class GameMenuController {
                 || (x == x1 - 1 && y == y1 - 1)) {
             return true;
         } else return false;
-
     }
 
     public Result talk(String username, String massage) {
@@ -881,6 +885,12 @@ public class GameMenuController {
                                 + " : " + massage + "\n");
                         player.addFriendShips(currentPlayer, player.getFriendShips().get(currentPlayer) + 20);
                         currentPlayer.addFriendShips(player, currentPlayer.getFriendShips().get(player) + 20);
+                        message message = new message(currentPlayer,massage);
+                        player.addMessage(message);
+                        if (player.getPartner().equals(currentPlayer) && !player.isInteractionWithPartner()) {
+                            player.setEnergy(player.getEnergy() + 50);
+                            currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
+                        }
                         return new Result(true, "your message sent to " + player.getUser().getUsername());
                     } else {
                         return new Result(false, "you can't talk from this distance");
@@ -932,6 +942,10 @@ public class GameMenuController {
                                 Gift gift = new Gift(currentPlayer, player, item, Amount);
                                 currentPlayer.getGifts().get(player).add(gift);
                                 player.getGifts().get(currentPlayer).add(gift);
+                                if (player.getPartner().equals(currentPlayer) && !player.isInteractionWithPartner()) {
+                                    player.setEnergy(player.getEnergy() + 50);
+                                    currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
+                                }
                                 return new Result(true, "your gift was received by " + player.getUser().getUsername()
                                         + "\n" + player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
                                         + "\n" + "your gift : " + item + "\n" + "your gift amount : " + amount + "\n"
@@ -1018,25 +1032,140 @@ public class GameMenuController {
                             player, (App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player) + 60));
                     player.getFriendShips().put(App.getCurrentGame().getCurrentPlayingPlayer(),
                             App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player));
+                    if (player.getPartner().equals(App.getCurrentGame().getCurrentPlayingPlayer()) && !player.isInteractionWithPartner()) {
+                        player.setEnergy(player.getEnergy() + 50);
+                        App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(App.getCurrentGame()
+                                .getCurrentPlayingPlayer().getEnergy() + 50);
+                    }
                     return new Result(true, "you hug your friend ^^");
                 } else {
                     return new Result(false, "you can't hug your friend from this distance");
                 }
             }
         }
-        return new Result(false, "t");
+        return new Result(false, "this username does not exist in this game");
     }
 
     public Result flower(String username) {
-        return new Result(false, "t");
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals(username)) {
+                if (currentPlayer.getFriendShips().containsKey(player)) {
+                    if (currentPlayer.getFriendShips().get(player) < 200) {
+                        return new Result(false, "your friendship level is less than 2");
+                    } else {
+                        if (currentPlayer.getBackPack().getInventorySize("FLOWER") > 0) {
+                            if (currentPlayer.getFriendShips().get(player) < 300) {
+                                currentPlayer.getFriendShips().put(player, 300);
+                                player.getFriendShips().put(currentPlayer, 300);
+                                BackPackable b = currentPlayer.getBackPack().useItem("FLOWER");
+                                player.getBackPack().addItemToInventory(b);
+                                return new Result(true, "Flower were presented to " + player.getUser().getUsername());
+                            } else {
+                                BackPackable b = currentPlayer.getBackPack().useItem("FLOWER");
+                                player.getBackPack().addItemToInventory(b);
+                                if (player.getPartner().equals(currentPlayer) && !player.isInteractionWithPartner()) {
+                                    player.setEnergy(player.getEnergy() + 50);
+                                    currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
+                                }
+                                return new Result(true, "Flower were presented to " + player.getUser().getUsername());
+                            }
+                        } else {
+                            return new Result(false, "insufficient inventory");
+                        }
+
+                    }
+                }
+                return new Result(false, "you can't give flower to your self");
+            }
+        }
+        return new Result(false, "this username does not exist in this game");
     }
 
-    public Result askMarriage(String username, String marriage) {
-        return new Result(false, "t");
+    public Result askMarriage(String username, String ring) {
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals(username)) {
+                if (sideBySide(player, currentPlayer)) {
+                    if (currentPlayer.getFriendShips().containsKey(player)) {
+                        if (currentPlayer.getFriendShips().get(player) < 300) {
+                            return new Result(false, "your friendship level is less than 3");
+                        } else {
+                            if (currentPlayer.getUser().getGender().equals(Gender.Female)) {
+                                return new Result(false, "you can't ask marriage");
+                            } else if (player.getUser().getGender() == currentPlayer.getUser().getGender()) {
+                                return new Result(false, "khejalat bekesh dadash (abjy)");
+                            } else if (currentPlayer.getBackPack().getInventorySize(ring) < 1) {
+                                return new Result(false, "you have not this Ring for ask marriage");
+                            } else {
+                                message message = new message(currentPlayer, "ask for marriage with " + ring);
+                                return new Result(true, "your marriage request has been sent");
+                            }
+                        }
+                    } else {
+                        return new Result(false, "you can't ask marriage to your self");
+                    }
+                } else {
+                    return new Result(false, "you can't ask marriage from this distance");
+                }
+            }
+        }
+        return new Result(false, "this username does not exist in this game");
     }
 
-    public Result respond(String username) {
-        return new Result(false, "t");
+    public Result respond(String accept, String username) {
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        for (message m : currentPlayer.getMessage()) {
+            if (m.getMessage().startsWith("ask for marriage with ")) {
+                for (Player player : App.getCurrentGame().getPlayers()) {
+                    if (player.getUser().getUsername().equals(username)) {
+                        if (m.getSender().equals(player)) {
+                            if (accept.trim().equals("accept")) {
+                                BackPackable b = player.getBackPack().useItem(m.getMessage().substring(22));
+                                currentPlayer.getBackPack().addItemToInventory(b);
+                                ArrayList<message> temp = new ArrayList<message>();
+                                for (message message : player.getMessage()) {
+                                    if (m.getMessage().startsWith("ask for marriage with ")) {
+                                        temp.add(message);
+                                    }
+                                }
+                                for (message message : temp) {
+                                    player.getMessage().remove(message);
+                                }
+                                if (player.getFriendShips().get(currentPlayer) < 400) {
+                                    player.getFriendShips().put(currentPlayer, 400);
+                                    currentPlayer.getFriendShips().put(player, 400);
+                                }
+                                player.getBackPack().addCoin(currentPlayer.getBackPack().getCoin());
+                                currentPlayer.getBackPack().addCoin(player.getBackPack().getCoin());
+                                player.setPartner(currentPlayer);
+                                currentPlayer.setPartner(player);
+                                return new Result(true, "Congratulations, you got married");
+                            } else {
+                                player.setIsbrokenUp(7);
+                                player.getFriendShips().put(currentPlayer, 0);
+                                currentPlayer.getFriendShips().put(player, 0);
+                                ArrayList<message> temp = new ArrayList<message>();
+                                for (message message : player.getMessage()) {
+                                    if (m.getMessage().startsWith("ask for marriage with ")) {
+                                        temp.add(message);
+                                    }
+                                }
+                                for (message message : temp) {
+                                    player.getMessage().remove(message);
+                                }
+                                return new Result(true, "request was rejected");
+                            }
+                        } else {
+                            return new Result(false, "this username did not request marriage to you");
+                        }
+                    }
+                }
+                return new Result(false, "this username does not exist in this game");
+            }
+        }
+
+        return new Result(false, "this username does not exist in this game");
     }
 
     public Result startTrade() {
@@ -1078,6 +1207,18 @@ public class GameMenuController {
     public Result questFinish(String index) {
         return new Result(false, "t");
     }
-
+    public Result showMessage() {
+        return new Result(true, App.getCurrentGame().getCurrentPlayingPlayer().getStringMessage());
+    }
+    public Result deleteMessage(int index) {
+        if (index >= App.getCurrentGame().getCurrentPlayingPlayer().getMessage().size()) {
+            return new Result(false,"there are no messages with this index");
+        }
+        else {
+            message message = App.getCurrentGame().getCurrentPlayingPlayer().getMessage().get(index);
+            App.getCurrentGame().getCurrentPlayingPlayer().getMessage().remove(message);
+            return new Result(true, "message delete successfully");
+        }
+    }
 
 }

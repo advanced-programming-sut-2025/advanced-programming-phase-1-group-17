@@ -191,7 +191,18 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.giftRate(matcher.group("giftNumber"), matcher.group("rate")));
         } else if ((matcher = GameMenuCommands.giftHistory.getMatcher(command)) != null) {
             System.out.println(controller.giftHistory(matcher.group("username")));
-        } else if (command.trim().equals("show current menu")) {
+        }else if ((matcher = GameMenuCommands.flower.getMatcher(command)) != null) {
+            System.out.println(controller.flower(matcher.group("username")));
+        }else if ((matcher = GameMenuCommands.askMarriage.getMatcher(command)) != null) {
+            System.out.println(controller.askMarriage(matcher.group("username"),matcher.group("ring")));
+        } else if((matcher = GameMenuCommands.respond.getMatcher(command)) != null) {
+            System.out.println(controller.respond(matcher.group("accept"),matcher.group("username")));
+        }else if (command.trim().equals("my messages")) {
+            System.out.println(controller.showMessage());
+        } else if ((matcher = GameMenuCommands.deleteMessage.getMatcher(command)) != null) {
+            System.out.println(controller.deleteMessage(Integer.parseInt(matcher.group("index"))));
+        }
+        else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
         } else if (command.trim().equals("menu exit")) {
             App.setCurrentMenu(Menu.MainMenu);

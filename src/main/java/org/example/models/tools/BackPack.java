@@ -2,9 +2,8 @@ package org.example.models.tools;
 
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
-import org.example.models.Product;
+import org.example.models.Player;
 import org.example.models.enums.BackPackType;
-import org.example.models.plant.Seed;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,9 +13,48 @@ public class BackPack {
 
     //previous backpackItems
     //private HashMap<BackPackable, Integer> backPackItems = new HashMap<>();
+    private Player player;
     private HashMap<BackPackableType, ArrayList<BackPackable>> backPackItems = new HashMap<>();
 
+
     private final BackPackType type;
+    //Coin and wood and stone
+    private int wood;
+    private int stone;
+    private double coin;
+
+    public int getWood() {
+        return wood;
+    }
+
+    public void addWood(int wood) {
+        this.wood += wood;
+    }
+
+    public int getStone() {
+        return stone;
+    }
+
+    public void addStone(int stone) {
+        this.stone += stone;
+    }
+
+    public double getCoin() {
+        return coin;
+    }
+
+    public void addCoin(double coin) {
+        if (!player.getPartner().equals(player)) {
+            player.getBackPack().addcoin(coin);
+            player.getPartner().getBackPack().addcoin(coin);
+        }
+        else {
+            player.getBackPack().addcoin(coin);
+        }
+    }
+    public void addcoin(double coin) {
+        this.coin += coin;
+    }
 
     public BackPack(BackPackType type) {
         this.type = type;
@@ -48,16 +86,15 @@ public class BackPack {
         }
         if (backPackType == null) {
             return null;
-        }
-        else if (backPackItems.get(backPackType).isEmpty()) {
+        } else if (backPackItems.get(backPackType).isEmpty()) {
             return null;
-        }
-        else {
+        } else {
             BackPackable b = backPackItems.get(backPackType).get(0);
             backPackItems.get(backPackType).remove(0);
             return b;
         }
     }
+
     public int getInventorySize(String item) {
         for (BackPackableType b : backPackItems.keySet()) {
             if (b.getName().equals(item)) {
@@ -70,5 +107,13 @@ public class BackPack {
     public void addItemToInventory(BackPackable backPackable) {
         backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
         backPackItems.get(backPackable.getType()).add(backPackable);
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

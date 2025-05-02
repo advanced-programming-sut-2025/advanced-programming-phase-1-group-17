@@ -36,6 +36,14 @@ public class TimeAndDate {
     }
 
     public void goToNextDay() {
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            player.setEnergy(player.getMaxEnergy());
+            player.setInteractionWithPartner(false);
+            if(player.getIsbrokenUp() > 0){
+                player.setEnergy(player.getMaxEnergy()/2);
+                player.setIsbrokenUp(player.getIsbrokenUp()-1);
+            }
+        }
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
         PlantGrowthController.growOneDay();
