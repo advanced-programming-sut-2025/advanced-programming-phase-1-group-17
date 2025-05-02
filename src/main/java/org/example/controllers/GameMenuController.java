@@ -856,22 +856,37 @@ public class GameMenuController {
             provided.put(type, provided.getOrDefault(type, 0) + 1);
         }
 
-        // 4. Try to match an ArtisanProductType with given artisan and provided ingredients
+        // 4. Try to match an ArtisanProductType with given artisan and ingredients
         for (ArtisanProductType product : ArtisanProductType.values()) {
             if (!product.getArtisan().equals(artisan)) continue;
 
-            for (BackPackableType ingredient : product.getIngredients()) {
-                if (ingredient.getName().equalsIgnoreCase())
+            Map<Object, Integer> requiredIngredients = product.getIngredients();
+
+            // Check if all required ingredients are present in the provided map
+            boolean match = true;
+            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
+                Object key = entry.getKey();
+                int requiredAmount = entry.getValue();
+                int providedAmount = 0;
+
+                if (key instanceof BackPackableType type) {
+                    providedAmount = provided.getOrDefault(type, 0);
+                } else if (key instanceof IngredientGroup group) {
+                    for (BackPackableType type : group.getMembers()) {
+                        providedAmount += provided.getOrDefault(type, 0);
+                    }
+                }
+
+                if (providedAmount < requiredAmount) {
+                    match = false;
+                    break;
+                }
             }
-            //            // 1. Convert required ingredients (Map) to List
-//            List<BackPackableType> requiredList = toIngredientList(provided);
-//
-//// 2. Check if provided ingredients match the required ingredients
-//            if (!matchesIngredients(requiredList, provided)) continue;
 
+            if (!match) continue;
 
-            // 5. Check if player has enough of each required ingredient
-            for (Map.Entry<Object, Integer> entry : product.getIngredients().entrySet()) {
+            // 5. Check if player owns enough of each required ingredient
+            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
                 int required = entry.getValue();
 
                 if (entry.getKey() instanceof BackPackableType type) {
@@ -883,13 +898,13 @@ public class GameMenuController {
                 } else if (entry.getKey() instanceof IngredientGroup group) {
                     int available = group.countInBackPack(playerBackPack);
                     if (available < required) {
-                        return new Result(false, "Not enough items from group '%s'.".formatted(group.getName()));
+                        return new Result(false, "Not enough items from group '%s'.".formatted(group.name()));
                     }
                 }
             }
 
-            // 6. Remove used items from backpack
-            for (Map.Entry<Object, Integer> entry : product.getIngredients().entrySet()) {
+            // 6. Remove ingredients from backpack
+            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
                 int amount = entry.getValue();
                 if (entry.getKey() instanceof BackPackableType type) {
                     for (int i = 0; i < amount; i++) {
@@ -903,45 +918,11 @@ public class GameMenuController {
             // 7. Start artisan production
             App.getCurrentGame().getCurrentPlayingPlayer()
                     .getArtisanItemsInProgress().add(new ArtisanProduct(product));
+
             return new Result(true, "'%s' is now being produced.".formatted(product.getName()));
         }
 
         return new Result(false, "No matching artisan product found for '%s' with given ingredients.".formatted(artisanName));
-    }
-
-
-    private boolean matchesIngredients(Map<BackPackableType, Integer> required, Map<Object, Integer> provided) {
-        for (Map.Entry<BackPackableType, Integer> entry : required.entrySet()) {
-            int needed = entry.getValue();
-            int available = 0;
-
-            if (entry.getKey() instanceof BackPackableType type) {
-                available = provided.getOrDefault(type, 0);
-            } else if (entry.getKey() instanceof IngredientGroup group) {
-                for (Map.Entry<BackPackableType, Integer> e : provided.entrySet()) {
-                    if (group.matches(e.getKey())) {
-                        available += e.getValue();
-                    }
-                }
-            }
-
-            if (available < needed) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    private List<BackPackableType> toIngredientList(Map<Object, Integer> requiredIngredients) {
-        List<BackPackableType> list = new ArrayList<>();
-        for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
-            // Add the correct quantity of each ingredient
-            for (int i = 0; i < entry.getValue(); i++) {
-                list.add((BackPackableType) entry.getKey());
-            }
-        }
-        return list;
     }
 
 

@@ -3,6 +3,7 @@ package org.example.models.artisan;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.enums.AnimalProductType;
+import org.example.models.enums.FishType;
 import org.example.models.foraging.ForagingCropType;
 import org.example.models.plant.CropType;
 import org.example.models.plant.FruitType;
@@ -13,13 +14,14 @@ import java.util.List;
 import java.util.Set;
 
 public enum IngredientGroup {
-    AnyMushroom(Set.of(MushroomType.Red, MushroomType.Morel, MushroomType.Common, MushroomType.Chanterelle, MushroomType.Purple)),
+    AnyMushroom(Set.of(CropType.RedMushroom, CropType.Morel, CropType.CommonMushroom, CropType.Chanterelle, CropType.PurpleMushroom)),
     AnyFruit(Set.of(FruitType.values())),
     AnyVegetable(Set.of(CropType.Carrot, CropType.Potato, CropType.Tomato)), // example subset
     MilkOrLargeMilk(Set.of(AnimalProductType.Milk, AnimalProductType.LargeMilk)),
     GoatMilkOrLargeGoatMilk(Set.of(AnimalProductType.GoatMilk, AnimalProductType.LargeGoatMilk)),
     EggOrLargeEgg(Set.of(AnimalProductType.Egg, AnimalProductType.LargeEgg)),
-    Grapes(Set.of(CropType.Grape, ForagingCropType.GRAPE));
+    Grapes(Set.of(CropType.Grape, ForagingCropType.GRAPE)),
+    AnyFish(Set.of(FishType.values())); // Completed here
 
     private final Set<BackPackableType> members;
 
@@ -56,7 +58,7 @@ public enum IngredientGroup {
         }
 
         if (count > 0) {
-            throw new IllegalStateException("Not enough items to remove from group: " + this.name);
+            throw new IllegalStateException("Not enough items to remove from group: " + this.name());
         }
     }
 

@@ -4,28 +4,28 @@ import org.example.models.BackPackableType;
 
 public enum FishType implements BackPackableType {
     // Regular Fish
-    SALMON(75, Season.Fall, false),
-    SARDINE(40, Season.Fall, false),
-    SHAD(60, Season.Fall, false),
-    BLUE_DISCUS(120, Season.Fall, false),
-    MIDNIGHT_CARP(150, Season.Winter, false),
-    SQUID(80, Season.Winter, false),
-    TUNA(100, Season.Winter, false),
-    PERCH(55, Season.Winter, false),
-    FLOUNDER(100, Season.Spring, false),
-    LIONFISH(100, Season.Spring, false),
-    HERRING(30, Season.Spring, false),
-    GHOSTFISH(45, Season.Spring, false),
-    TILAPIA(75, Season.Summer, false),
-    DORADO(100, Season.Summer, false),
-    SUNFISH(30, Season.Summer, false),
-    RAINBOW_TROUT(65, Season.Summer, false),
+    Salmon(75, Season.Fall, false),
+    Sardine(40, Season.Fall, false),
+    Shad(60, Season.Fall, false),
+    BlueDiscus(120, Season.Fall, false),
+    MidnightCarp(150, Season.Winter, false),
+    Squid(80, Season.Winter, false),
+    Tuna(100, Season.Winter, false),
+    Perch(55, Season.Winter, false),
+    Flounder(100, Season.Spring, false),
+    LionFish(100, Season.Spring, false),
+    Herring(30, Season.Spring, false),
+    GhostFish(45, Season.Spring, false),
+    Tilapia(75, Season.Summer, false),
+    Dorado(100, Season.Summer, false),
+    SunFish(30, Season.Summer, false),
+    RainbowTrout(65, Season.Summer, false),
 
     // Legendary Fish
-    LEGEND(5000, Season.Spring, true),
-    GLACIERFISH(1000, Season.Winter, true),
-    ANGLER(900, Season.Fall, true),
-    CRIMSONFISH(1500, Season.Summer, true);
+    Legend(5000, Season.Spring, true),
+    GlacierFish(1000, Season.Winter, true),
+    Angler(900, Season.Fall, true),
+    CrimsonFish(1500, Season.Summer, true);
 
     private final int price;
     private final Season season;
