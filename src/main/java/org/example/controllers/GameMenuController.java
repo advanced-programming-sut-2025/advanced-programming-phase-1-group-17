@@ -53,9 +53,12 @@ public class GameMenuController {
         } else {
             user3 = App.getUserWithUsername(username3);
         }
+        Tile.getTiles().clear();
+        GreenHouse.getGreenHouse().clear();
         Game game = new Game(user1, user2, user3);
         App.setCurrentGame(game);
         App.getGames().add(game);
+
         return new Result(true, "new game created Successfully");
     }
 

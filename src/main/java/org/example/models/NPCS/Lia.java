@@ -1,4 +1,6 @@
 package org.example.models.NPCS;
 
-public class Lia extends NPC {
+import org.example.models.Placeable;
+
+public class Lia implements Placeable {
 }

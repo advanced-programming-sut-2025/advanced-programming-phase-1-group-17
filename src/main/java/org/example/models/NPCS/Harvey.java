@@ -1,4 +1,6 @@
 package org.example.models.NPCS;
 
-public class Harvey extends NPC {
+import org.example.models.Placeable;
+
+public class Harvey implements Placeable {
 }
