@@ -826,13 +826,7 @@ public class GameMenuController {
 
     public Result artisanUse(String artisanName, String itemNames) {
         // 1. Find artisan tool by name
-        CraftingItemType artisan = null;
-        for (CraftingItemType type : CraftingItemType.values()) {
-            if (type.name().equalsIgnoreCase(artisanName)) {
-                artisan = type;
-                break;
-            }
-        }
+        CraftingItemType artisan = CraftingItemType.getCraftingItemTypeByName(artisanName);
 
         if (artisan == null) {
             return new Result(false, "No artisan found with name '%s'".formatted(artisanName));
@@ -886,6 +880,7 @@ public class GameMenuController {
             if (!match) continue;
 
             // 5. Check if player owns enough of each required ingredient
+            //TODO: check if is already artisan is producing something
             for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
                 int required = entry.getValue();
 
@@ -917,7 +912,7 @@ public class GameMenuController {
 
             // 7. Start artisan production
             App.getCurrentGame().getCurrentPlayingPlayer()
-                    .getArtisanItemsInProgress().add(new ArtisanProduct(product));
+                    .getArtisanProductsInProgress().add(new ArtisanProduct(product));
 
             return new Result(true, "'%s' is now being produced.".formatted(product.getName()));
         }
@@ -934,12 +929,12 @@ public class GameMenuController {
                 CraftingItemType.class,
                 SeedType.class,
                 CropType.class
-                // Add more if needed
+                //TODO: Add more if needed
         );
 
         for (Class<? extends Enum<?>> enumClass : enumClasses) {
-            for (Object constant : enumClass.getEnumConstants()) {
-                if (((Enum<?>) constant).name().equalsIgnoreCase(name)) {
+            for (Enum<?> constant : enumClass.getEnumConstants()) {
+                if (constant.name().equalsIgnoreCase(name)) {
                     return Optional.of((BackPackableType) constant);
                 }
             }
@@ -948,9 +943,24 @@ public class GameMenuController {
     }
 
 
-
     public Result artisanGet(String artisanName) {
-        return new Result(false, "t");
+        CraftingItemType type = CraftingItemType.getCraftingItemTypeByName(artisanName);
+        if (type == null) {
+            return new Result(false, "there is no artisan with name %s".formatted(artisanName));
+        }
+
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        for (ArtisanProduct artisanProduct : player.getArtisanProductsInProgress()) {
+            if (artisanProduct.getType().getArtisan().equals(type)) {
+                if (artisanProduct.isReady()) {
+                    player.getBackPack().addItemToInventory(artisanProduct);
+                    return new Result(true, "artisan product added to backpack");
+                } else {
+                    return new Result(false, "artisan product is not ready.");
+                }
+            }
+        }
+        return new Result(false, "artisan with name %s is not producing anything".formatted(artisanName));
     }
 
     public Result showAllProducts() {

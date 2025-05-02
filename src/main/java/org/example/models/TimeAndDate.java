@@ -1,7 +1,6 @@
 package org.example.models;
 
 import org.example.models.artisan.ArtisanProduct;
-import org.example.models.crafting.CraftingItem;
 import org.example.models.foraging.ForagingController;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
@@ -31,14 +30,14 @@ public class TimeAndDate {
     public void increaseHour() {
         hour++;
         for (Player player : App.getCurrentGame().getPlayers()) {
-            for (ArtisanProduct artisanItemsInProgress : player.getArtisanItemsInProgress()) {
+            for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
                 artisanItemsInProgress.goToNextHour();
             }
         }
 
         if (hour > 22) {
             for (Player player : App.getCurrentGame().getPlayers()) {
-                for (ArtisanProduct artisanItemsInProgress : player.getArtisanItemsInProgress()) {
+                for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
                     for (int i = 0; i < 11; i++)
                         artisanItemsInProgress.goToNextHour();
                 }
