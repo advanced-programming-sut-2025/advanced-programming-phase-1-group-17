@@ -48,4 +48,13 @@ public enum CraftingItemType implements BackPackableType {
     public double getPrice() {
         return 0;
     }
+
+    public static CraftingItemType getCraftingItemTypeByName(String artisanName) {
+        for (CraftingItemType type : CraftingItemType.values()) {
+            if (type.name().equalsIgnoreCase(artisanName)) {
+                return type;
+            }
+        }
+        return null;
+    }
 }

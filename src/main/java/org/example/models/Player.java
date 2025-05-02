@@ -30,7 +30,7 @@ public class Player {
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
 
-    private ArrayList<ArtisanProduct> artisanItemsInProgress = new ArrayList();
+    private ArrayList<ArtisanProduct> artisanProductsInProgress = new ArrayList();
 
     //For Energy
     private double energy;
@@ -249,11 +249,11 @@ public class Player {
         this.talk.put(player, talk);
     }
 
-    public ArrayList<ArtisanProduct> getArtisanItemsInProgress() {
-        return artisanItemsInProgress;
+    public ArrayList<ArtisanProduct> getArtisanProductsInProgress() {
+        return artisanProductsInProgress;
     }
 
-    public void setArtisanItemsInProgress(ArrayList<ArtisanProduct> artisanItemsInProgress) {
-        this.artisanItemsInProgress = artisanItemsInProgress;
+    public void setArtisanProductsInProgress(ArrayList<ArtisanProduct> artisanProductsInProgress) {
+        this.artisanProductsInProgress = artisanProductsInProgress;
     }
 }
