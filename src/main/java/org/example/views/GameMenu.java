@@ -70,19 +70,19 @@ public class GameMenu implements AppMenu {
 
 
         //Tool
-        else if ((matcher = GameMenuCommands.ToolsEquip.getMatcher(command))!= null) {
+        else if ((matcher = GameMenuCommands.ToolsEquip.getMatcher(command)) != null) {
             System.out.println(controller.toolEquip(
                     matcher.group("toolName")
             ));
-        } else if ((matcher = GameMenuCommands.ToolsShowCurrent.getMatcher(command))!= null) {
+        } else if ((matcher = GameMenuCommands.ToolsShowCurrent.getMatcher(command)) != null) {
             System.out.println(controller.currentToolShow());
-        } else if ((matcher = GameMenuCommands.ToolsShowAvailable.getMatcher(command))!= null) {
+        } else if ((matcher = GameMenuCommands.ToolsShowAvailable.getMatcher(command)) != null) {
             System.out.println(controller.toolsShowAvailable());
-        } else if ((matcher = GameMenuCommands.ToolsUpgrade.getMatcher(command))!= null) {
+        } else if ((matcher = GameMenuCommands.ToolsUpgrade.getMatcher(command)) != null) {
             System.out.println(controller.toolUpgrade(
                     matcher.group("toolName")
             ));
-        } else if ((matcher = GameMenuCommands.ToolsUse.getMatcher(command))!= null) {
+        } else if ((matcher = GameMenuCommands.ToolsUse.getMatcher(command)) != null) {
             System.out.println(controller.toolUse(
                     matcher.group("direction")
             ));
@@ -147,8 +147,8 @@ public class GameMenu implements AppMenu {
             controller.helpReadingMap();
         }
         //cooking
-        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
-            System.out.println(controller);
+        else if ((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null) {
+            System.out.println(controller.cookingRefrigerator(matcher.group("mod"), matcher.group("item")));
         } else if ((matcher = GameMenuCommands.CookingShowRecipes.getMatcher(command)) != null) {
             System.out.println(controller.cookingShowRecipes());
         } else if ((matcher = GameMenuCommands.CookingPrepare.getMatcher(command)) != null) {
@@ -183,28 +183,30 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.gift(matcher.group("username").trim()
                     , matcher.group("item").trim()
                     , matcher.group("amount").trim()));
-        }else if ((matcher = GameMenuCommands.hug.getMatcher(command))!=null) {
+        } else if ((matcher = GameMenuCommands.hug.getMatcher(command)) != null) {
             System.out.println(controller.hug(matcher.group("username").trim()));
-        }
-        //cooking
-        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
-            System.out.println(controller);
+        } else if (command.trim().equals("gift list")) {
+            System.out.println(controller.giftList());
+        } else if ((matcher = GameMenuCommands.giftRate.getMatcher(command)) != null) {
+            System.out.println(controller.giftRate(matcher.group("giftNumber"), matcher.group("rate")));
+        } else if ((matcher = GameMenuCommands.giftHistory.getMatcher(command)) != null) {
+            System.out.println(controller.giftHistory(matcher.group("username")));
+        }else if ((matcher = GameMenuCommands.flower.getMatcher(command)) != null) {
+            System.out.println(controller.flower(matcher.group("username")));
+        }else if ((matcher = GameMenuCommands.askMarriage.getMatcher(command)) != null) {
+            System.out.println(controller.askMarriage(matcher.group("username"),matcher.group("ring")));
+        } else if((matcher = GameMenuCommands.respond.getMatcher(command)) != null) {
+            System.out.println(controller.respond(matcher.group("accept"),matcher.group("username")));
+        }else if (command.trim().equals("my messages")) {
+            System.out.println(controller.showMessage());
+        } else if ((matcher = GameMenuCommands.deleteMessage.getMatcher(command)) != null) {
+            System.out.println(controller.deleteMessage(Integer.parseInt(matcher.group("index"))));
         }
         else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
         } else if (command.trim().equals("menu exit")) {
             App.setCurrentMenu(Menu.MainMenu);
-        }
-        //cooking
-        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
-            System.out.println(controller);
-        }
-
-
-
-
-
-        else {
+        } else {
             System.out.println("invalid command");
         }
 

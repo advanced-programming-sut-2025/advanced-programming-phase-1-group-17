@@ -23,24 +23,28 @@ public class Game {
         players.add(new Player(user3, user3.getUsername().startsWith("guest")));
         for (int i = 0; i < players.size(); i++) {
             if (i != 0) {
+                players.get(0).addGift(players.get(i));
                 players.get(0).addTalk(players.get(i),new Talk(players.get(i)));
                 players.get(0).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 1) {
+                players.get(1).addGift(players.get(i));
                 players.get(1).addTalk(players.get(i),new Talk(players.get(i)));
                 players.get(1).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 2) {
+                players.get(2).addGift(players.get(i));
                 players.get(2).addTalk(players.get(i),new Talk(players.get(i)));
                 players.get(2).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 3) {
+                players.get(3).addGift(players.get(i));
                 players.get(3).addTalk(players.get(i),new Talk(players.get(i)));
                 players.get(3).addFriendShips(players.get(i), 0);
             }

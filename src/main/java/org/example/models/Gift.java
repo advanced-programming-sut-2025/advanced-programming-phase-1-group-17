@@ -3,9 +3,21 @@ package org.example.models;
 public class Gift {
     private Player playerWhoGiveGift;
     private Player playerWhoGetGift;
+    private static int counter = 0;
     private int giftNumber;
-    private Product product;
+    private String item;
+    private int amount;
+    private boolean rateGiven;
 
+    public Gift (Player playerWhoGiveGift, Player playerWhoGetGift, String item, int amount) {
+        this.playerWhoGiveGift = playerWhoGiveGift;
+        this.playerWhoGetGift = playerWhoGetGift;
+        this.item = item;
+        this.amount = amount;
+        giftNumber = counter;
+        rateGiven = false;
+        counter++;
+    }
     public Player getPlayerWhoGiveGift() {
         return playerWhoGiveGift;
     }
@@ -25,16 +37,34 @@ public class Gift {
     public int getGiftNumber() {
         return giftNumber;
     }
-
-    public void setGiftNumber(int giftNumber) {
-        this.giftNumber = giftNumber;
+    public int getCounter(){
+        return counter;
     }
 
-    public Product getProduct() {
-        return product;
+    public String getItem() {
+        return item;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setItem(String item) {
+        this.item = item;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public boolean isRateGiven() {
+        return rateGiven;
+    }
+
+    public void setRateGiven(boolean rateGiven) {
+        this.rateGiven = rateGiven;
+    }
+    public boolean getRateGiven() {
+        return rateGiven;
     }
 }
