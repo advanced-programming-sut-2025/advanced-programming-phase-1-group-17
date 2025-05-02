@@ -1,6 +1,6 @@
 package org.example.models;
 
-import org.example.models.Crafting.CraftingItem;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
 import org.example.models.enums.BackPackType;
@@ -20,39 +20,15 @@ public class Player {
     private int x;
     private int y;
 
-    //Coin and wood and stone
-    private int wood;
-    private int stone;
-    private double coin;
-
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
+    private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
+    private ArrayList<message> messages = new ArrayList<>();
+    private Player partner = this ;
+    private boolean interactionWithPartner = false;
+    private int isbrokenUp = 0;
 
-
-    public int getWood() {
-        return wood;
-    }
-
-    public void addWood(int wood) {
-        this.wood += wood;
-    }
-
-    public int getStone() {
-        return stone;
-    }
-
-    public void addStone(int stone) {
-        this.stone += stone;
-    }
-
-    public double getCoin() {
-        return coin;
-    }
-
-    public void addCoin(double coin) {
-        this.coin += coin;
-    }
 
     //For Energy
     private double energy;
@@ -77,9 +53,7 @@ public class Player {
     private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
 
     private double balance;
-    private Player partner = null;
     private int daysSinceBrakUp = 0;
-    private boolean isbrokenUp = false;
 
     public ArrayList<CraftingItem> getCraftingRecipes() {
         return craftingItems;
@@ -120,6 +94,7 @@ public class Player {
         Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
         backPack.addItemToInventory(wateringCan);
         backPack.addItemToInventory(new Tool(ToolType.Scythe, null));
+        backPack.setPlayer(this);
         this.currentTool = wateringCan;
     }
 
@@ -243,5 +218,58 @@ public class Player {
 
     public void addTalk(Player player, Talk talk) {
         this.talk.put(player, talk);
+    }
+
+    public void addGift(Player player) {
+        this.gifts.put(player, new ArrayList<>());
+    }
+
+    public HashMap<Player, ArrayList<Gift>> getGifts() {
+        return gifts;
+    }
+
+    public int getIsbrokenUp() {
+        return isbrokenUp;
+    }
+
+    public void setIsbrokenUp(int isbrokenUp) {
+        this.isbrokenUp = isbrokenUp;
+    }
+
+    public void setGifts(HashMap<Player, ArrayList<Gift>> gifts) {
+        this.gifts = gifts;
+    }
+
+    public void addMessage(message message) {
+        this.messages.add(message);
+    }
+
+    public ArrayList<message> getMessage() {
+        return this.messages;
+    }
+
+    public String getStringMessage() {
+        String message = "";
+        for (int i = 0; i < messages.size(); i++) {
+            message +=( i+"- "+"SENDER" + " : " + messages.get(i).getSender().getUser().getUsername()
+                    + "\n" + "message : " + messages.get(i).getMessage() + "\n");
+        }
+        return message;
+    }
+
+    public Player getPartner() {
+        return partner;
+    }
+
+    public void setPartner(Player partner) {
+        this.partner = partner;
+    }
+
+    public boolean isInteractionWithPartner() {
+        return interactionWithPartner;
+    }
+
+    public void setInteractionWithPartner(boolean interactionWithPartner) {
+        this.interactionWithPartner = interactionWithPartner;
     }
 }
