@@ -1,6 +1,6 @@
 package org.example.models.map;
 
-import org.example.foraging.ForagingController;
+import org.example.models.foraging.ForagingController;
 import org.example.models.Player;
 import org.example.models.plant.Tree;
 

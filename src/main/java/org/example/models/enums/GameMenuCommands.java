@@ -59,7 +59,7 @@ public enum GameMenuCommands {
     Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*"),
 
     //For artisan
-    ArtisanUse("\\s*artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<itemName>\\S+)\\s*"),
+    ArtisanUse("\\s*artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<itemNames>.+)\\s*"),
     ArtisanGet("\\s*artisan\\s+get\\s+(?<artisanName>\\S+)\\s*"),
     //For friendships
     talk("\\s*talk\\s+-u\\s+(?<username>\\S+)\\s+-m\\s+(?<message>[\\S ]+)\\s*"),

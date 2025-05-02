@@ -1,6 +1,8 @@
 package org.example.models;
 
-import org.example.foraging.ForagingController;
+import org.example.models.artisan.ArtisanProduct;
+import org.example.models.crafting.CraftingItem;
+import org.example.models.foraging.ForagingController;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
@@ -28,7 +30,19 @@ public class TimeAndDate {
 
     public void increaseHour() {
         hour++;
-        if (hour >= 22) {
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            for (ArtisanProduct artisanItemsInProgress : player.getArtisanItemsInProgress()) {
+                artisanItemsInProgress.goToNextHour();
+            }
+        }
+
+        if (hour > 22) {
+            for (Player player : App.getCurrentGame().getPlayers()) {
+                for (ArtisanProduct artisanItemsInProgress : player.getArtisanItemsInProgress()) {
+                    for (int i = 0; i < 11; i++)
+                        artisanItemsInProgress.goToNextHour();
+                }
+            }
             hour = 9;
             minute = 0;
             goToNextDay();
@@ -51,6 +65,7 @@ public class TimeAndDate {
     }
 
     public void changeSeason() {
+        //TODO: remove all plants not compatible with new season
         Season[] seasons = Season.values();
         int currentIndex = season.ordinal();
         int nextIndex = (currentIndex + 1) % seasons.length;

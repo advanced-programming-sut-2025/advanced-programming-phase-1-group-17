@@ -17,6 +17,10 @@ public class Game {
 
 
     public Game(User user1, User user2, User user3) {
+        App.getLoggedInUser().setActiveGame(this);
+        user1.setActiveGame(this);
+        user2.setActiveGame(this);
+        user3.setActiveGame(this);
         players.add(creator = new Player(App.getLoggedInUser(), false));
         players.add(new Player(user1, user1.getUsername().startsWith("guest")));
         players.add(new Player(user2, user2.getUsername().startsWith("guest")));

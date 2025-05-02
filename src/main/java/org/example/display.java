@@ -4,6 +4,7 @@ import org.example.models.App;
 import org.example.models.Game;
 import org.example.models.map.*;
 import org.example.models.plant.Crop;
+import org.example.models.plant.Seed;
 import org.example.models.plant.Tree;
 
 public class display {
@@ -47,6 +48,8 @@ public class display {
                     System.out.print(BOLD + BLUE + "L" + RESET);
                 } else if (tile.getPlaceable() instanceof Stone) {
                     System.out.print(BOLD + CHOCOLATE + "S" + RESET);
+                } else if (tile.getPlaceable() instanceof Seed) {
+                    System.out.print("D");
                 } else if (tile.getPlaceable() instanceof Hut) {
                     System.out.print(BOLD + YELLOW + "H" + RESET);
                 } else if (tile.getPlaceable() instanceof GreenHouse) {
