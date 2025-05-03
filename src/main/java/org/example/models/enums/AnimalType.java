@@ -14,6 +14,7 @@ public enum AnimalType {
     AnimalType(AnimalPlace animalPlace, int price) {
         this.animalPlace = animalPlace;
         this.price = price;
+        //test
     }
 
 
