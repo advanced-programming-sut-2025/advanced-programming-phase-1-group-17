@@ -4,7 +4,6 @@ import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.Placeable;
-import org.example.models.crafting.CraftingItemType;
 
 import java.util.HashMap;
 
@@ -49,12 +48,12 @@ public class CraftingItem implements BackPackable, Placeable {
 
     @Override
     public String getName() {
-        return "";
+        return targetItem.getName();
     }
 
     @Override
     public double getPrice() {
-        return 0;
+        return targetItem.getPrice();
     }
 
     @Override

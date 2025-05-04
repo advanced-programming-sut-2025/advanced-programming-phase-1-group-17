@@ -5,6 +5,7 @@ import org.example.models.App;
 import java.util.ArrayList;
 
 public class Recipe {
+    private RecipeType type;
     private String name;
     private Food foodToBeCooked;
     private ArrayList<Food> ingredients = new ArrayList<>();

@@ -44,9 +44,9 @@ public enum ArtisanProductType implements BackPackableType {
 
     Wine("Wine", "Drink in moderation.", 0, 7, 0,
             mapOf(entry(IngredientGroup.AnyFruit, 1)), 0, CraftingItemType.Keg), // dynamic price
-
-    Vinegar("Vinegar", "An aged fermented liquid.", 13, 0, 10,
-            mapOf(entry(CraftingItemType.Rice, 1)), 100, CraftingItemType.Keg),
+//TODO: find out what Rice is
+//    Vinegar("Vinegar", "An aged fermented liquid.", 13, 0, 10,
+//            mapOf(entry(CraftingItemType.Rice, 1)), 100, CraftingItemType.Keg),
 
     Oil("Oil", "All purpose cooking oil.", 13, 0, 6,
             mapOf(entry(org.example.models.plant.CropType.Corn, 1)), 100, CraftingItemType.OilMaker),

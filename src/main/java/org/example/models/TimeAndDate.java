@@ -6,6 +6,7 @@ import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
 import org.example.models.plant.PlantGrowthController;
+import org.example.models.trade.ShippingBin;
 
 import java.util.Random;
 
@@ -51,9 +52,11 @@ public class TimeAndDate {
     public void goToNextDay() {
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
+
+        //Actions Needed to be done every day
         PlantGrowthController.growOneDay();
         ForagingController.setForagingForNextDay();
-
+        ShippingBin.goToNextDay();
 
         changeDayOfTheWeek();
         day++;
