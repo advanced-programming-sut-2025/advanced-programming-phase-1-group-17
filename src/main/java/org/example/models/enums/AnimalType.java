@@ -1,5 +1,12 @@
 package org.example.models.enums;
 
 public enum AnimalType {
-    Coop, Barn;
+    Chicken,
+    Duck,
+    Rabbit,
+    Dinosaur,
+    Cow,
+    Goat,
+    Sheep,
+    Pig;
 }

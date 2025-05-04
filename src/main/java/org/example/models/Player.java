@@ -1,5 +1,6 @@
 package org.example.models;
 
+import org.example.models.artisan.ArtisanProduct;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
@@ -24,6 +25,9 @@ public class Player {
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
+
+
+    private ArrayList<ArtisanProduct> artisanProductsInProgress = new ArrayList();
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
     private ArrayList<message> messages = new ArrayList<>();
     private ArrayList<Trade> trades = new ArrayList<>();
@@ -31,7 +35,6 @@ public class Player {
     private Player partner = this;
     private boolean interactionWithPartner = false;
     private int isbrokenUp = 0;
-
 
     //For Energy
     private double energy;
@@ -44,10 +47,8 @@ public class Player {
     //For TrashCan & WaterStorage
     private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
     private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
-
-    private Game activeGame;
-
     private Tool currentTool;
+
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
     private ArrayList<Recipe> recipes = new ArrayList<>();
@@ -97,6 +98,9 @@ public class Player {
         Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
         backPack.addItemToInventory(wateringCan);
         backPack.addItemToInventory(new Tool(ToolType.Scythe, null));
+        backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic));
+        backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic));
+        backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic));
         backPack.setPlayer(this);
         this.currentTool = wateringCan;
     }
@@ -221,6 +225,14 @@ public class Player {
 
     public void addTalk(Player player, Talk talk) {
         this.talk.put(player, talk);
+    }
+
+    public ArrayList<ArtisanProduct> getArtisanProductsInProgress() {
+        return artisanProductsInProgress;
+    }
+
+    public void setArtisanProductsInProgress(ArrayList<ArtisanProduct> artisanProductsInProgress) {
+        this.artisanProductsInProgress = artisanProductsInProgress;
     }
 
     public void addGift(Player player) {

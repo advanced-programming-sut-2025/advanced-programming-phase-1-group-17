@@ -1,4 +1,4 @@
-package org.example.foraging;
+package org.example.models.foraging;
 
 import org.example.models.App;
 import org.example.models.enums.Season;
@@ -55,10 +55,10 @@ public abstract class ForagingController {
 
     public static void setCropForaging(Tile tile) {
         Random random = new Random();
-        ForagingCrop foragingCrop;
+        ForagingCropType foragingCrop;
         do {
-            int randInt = random.nextInt(ForagingCrop.values().length);
-            foragingCrop = ForagingCrop.values()[randInt];
+            int randInt = random.nextInt(ForagingCropType.values().length);
+            foragingCrop = ForagingCropType.values()[randInt];
         } while (!foragingCrop.getSeasons().contains(App.getCurrentGame().getDate().getSeason()));
         tile.setPlaceable(new Crop(true, foragingCrop.getCropType(), false, tile));
     }
@@ -71,9 +71,11 @@ public abstract class ForagingController {
         Random random = new Random();
         SeedType chosenSeed = validSeeds.get(random.nextInt(validSeeds.size()));
 
+        //Crop crop = new Crop(false, chosenSeed.getCropType(), false, tile);
+        //tile.setPlowed(false);
+        //tile.setPlaceable(crop);
         Seed seed = new Seed(chosenSeed);
         tile.setPlaceable(seed);
-
     }
 
 }

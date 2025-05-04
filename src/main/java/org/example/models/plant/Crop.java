@@ -100,8 +100,10 @@ public class Crop extends Plant implements BackPackable, Placeable {
             return;
         }
 
+        if (!this.isWateredToday)
+            return;
+
         //stage Handling
-        //TODO: isWateredToday
         this.whichDayOfStage++;
         if (this.whichDayOfStage > this.type.getStages().get(this.currentStageIndex)) {
             if (this.currentStageIndex > this.type.getStages().size()) {
@@ -111,7 +113,6 @@ public class Crop extends Plant implements BackPackable, Placeable {
             this.currentStageIndex++;
             this.whichDayOfStage = 1;
         }
-        this.whichDayOfStage++;
     }
 
     @Override

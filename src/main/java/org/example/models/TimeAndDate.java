@@ -1,10 +1,12 @@
 package org.example.models;
 
-import org.example.foraging.ForagingController;
+import org.example.models.artisan.ArtisanProduct;
+import org.example.models.foraging.ForagingController;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
 import org.example.models.plant.PlantGrowthController;
+import org.example.models.trade.ShippingBin;
 
 import java.util.Random;
 
@@ -28,7 +30,19 @@ public class TimeAndDate {
 
     public void increaseHour() {
         hour++;
-        if (hour >= 22) {
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
+                artisanItemsInProgress.goToNextHour();
+            }
+        }
+
+        if (hour > 22) {
+            for (Player player : App.getCurrentGame().getPlayers()) {
+                for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
+                    for (int i = 0; i < 11; i++)
+                        artisanItemsInProgress.goToNextHour();
+                }
+            }
             hour = 9;
             minute = 0;
             goToNextDay();
@@ -46,9 +60,11 @@ public class TimeAndDate {
         }
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
+
+        //Actions Needed to be done every day
         PlantGrowthController.growOneDay();
         ForagingController.setForagingForNextDay();
-
+        ShippingBin.goToNextDay();
 
         changeDayOfTheWeek();
         day++;
@@ -59,6 +75,7 @@ public class TimeAndDate {
     }
 
     public void changeSeason() {
+        //TODO: remove all plants not compatible with new season
         Season[] seasons = Season.values();
         int currentIndex = season.ordinal();
         int nextIndex = (currentIndex + 1) % seasons.length;
