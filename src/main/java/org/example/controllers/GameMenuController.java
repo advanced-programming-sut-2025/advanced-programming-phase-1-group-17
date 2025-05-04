@@ -733,7 +733,17 @@ public class GameMenuController {
     }
 
     public Result build(String name, String x, String y) {
-        return new Result(false, "t");
+        if(Tile.getTile(Integer.parseInt(x),Integer.parseInt(y)) == null){
+            return new Result(false, "No tile found");
+        }
+        Tile tile = Tile.getTile(Integer.parseInt(x),Integer.parseInt(y));
+        if(tile.getPlaceable() != null){
+            return new Result(false, "you can't build "+name+" here");
+        }
+        try{
+
+        }
+
     }
 
     public Result buyAnimal(String animal, String name) {
