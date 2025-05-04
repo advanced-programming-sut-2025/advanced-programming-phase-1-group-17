@@ -71,7 +71,8 @@ public enum GameMenuCommands {
     flower("flower\\s+-u\\s+(?<username>\\S+)\\s*"),
     askMarriage("\\s*ask\\s+marriage\\s+-u\\s+(?<username>\\S+)\\s+-r\\s+(?<ring>\\d+)\\s*"),
     respond("\\s*respond\\s+(?<accept>accept|reject)\\s+-u\\s+(?<username>\\S+)\\s*"),
-    deleteMessage("\\s*delete\\s+message\\s+(?<index>\\d+)\\s*");
+    deleteMessage("\\s*delete\\s+message\\s+(?<index>\\d+)\\s*"),
+    startTrade("\\s*start\\s+trade\\s*");
 
 
     private final String regex;

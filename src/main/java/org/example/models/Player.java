@@ -9,6 +9,7 @@ import org.example.models.enums.ToolType;
 import org.example.models.map.PlayerMap;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
+import org.example.models.trade.Trade;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,9 @@ public class Player {
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
     private ArrayList<message> messages = new ArrayList<>();
-    private Player partner = this ;
+    private ArrayList<Trade> trades = new ArrayList<>();
+    private ArrayList<Trade> tradeHistory = new ArrayList<>();
+    private Player partner = this;
     private boolean interactionWithPartner = false;
     private int isbrokenUp = 0;
 
@@ -251,7 +254,7 @@ public class Player {
     public String getStringMessage() {
         String message = "";
         for (int i = 0; i < messages.size(); i++) {
-            message +=( i+"- "+"SENDER" + " : " + messages.get(i).getSender().getUser().getUsername()
+            message += (i + "- " + "SENDER" + " : " + messages.get(i).getSender().getUser().getUsername()
                     + "\n" + "message : " + messages.get(i).getMessage() + "\n");
         }
         return message;
@@ -271,5 +274,21 @@ public class Player {
 
     public void setInteractionWithPartner(boolean interactionWithPartner) {
         this.interactionWithPartner = interactionWithPartner;
+    }
+
+    public ArrayList<Trade> getTrades() {
+        return trades;
+    }
+
+    public void addTrades(Trade trade) {
+        this.trades.add(trade);
+    }
+
+    public ArrayList<Trade> getTradeHistory() {
+        return tradeHistory;
+    }
+
+    public void addTradeHistory(Trade trade) {
+        this.tradeHistory.add(trade);
     }
 }

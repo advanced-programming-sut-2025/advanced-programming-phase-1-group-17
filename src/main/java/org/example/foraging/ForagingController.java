@@ -4,10 +4,7 @@ import org.example.models.App;
 import org.example.models.enums.Season;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
-import org.example.models.plant.Crop;
-import org.example.models.plant.SeedType;
-import org.example.models.plant.Tree;
-import org.example.models.plant.TreeType;
+import org.example.models.plant.*;
 
 import java.util.List;
 import java.util.Random;
@@ -74,9 +71,9 @@ public abstract class ForagingController {
         Random random = new Random();
         SeedType chosenSeed = validSeeds.get(random.nextInt(validSeeds.size()));
 
-        Crop crop = new Crop(false, chosenSeed.getCropType(), false, tile);
-        tile.setPlowed(false);
-        tile.setPlaceable(crop);
+        Seed seed = new Seed(chosenSeed);
+        tile.setPlaceable(seed);
+
     }
 
 }
