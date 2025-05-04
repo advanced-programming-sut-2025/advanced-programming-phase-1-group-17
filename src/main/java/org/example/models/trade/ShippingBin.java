@@ -39,7 +39,7 @@ public class ShippingBin implements Placeable {
             for (BackPackableType item : shippingBin.items.keySet()) {
                 total += shippingBin.items.get(item).size() * item.getPrice();
             }
-            shippingBin.owner.addCoin(total);
+            shippingBin.owner.getBackPack().addCoin(total);
         }
     }
 }

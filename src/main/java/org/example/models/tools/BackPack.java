@@ -95,6 +95,10 @@ public class BackPack {
         }
     }
 
+    public void useItem(BackPackableType type) {
+        backPackItems.get(type).remove(0);
+    }
+
     public int getInventorySize(String item) {
         for (BackPackableType b : backPackItems.keySet()) {
             if (b.getName().equals(item)) {
