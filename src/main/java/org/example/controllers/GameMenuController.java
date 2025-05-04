@@ -14,8 +14,10 @@ import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
+import org.example.models.trade.Trade;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
 public class GameMenuController {
 
@@ -888,7 +890,7 @@ public class GameMenuController {
                                 + " : " + massage + "\n");
                         player.addFriendShips(currentPlayer, player.getFriendShips().get(currentPlayer) + 20);
                         currentPlayer.addFriendShips(player, currentPlayer.getFriendShips().get(player) + 20);
-                        message message = new message(currentPlayer,massage);
+                        message message = new message(currentPlayer, massage);
                         player.addMessage(message);
                         if (player.getPartner().equals(currentPlayer) && !player.isInteractionWithPartner()) {
                             player.setEnergy(player.getEnergy() + 50);
@@ -1172,23 +1174,110 @@ public class GameMenuController {
     }
 
     public Result startTrade() {
-        return new Result(false, "t");
+        return new Result(false, "you are now in trade menu \nlist of players : \n"
+                + App.getCurrentGame().getPlayers().get(1).getUser().getUsername() + "\n"
+                + App.getCurrentGame().getPlayers().get(2).getUser().getUsername() + "\n"
+                + App.getCurrentGame().getPlayers().get(3).getUser().getUsername() + "\n"
+                + App.getCurrentGame().getPlayers().get(4).getUser().getUsername());
     }
 
-    public Result trade(String username, String type, String amount, String price, String targetItem) {
-        return new Result(false, "t");
+    public Result trade(Matcher matcher, String type) {
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (type.trim().equals("offer")) {
+            for (Player player : App.getCurrentGame().getPlayers()) {
+                if (player.getUser().getUsername().equals(matcher.group("username"))) {
+                    String item = matcher.group("item");
+                    int amount = Integer.parseInt(matcher.group("amount"));
+                    double price = Float.parseFloat(matcher.group("price"));
+                    if (player.getBackPack().getInventorySize(item) >= amount) {
+                        Trade trade = new Trade(currentPlayer, type, item, amount, price, "", 0);
+                        message message = new message(currentPlayer, "you have a trade request of "
+                                + currentPlayer.getUser().getUsername());
+                        player.addMessage(message);
+                        player.addTrades(trade);
+                        currentPlayer.addTrades(trade);
+                        return new Result(true, "yor request for trade has been registered");
+                    } else {
+                        return new Result(false, "this player have not enough items in her/his inventory");
+                    }
+                }
+            }
+            return new Result(false, "this username does not exist in this game");
+        } else {
+            for (Player player : App.getCurrentGame().getPlayers()) {
+                if (player.getUser().getUsername().equals(matcher.group("username"))) {
+                    String item = matcher.group("item");
+                    int amount = Integer.parseInt(matcher.group("amount"));
+                    String targetItem = matcher.group("targetItem");
+                    int targetAmount = Integer.parseInt(matcher.group("targetAmount"));
+                    if (player.getBackPack().getInventorySize(item) >= amount) {
+                        if (currentPlayer.getBackPack().getInventorySize(targetItem) >= targetAmount) {
+                            Trade trade = new Trade(currentPlayer, type, item, amount, 0, targetItem, targetAmount);
+                            message message = new message(currentPlayer, "you have a trade request of "
+                                    + currentPlayer.getUser().getUsername());
+                            player.addMessage(message);
+                            player.addTrades(trade);
+                            currentPlayer.addTrades(trade);
+                            return new Result(true, "yor request for trade has been registered");
+                        } else {
+                            return new Result(false, "you have not enough targetItems in your inventory");
+                        }
+                    } else {
+                        return new Result(false, "this player have not enough items in her/his inventory");
+                    }
+                }
+            }
+            return new Result(false, "this username does not exist in this game");
+        }
+
     }
 
-    public Result tradeResponse(String acceptance, String id) {
-        return new Result(false, "t");
+    public Result tradeResponse(Matcher matcher) {
+        String accept = matcher.group("accept");
+        int id = Integer.parseInt(matcher.group("id"));
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        for (Trade trade : currentPlayer.getTrades()){
+            if (trade.getId() == id && !trade.getSender().equals(currentPlayer)) {
+                if (accept.equals("accept")) {
+                    //TODO
+                }
+                else {
+                    //TODO
+                    trade.getSender().getTrades().remove(trade);
+                    currentPlayer.getTrades().remove(trade);
+                    return new Result(false, "the operation was successful");
+                }
+            }
+        }
+        return new Result(false, "invalid id");
     }
 
     public Result tradeHistory() {
+        //TODO
         return new Result(false, "t");
     }
 
     public Result tradeList() {
-        return new Result(false, "t");
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (currentPlayer.getTrades() == null) {
+            return new Result(false, "there are nothing trade for you");
+        } else {
+            String result = "";
+            for (Trade trade : currentPlayer.getTrades()) {
+                if (!trade.getSender().equals(currentPlayer)) {
+                    if (trade.getType().equals("offer")) {
+                        result += (trade.getId() + "-" + trade.getSender() + " " + trade.getItem() + " " + trade.getAmount() + " " + trade.getPrice() + "\n");
+                    } else {
+                        result += (trade.getId() + "-" + trade.getSender() + " " + trade.getItem() + " " + trade.getAmount() + " " + trade.getTargetItem() + " " + trade.getTargetAmount() + "\n");
+                    }
+                }
+            }
+            if (result.isEmpty()) {
+                return new Result(false, "there are nothing trade for you");
+            } else {
+                return new Result(true, result);
+            }
+        }
     }
 
     public Result meetNPC(String npcName) {
@@ -1210,14 +1299,15 @@ public class GameMenuController {
     public Result questFinish(String index) {
         return new Result(false, "t");
     }
+
     public Result showMessage() {
         return new Result(true, App.getCurrentGame().getCurrentPlayingPlayer().getStringMessage());
     }
+
     public Result deleteMessage(int index) {
         if (index >= App.getCurrentGame().getCurrentPlayingPlayer().getMessage().size()) {
-            return new Result(false,"there are no messages with this index");
-        }
-        else {
+            return new Result(false, "there are no messages with this index");
+        } else {
             message message = App.getCurrentGame().getCurrentPlayingPlayer().getMessage().get(index);
             App.getCurrentGame().getCurrentPlayingPlayer().getMessage().remove(message);
             return new Result(true, "message delete successfully");

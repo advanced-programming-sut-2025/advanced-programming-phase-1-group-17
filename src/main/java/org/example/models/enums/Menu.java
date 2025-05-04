@@ -12,7 +12,8 @@ public enum Menu {
     GameMenu(new GameMenu()),
     ProfileMenu(new ProfileMenu()),
     AvatarMenu(new AvatarMenu()),
-    MainMenu(new MainMenu());
+    MainMenu(new MainMenu()),
+    TradeMenu(new TradeMenu());
 
     private final AppMenu menu;
 
