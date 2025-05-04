@@ -1186,7 +1186,6 @@ public class GameMenuController {
                 + App.getCurrentGame().getPlayers().get(2).getUser().getUsername() + "\n"
                 + App.getCurrentGame().getPlayers().get(3).getUser().getUsername() + "\nnew trade request or offer : \n"
                 + result);
-
     }
 
     public Result tradeByMoney(Matcher matcher, String type, int enable) {
