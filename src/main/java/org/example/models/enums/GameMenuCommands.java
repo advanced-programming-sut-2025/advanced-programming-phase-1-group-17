@@ -61,6 +61,14 @@ public enum GameMenuCommands {
     //For artisan
     ArtisanUse("\\s*artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<itemNames>.+)\\s*"),
     ArtisanGet("\\s*artisan\\s+get\\s+(?<artisanName>\\S+)\\s*"),
+
+    //For Trade
+    ShowAllProducts("\\s*show\\s+all\\s+products\\s*"),
+    ShowAllAvailableProducts("\\s*show\\s+all\\s+available\\s+products\\*"),
+    Purchase("\\s*purchase\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
+    CheatAddDollars("\\s*cheat\\s+add\\s+(?<count>\\d+)\\s+dollars\\s*"),
+    Sell("\\s*sell\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
+
     //For friendships
     talk("\\s*talk\\s+-u\\s+(?<username>\\S+)\\s+-m\\s+(?<message>[\\S ]+)\\s*"),
     talkHistory("\\s*talk\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),

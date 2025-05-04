@@ -975,7 +975,7 @@ public class GameMenuController {
         return new Result(false, "t");
     }
 
-    public Result addDollars(String count) {
+    public Result cheatAddDollars(String count) {
         return new Result(false, "t");
     }
 

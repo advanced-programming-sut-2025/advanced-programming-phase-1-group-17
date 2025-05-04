@@ -4,6 +4,7 @@ package org.example.models;
 import org.example.models.map.GameMap;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
+import org.example.models.trade.StoreManager;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ public class Game {
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
     private GameMap gameMap;
+    private StoreManager storeManager;
 
 
     public Game(User user1, User user2, User user3) {
@@ -52,6 +54,7 @@ public class Game {
         App.setCurrentGame(this);
         this.gameMap = new GameMap(players);
         App.getCurrentGame().setCurrentPlayingPlayer(creator);
+        this.storeManager.initializeStores();
     }
 
     public Player getPlayerByPlayerMap(PlayerMap playerMap) {

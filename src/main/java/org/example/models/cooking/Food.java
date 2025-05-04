@@ -5,8 +5,6 @@ import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.tools.BackPack;
 
-import java.util.ArrayList;
-
 public class Food implements BackPackable {
     private FoodType foodtype;
     private int count;

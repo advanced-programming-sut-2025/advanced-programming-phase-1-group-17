@@ -87,6 +87,7 @@ public class GameMenu implements AppMenu {
                     matcher.group("direction")
             ));
         }
+
         //For Inventory
         else if ((matcher = GameMenuCommands.InventoryShow.getMatcher(command)) != null) {
             System.out.println(controller.inventoryShow());
@@ -96,7 +97,8 @@ public class GameMenu implements AppMenu {
                     matcher.group("number")
             ));
         }
-        //For plants
+
+        //For Plants
         else if ((matcher = GameMenuCommands.CraftInfo.getMatcher(command)) != null) {
             System.out.println(controller.craftInfo(
                     matcher.group("craftName")
@@ -119,7 +121,6 @@ public class GameMenu implements AppMenu {
         } else if ((matcher = GameMenuCommands.HowMuchWater.getMatcher(command)) != null) {
             System.out.println(controller.howMuchWater());
         }
-
 
         //For crafting
         else if ((matcher = GameMenuCommands.CraftingShowRecipes.getMatcher(command)) != null) {
@@ -172,6 +173,28 @@ public class GameMenu implements AppMenu {
                     matcher.group("artisanName")
             ));
         }
+
+        //For Trade
+        else if ((matcher = GameMenuCommands.ShowAllProducts.getMatcher(command)) != null) {
+            System.out.println(controller.showAllProducts());
+        } else if ((matcher = GameMenuCommands.ShowAllAvailableProducts.getMatcher(command)) != null) {
+            System.out.println(controller.showAllAvailableProducts());
+        } else if ((matcher = GameMenuCommands.Purchase.getMatcher(command)) != null) {
+            System.out.println(controller.purchase(
+                    matcher.group("productName"),
+                    matcher.group("count")
+            ));
+        } else if ((matcher = GameMenuCommands.CheatAddDollars.getMatcher(command)) != null) {
+            System.out.println(controller.cheatAddDollars(
+                    matcher.group("count")
+            ));
+        } else if ((matcher = GameMenuCommands.Sell.getMatcher(command)) != null) {
+            System.out.println(controller.sellProduct(
+                    matcher.group("productName"),
+                    matcher.group("count")
+            ));
+        }
+
         // friendship
         else if (command.trim().equals("friendships")) {
             System.out.println(controller.friendship());
@@ -186,21 +209,12 @@ public class GameMenu implements AppMenu {
         }else if ((matcher = GameMenuCommands.hug.getMatcher(command))!=null) {
             System.out.println(controller.hug(matcher.group("username").trim()));
         }
-        //cooking
-        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
-            System.out.println(controller);
-        }
+
         else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
         } else if (command.trim().equals("menu exit")) {
             App.setCurrentMenu(Menu.MainMenu);
-        }
-        //cooking
-        else if((matcher = GameMenuCommands.CookingRefrigerator.getMatcher(command)) != null ) {
-            System.out.println(controller);
-        }
-
-        else {
+        } else {
             System.out.println("invalid command");
         }
     }
