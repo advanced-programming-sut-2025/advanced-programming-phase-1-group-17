@@ -15,7 +15,7 @@ public class Game {
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
     private GameMap gameMap;
-    private StoreManager storeManager;
+    private StoreManager storeManager = new StoreManager();
 
 
     public Game(User user1, User user2, User user3) {
