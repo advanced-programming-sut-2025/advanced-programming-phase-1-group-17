@@ -729,7 +729,7 @@ public class GameMenuController {
     }
 
     public Result eat(String foodName) {
-        return new Result(false, "t");
+
     }
 
     public Result build(String name, String x, String y) {
