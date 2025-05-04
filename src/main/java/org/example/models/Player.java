@@ -27,7 +27,7 @@ public class Player {
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
     private ArrayList<message> messages = new ArrayList<>();
     private ArrayList<Trade> trades = new ArrayList<>();
-    private HashMap<Trade, String> tradeHistory = new HashMap<>();
+    private ArrayList<Trade> tradeHistory = new ArrayList<>();
     private Player partner = this;
     private boolean interactionWithPartner = false;
     private int isbrokenUp = 0;
@@ -284,11 +284,11 @@ public class Player {
         this.trades.add(trade);
     }
 
-    public HashMap<Trade, String> getTradeHistory() {
+    public ArrayList<Trade> getTradeHistory() {
         return tradeHistory;
     }
 
-    public void setTradeHistory(Trade trade, String acceptOrReject) {
-        this.tradeHistory.put(trade, acceptOrReject);
+    public void addTradeHistory(Trade trade) {
+        this.tradeHistory.add(trade);
     }
 }
