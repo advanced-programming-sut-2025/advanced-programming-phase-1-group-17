@@ -26,6 +26,7 @@ public class TradeMenu implements AppMenu {
         }else if (command.trim().equals("trade history")) {
             System.out.println(controller.tradeHistory());
         }
+
         else if (command.trim().equals("exit")) {
             App.setCurrentMenu(Menu.GameMenu);
         }
