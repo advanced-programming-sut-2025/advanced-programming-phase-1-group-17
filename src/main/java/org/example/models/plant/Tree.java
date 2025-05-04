@@ -36,13 +36,17 @@ public class Tree extends Plant implements Placeable {
     }
 
     public void goToNextDay(){
-        if (this.isFullyGrown || !this.isWateredToday)
+        if (this.isFullyGrown)
             return;
 
         handleFruitCycle();
+
         this.daysWithoutWater++;
         if (this.daysWithoutWater >= 2)
             tile.setPlaceable(null);
+
+        if (!this.isWateredToday)
+            return;
 
         //stage Handling
         this.whichDayOfStage++;
@@ -54,7 +58,6 @@ public class Tree extends Plant implements Placeable {
             this.currentStageIndex++;
             this.whichDayOfStage = 1;
         }
-        this.whichDayOfStage++;
     }
 
     private void handleFruitCycle() {
