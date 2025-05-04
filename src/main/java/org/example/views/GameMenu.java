@@ -18,8 +18,8 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.newGame(matcher.group("username1"),
                     matcher.group("username2"),
                     matcher.group("username3"),
-                    matcher.group("rest")));
-            controller.gameMap(scanner);
+                    matcher.group("rest"),
+                    scanner));
         } else if ((matcher = GameMenuCommands.ExitGame.getMatcher(command)) != null) {
             System.out.println(controller.exitGame());
         } else if ((matcher = GameMenuCommands.LoadGame.getMatcher(command)) != null) {
@@ -70,23 +70,24 @@ public class GameMenu implements AppMenu {
 
 
         //Tool
-        else if ((matcher = GameMenuCommands.ToolsEquip.getMatcher(command)) != null) {
+        else if ((matcher = GameMenuCommands.ToolsEquip.getMatcher(command))!= null) {
             System.out.println(controller.toolEquip(
                     matcher.group("toolName")
             ));
-        } else if ((matcher = GameMenuCommands.ToolsShowCurrent.getMatcher(command)) != null) {
+        } else if ((matcher = GameMenuCommands.ToolsShowCurrent.getMatcher(command))!= null) {
             System.out.println(controller.currentToolShow());
-        } else if ((matcher = GameMenuCommands.ToolsShowAvailable.getMatcher(command)) != null) {
+        } else if ((matcher = GameMenuCommands.ToolsShowAvailable.getMatcher(command))!= null) {
             System.out.println(controller.toolsShowAvailable());
-        } else if ((matcher = GameMenuCommands.ToolsUpgrade.getMatcher(command)) != null) {
+        } else if ((matcher = GameMenuCommands.ToolsUpgrade.getMatcher(command))!= null) {
             System.out.println(controller.toolUpgrade(
                     matcher.group("toolName")
             ));
-        } else if ((matcher = GameMenuCommands.ToolsUse.getMatcher(command)) != null) {
+        } else if ((matcher = GameMenuCommands.ToolsUse.getMatcher(command))!= null) {
             System.out.println(controller.toolUse(
                     matcher.group("direction")
             ));
         }
+
         //For Inventory
         else if ((matcher = GameMenuCommands.InventoryShow.getMatcher(command)) != null) {
             System.out.println(controller.inventoryShow());
@@ -96,7 +97,8 @@ public class GameMenu implements AppMenu {
                     matcher.group("number")
             ));
         }
-        //For plants
+
+        //For Plants
         else if ((matcher = GameMenuCommands.CraftInfo.getMatcher(command)) != null) {
             System.out.println(controller.craftInfo(
                     matcher.group("craftName")
@@ -165,13 +167,35 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.ArtisanUse.getMatcher(command)) != null) {
             System.out.println(controller.artisanUse(
                     matcher.group("artisanUse"),
-                    matcher.group("itemName")
+                    matcher.group("itemNames")
             ));
         } else if ((matcher = GameMenuCommands.ArtisanGet.getMatcher(command)) != null) {
             System.out.println(controller.artisanGet(
                     matcher.group("artisanName")
             ));
         }
+
+        //For Trade
+        else if ((matcher = GameMenuCommands.ShowAllProducts.getMatcher(command)) != null) {
+            System.out.println(controller.showAllProducts());
+        } else if ((matcher = GameMenuCommands.ShowAllAvailableProducts.getMatcher(command)) != null) {
+            System.out.println(controller.showAllAvailableProducts());
+        } else if ((matcher = GameMenuCommands.Purchase.getMatcher(command)) != null) {
+            System.out.println(controller.purchase(
+                    matcher.group("productName"),
+                    matcher.group("count")
+            ));
+        } else if ((matcher = GameMenuCommands.CheatAddDollars.getMatcher(command)) != null) {
+            System.out.println(controller.cheatAddDollars(
+                    matcher.group("count")
+            ));
+        } else if ((matcher = GameMenuCommands.Sell.getMatcher(command)) != null) {
+            System.out.println(controller.sellProduct(
+                    matcher.group("productName"),
+                    matcher.group("count")
+            ));
+        }
+
         // friendship
         else if (command.trim().equals("friendships")) {
             System.out.println(controller.friendship());

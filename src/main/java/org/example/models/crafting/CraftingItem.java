@@ -49,12 +49,12 @@ public class CraftingItem implements BackPackable, Placeable {
 
     @Override
     public String getName() {
-        return "";
+        return targetItem.getName();
     }
 
     @Override
     public double getPrice() {
-        return 0;
+        return targetItem.getPrice();
     }
 
     @Override
