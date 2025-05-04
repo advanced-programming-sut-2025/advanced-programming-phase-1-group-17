@@ -201,6 +201,9 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.showMessage());
         } else if ((matcher = GameMenuCommands.deleteMessage.getMatcher(command)) != null) {
             System.out.println(controller.deleteMessage(Integer.parseInt(matcher.group("index"))));
+        } else if ((matcher = GameMenuCommands.startTrade.getMatcher(command))!=null) {
+            System.out.println(controller.startTrade());
+            App.setCurrentMenu(Menu.TradeMenu);
         }
         else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
