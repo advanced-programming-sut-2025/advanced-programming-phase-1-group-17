@@ -1,5 +1,6 @@
 package org.example.models.map;
 
+import org.example.models.NPCS.NPC;
 import org.example.models.Placeable;
 import org.example.models.Player;
 
@@ -14,6 +15,7 @@ public class Tile {
     private boolean isPlowed = false;
     private Player owner;
     private Player whoIsHere;
+    private NPC npcIsHere;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
     private boolean isLightninged = false;
 
@@ -110,5 +112,13 @@ public class Tile {
 
     public void setLightninged(boolean lightninged) {
         isLightninged = lightninged;
+    }
+
+    public NPC getNpcIsHere() {
+        return npcIsHere;
+    }
+
+    public void setNpcIsHere(NPC npcIsHere) {
+        this.npcIsHere = npcIsHere;
     }
 }

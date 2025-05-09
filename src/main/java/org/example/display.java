@@ -44,9 +44,46 @@ public class display {
                 Tile tile = game.getTileByIndex(i, j);
                 if (tile == null) {
                     System.out.print("null");
-                } else if (tile.getWhoIsHere() != null) {
-                    System.out.print(BOLD + WHITE + "P" + RESET);
-                } else if (tile.getPlaceable() instanceof Quarry) {
+                }
+                else if (tile.getPlaceable() instanceof NPC) {
+                    if (tile.getNpcIsHere() == null) {
+                        if (tile.getPlaceable() instanceof Abigail) {
+                            System.out.print(BOLD + BLUE + "A" + RESET);
+                        } else if (tile.getPlaceable() instanceof Harvey) {
+                            System.out.print(BOLD + GREEN + "H" + RESET);
+                        } else if (tile.getPlaceable() instanceof Lia) {
+                            System.out.print(BOLD + CHOCOLATE + "L" + RESET);
+                        } else if (tile.getPlaceable() instanceof Robin) {
+                            System.out.print(BOLD + RED + "R" + RESET);
+                        } else if (tile.getPlaceable() instanceof Sebastian) {
+                            System.out.print(BOLD + YELLOW + "S" + RESET);
+                        }
+                    } else {
+                        if (tile.getPlaceable() instanceof Abigail) {
+                            System.out.print(BOLD + WHITE + "A" + RESET);
+                        } else if (tile.getPlaceable() instanceof Harvey) {
+                            System.out.print(BOLD + WHITE + "H" + RESET);
+                        } else if (tile.getPlaceable() instanceof Lia) {
+                            System.out.print(BOLD + WHITE + "L" + RESET);
+                        } else if (tile.getPlaceable() instanceof Robin) {
+                            System.out.print(BOLD + WHITE + "R" + RESET);
+                        } else if (tile.getPlaceable() instanceof Sebastian) {
+                            System.out.print(BOLD + WHITE + "S" + RESET);
+                        }
+                    }
+                }
+                else if (tile.getWhoIsHere() != null) {
+                    if (tile.getWhoIsHere().equals(game.getPlayers().get(0))) {
+                        System.out.print(BOLD + WHITE + "P" + RESET);
+                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(1))) {
+                        System.out.print(BOLD + RED + "P" + RESET);
+                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(2))) {
+                        System.out.print(BOLD + BLUE + "P" + RESET);
+                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(3))) {
+                        System.out.print(BOLD + YELLOW + "P" + RESET);
+                    }
+                }
+                else if (tile.getPlaceable() instanceof Quarry) {
                     System.out.print(BOLD + CYAN + "Q" + RESET);
                 } else if (tile.getPlaceable() instanceof Lake) {
                     System.out.print(BOLD + BLUE + "L" + RESET);
@@ -62,18 +99,9 @@ public class display {
                     System.out.print(BOLD + RED + "C" + RESET);
                 }
                 //TODO: Add Crop (with checking isForaging)
-                else if (tile.getPlaceable() instanceof Abigail) {
-                    System.out.print(BOLD + BLUE + "A" + RESET);
-                } else if (tile.getPlaceable() instanceof Harvey) {
-                    System.out.print(BOLD + GREEN + "H" + RESET);
-                } else if (tile.getPlaceable() instanceof Lia) {
-                    System.out.print(BOLD + WHITE + "L" + RESET);
-                } else if (tile.getPlaceable() instanceof Robin) {
-                    System.out.print(BOLD + RED + "R" + RESET);
-                } else if (tile.getPlaceable() instanceof Sebastian) {
-                    System.out.print(BOLD + YELLOW + "S" + RESET);
-                } else if (tile.getPlaceable() instanceof Seed) {
-                    System.out.printf(BOLD + GREEN + "S"+ RESET);
+
+                else if (tile.getPlaceable() instanceof Seed) {
+                    System.out.print(BOLD + GREEN + "S" + RESET);
                 } else {
                     System.out.print(" ");
                 }
@@ -81,20 +109,21 @@ public class display {
             System.out.print("|");
             if (i == 50) {
                 System.out.println();
-                for (int t = 0; t < size + 2; t++) {
+                for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
             if (i == 150) {
                 System.out.println();
-                for (int t = 0; t < size + 2; t++) {
+                for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
             System.out.println();
         }
         if ((x + size == 201)) {
-            for (int i = 0; i < size + 2; i++) {
+            System.out.print("   ");
+            for (int i = 0; i < size + 3; i++) {
                 System.out.print("-");
             }
             System.out.println();
@@ -112,9 +141,14 @@ public class display {
         System.out.println(BOLD + GREEN + "T" + RESET + " : is tree");
         System.out.println(BOLD + WHITE + "P" + RESET + " : is player");
         System.out.println(BOLD + BLUE + "A" + RESET + " : is Abigail Home");
-        System.out.println(BOLD + WHITE + "L" + RESET + " : is Lia Home");
+        System.out.println(BOLD + CHOCOLATE + "L" + RESET + " : is Lia Home");
         System.out.println(BOLD + RED + "R" + RESET + " : is Robin Home");
         System.out.println(BOLD + GREEN + "H" + RESET + " : is Harvey Home");
         System.out.println(BOLD + YELLOW + "S" + RESET + " : is Sebastian Home");
+        System.out.println(BOLD + WHITE + "A" + RESET + " : is Abigail");
+        System.out.println(BOLD + WHITE + "H" + RESET + " : is Harvey");
+        System.out.println(BOLD + WHITE + "L" + RESET + " : is Lia");
+        System.out.println(BOLD + WHITE + "R" + RESET + " : is Robin");
+        System.out.println(BOLD + WHITE + "S" + RESET + " : is Sebastian");
     }
 }

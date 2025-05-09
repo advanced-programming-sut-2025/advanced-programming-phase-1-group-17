@@ -41,7 +41,7 @@ public enum CraftingItemType implements BackPackableType {
 
     @Override
     public String getName() {
-        return "";
+        return name();
     }
 
     @Override
