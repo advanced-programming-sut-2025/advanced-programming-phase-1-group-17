@@ -1,30 +1,29 @@
 package org.example.models.NPCS;
 
+import org.example.models.BackPackable;
 import org.example.models.Player;
 import org.example.models.Product;
+import org.example.models.User;
 import org.example.models.map.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-abstract public class NPC{
+abstract public class NPC {
+    private int x;
+    private int y;
+    private static User fatherUser;
+    private static Player fatherPlayer;
     private String name;
-    private HashMap<Player,Integer> friendshipLevel = new HashMap<>();
-    private HashMap<Player,Integer> friendshipPoint;
-    private ArrayList<Tile> tiles;
     private String job;
-    private ArrayList<Quest> quests=new ArrayList<>();
+    private ArrayList<Quest> quests =new ArrayList<>();
+    private ArrayList<String> favorites;
 
-    public ArrayList<Tile> getTiles() {
-        return tiles;
+    private HashMap<String, String> dialogue = new HashMap<>();
+    private ArrayList<Quest> requests= new ArrayList<>();
+    public ArrayList<Quest> getRequests(){
+        return requests;
     }
-
-    public void setTiles(ArrayList<Tile> tiles) {
-        this.tiles = tiles;
-    }
-
-    private ArrayList<Product> favorites;
-    private ArrayList<Product> requests = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -42,21 +41,13 @@ abstract public class NPC{
         this.job = job;
     }
 
-    public ArrayList<Product> getFavorites() {
+    public ArrayList<String> getFavorites() {
         return favorites;
     }
-
-    public void setFavorites(ArrayList<Product> favorites) {
+    public void setFavorites(ArrayList<String> favorites) {
         this.favorites = favorites;
     }
 
-    public ArrayList<Product> getRequests() {
-        return requests;
-    }
-
-    public void setRequests(ArrayList<Product> requests) {
-        this.requests = requests;
-    }
 
     public ArrayList<Product> getRewards() {
         return rewards;
@@ -71,5 +62,39 @@ abstract public class NPC{
 
     private ArrayList<Product> rewards = new ArrayList<>();
 
+    public static User getFatherUser() {
+        return fatherUser;
+    }
+
+    public static void setFatherUser(User fatherUser) {
+        NPC.fatherUser = fatherUser;
+    }
+
+    public static Player getFatherPlayer() {
+        return fatherPlayer;
+    }
+
+    public static void setFatherPlayer(Player fatherPlayer) {
+        NPC.fatherPlayer = fatherPlayer;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+    public HashMap<String, String> getDialogue() {
+        return dialogue;
+    }
 
 }

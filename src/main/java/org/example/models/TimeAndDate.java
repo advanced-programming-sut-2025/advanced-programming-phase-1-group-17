@@ -1,12 +1,14 @@
 package org.example.models;
 
 import org.example.foraging.ForagingController;
+import org.example.models.NPCS.NPC;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
 import org.example.models.plant.PlantGrowthController;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TimeAndDate {
     private WeatherType todayWeather;
@@ -44,6 +46,32 @@ public class TimeAndDate {
                 player.setIsbrokenUp(player.getIsbrokenUp()-1);
             }
         }
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals("NPC")){
+                continue;
+            }
+            for (NPC npc : App.getCurrentGame().getNPCs()) {
+                player.getTalkedNPCToday().put(npc, false);
+                player.getGiftNPCToday().put(npc, true);
+            }
+        }
+        // fifty percent chance of receiving a gift from an NPC
+        int a = ThreadLocalRandom.current().nextInt(1, 3);
+        if (a == 2) {
+            for (Player player : App.getCurrentGame().getPlayers()) {
+                if (player.getUser().getUsername().equals("NPC")){
+                    continue;
+                }
+                for (NPC npc : App.getCurrentGame().getNPCs()) {
+                    if (player.getFriendShipsWithNPCs().get(npc) >= 600) {
+                        Flower flower = new Flower();
+                        message message = new message(npc, "you received a flower");
+                        player.getBackPack().addItemToInventory(flower);
+                    }
+                }
+            }
+        }
+
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
         PlantGrowthController.growOneDay();

@@ -9,6 +9,8 @@ import org.example.models.User;
 import org.example.models.enums.Gender;
 import org.example.models.plant.Tree;
 
+import javax.swing.plaf.basic.BasicSplitPaneUI;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -124,17 +126,17 @@ public class PlayerMap {
             // NPC FORM
             for (int i = 51; i <= 150; i++) {
                 for (int j = 1; j <= 200; j++) {
-                    Tile tile = new Tile(i, j, owner);
+                    Tile tile = new Tile(i, j, NPC.getFatherPlayer());
                     Tiles.add(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
             }
-            Abigail abigail = new Abigail();
-            Harvey harvey = new Harvey();
-            Lia lia = new Lia();
-            Robin robin = new Robin();
-            Sebastian sebastian = new Sebastian();
+            Abigail abigail = (Abigail) App.getCurrentGame().getNPCs().get(0);
+            Harvey harvey = (Harvey) App.getCurrentGame().getNPCs().get(1);
+            Lia lia = (Lia) App.getCurrentGame().getNPCs().get(2);
+            Robin robin = (Robin) App.getCurrentGame().getNPCs().get(3);
+            Sebastian sebastian = (Sebastian) App.getCurrentGame().getNPCs().get(4);
             for (int k = 0; k < 121; k += 30) {
                 for (int i = 91; i <= 100; i++) {
                     for (int j = 31 + k; j <= 40 + k; j++) {
@@ -150,6 +152,48 @@ public class PlayerMap {
                             Tile.getTile(i, j).setPlaceable(sebastian);
                         }
                     }
+                }
+            }
+            out:
+            for (int k = 0; k < 121; k += 30) {
+                for (int i = 88; i < 103; i++) {
+                    for (int j = 28 + k; j < 42 + k; j++) {
+                        if (Tile.getTile(i, j).getPlaceable() == null && Tile.getTile(i, j).getWhoIsHere() == null
+                                && Tile.getTile(i, j).isWalkAble()) {
+                            if (k == 0) {
+                                abigail.setX(i);
+                                abigail.setY(j);
+                                Tile.getTile(i, j).setPlaceable(abigail);
+                                Tile.getTile(i, j).setNpcIsHere(abigail);
+                                continue out;
+                            } else if (k == 30) {
+                                harvey.setX(i);
+                                harvey.setY(j);
+                                Tile.getTile(i, j).setPlaceable(harvey);
+                                Tile.getTile(i, j).setNpcIsHere(harvey);
+                                continue out;
+                            } else if (k == 60) {
+                                lia.setX(i);
+                                lia.setY(j);
+                                Tile.getTile(i, j).setPlaceable(lia);
+                                Tile.getTile(i, j).setNpcIsHere(lia);
+                                continue out;
+                            } else if (k == 90) {
+                                robin.setX(i);
+                                robin.setY(j);
+                                Tile.getTile(i, j).setPlaceable(robin);
+                                Tile.getTile(i, j).setNpcIsHere(robin);
+                                continue out;
+                            } else {
+                                sebastian.setX(i);
+                                sebastian.setY(j);
+                                Tile.getTile(i, j).setPlaceable(sebastian);
+                                Tile.getTile(i, j).setNpcIsHere(sebastian);
+                                continue out;
+                            }
+                        }
+                    }
+
                 }
             }
 

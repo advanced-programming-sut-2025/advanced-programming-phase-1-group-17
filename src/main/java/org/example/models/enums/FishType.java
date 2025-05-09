@@ -1,6 +1,9 @@
 package org.example.models.enums;
 
-public enum FishType {
+import org.example.models.BackPackable;
+import org.example.models.BackPackableType;
+
+public enum FishType implements BackPackable {
     // Regular Fish
     SALMON(75, Season.Fall, false),
     SARDINE(40, Season.Fall, false),
@@ -39,8 +42,18 @@ public enum FishType {
         return season;
     }
 
-    public int getPrice() {
+    @Override
+    public String getName() {
+        return name();
+    }
+
+    public double getPrice() {
         return price;
+    }
+
+    @Override
+    public BackPackableType getType() {
+        return null;
     }
 
     public boolean isLegendary() {
