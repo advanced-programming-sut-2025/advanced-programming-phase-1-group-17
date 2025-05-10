@@ -16,6 +16,7 @@ public class StoreInventory {
         items.add(item);
     }
 
+
     public void addUpgradeService(UpgradeService upgradeService) {
         upgrades.add(upgradeService);
     }
@@ -27,6 +28,7 @@ public class StoreInventory {
     public List<ShopItem> getItems() {
         return items;
     }
+
 
     public List<UpgradeService> getUpgradeServices() {
         return upgrades;

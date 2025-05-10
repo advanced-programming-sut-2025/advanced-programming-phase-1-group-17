@@ -1,6 +1,7 @@
 package org.example.models;
 
 
+import org.example.models.NPCS.*;
 import org.example.models.map.GameMap;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
@@ -15,6 +16,7 @@ public class Game {
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
     private GameMap gameMap;
+    private ArrayList<NPC> NPCs = new ArrayList<>();
     private StoreManager storeManager = new StoreManager();
 
 
@@ -27,31 +29,43 @@ public class Game {
         players.add(new Player(user1, user1.getUsername().startsWith("guest")));
         players.add(new Player(user2, user2.getUsername().startsWith("guest")));
         players.add(new Player(user3, user3.getUsername().startsWith("guest")));
+        addNPCs(new Abigail());
+        addNPCs(new Harvey());
+        addNPCs(new Lia());
+        addNPCs(new Robin());
+        addNPCs(new Sebastian());
+        for (Player player : players) {
+            for (NPC npc : NPCs) {
+                player.setFriendShipsWithNPCs(npc);
+                player.setTalkedNPCToday(npc);
+                player.setGiftNPCToday(npc);
+            }
+        }
         for (int i = 0; i < players.size(); i++) {
             if (i != 0) {
                 players.get(0).addGift(players.get(i));
-                players.get(0).addTalk(players.get(i), new Talk(players.get(i)));
+                players.get(0).addTalk(players.get(i),new Talk(players.get(i)));
                 players.get(0).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 1) {
                 players.get(1).addGift(players.get(i));
-                players.get(1).addTalk(players.get(i), new Talk(players.get(i)));
+                players.get(1).addTalk(players.get(i),new Talk(players.get(i)));
                 players.get(1).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 2) {
                 players.get(2).addGift(players.get(i));
-                players.get(2).addTalk(players.get(i), new Talk(players.get(i)));
+                players.get(2).addTalk(players.get(i),new Talk(players.get(i)));
                 players.get(2).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 3) {
                 players.get(3).addGift(players.get(i));
-                players.get(3).addTalk(players.get(i), new Talk(players.get(i)));
+                players.get(3).addTalk(players.get(i),new Talk(players.get(i)));
                 players.get(3).addFriendShips(players.get(i), 0);
             }
         }
@@ -131,7 +145,7 @@ public class Game {
         this.currentPlayingPlayerIndex = currentPlayingPlayerIndex;
     }
 
-    public Tile getTileByIndex(int x, int y) {
+    public Tile getTileByIndex(int x , int y) {
         for (PlayerMap playerMap : gameMap.getPlayerMaps()) {
             for (Tile tile : playerMap.getTiles()) {
                 if (tile.getX() == x && tile.getY() == y) {
@@ -144,5 +158,20 @@ public class Game {
 
     public StoreManager getStoreManager() {
         return storeManager;
+    }
+    public ArrayList<NPC> getNPCs() {
+        return NPCs;
+    }
+
+    public void addNPCs(NPC npc) {
+        this.NPCs.add(npc);
+    }
+    public NPC getNPC(String npcName) {
+        for (NPC npc : NPCs) {
+            if (npc.getName().equals(npcName)) {
+                return npc;
+            }
+        }
+        return null;
     }
 }

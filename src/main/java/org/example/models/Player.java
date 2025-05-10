@@ -1,5 +1,6 @@
 package org.example.models;
 
+import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
@@ -34,6 +35,11 @@ public class Player {
     private Player partner = this;
     private boolean interactionWithPartner = false;
     private int isbrokenUp = 0;
+    //For NPC
+    private HashMap<NPC, Integer> friendShipsWithNPCs = new HashMap<>();
+    private HashMap<NPC, Boolean> talkedNPCToday = new HashMap<>();
+    private HashMap<NPC, Boolean> giftNPCToday = new HashMap<>();
+
 
     //For Energy
     private double energy;
@@ -265,8 +271,14 @@ public class Player {
     public String getStringMessage() {
         String message = "";
         for (int i = 0; i < messages.size(); i++) {
-            message += (i + "- " + "SENDER" + " : " + messages.get(i).getSender().getUser().getUsername()
-                    + "\n" + "message : " + messages.get(i).getMessage() + "\n");
+            if (messages.get(i).getSender() != null) {
+                message += (i + "- " + "SENDER" + " : " + messages.get(i).getSender().getUser().getUsername()
+                        + "\n" + "message : " + messages.get(i).getMessage() + "\n");
+            }
+            else {
+                message += (i + "- " + "SENDER(NPC)" + " : " + messages.get(i).getSenderNPC().getName()
+                        + "\n" + "message : " + messages.get(i).getMessage() + "\n");
+            }
         }
         return message;
     }
@@ -301,5 +313,27 @@ public class Player {
 
     public void addTradeHistory(Trade trade) {
         this.tradeHistory.add(trade);
+    }
+
+    public HashMap<NPC, Integer> getFriendShipsWithNPCs() {
+        return friendShipsWithNPCs;
+    }
+    public void setFriendShipsWithNPCs(NPC npc) {
+        this.friendShipsWithNPCs.put(npc, 0);
+    }
+
+    public HashMap<NPC, Boolean> getTalkedNPCToday() {
+        return talkedNPCToday;
+    }
+    public void setTalkedNPCToday(NPC npc) {
+        this.talkedNPCToday.put(npc, false);
+    }
+
+    public HashMap<NPC, Boolean> getGiftNPCToday() {
+        return giftNPCToday;
+    }
+
+    public void setGiftNPCToday(NPC npc) {
+        this.giftNPCToday.put(npc,false);
     }
 }
