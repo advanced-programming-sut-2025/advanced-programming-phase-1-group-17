@@ -1,5 +1,6 @@
 package org.example.models.map;
 
+import org.example.models.App;
 import org.example.models.Placeable;
 import org.example.models.Player;
 
@@ -111,4 +112,20 @@ public class Tile {
     public void setLightninged(boolean lightninged) {
         isLightninged = lightninged;
     }
+
+    public static Placeable findAround(Placeable placeable){
+        Player player=App.getCurrentGame().getCurrentPlayingPlayer();
+        int x=player.getX();
+        int y=player.getY();
+        for(int i=-1;i<2;i++){
+            for(int j=-1;j<2;j++){
+                Tile tile = Tile.getTile(x+i,y+j);
+                if(tile.getPlaceable().equals(placeable)){
+                    return tile.getPlaceable();
+                }
+            }
+        }
+        return null;
+    }
+
 }

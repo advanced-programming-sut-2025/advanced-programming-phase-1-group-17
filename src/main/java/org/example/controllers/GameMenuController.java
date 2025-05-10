@@ -11,6 +11,7 @@ import org.example.models.cooking.Food;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
 import org.example.models.enums.*;
+import org.example.models.map.AnimalPlace;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Stone;
 import org.example.models.map.Tile;
@@ -791,23 +792,95 @@ public class GameMenuController {
     }
 
     public Result build(String name, String x, String y) {
-        return new Result(false, "t");
+        AnimalPlaceType animalPlaceType;
+        try{
+            animalPlaceType = AnimalPlaceType.valueOf(name);
+        }catch(Exception e){
+            return new Result(false, "Invalid place");
+        }
+        AnimalPlace animalPlace = new AnimalPlace(animalPlaceType);
+        int xint=Integer.parseInt(x);
+        int yint=Integer.parseInt(y);
+        for(int i=-2;i<2;i++){
+            for(int j=-2;j<2;j++){
+                Tile tile = Tile.getTile(xint + i,yint+j);
+                if(tile==null){
+                    return new Result(false,"Tile not found");
+                }
+                if(tile.getPlaceable() != null){
+                    return new Result(false,"this area is not empty for building ");
+                }
+            }
+        }
+        for(int i=-2;i<2;i++){
+            for(int j=-2;j<2;j++){
+                Tile tile = Tile.getTile(xint + i,yint+j);
+                tile.setPlaceable(animalPlace);
+            }
+        }
+        return new Result(true,"build successfully");
     }
 
     public Result buyAnimal(String animal, String name) {
-        return new Result(false, "t");
+        AnimalType animalType;
+        try{
+            animalType=AnimalType.valueOf(animal);
+        }catch (Exception e){
+            return new Result(false, "Invalid animal");
+        }
+        Animal animal1=new Animal(name,animalType);
+
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        for(AnimalPlace animalPlace : player.getPlayerMap().getFarm().getAnimalPlaces()){
+            if(animal1.getAnimalType().getAnimalPlaceTypes().contains(animalPlace.getAnimalPlaceType())){
+                if(animalPlace.getCapacity()==0){
+                    List<AnimalPlace> list = player.getPlayerMap().getFarm().getAnimalPlaces();
+                    if(animalPlace.equals(player.getPlayerMap().getFarm().getAnimalPlaces().get(list.size()-1))){
+                        return new Result(false,"no valid AnimalPlace with enough space");
+                    }
+                    continue;
+                }
+                animalPlace.addAnimal(animal1);
+                player.getPlayerMap().getFarm().getAnimals().add(animal1);
+                return new Result(true,name + " added to your animal successfully");
+            }
+        }
+        return new Result(false,"no suitable AnimalPlace for " + name);
     }
 
     public Result pet(String name) {
-        return new Result(false, "t");
+        if(Animal.findAnimalByName(name) == null){
+            return new Result(false,"no animal with name : " + name);
+        }
+        Animal animal = Animal.findAnimalByName(name);
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile tile = Tile.getTile(player.getX(),player.getY());
+        if(Tile.findAround(animal) ==null){
+            return new Result(false,"you should stand next to " + name + " to pet it");
+        }
+        animal.setFriendship(animal.getFriendship()+15);
+        return new Result(true,name + " petted successfully");
+
     }
 
     public Result setFriendship(String animalName, String amount) {
-        return new Result(false, "t");
+        if(Animal.findAnimalByName(animalName) == null){
+            return new Result(false,"animal not found");
+        }
+        Animal animal = Animal.findAnimalByName(animalName);
+        int amountInt = Integer.parseInt(amount);
+        animal.setFriendship(animal.getFriendship()+amountInt);
     }
 
     public Result animals() {
-        return new Result(false, "t");
+    StringBuilder sb = new StringBuilder();
+    for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()){
+        sb.append(animal.getName()).append(" (").append(animal.getAnimalType()).append(") ").append("\n")
+                .append("friendship : ").append(animal.getFriendship()).append("\n")
+                .append(animal.isPettedToday()?"petted today" : "not petted today").append("\n")
+                .append(animal.isFedToday()?"feded today" : "not fed today");
+    }
+    return new Result(true,sb.toString());
     }
 
     public Result shepherdAnimal(String animalName, String x, String y) {
@@ -815,7 +888,16 @@ public class GameMenuController {
     }
 
     public Result feedHay(String animalName) {
-        return new Result(false, "t");
+        if(Animal.findAnimalByName(animalName) == null){
+            return new Result(false,"no animal with name : " + animalName);
+        }
+        Animal animal = Animal.findAnimalByName(animalName);
+        //TODO enough hay?
+        if(animal.isFedToday()){
+            return new Result(false,"already fed today");
+        }
+        animal.setFedToday(true);
+        return new Result(true,animal.getName() + " feded seccessfully");
     }
 
     public Result produce() {
