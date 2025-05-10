@@ -64,7 +64,7 @@ public enum GameMenuCommands {
 
     //For Trade
     ShowAllProducts("\\s*show\\s+all\\s+products\\s*"),
-    ShowAllAvailableProducts("\\s*show\\s+all\\s+available\\s+products\\*"),
+    ShowAllAvailableProducts("\\s*show\\s+all\\s+available\\s+products\\s*"),
     Purchase("\\s*purchase\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
     CheatAddDollars("\\s*cheat\\s+add\\s+(?<count>\\S+)\\s+dollars\\s*"),
     Sell("\\s*sell\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),

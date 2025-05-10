@@ -82,6 +82,7 @@ public class GameMenuController {
         App.setCurrentGame(game);
         App.getGames().add(game);
         gameMap(scanner);
+
         return new Result(true, "new game created Successfully");
     }
 
@@ -206,7 +207,7 @@ public class GameMenuController {
 
     public Result buildGreenHouse() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (player.getBackPack().getCoin() >= 1000 && player.getBackPack().getBackPackItems().get(NormalItemType.Wood).size() >= 500) {
+        if (player.getBackPack().getCoin() >= 1000 && player.getBackPack().getInventorySize(NormalItemType.Wood.getName()) >= 500) {
             player.getBackPack().addCoin(-1000);
 
             for (int i = 0; i < 500; i++)
@@ -232,7 +233,6 @@ public class GameMenuController {
         } else if ((result = aStar(player.getX(), player.getY(), x, y, player)) == null) {
             return new Result(false, "you can't walk to this tile because there is not path to this tile");
         } else {
-            //TODO
             float energy_needed = (float) (result.size() - 1) / 20;
             System.out.println("your energy : " + player.getEnergy());
             System.out.printf("energy needed : %.2f\n", energy_needed);
@@ -245,7 +245,6 @@ public class GameMenuController {
                     player.setEnergy(0);
                     return new Result(false, "you fainted");
                 } else {
-                    //TODO Walkin the path
 //                    for (Tile tile : result) {
 //                        System.out.println(tile.getX() + "__" + tile.getY());
 //                    }
@@ -260,6 +259,7 @@ public class GameMenuController {
             }
         }
     }
+
     public List<Tile> aStar(int startX, int startY, int endX, int endY, Player player) {
         int[][] directions = {
                 {0, 1}, {1, 0}, {0, -1}, {-1, 0},
@@ -311,6 +311,7 @@ public class GameMenuController {
 
         return null;
     }
+
     private boolean isValid(Tile tile, Player player) {
         return tile != null && tile.isWalkAble() &&
                 (tile.getOwner().equals(player) ||
@@ -849,95 +850,95 @@ public class GameMenuController {
 
     public Result build(String name, String x, String y) {
         AnimalPlaceType animalPlaceType;
-        try{
+        try {
             animalPlaceType = AnimalPlaceType.valueOf(name);
-        }catch(Exception e){
+        } catch (Exception e) {
             return new Result(false, "Invalid place");
         }
         AnimalPlace animalPlace = new AnimalPlace(animalPlaceType);
-        int xint=Integer.parseInt(x);
-        int yint=Integer.parseInt(y);
-        for(int i=-2;i<2;i++){
-            for(int j=-2;j<2;j++){
-                Tile tile = Tile.getTile(xint + i,yint+j);
-                if(tile==null){
-                    return new Result(false,"Tile not found");
+        int xint = Integer.parseInt(x);
+        int yint = Integer.parseInt(y);
+        for (int i = -2; i < 2; i++) {
+            for (int j = -2; j < 2; j++) {
+                Tile tile = Tile.getTile(xint + i, yint + j);
+                if (tile == null) {
+                    return new Result(false, "Tile not found");
                 }
-                if(tile.getPlaceable() != null){
-                    return new Result(false,"this area is not empty for building ");
+                if (tile.getPlaceable() != null) {
+                    return new Result(false, "this area is not empty for building ");
                 }
             }
         }
-        for(int i=-2;i<2;i++){
-            for(int j=-2;j<2;j++){
-                Tile tile = Tile.getTile(xint + i,yint+j);
+        for (int i = -2; i < 2; i++) {
+            for (int j = -2; j < 2; j++) {
+                Tile tile = Tile.getTile(xint + i, yint + j);
                 tile.setPlaceable(animalPlace);
             }
         }
-        return new Result(true,"build successfully");
+        return new Result(true, "build successfully");
     }
 
     public Result buyAnimal(String animal, String name) {
         AnimalType animalType;
-        try{
-            animalType=AnimalType.valueOf(animal);
-        }catch (Exception e){
+        try {
+            animalType = AnimalType.valueOf(animal);
+        } catch (Exception e) {
             return new Result(false, "Invalid animal");
         }
-        Animal animal1=new Animal(name,animalType);
+        Animal animal1 = new Animal(name, animalType);
 
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for(AnimalPlace animalPlace : player.getPlayerMap().getFarm().getAnimalPlaces()){
-            if(animal1.getAnimalType().getAnimalPlaceTypes().contains(animalPlace.getAnimalPlaceType())){
-                if(animalPlace.getCapacity()==0){
+        for (AnimalPlace animalPlace : player.getPlayerMap().getFarm().getAnimalPlaces()) {
+            if (animal1.getAnimalType().getAnimalPlaceTypes().contains(animalPlace.getAnimalPlaceType())) {
+                if (animalPlace.getCapacity() == 0) {
                     List<AnimalPlace> list = player.getPlayerMap().getFarm().getAnimalPlaces();
-                    if(animalPlace.equals(player.getPlayerMap().getFarm().getAnimalPlaces().get(list.size()-1))){
-                        return new Result(false,"no valid AnimalPlace with enough space");
+                    if (animalPlace.equals(player.getPlayerMap().getFarm().getAnimalPlaces().get(list.size() - 1))) {
+                        return new Result(false, "no valid AnimalPlace with enough space");
                     }
                     continue;
                 }
                 animalPlace.addAnimal(animal1);
                 player.getPlayerMap().getFarm().getAnimals().add(animal1);
-                return new Result(true,name + " added to your animal successfully");
+                return new Result(true, name + " added to your animal successfully");
             }
         }
-        return new Result(false,"no suitable AnimalPlace for " + name);
+        return new Result(false, "no suitable AnimalPlace for " + name);
     }
 
     public Result pet(String name) {
-        if(Animal.findAnimalByName(name) == null){
-            return new Result(false,"no animal with name : " + name);
+        if (Animal.findAnimalByName(name) == null) {
+            return new Result(false, "no animal with name : " + name);
         }
         Animal animal = Animal.findAnimalByName(name);
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(),player.getY());
-        if(Tile.findAround(animal) ==null){
-            return new Result(false,"you should stand next to " + name + " to pet it");
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (Tile.findAround(animal) == null) {
+            return new Result(false, "you should stand next to " + name + " to pet it");
         }
-        animal.setFriendship(animal.getFriendship()+15);
-        return new Result(true,name + " petted successfully");
+        animal.setFriendship(animal.getFriendship() + 15);
+        return new Result(true, name + " petted successfully");
 
     }
 
     public Result setFriendship(String animalName, String amount) {
-        if(Animal.findAnimalByName(animalName) == null){
-            return new Result(false,"animal not found");
+        if (Animal.findAnimalByName(animalName) == null) {
+            return new Result(false, "animal not found");
         }
         Animal animal = Animal.findAnimalByName(animalName);
         int amountInt = Integer.parseInt(amount);
-        animal.setFriendship(animal.getFriendship()+amountInt);
-        return new Result(true,"dd");
+        animal.setFriendship(animal.getFriendship() + amountInt);
+        return new Result(true, "dd");
     }
 
     public Result animals() {
-    StringBuilder sb = new StringBuilder();
-    for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()){
-        sb.append(animal.getName()).append(" (").append(animal.getAnimalType()).append(") ").append("\n")
-                .append("friendship : ").append(animal.getFriendship()).append("\n")
-                .append(animal.isPettedToday()?"petted today" : "not petted today").append("\n")
-                .append(animal.isFedToday()?"feded today" : "not fed today");
-    }
-    return new Result(true,sb.toString());
+        StringBuilder sb = new StringBuilder();
+        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
+            sb.append(animal.getName()).append(" (").append(animal.getAnimalType()).append(") ").append("\n")
+                    .append("friendship : ").append(animal.getFriendship()).append("\n")
+                    .append(animal.isPettedToday() ? "petted today" : "not petted today").append("\n")
+                    .append(animal.isFedToday() ? "feded today" : "not fed today");
+        }
+        return new Result(true, sb.toString());
     }
 
     public Result shepherdAnimal(String animalName, String x, String y) {
@@ -945,53 +946,53 @@ public class GameMenuController {
     }
 
     public Result feedHay(String animalName) {
-        if(Animal.findAnimalByName(animalName) == null){
-            return new Result(false,"no animal with name : " + animalName);
+        if (Animal.findAnimalByName(animalName) == null) {
+            return new Result(false, "no animal with name : " + animalName);
         }
         Animal animal = Animal.findAnimalByName(animalName);
         //TODO enough hay?
-        if(animal.isFedToday()){
-            return new Result(false,"already fed today");
+        if (animal.isFedToday()) {
+            return new Result(false, "already fed today");
         }
         animal.setFedToday(true);
-        return new Result(true,animal.getName() + " feded seccessfully");
+        return new Result(true, animal.getName() + " feded seccessfully");
     }
 
     public Result produce() {
         StringBuilder sb = new StringBuilder();
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for(Animal animal :player.getPlayerMap().getFarm().getAnimals()){
-            if(!animal.getAnimalProducts().isEmpty()){
+        for (Animal animal : player.getPlayerMap().getFarm().getAnimals()) {
+            if (!animal.getAnimalProducts().isEmpty()) {
                 sb.append(animal.getName()).append("\n");
-                for(AnimalProduct animalProduct : animal.getAnimalProducts()){
+                for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
                     sb.append(animalProduct.getAnimalProductType()).append("\n")
                             .append("quantity : ").append(animalProduct.getCount()).append("\n")
                             .append("quality : ").append(animalProduct.getShippingBinType().name()).append("\n");
                 }
             }
         }
-        return new Result(true,sb.toString());
+        return new Result(true, sb.toString());
     }
 
     public Result collectProduct(String name) {
-        if(Animal.findAnimalByName(name) == null){
-            return new Result(false,"animal not found");
+        if (Animal.findAnimalByName(name) == null) {
+            return new Result(false, "animal not found");
         }
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if(player.getBackPack().isBackPackFull()){
-            return new Result(false,"your backpack is full");
+        if (player.getBackPack().isBackPackFull()) {
+            return new Result(false, "your backpack is full");
         }
         //TODO  im confused
-        return new Result(true,"d");
+        return new Result(true, "d");
     }
 
     public Result sellAnimal(String name) {
-        if(Animal.findAnimalByName(name) == null){
-            return new Result(false,"animal not found");
+        if (Animal.findAnimalByName(name) == null) {
+            return new Result(false, "animal not found");
         }
         Animal animal = Animal.findAnimalByName(name);
         animal.sell();
-        return new Result(true,"ss");
+        return new Result(true, "ss");
     }
 
     public Result fishing(String fishingPole) {
@@ -2018,14 +2019,20 @@ public class GameMenuController {
             if (quest.isCompleted()) {
                 return new Result(false, "quest already completed");
             } else {
-                if (quest.getLevel() <= currentPlayer.getFriendShipsWithNPCs().get(npc) / 200) {
+                if (quest.getLevel() <= currentPlayer.getFriendShipsWithNPCs().get(npc) / 200
+                        && quest.isActive()) {
                     String item = quest.getItem();
                     int amount = quest.getAmount();
                     if (currentPlayer.getBackPack().getInventorySize(item) >= amount) {
                         for (int j = 0; j < amount; j++) {
                             currentPlayer.getBackPack().useItem(item);
                         }
-                        //TODO reward
+                        if (2 < currentPlayer.getFriendShipsWithNPCs().get(npc) / 200) {
+                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                        } else {
+                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                        }
                         return new Result(true, "the mission was successfully completed." +
                                 "your reward has been added to your backpack");
                     } else {

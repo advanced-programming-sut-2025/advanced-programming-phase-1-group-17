@@ -10,6 +10,9 @@ import java.util.HashMap;
 
 public class CraftingItem implements BackPackable, Placeable {
     private CraftingItemType targetItem;
+    public CraftingItem(CraftingItemType targetItem) {
+        this.targetItem = targetItem;
+    }
     private HashMap<CraftingItemType, Integer> craftIngredients = new HashMap<>();
 
     public CraftingItemType getTargetItem() {
