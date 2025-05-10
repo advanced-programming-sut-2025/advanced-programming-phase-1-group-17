@@ -2,8 +2,7 @@ package org.example.models.foraging;
 
 import org.example.models.App;
 import org.example.models.enums.Season;
-import org.example.models.enums.ToolMaterial;
-import org.example.models.enums.ToolType;
+import org.example.models.tools.ToolMaterial;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Quarry;
 import org.example.models.map.Tile;

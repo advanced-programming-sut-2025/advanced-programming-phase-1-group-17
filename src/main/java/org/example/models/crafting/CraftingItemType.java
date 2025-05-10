@@ -22,16 +22,8 @@ public enum CraftingItemType implements BackPackableType {
     PreservesJar,
     Dehydrator,
     FishSmoker,
-    MysticTreeSeed,
-    CopperOre,
-    IronOre,
-    GoldOre,
-    CopperBar,
-    IronBar,
-    GoldBar,
-    IridiumBar,
-    Wood,
-    Fibre;
+    MysticTreeSeed;
+
 
     @Override
     public String getName() {

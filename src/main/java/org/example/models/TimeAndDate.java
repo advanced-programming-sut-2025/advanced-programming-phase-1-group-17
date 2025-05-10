@@ -10,7 +10,7 @@ import org.example.models.map.Tile;
 import org.example.models.plant.Crop;
 import org.example.models.plant.PlantGrowthController;
 import org.example.models.plant.Tree;
-import org.example.models.trade.ShippingBin;
+import org.example.models.market.ShippingBin;
 
 import java.util.Random;
 

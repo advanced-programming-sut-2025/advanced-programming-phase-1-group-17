@@ -2,11 +2,19 @@ package org.example.models;
 
 public enum NormalItemType implements BackPackableType{
     //TODO: Alaf
-    Wood;
+    CopperOre,
+    IronOre,
+    GoldOre,
+    CopperBar,
+    IronBar,
+    GoldBar,
+    IridiumBar,
+    Wood,
+    Fibre;
 
     @Override
     public double getPrice() {
-        //TODo
+        //TODO
         return 0;
     }
 

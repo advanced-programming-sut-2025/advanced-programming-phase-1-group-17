@@ -4,12 +4,11 @@ import org.example.models.NPCS.*;
 import org.example.models.Player;
 import org.example.models.foraging.ForagingController;
 import org.example.models.plant.Tree;
-import org.example.models.trade.ShippingBin;
-import org.example.models.trade.ShippingBinType;
-import org.example.models.trade.Store;
-import org.example.models.trade.StoreType;
+import org.example.models.market.ShippingBin;
+import org.example.models.market.ShippingBinType;
+import org.example.models.market.Store;
+import org.example.models.market.StoreType;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -182,7 +181,7 @@ public class PlayerMap {
                     //                    Stone stone = new Stone();
 //                    tile.setPlaceable(stone);
 //                    tile.setWalkAble(false);
-//                    numOfStones--;
+                    numOfStones--;
                 }
             }
             int counter = 0;
@@ -368,7 +367,7 @@ public class PlayerMap {
                 //                Stone stone = new Stone();
 //                tile.setPlaceable(stone);
 //                tile.setWalkAble(false);
-//                numOfStones--;
+                numOfStones--;
             }
         }
         int counter = 0;

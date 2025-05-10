@@ -7,12 +7,11 @@ import org.example.models.foraging.Mineral;
 import org.example.models.map.*;
 import org.example.models.plant.Crop;
 import org.example.models.plant.Seed;
-import org.example.models.plant.SeedType;
 import org.example.models.plant.Tree;
-import org.example.models.trade.ShippingBin;
-import org.example.models.trade.ShippingBinType;
-import org.example.models.trade.Store;
-import org.example.models.trade.StoreType;
+import org.example.models.market.ShippingBin;
+import org.example.models.market.ShippingBinType;
+import org.example.models.market.Store;
+import org.example.models.market.StoreType;
 
 public class display {
     //TODO khoshgel kardanesh
