@@ -24,7 +24,6 @@ public enum CraftingItemType implements BackPackableType {
     FishSmoker,
     MysticTreeSeed,
     CopperOre,
-    Coal,
     IronOre,
     GoldOre,
     CopperBar,
@@ -32,12 +31,7 @@ public enum CraftingItemType implements BackPackableType {
     GoldBar,
     IridiumBar,
     Wood,
-    Stone,
-    Fibre,
-    Acorn,
-    MapleSeed,
-    PineCone,
-    MahoganySeed;
+    Fibre;
 
     @Override
     public String getName() {
@@ -47,5 +41,14 @@ public enum CraftingItemType implements BackPackableType {
     @Override
     public double getPrice() {
         return 0;
+    }
+
+    public static CraftingItemType getCraftingItemTypeByName(String artisanName) {
+        for (CraftingItemType type : CraftingItemType.values()) {
+            if (type.name().equalsIgnoreCase(artisanName)) {
+                return type;
+            }
+        }
+        return null;
     }
 }

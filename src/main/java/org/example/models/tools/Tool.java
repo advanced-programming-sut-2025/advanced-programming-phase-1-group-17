@@ -3,8 +3,6 @@ package org.example.models.tools;
 import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
-import org.example.models.enums.ToolMaterial;
-import org.example.models.enums.ToolType;
 
 public class Tool implements BackPackable {
     private ToolType type;
@@ -74,7 +72,7 @@ public class Tool implements BackPackable {
 
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
             if (backPackableType instanceof ToolType toolType) {
-                Tool tool = (Tool)backPack.getBackPackItems().get(toolType).get(0);
+                Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
                 if (tool.getToolType().name().equals(toolName)) {
                     return tool;
                 }

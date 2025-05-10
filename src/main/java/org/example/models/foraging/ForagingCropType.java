@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public enum ForagingCrop implements BackPackable {
+public enum ForagingCropType implements BackPackableType {
     COMMON_MUSHROOM(allSeasons(), 40, 38, CropType.CommonMushroom),
     DAFFODIL(spring(), 30, 0, CropType.Daffodil),
     DANDELION(spring(), 40, 25, CropType.Dandelion),
@@ -40,7 +40,7 @@ public enum ForagingCrop implements BackPackable {
     private final int energy;
     private final CropType cropType;
 
-    ForagingCrop(List<Season> seasons, double price, int energy, CropType cropType) {
+    ForagingCropType(List<Season> seasons, double price, int energy, CropType cropType) {
         this.seasons = new ArrayList<>(seasons);
         this.price = price;
         this.energy = energy;
@@ -74,10 +74,5 @@ public enum ForagingCrop implements BackPackable {
     @Override
     public String getName() {
         return name();
-    }
-
-    @Override
-    public BackPackableType getType() {
-        return getCropType();
     }
 }

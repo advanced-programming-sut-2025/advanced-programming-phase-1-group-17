@@ -9,8 +9,7 @@ public class Farm implements Placeable {
     private Quarry quarries = new Quarry();
     private Hut hut = new Hut();
     public void randomFill(){}
-    private ArrayList<Coop> coops=new ArrayList<>();
-    private ArrayList<Barn> barns=new ArrayList<>();
+    private ArrayList<AnimalPlace> animalPlaces = new ArrayList<>();
     private ArrayList<Animal> animals=new ArrayList<>();
 
     public GreenHouse getGreenHouse() {
@@ -43,5 +42,21 @@ public class Farm implements Placeable {
 
     public void setHut(Hut hut) {
         this.hut = hut;
+    }
+
+    public ArrayList<AnimalPlace> getAnimalPlaces() {
+        return animalPlaces;
+    }
+
+    public void setAnimalPlaces(ArrayList<AnimalPlace> animalPlaces) {
+        this.animalPlaces = animalPlaces;
+    }
+
+    public ArrayList<Animal> getAnimals() {
+        return animals;
+    }
+
+    public void setAnimals(ArrayList<Animal> animals) {
+        this.animals = animals;
     }
 }

@@ -9,22 +9,22 @@ import java.util.ArrayList;
 public class Crop extends Plant implements BackPackable, Placeable {
     private CropType type;
     private boolean isGiant = false;
-    ArrayList<Tile> neighborGiantTiles = new ArrayList<>();
+
+    ArrayList<Crop> neighborGiantTiles = new ArrayList<>();
 
 
-    public Crop(boolean isForaging, CropType type, boolean isFertilized, Tile tile) {
-        super(isForaging, isFertilized, tile);
-        if(checkCouldBeGiant())
+    public Crop(boolean isForaging, CropType type, boolean isFertilized, Tile tile, boolean isInsideGreenHouse) {
+        super(isForaging, isFertilized, tile, isInsideGreenHouse);
+        if (checkCouldBeGiant())
             return;
-        this.isForaging = isForaging;
+        //TODO: ask
         this.isFullyGrown = isForaging;
         this.type = type;
-        this.isFertilized = isFertilized;
-        this.tile = tile;
+        this.daysTillNextHarvest = type.getRegrowthTime();
     }
 
     private boolean checkCouldBeGiant() {
-        if (isForaging || type == null || !type.isCanBecomeGiant())
+        if (isForaging || type == null || !type.isCanBecomeGiant() || isInsideGreenhouse)
             return false;
 
         int x = tile.getX();
@@ -77,7 +77,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
         if (isFullyGrown || !this.isWateredToday)
             return 0;
         int daysPassed = 0;
-        for (int i = 0; i < currentStageIndex; i++){
+        for (int i = 0; i < currentStageIndex; i++) {
             daysPassed += type.getStages().get(i);
         }
         daysPassed += whichDayOfStage;
@@ -90,28 +90,29 @@ public class Crop extends Plant implements BackPackable, Placeable {
         return null;
     }
 
-    public void goToNextDay() {
-        if (this.isFullyGrown)
+    void handleFruitCycle() {
+        if (!isFullyGrown)
             return;
+        if (type.isOneTime())
+            hasFruit = true;
 
-        this.daysWithoutWater++;
-        if (this.daysWithoutWater >= 2) {
-            tile.setPlaceable(null);
-            return;
-        }
+        if (daysTillNextHarvest == 0) {
+            daysTillNextHarvest = type.getRegrowthTime();
+            hasFruit = true;
+        } else
+            daysTillNextHarvest--;
+    }
 
-        //stage Handling
-        //TODO: isWateredToday
+    void handleStages() {
         this.whichDayOfStage++;
         if (this.whichDayOfStage > this.type.getStages().get(this.currentStageIndex)) {
-            if (this.currentStageIndex > this.type.getStages().size()) {
+            if (this.currentStageIndex == this.type.getStages().size() - 1) {
                 this.isFullyGrown = true;
                 return;
             }
             this.currentStageIndex++;
             this.whichDayOfStage = 1;
         }
-        this.whichDayOfStage++;
     }
 
     @Override
@@ -132,12 +133,19 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.type = type;
     }
 
-
     public boolean isGiant() {
         return isGiant;
     }
 
     public void setGiant(boolean giant) {
         isGiant = giant;
+    }
+
+    public void harvest() {
+        if (type.isOneTime())
+            tile.setPlaceable(null);
+        else {
+            daysTillNextHarvest = type.getRegrowthTime();
+        }
     }
 }
