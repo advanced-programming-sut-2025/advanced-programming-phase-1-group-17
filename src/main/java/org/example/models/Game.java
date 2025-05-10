@@ -5,7 +5,7 @@ import org.example.models.NPCS.*;
 import org.example.models.map.GameMap;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
-import org.example.models.trade.StoreManager;
+import org.example.models.market.StoreManager;
 
 import java.util.ArrayList;
 

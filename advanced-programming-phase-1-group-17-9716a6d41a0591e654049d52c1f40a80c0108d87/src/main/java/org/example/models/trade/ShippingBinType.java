@@ -1,4 +1,4 @@
-package org.example.models.trade;
+package org.example.models.market;
 
 public enum ShippingBinType {
     Regular(1),

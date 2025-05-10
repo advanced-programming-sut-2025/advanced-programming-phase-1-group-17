@@ -6,7 +6,7 @@ import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
 import org.example.models.plant.PlantGrowthController;
-import org.example.models.trade.ShippingBin;
+import org.example.models.market.ShippingBin;
 
 import java.util.Random;
 

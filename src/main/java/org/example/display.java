@@ -7,12 +7,11 @@ import org.example.models.foraging.Mineral;
 import org.example.models.map.*;
 import org.example.models.plant.Crop;
 import org.example.models.plant.Seed;
-import org.example.models.plant.SeedType;
 import org.example.models.plant.Tree;
-import org.example.models.trade.ShippingBin;
-import org.example.models.trade.ShippingBinType;
-import org.example.models.trade.Store;
-import org.example.models.trade.StoreType;
+import org.example.models.market.ShippingBin;
+import org.example.models.market.ShippingBinType;
+import org.example.models.market.Store;
+import org.example.models.market.StoreType;
 
 public class display {
     //TODO khoshgel kardanesh
@@ -143,8 +142,7 @@ public class display {
                         System.out.print(BOLD + YELLOW + "F" + RESET);
                 } else {
                     //TODO: Add Crop (with checking isForaging)
-
-                else if (tile.getPlaceable() instanceof Seed) {
+                    if (tile.getPlaceable() instanceof Seed) {
                         System.out.print(BOLD + GREEN + "S" + RESET);
                     } else {
                         System.out.print(" ");
@@ -165,14 +163,15 @@ public class display {
                 }
                 System.out.println();
             }
-            if ((x + size == 201)) {
-                System.out.print("   ");
-                for (int j = 0; j < size + 3; j++) {
-                    System.out.print("-");
-                }
-                System.out.println();
-            }
         }
+        if ((x + size == 201)) {
+            System.out.print("   ");
+            for (int i = 0; i < size + 3; i++) {
+                System.out.print("-");
+            }
+            System.out.println();
+        }
+    }
 
         public static void helpReadingMap () {
             //Markets
@@ -212,5 +211,4 @@ public class display {
             System.out.println(BOLD + WHITE + "R" + RESET + " : is Robin");
             System.out.println(BOLD + WHITE + "S" + RESET + " : is Sebastian");
         }
-    }
 }
