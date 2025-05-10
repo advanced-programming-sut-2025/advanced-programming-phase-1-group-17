@@ -1,0 +1,461 @@
+[33mcommit 603be951989616beb17a9ae6abedd40bd917caee[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 522a2d6 39e60dd
+Author: Reza <lordcaberton@gmail.com>
+Date:   Wed Apr 23 22:52:58 2025 +0330
+
+    Merge branch 'Reza-Golbahar'
+
+[33mcommit 39e60ddc2393d95d3c3af58955952713284689c1[m[33m ([m[1;32mReza-Golbahar[m[33m)[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Wed Apr 23 20:47:41 2025 +0330
+
+    temp
+
+[33mcommit ebbea455710c6f04832fd9e4bc180292b034b25e[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Wed Apr 23 20:47:21 2025 +0330
+
+    temp
+
+[33mcommit da9e05aec61eb641f208934e52266fafddc1bc0e[m[33m ([m[1;31morigin/Reza-Golbahar[m[33m)[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Wed Apr 23 14:31:45 2025 +0330
+
+    adding trashCan logic
+    added refund Logic when trashing backPackItems
+
+[33mcommit d8a4706716755577f0d131373ab565a172f3886e[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Wed Apr 23 14:00:59 2025 +0330
+
+    fixing email regex
+    fixing random password generation
+    adding trashCan logic
+    fixing BackPack Logic
+    adding BackPackable interface
+
+[33mcommit 274faecdf4099521b82b90112f7724d94126d06f[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Wed Apr 23 12:35:19 2025 +0330
+
+    Update latest changes from origin/main
+
+[33mcommit 522a2d683acdf772b4923e0f951c710312b49c2d[m[33m ([m[1;32mfeature-plantsAndForaging[m[33m)[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Wed Apr 23 11:26:49 2025 +0330
+
+     1404,2,3
+
+[33mcommit 523cbf543a98262d6825aac4795b9983e5107502[m
+Merge: 71768ff 962fa68
+Author: saeed <saeednoferest@gmail.com>
+Date:   Wed Apr 23 11:25:13 2025 +0330
+
+    Merge remote-tracking branch 'origin/saeednoferesti'
+    
+    # Conflicts:
+    #       src/main/java/org/example/controllers/GameMenuController.java
+    #       src/main/java/org/example/models/Game.java
+    #       src/main/java/org/example/models/GameSave.java
+    #       src/main/java/org/example/models/NPCS/NPC.java
+    #       src/main/java/org/example/models/NPCS/Quest.java
+    #       src/main/java/org/example/models/Placeable.java
+    #       src/main/java/org/example/models/Player.java
+    #       src/main/java/org/example/models/cooking/Recipe.java
+    #       src/main/java/org/example/models/enums/GameMenuCommands.java
+    #       src/main/java/org/example/models/map/Farm.java
+    #       src/main/java/org/example/models/map/GameMap.java
+    #       src/main/java/org/example/models/map/Hut.java
+    #       src/main/java/org/example/models/map/PlayerMap.java
+    #       src/main/java/org/example/models/map/Tile.java
+    #       src/main/java/org/example/models/plant/Seed.java
+    #       src/main/java/org/example/models/plant/Vegetable.java
+    #       src/main/java/org/example/models/tools/WaterStorage.java
+    #       src/main/java/org/example/models/trade/ShippingBin.java
+    #       src/main/java/org/example/models/trade/Store.java
+    #       src/main/java/org/example/models/trade/Trade.java
+    #       src/main/java/org/example/views/GameMenu.java
+
+[33mcommit 71768ff55cf11bef8d934aa3ace0a6bc0666c3eb[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 21:28:26 2025 +0330
+
+    final commit 1404,2,1
+
+[33mcommit c89482fb241271b04b5a82465603df787db10d70[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 20:26:23 2025 +0330
+
+    test
+
+[33mcommit 3c6e96f48ea532f61191e012eb7e61b2bd8697d4[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 20:24:23 2025 +0330
+
+    test
+
+[33mcommit 1e70f7421b9022af413b1205d5b2908e486aafaf[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 20:24:03 2025 +0330
+
+    test
+
+[33mcommit 47582ad5857bed54e1595bea4b99567ffebe37d6[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 20:22:30 2025 +0330
+
+     1403,2,1
+
+[33mcommit 628f70b5ad8d6494c1d17e0992e9edd41e34e802[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 12:15:34 2025 +0330
+
+    fixed BFS walk 1403,2,1
+
+[33mcommit fd8f33ca9199aa424e54d8ad819c341fc44c7c44[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 20 22:28:37 2025 +0330
+
+    walk 1403,1,31
+
+[33mcommit 90f6c08c45f62ed9e951bf286abc49623c986fee[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 20 16:18:47 2025 +0330
+
+    fixed the problem in signup and ProfileMenu and LoginMenu and main menu and avatar menu 1403,1,31
+
+[33mcommit 962fa6883599c8a6f14d34c5d773db9790d322ab[m[33m ([m[1;31morigin/saeednoferesti[m[33m)[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Tue Apr 22 21:43:40 2025 +0330
+
+    final commit for today (map fixed walk fixed ) 1404,2,2
+
+[33mcommit 6c802b4ee1935e6aa22a27b23fa475a6d7609c2f[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Tue Apr 22 16:19:21 2025 +0330
+
+    map 1404,2,2
+
+[33mcommit 0dd4350baf0d9bd1c9f22833935f9d150f9a78e9[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 21:55:27 2025 +0330
+
+    Save untracked changes before switching branch
+
+[33mcommit c2e45b51cf9f0ebea2e40cfa87f9bb03f3f32b23[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 21:28:26 2025 +0330
+
+    final commit 1404,2,1
+
+[33mcommit b37f9a983c1c78cd8df197b698af21aaba1beacd[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Mon Apr 21 21:25:01 2025 +0330
+
+    fixing directories
+
+[33mcommit 10d3b7d0d9fe57dcca8d90765c865ff760f0adf3[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 20:26:23 2025 +0330
+
+    test
+
+[33mcommit c332c3c38457ea85e833ef915f9a966044df3612[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 20:24:23 2025 +0330
+
+    test
+
+[33mcommit bdae826e94dacf9d50f87b03fb648af857add794[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 20:24:03 2025 +0330
+
+    test
+
+[33mcommit 874eed70815e491eaa2e6514f76cbe49f9c35175[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 20:22:30 2025 +0330
+
+     1403,2,1
+
+[33mcommit 77e774328ee6afe86b1936cc3628a9f2185c967d[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 21 12:15:34 2025 +0330
+
+    fixed BFS walk 1403,2,1
+
+[33mcommit 5348d561f41ccd9687a10c266873f965be87bb38[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 20 22:28:37 2025 +0330
+
+    walk 1403,1,31
+
+[33mcommit 89d2d1b6c9dfae6e0da3a6c1202e04fdfc129779[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 20 16:18:47 2025 +0330
+
+    fixed the problem in signup and ProfileMenu and LoginMenu and main menu and avatar menu 1403,1,31
+
+[33mcommit 52c0f63abf505e287d32e5b31df3307e850b3b3c[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Sat Apr 19 23:02:31 2025 +0330
+
+    fixing directories
+
+[33mcommit ba18a7490423b755e7586faa50d4d9fde0c75b48[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Fri Apr 18 19:18:57 2025 +0330
+
+    Modified Player.switchPlayer()
+    Renamed Player.currentPlayer to Player.currentPlayingPlayer
+    Filled Ability Class
+
+[33mcommit 971219a3e4a0f65b87f212762148d2b82c13dd4e[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Fri Apr 18 18:26:29 2025 +0330
+
+    Fixed Seed Class and Created SeedType enum.
+    Completed Energy and Inventory Logics in GameController.
+    Fixed BackPackType and BackPack classes.
+
+[33mcommit 6187ab615a3fb3973d272e1eb4651586863176df[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Fri Apr 18 14:46:26 2025 +0330
+
+    signup menu finished
+
+[33mcommit 6bd1edc2f255f51c98ad9625c28e055a562203f5[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Thu Apr 17 20:07:34 2025 +0330
+
+    design map 1403,1,28
+
+[33mcommit 701756ed039489cda42d8c46b2226d504aa2004b[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Thu Apr 17 16:23:18 2025 +0330
+
+    1404,01,28
+
+[33mcommit e0bf1ffd8d71a7a4a7b92538a88a5e6bc7eff5cd[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Tue Apr 15 22:26:28 2025 +0330
+
+    1404,01,26
+
+[33mcommit a3ff1bb68410d0012a64e9f8afcd2e5fed9f7008[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Tue Apr 15 00:33:04 2025 +0330
+
+    as inja start bezanim lotfan be clasaye  hamdige dast nazanid
+
+[33mcommit f60aa5f6dae12d781962ab5320e7d438c3f8a261[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 14 19:27:20 2025 +0330
+
+    test
+
+[33mcommit c7e7dd0a48d9ec1a16627c1d71d55936a73d94f8[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 14 19:22:01 2025 +0330
+
+    test2
+
+[33mcommit fda0534bc7ad1dcce9643c12c0a2b8eb9e4db38a[m
+Author: omidr <omidtdm@gmail.com>
+Date:   Sat Apr 12 00:11:08 2025 +0330
+
+    test3
+
+[33mcommit f6c67050041a1418457439d759fcec1117e7997d[m
+Author: SSN4444 <saeednoferest@gmail.com>
+Date:   Sun Apr 6 23:53:47 2025 +0330
+
+    Add files via upload
+
+[33mcommit 5255bd6fa73883fec4a49d7ba203afd32892b98b[m
+Author: SSN4444 <saeednoferest@gmail.com>
+Date:   Sat Apr 5 22:42:42 2025 +0330
+
+    UML
+
+[33mcommit e79c75501a3a228e10a87d5fdb54ab786980cd48[m
+Author: SSN4444 <saeednoferest@gmail.com>
+Date:   Tue Apr 1 16:55:20 2025 +0330
+
+    Update README.md
+
+[33mcommit b7e28208c1aaf7125d0dadbb833de47bddc0ddbd[m
+Author: SSN4444 <saeednoferest@gmail.com>
+Date:   Tue Apr 1 16:54:25 2025 +0330
+
+    Update README.md
+
+[33mcommit 12ffc87d8b1bde2c21964f66d0ca8d5aa1a4eaae[m
+Author: github-classroom[bot] <66690702+github-classroom[bot]@users.noreply.github.com>
+Date:   Tue Apr 1 13:22:35 2025 +0000
+
+    add deadline
+
+[33mcommit 54d41dec7ff2e52abfd408561175552619e59385[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 14 18:54:16 2025 +0330
+
+    first commit
+
+[33mcommit 26318c9aa8f9496518078cabab54fea47de20f0c[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Thu Apr 17 20:07:34 2025 +0330
+
+    design map 1403,1,28
+
+[33mcommit f9dbeb3c654f41cb448cb5e8a897b262b2af8e5f[m
+Merge: ffdf163 c7729e4
+Author: saeed <saeednoferest@gmail.com>
+Date:   Thu Apr 17 17:19:53 2025 +0330
+
+    Merge remote-tracking branch 'origin/main' into saeednoferesti
+
+[33mcommit c7729e45e9fe2a4fbe9a1b4c8f92731a242f48d3[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Thu Apr 17 16:26:21 2025 +0330
+
+    1404,01,28
+
+[33mcommit ffdf163ca0724c95fdc7b0afa76230a77a561fb1[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Thu Apr 17 16:23:18 2025 +0330
+
+    1404,01,28
+
+[33mcommit d2d222ee1f7fcb164a88ca4aa054d1075479e08a[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Tue Apr 15 22:26:28 2025 +0330
+
+    1404,01,26
+
+[33mcommit 6332d1be65f286eb4b6babf866bb4dd61554af8f[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Tue Apr 15 00:33:04 2025 +0330
+
+    as inja start bezanim lotfan be clasaye  hamdige dast nazanid
+
+[33mcommit af075513be65dc05e0be39c5ca2e95ac86cc2f24[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 14 19:27:20 2025 +0330
+
+    test
+
+[33mcommit 602913013140d75f2c785de11e65496a4f49011a[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 14 19:22:01 2025 +0330
+
+    test2
+
+[33mcommit 94d5f2ebad665fec220259c4089fe662010381fb[m
+Merge: 2bc80bd 51d785b
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 14 19:01:04 2025 +0330
+
+    merge remote with local
+
+[33mcommit 2bc80bd76ad4ea64ee3d05c3ce347540a3c67128[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 14 18:54:16 2025 +0330
+
+    first commit
+
+[33mcommit 9281b336b72e25914f8479bba45af5b70ea94812[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Sat Apr 12 01:19:03 2025 +0330
+
+    testing merging
+
+[33mcommit 9d617694a237f6fbb9a30175288eca70a9aea704[m
+Author: Reza <lordcaberton@gmail.com>
+Date:   Sat Apr 12 01:00:40 2025 +0330
+
+    test github
+
+[33mcommit 51d785b37f4bf52aaab825d5ad2afa73a55bc4b4[m
+Author: omidr <omidtdm@gmail.com>
+Date:   Sat Apr 12 00:11:08 2025 +0330
+
+    test3
+
+[33mcommit c0416c76fc5091dc0bff3b2f83cfb71625752853[m[33m ([m[1;32msaeed-noferesti[m[33m)[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Fri Apr 11 23:32:08 2025 +0330
+
+    salam
+
+[33mcommit 490b3e435746acda15f94932ae86d69e654fddc1[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Mon Apr 7 00:07:35 2025 +0330
+
+    salam
+
+[33mcommit d8e6d9c1ea84aaad78c83e2e9d990cfa236ae6bc[m
+Author: SSN4444 <saeednoferest@gmail.com>
+Date:   Sun Apr 6 23:53:47 2025 +0330
+
+    Add files via upload
+
+[33mcommit 9bf6ddead41d8c58ee93cf1eece53cf98aa03df3[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 6 23:41:44 2025 +0330
+
+    be name khoda
+
+[33mcommit bf7a0c3ec464fe2fd48d92888ae2de332b2d58eb[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 6 23:39:38 2025 +0330
+
+    be nam khoda..
+
+[33mcommit 068c7c86c9f5194145a0fb8705a9d85d43cafed6[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 6 23:35:18 2025 +0330
+
+    be nam khoda.
+
+[33mcommit 0ab2612ec697b4710b8eb67d228370653f943f1d[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 6 22:43:38 2025 +0330
+
+    be nam khoda
+
+[33mcommit 59694a4dfd6eb2814a1e816eded2b24a0e67fd17[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 6 22:18:38 2025 +0330
+
+    be nam khoda
+
+[33mcommit 4fb1ee24bf9bf6e079bbf60e9a228e7a840eeab6[m
+Author: saeed <saeednoferest@gmail.com>
+Date:   Sun Apr 6 22:08:43 2025 +0330
+
+    be nam khoda
+
+[33mcommit b7a018f2d70d46315bc983e867175ea401db5c07[m[33m ([m[1;32mReza-Golbbahar[m[33m)[m
+Author: SSN4444 <saeednoferest@gmail.com>
+Date:   Sat Apr 5 22:42:42 2025 +0330
+
+    UML
+
+[33mcommit c2d54884c586ae8eb14483920920a79bbb899e8d[m
+Author: SSN4444 <saeednoferest@gmail.com>
+Date:   Tue Apr 1 16:55:20 2025 +0330
+
+    Update README.md
+
+[33mcommit e53564c45b2cba39327ea425dc07d2f8142cf457[m
+Author: SSN4444 <saeednoferest@gmail.com>
+Date:   Tue Apr 1 16:54:25 2025 +0330
+
+    Update README.md
+
+[33mcommit b284599a3f4ac5f3e7d6c5052f11865eb8edd0f1[m
+Author: github-classroom[bot] <66690702+github-classroom[bot]@users.noreply.github.com>
+Date:   Tue Apr 1 13:22:35 2025 +0000
+
+    add deadline

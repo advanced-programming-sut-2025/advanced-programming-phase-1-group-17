@@ -2,10 +2,17 @@ package org.example.models;
 
 import org.example.models.foraging.ForagingController;
 import org.example.models.NPCS.NPC;
+import org.example.models.artisan.ArtisanProduct;
+import org.example.models.foraging.ForagingController;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
+import org.example.models.map.PlayerMap;
+import org.example.models.map.Tile;
+import org.example.models.plant.Crop;
 import org.example.models.plant.PlantGrowthController;
+import org.example.models.plant.Tree;
+import org.example.models.trade.ShippingBin;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,7 +25,7 @@ public class TimeAndDate {
     private Season season = Season.Spring;
     private DaysOfTheWeek dayOfTheWeek = DaysOfTheWeek.Saturday;
 
-    public TimeAndDate(){
+    public TimeAndDate() {
         setTodayWeather(getRandomWeather());
         setTomorrowWeather(getRandomWeather());
         hour = 9;
@@ -30,7 +37,19 @@ public class TimeAndDate {
 
     public void increaseHour() {
         hour++;
-        if (hour >= 22) {
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
+                artisanItemsInProgress.goToNextHour();
+            }
+        }
+
+        if (hour > 22) {
+            for (Player player : App.getCurrentGame().getPlayers()) {
+                for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
+                    for (int i = 0; i < 11; i++)
+                        artisanItemsInProgress.goToNextHour();
+                }
+            }
             hour = 9;
             minute = 0;
             goToNextDay();
@@ -72,17 +91,42 @@ public class TimeAndDate {
             }
         }
 
+        normalizeMaxEnergies();
+        normalizeLightningedTiles();
+
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
+
+        //Actions Needed to be done every day
         PlantGrowthController.growOneDay();
         ForagingController.setForagingForNextDay();
-
+        ShippingBin.goToNextDay();
+        App.getCurrentGame().getStoreManager().resetDailyLimits();
 
         changeDayOfTheWeek();
         day++;
         if (day >= 28) {
             changeSeason();
             day = 1;
+        }
+    }
+
+    private void normalizeLightningedTiles() {
+        for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
+            for (Tile tile : playerMap.getTiles()) {
+                tile.setLightninged(false);
+            }
+        }
+    }
+
+    private void normalizeMaxEnergies() {
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            player.setEnergy(player.getMaxEnergy());
+            player.setInteractionWithPartner(false);
+            if (player.getIsbrokenUp() > 0) {
+                player.setEnergy(player.getMaxEnergy() / 2);
+                player.setIsbrokenUp(player.getIsbrokenUp() - 1);
+            }
         }
     }
 
@@ -96,6 +140,23 @@ public class TimeAndDate {
         if (nextIndex == 0) {
             year++;
         }
+
+        //removing all crops that are not compatible with this season
+        handleIncompatiblePlants();
+    }
+
+    private void handleIncompatiblePlants() {
+        for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
+            for (Tile tile : playerMap.getTiles()) {
+                if (tile.getPlaceable() instanceof Tree tree) {
+                    if (!tree.getType().getSeasons().contains(season))
+                        tree.getTile().setPlaceable(null);
+                } else if (tile.getPlaceable() instanceof Crop crop) {
+                    if (!crop.getType().getSeasons().contains(season))
+                        crop.getTile().setPlaceable(null);
+                }
+            }
+        }
     }
 
     public void changeDayOfTheWeek() {
@@ -104,7 +165,7 @@ public class TimeAndDate {
         dayOfTheWeek = daysOfTheWeek[(currentDayIndex + 1) % daysOfTheWeek.length];
     }
 
-    public WeatherType getRandomWeather(){
+    public WeatherType getRandomWeather() {
         Random rand = new Random();
         int randInt = rand.nextInt(4) + 1;
         if (randInt == 1) return WeatherType.Snow;

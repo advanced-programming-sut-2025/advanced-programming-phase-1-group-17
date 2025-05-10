@@ -5,6 +5,7 @@ import org.example.models.NPCS.*;
 import org.example.models.map.GameMap;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
+import org.example.models.trade.StoreManager;
 
 import java.util.ArrayList;
 
@@ -16,9 +17,14 @@ public class Game {
     private ArrayList<Player> players = new ArrayList<Player>();
     private GameMap gameMap;
     private ArrayList<NPC> NPCs = new ArrayList<>();
+    private StoreManager storeManager = new StoreManager();
 
 
     public Game(User user1, User user2, User user3) {
+        App.getLoggedInUser().setActiveGame(this);
+        user1.setActiveGame(this);
+        user2.setActiveGame(this);
+        user3.setActiveGame(this);
         players.add(creator = new Player(App.getLoggedInUser(), false));
         players.add(new Player(user1, user1.getUsername().startsWith("guest")));
         players.add(new Player(user2, user2.getUsername().startsWith("guest")));
@@ -66,6 +72,7 @@ public class Game {
         App.setCurrentGame(this);
         this.gameMap = new GameMap(players);
         App.getCurrentGame().setCurrentPlayingPlayer(creator);
+        this.storeManager.initializeStores();
     }
 
     public Player getPlayerByPlayerMap(PlayerMap playerMap) {
@@ -149,6 +156,9 @@ public class Game {
         return null;
     }
 
+    public StoreManager getStoreManager() {
+        return storeManager;
+    }
     public ArrayList<NPC> getNPCs() {
         return NPCs;
     }
