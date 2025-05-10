@@ -1,6 +1,5 @@
 package org.example.models;
 
-import org.example.models.enums.AnimalHabitat;
 import org.example.models.enums.AnimalType;
 import org.example.models.map.AnimalPlace;
 
@@ -13,7 +12,6 @@ public class Animal implements Placeable {
     private String name;
     private AnimalPlace animalPlace;
     private AnimalType animalType;
-    private AnimalHabitat type;
     private int price;
     private HashMap<String, Integer> products = new HashMap<>();
     private int friendship;
