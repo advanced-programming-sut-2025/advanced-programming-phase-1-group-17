@@ -1,4 +1,4 @@
-package org.example.foraging;
+package org.example.models.foraging;
 
 import org.example.models.App;
 import org.example.models.enums.Season;

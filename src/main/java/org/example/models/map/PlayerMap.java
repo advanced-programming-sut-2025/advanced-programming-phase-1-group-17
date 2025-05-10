@@ -1,16 +1,11 @@
 package org.example.models.map;
 
-import org.example.foraging.ForagingController;
+import org.example.models.foraging.ForagingController;
 import org.example.models.App;
 import org.example.models.NPCS.*;
-import org.example.models.Placeable;
 import org.example.models.Player;
-import org.example.models.User;
-import org.example.models.enums.Gender;
 import org.example.models.plant.Tree;
 
-import javax.swing.plaf.basic.BasicSplitPaneUI;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 

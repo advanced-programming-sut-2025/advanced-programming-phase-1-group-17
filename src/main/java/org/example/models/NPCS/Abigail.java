@@ -1,6 +1,4 @@
 package org.example.models.NPCS;
-
-import org.example.models.BackPackable;
 import org.example.models.Placeable;
 
 import java.util.ArrayList;
