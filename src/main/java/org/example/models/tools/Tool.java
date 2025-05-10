@@ -3,8 +3,6 @@ package org.example.models.tools;
 import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
-import org.example.models.enums.ToolMaterial;
-import org.example.models.enums.ToolType;
 
 public class Tool implements BackPackable {
     private ToolType type;

@@ -1,11 +1,9 @@
 package org.example.models;
 
 import org.example.models.enums.Menu;
-import org.example.models.enums.ToolType;
-import org.example.models.plant.SeedType;
+import org.example.models.tools.ToolType;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class App {
     private static User loggedInUser;

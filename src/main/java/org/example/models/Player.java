@@ -5,12 +5,11 @@ import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
 import org.example.models.enums.BackPackType;
-import org.example.models.enums.ToolMaterial;
-import org.example.models.enums.ToolType;
+import org.example.models.tools.ToolMaterial;
+import org.example.models.tools.ToolType;
 import org.example.models.map.PlayerMap;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
-import org.example.models.trade.Trade;
 
 import java.util.ArrayList;
 import java.util.HashMap;

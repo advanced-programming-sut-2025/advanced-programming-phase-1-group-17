@@ -90,6 +90,12 @@ public class BackPack {
     }
 
     public void addItemToInventory(BackPackable backPackable) {
+        for (BackPackableType backPackableType : backPackItems.keySet()) {
+            if (backPackItems.get(backPackableType).isEmpty())
+                backPackItems.remove(backPackableType);
+        }
+        if (isBackPackFull())
+            return;
         backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
         backPackItems.get(backPackable.getType()).add(backPackable);
     }

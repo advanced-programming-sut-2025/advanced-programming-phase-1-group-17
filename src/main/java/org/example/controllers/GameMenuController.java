@@ -20,7 +20,8 @@ import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
-import org.example.models.trade.*;
+import org.example.models.tools.ToolType;
+import org.example.models.market.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -78,6 +79,7 @@ public class GameMenuController {
         gameMap(scanner);
         return new Result(true, "new game created Successfully");
     }
+
 
     public void gameMap(Scanner scanner) {
         boolean done = false;
@@ -919,6 +921,8 @@ public class GameMenuController {
         Animal animal = Animal.findAnimalByName(animalName);
         int amountInt = Integer.parseInt(amount);
         animal.setFriendship(animal.getFriendship()+amountInt);
+
+        return new Result(false, "5");
     }
 
     public Result animals() {
@@ -974,6 +978,8 @@ public class GameMenuController {
             return new Result(false,"your backpack is full");
         }
         //TODO  im confused
+
+        return new Result(false, "5");
     }
 
     public Result sellAnimal(String name) {
@@ -982,6 +988,7 @@ public class GameMenuController {
         }
         Animal animal = Animal.findAnimalByName(name);
         animal.sell();
+        return new Result(false, "5");
     }
 
     public Result fishing(String fishingPole) {
