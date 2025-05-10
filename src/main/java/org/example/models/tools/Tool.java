@@ -74,7 +74,7 @@ public class Tool implements BackPackable {
 
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
             if (backPackableType instanceof ToolType toolType) {
-                Tool tool = (Tool)backPack.getBackPackItems().get(toolType).get(0);
+                Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
                 if (tool.getToolType().name().equals(toolName)) {
                     return tool;
                 }

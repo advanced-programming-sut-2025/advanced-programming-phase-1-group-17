@@ -1,6 +1,5 @@
 package org.example.models.trade;
 
-import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.Placeable;
 import org.example.models.Player;
@@ -9,24 +8,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ShippingBin implements Placeable {
-    //TODO: add shipping bins to map when generating map
     private static ArrayList<ShippingBin> allShippingBins = new ArrayList<>();
-    private HashMap<BackPackableType, ArrayList<BackPackable>> items = new HashMap<>();
+    private HashMap<BackPackableType, Integer> items = new HashMap<>();
     private final ShippingBinType type;
-    private final Player owner;
 
-    public ShippingBin(ShippingBinType type, Player owner) {
+    //only one player can have items in a shipping bin each day
+    private Player todayItemOwner = null;
+
+    public ShippingBin(ShippingBinType type) {
         this.type = type;
-        this.owner = owner;
         allShippingBins.add(this);
     }
 
-    public HashMap<BackPackableType, ArrayList<BackPackable>> getItems() {
-        return items;
-    }
-
-    public void setItems(HashMap<BackPackableType, ArrayList<BackPackable>> items) {
-        this.items = items;
+    public void addItems(BackPackableType type, Integer count, Player owner) {
+        this.todayItemOwner = owner;
+        if (this.items.get(type) == null) {
+            this.items.put(type, items.get(type));
+        } else {
+            this.items.put(type, this.items.get(type) + count);
+        }
     }
 
     public ShippingBinType getType() {
@@ -37,9 +37,27 @@ public class ShippingBin implements Placeable {
         for (ShippingBin shippingBin : allShippingBins) {
             double total = 0;
             for (BackPackableType item : shippingBin.items.keySet()) {
-                total += shippingBin.items.get(item).size() * item.getPrice();
+                total += shippingBin.items.get(item) * item.getPrice();
             }
-            shippingBin.owner.getBackPack().addCoin(total);
+            if (shippingBin.todayItemOwner == null)
+                return;
+
+            shippingBin.todayItemOwner.getBackPack().addCoin(
+                    Math.floor(total * shippingBin.getType().getLeverage()));
+            shippingBin.items = new HashMap<>();
+            shippingBin.todayItemOwner = null;
         }
+    }
+
+    public void setItems(HashMap<BackPackableType, Integer> items) {
+        this.items = items;
+    }
+
+    public Player getTodayItemOwner() {
+        return todayItemOwner;
+    }
+
+    public void setTodayItemOwner(Player todayItemOwner) {
+        this.todayItemOwner = todayItemOwner;
     }
 }
