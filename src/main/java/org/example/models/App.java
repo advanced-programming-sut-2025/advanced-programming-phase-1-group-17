@@ -94,15 +94,6 @@ public class App {
     }
 
 
-    public static SeedType getSeedType(String name) {
-        for (SeedType seedType : SeedType.values()) {
-            if (seedType.name().equals(name)) {
-                return seedType;
-            }
-        }
-        return null;
-    }
-
     public static ToolType getToolTypeByName(String name) {
         for (ToolType type : ToolType.values()) {
             if (type.getName().equalsIgnoreCase(name)) {

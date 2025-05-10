@@ -18,26 +18,7 @@ public class BackPack {
 
 
     private final BackPackType type;
-    //Coin and wood and stone
-    private int wood;
-    private int stone;
-    private double coin;
-
-    public int getWood() {
-        return wood;
-    }
-
-    public void addWood(int wood) {
-        this.wood += wood;
-    }
-
-    public int getStone() {
-        return stone;
-    }
-
-    public void addStone(int stone) {
-        this.stone += stone;
-    }
+    private double coin = 0;
 
     public double getCoin() {
         return coin;
@@ -47,11 +28,11 @@ public class BackPack {
         if (!player.getPartner().equals(player)) {
             player.getBackPack().addcoin(coin);
             player.getPartner().getBackPack().addcoin(coin);
-        }
-        else {
+        } else {
             player.getBackPack().addcoin(coin);
         }
     }
+
     public void addcoin(double coin) {
         this.coin += coin;
     }

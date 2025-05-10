@@ -6,6 +6,7 @@ import org.example.models.enums.AnimalHabitat;
 public class AnimalItem {
     //TODO: may this class be deleted and integrated with ShopItem
 
+    private int soldToday = 0;
     private final AnimalType animalType;
     private final String description;
     private final double price;
@@ -38,6 +39,14 @@ public class AnimalItem {
 
     public int getDailyLimit() {
         return dailyLimit;
+    }
+
+    public void setSoldToday(int soldToday) {
+        this.soldToday = soldToday;
+    }
+
+    public int getSoldToday() {
+        return soldToday;
     }
 }
 
