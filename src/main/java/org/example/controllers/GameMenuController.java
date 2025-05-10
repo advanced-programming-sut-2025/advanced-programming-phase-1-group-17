@@ -837,6 +837,7 @@ public class GameMenuController {
 
     public Result eat(String foodName) {
         App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(foodName);
+        return new Result(false, "5t");
     }
 
     public Result build(String name, String x, String y) {
