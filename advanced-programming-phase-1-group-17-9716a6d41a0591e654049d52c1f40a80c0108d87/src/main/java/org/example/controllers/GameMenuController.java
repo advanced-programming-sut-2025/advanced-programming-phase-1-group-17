@@ -17,7 +17,7 @@ import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
-import org.example.models.trade.Trade;
+import org.example.models.market.Trade;
 
 import java.util.*;
 import java.util.regex.Matcher;

@@ -1,4 +1,4 @@
-package org.example.models.enums;
+package org.example.models.tools;
 
 import org.example.models.BackPackableType;
 

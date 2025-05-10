@@ -1,7 +1,7 @@
 package org.example.models;
 
 import org.example.models.enums.AnimalProductType;
-import org.example.models.trade.ShippingBinType;
+import org.example.models.market.ShippingBinType;
 
 public class AnimalProduct implements BackPackable{
     private Animal animal;

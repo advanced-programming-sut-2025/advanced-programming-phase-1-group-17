@@ -6,7 +6,7 @@ import org.example.models.map.AnimalPlace;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.example.models.trade.ShippingBinType.*;
+import static org.example.models.market.ShippingBinType.*;
 
 public class Animal implements Placeable {
     private String name;
@@ -47,14 +47,6 @@ public class Animal implements Placeable {
 
     public void setAnimalType(AnimalType animalType) {
         this.animalType = animalType;
-    }
-
-    public AnimalHabitat getType() {
-        return type;
-    }
-
-    public void setType(AnimalHabitat type) {
-        this.type = type;
     }
 
     public int getPrice() {

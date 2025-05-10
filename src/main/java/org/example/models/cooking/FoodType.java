@@ -29,7 +29,7 @@ public enum FoodType implements BackPackableType {
 
     @Override
     public String getName() {
-        return "";
+        return name();
     }
 
     @Override

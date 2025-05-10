@@ -1,8 +1,4 @@
-package org.example.models.trade;
-
-import org.example.models.BackPackable;
-import org.example.models.Player;
-import org.example.models.Product;
+package org.example.models;
 
 import java.util.regex.Matcher;
 

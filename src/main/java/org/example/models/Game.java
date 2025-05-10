@@ -1,10 +1,11 @@
 package org.example.models;
 
 
+import org.example.models.NPCS.*;
 import org.example.models.map.GameMap;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
-import org.example.models.trade.StoreManager;
+import org.example.models.market.StoreManager;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ public class Game {
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
     private GameMap gameMap;
+    private ArrayList<NPC> NPCs = new ArrayList<>();
     private StoreManager storeManager = new StoreManager();
 
 
@@ -27,6 +29,18 @@ public class Game {
         players.add(new Player(user1, user1.getUsername().startsWith("guest")));
         players.add(new Player(user2, user2.getUsername().startsWith("guest")));
         players.add(new Player(user3, user3.getUsername().startsWith("guest")));
+        addNPCs(new Abigail());
+        addNPCs(new Harvey());
+        addNPCs(new Lia());
+        addNPCs(new Robin());
+        addNPCs(new Sebastian());
+        for (Player player : players) {
+            for (NPC npc : NPCs) {
+                player.setFriendShipsWithNPCs(npc);
+                player.setTalkedNPCToday(npc);
+                player.setGiftNPCToday(npc);
+            }
+        }
         for (int i = 0; i < players.size(); i++) {
             if (i != 0) {
                 players.get(0).addGift(players.get(i));
@@ -142,5 +156,22 @@ public class Game {
         return null;
     }
 
+    public StoreManager getStoreManager() {
+        return storeManager;
+    }
+    public ArrayList<NPC> getNPCs() {
+        return NPCs;
+    }
 
+    public void addNPCs(NPC npc) {
+        this.NPCs.add(npc);
+    }
+    public NPC getNPC(String npcName) {
+        for (NPC npc : NPCs) {
+            if (npc.getName().equals(npcName)) {
+                return npc;
+            }
+        }
+        return null;
+    }
 }
