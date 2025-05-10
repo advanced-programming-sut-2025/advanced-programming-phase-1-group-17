@@ -1,6 +1,9 @@
 package org.example.models.NPCS;
 
 import org.example.models.Placeable;
+import org.example.models.Player;
+import org.example.models.crafting.CraftingItem;
+import org.example.models.crafting.CraftingItemType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +14,7 @@ public class Robin extends NPC implements Placeable {
     private String name = "Robin";
     private String job = "architect";
     private final HashMap<String, String> dialogue = new HashMap<>();
+
     {
         dialogue.put("what's your name?", "Robin");
         dialogue.put("hello", "hi how are you?");
@@ -20,25 +24,43 @@ public class Robin extends NPC implements Placeable {
         dialogue.put("how is the weather?", "excellent!");
         dialogue.put("what is your job?", "I am a architect");
     }
+
     private ArrayList<String> favorites = new ArrayList<>();
 
     @Override
     public ArrayList<String> getFavorites() {
         return favorites;
     }
+
     {
         favorites.add("IronBar");
         favorites.add("Wood");
         favorites.add("spaghetti");
     }
-    private ArrayList<Quest> requests= new ArrayList<>();
-    public ArrayList<Quest> getRequests(){
+
+    private ArrayList<Quest> requests = new ArrayList<>();
+
+    public ArrayList<Quest> getRequests() {
         return requests;
     }
+
     {
-        requests.add(new Quest("Delivery of 80 sticks",0,false,"Wood",80));
-        requests.add(new Quest("Delivery of 10 iron ingots",1,false,"IronBar",10));
-        requests.add(new Quest("Delivery of 1000 sticks",2,false,"Wood",1000));
+        requests.add(new Quest("Delivery of 80 sticks", 0, false, "Wood", 80));
+        requests.add(new Quest("Delivery of 10 iron ingots", 1, false, "IronBar", 10));
+        requests.add(new Quest("Delivery of 1000 sticks", 2, false, "Wood", 1000));
+    }
+
+    public void giveReward(Player player, int index) {
+        if (index == 0) {
+            player.getBackPack().addcoin(1000);
+        } else if (index == 1) {
+            for (int i =0 ; i < 3; i++) {
+                CraftingItem c =new CraftingItem(CraftingItemType.BeeHouse);
+                player.getBackPack().addItemToInventory(c);
+            }
+        } else {
+            player.getBackPack().addcoin(25000);
+        }
     }
 
     public String getName() {
@@ -72,6 +94,7 @@ public class Robin extends NPC implements Placeable {
     public void setY(int y) {
         this.y = y;
     }
+
     public HashMap<String, String> getDialogue() {
         return dialogue;
     }
