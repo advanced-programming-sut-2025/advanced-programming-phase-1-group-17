@@ -56,6 +56,15 @@ public enum SeedType implements BackPackableType {
         this.cropType = cropType;
     }
 
+    public static SeedType getSeedTypeByName(String source) {
+        for (SeedType seedType : SeedType.values()) {
+            if (seedType.name().equals(source)) {
+                return seedType;
+            }
+        }
+        return null;
+    }
+
     public CropType getCropType() {
         if (cropType == null) { //Mixed
             Season season = App.getCurrentGame().getDate().getSeason();

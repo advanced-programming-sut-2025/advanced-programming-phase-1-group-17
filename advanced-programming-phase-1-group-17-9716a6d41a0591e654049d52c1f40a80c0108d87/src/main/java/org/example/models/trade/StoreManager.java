@@ -1,4 +1,4 @@
-package org.example.models.trade;
+package org.example.models.market;
 
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
