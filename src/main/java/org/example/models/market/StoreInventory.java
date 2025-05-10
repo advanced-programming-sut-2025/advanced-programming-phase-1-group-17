@@ -1,4 +1,4 @@
-package org.example.models.trade;
+package org.example.models.market;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 public class StoreInventory {
     private final StoreType storeType;
     private final List<ShopItem> items = new ArrayList<>();
-    private final List<AnimalItem> animals = new ArrayList<>();
     private final List<UpgradeService> upgrades = new ArrayList<>();
 
     public StoreInventory(StoreType storeType) {
@@ -17,9 +16,6 @@ public class StoreInventory {
         items.add(item);
     }
 
-    public void addAnimal(AnimalItem animal) {
-        animals.add(animal);
-    }
 
     public void addUpgradeService(UpgradeService upgradeService) {
         upgrades.add(upgradeService);
@@ -33,9 +29,6 @@ public class StoreInventory {
         return items;
     }
 
-    public List<AnimalItem> getAnimals() {
-        return animals;
-    }
 
     public List<UpgradeService> getUpgradeServices() {
         return upgrades;

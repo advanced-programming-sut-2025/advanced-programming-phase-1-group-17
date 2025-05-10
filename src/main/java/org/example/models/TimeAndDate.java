@@ -3,7 +3,6 @@ package org.example.models;
 import org.example.models.foraging.ForagingController;
 import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
-import org.example.models.foraging.ForagingController;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
@@ -12,7 +11,7 @@ import org.example.models.map.Tile;
 import org.example.models.plant.Crop;
 import org.example.models.plant.PlantGrowthController;
 import org.example.models.plant.Tree;
-import org.example.models.trade.ShippingBin;
+import org.example.models.market.ShippingBin;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

@@ -1,4 +1,4 @@
-package org.example.models.trade;
+package org.example.models.market;
 
 import org.example.models.App;
 import org.example.models.NormalItemType;
@@ -53,14 +53,6 @@ public class StoreManager {
         ranch.addItem(new ShopItem(ToolType.MilkPail, 1000, 1, "Gather milk from your animals."));
         ranch.addItem(new ShopItem(ToolType.Shear, 1000, 1, "Use this to collect wool from sheep."));
 
-        ranch.addAnimal(new AnimalItem(AnimalType.Chicken, "Well cared-for chickens lay eggs every day. Lives in the coop.", 800, AnimalHabitat.Coop, 2));
-        ranch.addAnimal(new AnimalItem(AnimalType.Cow, "Can be milked daily. A milk pail is required to harvest the milk. Lives in the barn.", 1500, AnimalHabitat.Barn, 2));
-        ranch.addAnimal(new AnimalItem(AnimalType.Goat, "Happy goats provide goat milk every other day. Requires a milk pail. Lives in the barn.", 4000, AnimalHabitat.Barn, 2));
-        ranch.addAnimal(new AnimalItem(AnimalType.Duck, "Happy ducks lay duck eggs every other day. Lives in the coop.", 1200, AnimalHabitat.Coop, 2));
-        ranch.addAnimal(new AnimalItem(AnimalType.Sheep, "Can be shorn for wool. Shears are required. Lives in the barn.", 8000, AnimalHabitat.Barn, 2));
-        ranch.addAnimal(new AnimalItem(AnimalType.Rabbit, "These are wooly rabbits! They shed precious wool every few days. Lives in the coop.", 8000, AnimalHabitat.Coop, 2));
-        ranch.addAnimal(new AnimalItem(AnimalType.Dinosaur, "The Dinosaur is a farm animal that lives in a Big Coop.", 14000, AnimalHabitat.Coop, 2));
-        ranch.addAnimal(new AnimalItem(AnimalType.Pig, "These pigs are trained to find truffles! Lives in the barn.", 16000, AnimalHabitat.Barn, 2));
         registerShop(ranch);
 
         // === Stardrop Saloon ===
@@ -216,13 +208,13 @@ public class StoreManager {
 
         if (store.getType().equals(StoreType.Ranch)) {
             rank = 1;
-            for (AnimalItem animalItem : inventory.getAnimals()) {
-                result.append("\n%d- %s(%.2f)".formatted(
-                        rank++,
-                        animalItem.getAnimalType().name(),
-                        animalItem.getPrice()
-                ));
-            }
+//            for (AnimalItem animalItem : inventory.getAnimals()) {
+//                result.append("\n%d- %s(%.2f)".formatted(
+//                        rank++,
+//                        animalItem.getAnimalType().name(),
+//                        animalItem.getPrice()
+//                ));
+//            }
         }
 
         return result.toString();
@@ -264,16 +256,16 @@ public class StoreManager {
 
         if (store.getType().equals(StoreType.Ranch)) {
             rank = 1;
-            for (AnimalItem animalItem : inventory.getAnimals()) {
-                if (animalItem.getSoldToday() >= animalItem.getDailyLimit())
-                    continue;
-
-                result.append("\n%d- %s(%.2f)".formatted(
-                        rank++,
-                        animalItem.getAnimalType().name(),
-                        animalItem.getPrice()
-                ));
-            }
+//            for (AnimalItem animalItem : inventory.getAnimals()) {
+//                if (animalItem.getSoldToday() >= animalItem.getDailyLimit())
+//                    continue;
+//
+//                result.append("\n%d- %s(%.2f)".formatted(
+//                        rank++,
+//                        animalItem.getAnimalType().name(),
+//                        animalItem.getPrice()
+//                ));
+//            }
         }
 
         return result.toString();
@@ -286,9 +278,9 @@ public class StoreManager {
                 item.setSoldToday(0);
             }
 
-            for (AnimalItem animal : inventory.getAnimals()) {
-                animal.setSoldToday(0);
-            }
+//            for (AnimalItem animal : inventory.getAnimals()) {
+//                animal.setSoldToday(0);
+//            }
 
             for (UpgradeService upgradeService : inventory.getUpgradeServices()) {
                 upgradeService.setSoldToday(0);

@@ -1,4 +1,4 @@
-package org.example.models.trade;
+package org.example.models.market;
 
 import java.util.ArrayList;
 import java.util.List;

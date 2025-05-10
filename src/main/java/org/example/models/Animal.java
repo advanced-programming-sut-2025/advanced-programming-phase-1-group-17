@@ -6,13 +6,12 @@ import org.example.models.map.AnimalPlace;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.example.models.trade.ShippingBinType.*;
+import static org.example.models.market.ShippingBinType.*;
 
 public class Animal implements Placeable {
     private String name;
     private AnimalPlace animalPlace;
     private AnimalType animalType;
-    private AnimalHabitat type;
     private int price;
     private HashMap<String, Integer> products = new HashMap<>();
     private int friendship;
@@ -48,14 +47,6 @@ public class Animal implements Placeable {
 
     public void setAnimalType(AnimalType animalType) {
         this.animalType = animalType;
-    }
-
-    public AnimalHabitat getType() {
-        return type;
-    }
-
-    public void setType(AnimalHabitat type) {
-        this.type = type;
     }
 
     public int getPrice() {
