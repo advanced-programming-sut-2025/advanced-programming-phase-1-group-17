@@ -30,28 +30,28 @@ public class Game {
         for (int i = 0; i < players.size(); i++) {
             if (i != 0) {
                 players.get(0).addGift(players.get(i));
-                players.get(0).addTalk(players.get(i),new Talk(players.get(i)));
+                players.get(0).addTalk(players.get(i), new Talk(players.get(i)));
                 players.get(0).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 1) {
                 players.get(1).addGift(players.get(i));
-                players.get(1).addTalk(players.get(i),new Talk(players.get(i)));
+                players.get(1).addTalk(players.get(i), new Talk(players.get(i)));
                 players.get(1).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 2) {
                 players.get(2).addGift(players.get(i));
-                players.get(2).addTalk(players.get(i),new Talk(players.get(i)));
+                players.get(2).addTalk(players.get(i), new Talk(players.get(i)));
                 players.get(2).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 3) {
                 players.get(3).addGift(players.get(i));
-                players.get(3).addTalk(players.get(i),new Talk(players.get(i)));
+                players.get(3).addTalk(players.get(i), new Talk(players.get(i)));
                 players.get(3).addFriendShips(players.get(i), 0);
             }
         }
@@ -131,7 +131,7 @@ public class Game {
         this.currentPlayingPlayerIndex = currentPlayingPlayerIndex;
     }
 
-    public Tile getTileByIndex(int x , int y) {
+    public Tile getTileByIndex(int x, int y) {
         for (PlayerMap playerMap : gameMap.getPlayerMaps()) {
             for (Tile tile : playerMap.getTiles()) {
                 if (tile.getX() == x && tile.getY() == y) {
@@ -142,5 +142,7 @@ public class Game {
         return null;
     }
 
-
+    public StoreManager getStoreManager() {
+        return storeManager;
+    }
 }

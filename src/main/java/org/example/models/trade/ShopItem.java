@@ -5,10 +5,10 @@ import org.example.models.BackPackableType;
 import org.example.models.enums.Season;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ShopItem implements BackPackable {
+    private int soldToday = 0;
     private final BackPackableType type;
     private final int dailyLimit;
     private final double price;
@@ -56,5 +56,13 @@ public class ShopItem implements BackPackable {
 
     public boolean isAvailableInSeason(Season season) {
         return availableSeasons.isEmpty() || availableSeasons.contains(season);
+    }
+
+    public void setSoldToday(int soldToday) {
+        this.soldToday = soldToday;
+    }
+
+    public int getSoldToday() {
+        return soldToday;
     }
 }

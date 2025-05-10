@@ -9,7 +9,6 @@ public class Tile {
     private int x;
     private int y;
     private Placeable placeable;
-    private boolean isWater=false;
     private boolean isWalkAble = true;
     private boolean isPlowed = false;
     private Player owner;
@@ -81,11 +80,9 @@ public class Tile {
     }
 
     public boolean isWater() {
-        return isWater;
-    }
-
-    public void setWater(boolean water) {
-        isWater = water;
+        if (placeable instanceof Lake)
+            return true;
+        return false;
     }
 
     public static Tile getTile(int x, int y) {
