@@ -14,7 +14,6 @@ import org.example.models.market.Store;
 import org.example.models.market.StoreType;
 
 public class display {
-    //TODO khoshgel kardanesh
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
@@ -157,7 +156,6 @@ public class display {
                 }
             }
             if (i == 150) {
-                System.out.println();
                 for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
