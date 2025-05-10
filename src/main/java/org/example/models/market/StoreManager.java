@@ -6,6 +6,7 @@ import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItemType;
+import org.example.models.enums.AnimalType;
 import org.example.models.enums.Season;
 import org.example.models.tools.ToolType;
 import org.example.models.foraging.MineralType;
@@ -217,6 +218,18 @@ public class StoreManager {
                 ));
             }
         }
+
+        if (store.getType().equals(StoreType.Ranch)) {
+            rank = 1;
+//            for (AnimalItem animalItem : inventory.getAnimals()) {
+//                result.append("\n%d- %s(%.2f)".formatted(
+//                        rank++,
+//                        animalItem.getAnimalType().name(),
+//                        animalItem.getPrice()
+//                ));
+//            }
+        }
+
         return result.toString();
     }
 

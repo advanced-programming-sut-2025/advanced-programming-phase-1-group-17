@@ -5,6 +5,8 @@ import org.example.models.*;
 import org.example.models.artisan.ArtisanProduct;
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.artisan.IngredientGroup;
+import org.example.models.NPCS.NPC;
+import org.example.models.NPCS.Quest;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.cooking.Food;
@@ -19,12 +21,20 @@ import org.example.models.map.GreenHouse;
 import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.BackPack;
+import org.example.models.tools.FishingPoleType;
 import org.example.models.tools.Tool;
+import org.example.models.Trade;
+import org.example.models.tools.ToolType;
+import org.example.models.market.*;
+import org.example.models.trade.Fish;
+import org.example.models.trade.Trade;
 import org.example.models.tools.ToolType;
 import org.example.models.market.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
+
+import static org.example.models.enums.WeatherType.*;
 
 public class GameMenuController {
 
@@ -72,6 +82,8 @@ public class GameMenuController {
                 return new Result(false, "user with username %s has an active game".formatted(username3));
         }
         Tile.getTiles().clear();
+        NPC.setFatherPlayer(null);
+        NPC.setFatherUser(null);
         GreenHouse.getGreenHouse().clear();
         Game game = new Game(user1, user2, user3);
         App.setCurrentGame(game);
@@ -219,11 +231,13 @@ public class GameMenuController {
         List<Tile> result;
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         Tile destination = Tile.getTile(x, y);
-        if (!(destination.getOwner().equals(player.getPartner()) || destination.getOwner().equals(player))) {
+        if (!(destination.getOwner().equals(player.getPartner())
+                || destination.getOwner().equals(player)
+                || destination.getOwner().equals(NPC.getFatherPlayer()))) {
             return new Result(false, "you can't walk to this tile because this tile is not for you.");
         } else if (!destination.isWalkAble()) {
             return new Result(false, "you can't walk to this tile because this tile is not walkable.");
-        } else if ((result = bfs(player.getX(), player.getY(), x, y, player)) == null) {
+        } else if ((result = aStar(player.getX(), player.getY(), x, y, player)) == null) {
             return new Result(false, "you can't walk to this tile because there is not path to this tile");
         } else {
             //TODO
@@ -235,7 +249,7 @@ public class GameMenuController {
             if (input.equals("y")) {
                 player.setEnergy(player.getEnergy() - energy_needed);
                 if (player.getEnergy() <= 0) {
-                    player.setHasPassedOutToday(true);
+                    player.passOut();
                     player.setEnergy(0);
                     return new Result(false, "you fainted");
                 } else {
@@ -254,80 +268,79 @@ public class GameMenuController {
             }
         }
     }
-
-    public boolean isValid(int x, int y, Player player) {
-        if (x > 0 && x < 200 && y > 0 && y < 200) {
-            return (Tile.getTile(x, y).getOwner().equals(player) || Tile.getTile(x, y).getOwner().equals(player.getPartner()))
-                    && Tile.getTile(x, y) != null && Tile.getTile(x, y).isWalkAble();
-        } else {
-            return false;
-        }
-    }
-
-    public List<Tile> bfs(int startX, int startY, int endX, int endY, Player player) {
+    public List<Tile> aStar(int startX, int startY, int endX, int endY, Player player) {
         int[][] directions = {
-                {0, 1},
-                {1, 0},
-                {0, -1},
-                {-1, 0},
-                {1, 1},
-                {1, -1},
-                {-1, 1},
-                {-1, -1}
+                {0, 1}, {1, 0}, {0, -1}, {-1, 0},
+                {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
         };
-
-//        int rows = 51 + player.getPlayerMap().getRow();
-//        int cols = 51 + player.getPlayerMap().getCol();
-
-        boolean[][] visited = new boolean[200][200];
-        Map<Tile, Tile> parent = new HashMap<>();
-        Queue<Tile> queue = new LinkedList<>();
 
         Tile start = Tile.getTile(startX, startY);
         Tile end = Tile.getTile(endX, endY);
+
         if (start == null || end == null || !start.isWalkAble() || !end.isWalkAble()) {
             return null;
         }
 
-        queue.offer(start);
-        visited[startX][startY] = true;
+        Map<Tile, Tile> parent = new HashMap<>();
+        Map<Tile, Integer> gScore = new HashMap<>();
+        PriorityQueue<Tile> openSet = new PriorityQueue<>(Comparator.comparingInt(tile -> gScore.get(tile) + heuristic(tile, end)));
+        boolean[][] visited = new boolean[200][200];
 
-        while (!queue.isEmpty()) {
-            Tile current = queue.poll();
+        gScore.put(start, 0);
+        openSet.add(start);
+
+        while (!openSet.isEmpty()) {
+            Tile current = openSet.poll();
+
             if (current.getX() == endX && current.getY() == endY) {
                 return buildPath(parent, start, end);
             }
+
+            visited[current.getX()][current.getY()] = true;
 
             for (int[] dir : directions) {
                 int newX = current.getX() + dir[0];
                 int newY = current.getY() + dir[1];
 
-                if (isValid(newX, newY, player) && !visited[newX][newY]) {
-                    Tile neighbor = Tile.getTile(newX, newY);
-                    visited[newX][newY] = true;
+                if (newX <= 0 || newY <= 0 || newX > 200 || newY > 200) continue;
+                Tile neighbor = Tile.getTile(newX, newY);
+
+                if (neighbor == null || visited[newX][newY] || !isValid(neighbor, player)) continue;
+
+                int tentativeG = gScore.get(current) + 1;
+
+                if (!gScore.containsKey(neighbor) || tentativeG < gScore.get(neighbor)) {
+                    gScore.put(neighbor, tentativeG);
                     parent.put(neighbor, current);
-                    queue.offer(neighbor);
+                    openSet.add(neighbor);
                 }
             }
         }
 
         return null;
     }
+    private boolean isValid(Tile tile, Player player) {
+        return tile != null && tile.isWalkAble() &&
+                (tile.getOwner().equals(player) ||
+                        tile.getOwner().equals(player.getPartner()) ||
+                        tile.getOwner().equals(NPC.getFatherPlayer()));
+    }
 
-    public List<Tile> buildPath(Map<Tile, Tile> parent, Tile start, Tile end) {
-        List<Tile> path = new ArrayList<>();
+    private List<Tile> buildPath(Map<Tile, Tile> parent, Tile start, Tile end) {
+        List<Tile> path = new LinkedList<>();
         Tile current = end;
-
         while (current != null && !current.equals(start)) {
-            path.add(current);
+            path.add(0, current);
             current = parent.get(current);
         }
-
-        if (current == null) return null;
-
-        path.add(start);
-        Collections.reverse(path);
+        if (current != null) path.add(0, start);
         return path;
+    }
+
+    private int heuristic(Tile a, Tile b) {
+        int dx = Math.abs(a.getX() - b.getX());
+        int dy = Math.abs(a.getY() - b.getY());
+        return dx + dy;
     }
 
     public void printMap(int x, int y, int size) {
@@ -485,6 +498,7 @@ public class GameMenuController {
 
                 player.getBackPack().addItemToInventory(mineral);
                 tile.setPlaceable(null);
+                return new Result(true, "stone broke successfully");
                 if (player.getAbilities().getMiningLevel() >= 2) {
                     player.getBackPack().addItemToInventory(mineral);
                     return new Result(true, "stone broke successfully and you also got 1 more because of mining level");
@@ -497,6 +511,7 @@ public class GameMenuController {
 
         } else if (tool.getToolType().equals(ToolType.Axe)) {
             if (tile.getPlaceable() instanceof Tree) {
+
                 tile.setPlaceable(null);
             }
         } else if (tool.getToolType().equals(ToolType.WateringCan)) {
@@ -536,6 +551,11 @@ public class GameMenuController {
         } else if (tool.getToolType().equals(ToolType.MilkPail)) {
             if (tile.getPlaceable() instanceof Animal) {
                 Animal animal = (Animal) tile.getPlaceable();
+                if(animal.getAnimalType().equals(AnimalType.Cow)){
+                    for(AnimalProduct animalProduct : animal.getAnimalProducts()){
+                        player.getBackPack().addItemToInventory(animalProduct);
+                    }
+                }
             }
         }
         return new Result(true, "Tool used.");
@@ -838,8 +858,13 @@ public class GameMenuController {
     }
 
     public Result eat(String foodName) {
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(foodName);
-        return new Result(false, "5t");
+
+        try{
+            App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(foodName);
+            return new Result(true, "you ate " + foodName + " successfully");
+        }catch (Exception e){
+            return new Result(false,"invalid food");
+        }
     }
 
     public Result build(String name, String x, String y) {
@@ -921,8 +946,7 @@ public class GameMenuController {
         Animal animal = Animal.findAnimalByName(animalName);
         int amountInt = Integer.parseInt(amount);
         animal.setFriendship(animal.getFriendship()+amountInt);
-
-        return new Result(false, "5");
+        return new Result(true,"friendship is now " + animal.getFriendship());
     }
 
     public Result animals() {
@@ -978,8 +1002,6 @@ public class GameMenuController {
             return new Result(false,"your backpack is full");
         }
         //TODO  im confused
-
-        return new Result(false, "5");
     }
 
     public Result sellAnimal(String name) {
@@ -988,11 +1010,49 @@ public class GameMenuController {
         }
         Animal animal = Animal.findAnimalByName(name);
         animal.sell();
-        return new Result(false, "5");
+        return new Result(true,"animal sold successfully");
     }
 
     public Result fishing(String fishingPole) {
-        return new Result(false, "t");
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        FishingPoleType fishingPoleType;
+        try{
+             fishingPoleType = FishingPoleType.valueOf(fishingPole);
+        }catch (Exception e){
+            return new Result(false,"invalid fishing pole");
+        }
+        if(!player.getBackPack().getBackPackItems().containsKey(fishingPoleType)){
+            return new Result(false,"you dont have this fishing pole in your backpack");
+        }
+
+        double R = Math.random();
+        double M=1;
+        TimeAndDate date = App.getCurrentGame().getDate();
+        switch (date.getTodayWeatherType()){
+            case Sunny -> M=1.5;
+            case Rainy -> M=1.2;
+            case Storm -> M=0.5;
+            default -> M=0.1;
+        }
+        int level=player.getAbilities().getFishingLevel();
+        int count = (int) Math.ceil(R * M * (level + 2));
+        count = Math.min(6,count);
+        double pole = fishingPoleType.getPole();
+        Fish fish=new Fish();
+        ArrayList<FishType> fishes = new ArrayList<>();
+        for(FishType fishType : FishType.values()){
+            if(fishType.getSeason().equals(date.getSeason())){
+                fishes.add(fishType);
+            }
+        }
+        Random rand = new Random();
+        FishType randomElement = fishes.get(rand.nextInt(fishes.size()));
+        if(player.getBackPack().isBackPackFull()){
+            return new Result(false,"your backpack is full");
+        }
+        fish.setFishType(randomElement);
+        player.getBackPack().addItemToInventory(fish);
+        return new Result(true,"fish got cought successfully");
     }
 
     public Result artisanUse(String artisanName, String itemNames) {
@@ -1872,24 +1932,167 @@ public class GameMenuController {
         }
     }
 
-    public Result meetNPC(String npcName) {
-        return new Result(false, "t");
+    public boolean sideBySide(Player currentPlayer, NPC npc) {
+        int x = currentPlayer.getX();
+        int y = currentPlayer.getY();
+        int x1 = npc.getX();
+        int y1 = npc.getY();
+        if ((x == x1 && y == y1)
+                || (x == x1 + 1 && y == y1)
+                || (x == x1 - 1 && y == y1)
+                || (x == x1 && y == y1 + 1)
+                || (x == x1 - 1 && y == y1 + 1)
+                || (x == x1 + 1 && y == y1 + 1)
+                || (x == x1 && y == y1 - 1)
+                || (x == x1 + 1 && y == y1 - 1)
+                || (x == x1 - 1 && y == y1 - 1)) {
+            return true;
+        } else return false;
     }
 
-    public Result giftNPC(String NPCName, String item) {
-        return new Result(false, "t");
+    public Result meetNPC(String npcName, Scanner scanner) {
+        if (!(npcName.equals("Abigail")
+                || npcName.equals("Harvey")
+                || npcName.equals("Lia")
+                || npcName.equals("Robin")
+                || npcName.equals("Sebastian"))) {
+            return new Result(false, "there isn't this NPC");
+        } else {
+            Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+            NPC npc = null;
+            for (NPC n : App.getCurrentGame().getNPCs()) {
+                if (n.getName().equals(npcName)) {
+                    npc = n;
+                }
+            }
+            if (npc != null) {
+                if (sideBySide(currentPlayer, npc)) {
+                    String input;
+                    do {
+                        input = scanner.nextLine();
+                        if (npc.getDialogue().get(input) != null) {
+                            System.out.println(npc.getDialogue().get(input));
+                        } else {
+                            System.out.println("Please enter a valid dialogue");
+                        }
+                    } while (!input.equals("goodbye"));
+                    if (!currentPlayer.getTalkedNPCToday().get(npc)) {
+                        currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 20));
+                        currentPlayer.getTalkedNPCToday().put(npc, true);
+                        return new Result(true, "your friendship level with " + npcName + " increased by 20 points.");
+                    } else {
+                        return new Result(true, "you talked with " + npcName);
+                    }
+
+                } else {
+                    return new Result(false, "you can not talk NPC from this distance");
+                }
+            } else {
+                return new Result(false, "there isn't this NPC");
+            }
+
+        }
+    }
+
+    public Result giftNPC(Matcher matcher) {
+        String NPCName = matcher.group("npcName");
+        String item = matcher.group("item");
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (App.getCurrentGame().getNPC(NPCName) != null) {
+            NPC npc = App.getCurrentGame().getNPC(NPCName);
+            if (currentPlayer.getBackPack().getInventorySize(item) == 0) {
+                return new Result(false, "your inventory is empty");
+            } else {
+                currentPlayer.getBackPack().useItem(item);
+                if (!currentPlayer.getGiftNPCToday().get(npc)) {
+                    if (npc.getFavorites().contains(item)) {
+                        currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 200));
+                        return new Result(true, "your beautiful gift was received by + " + npc.getName());
+                    } else {
+                        currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 50));
+                        return new Result(true, "your gift was received by + " + npc.getName());
+                    }
+                } else {
+                    return new Result(true, "your gift was received by + " + npc.getName());
+                }
+
+            }
+        }
+        return new Result(false, "this NPC doesn't exist");
     }
 
     public Result friendshipNPCList() {
-        return new Result(false, "t");
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        String result = "";
+        for (NPC npc : currentPlayer.getFriendShipsWithNPCs().keySet()) {
+            result += ("friendship score with " + npc.getName()
+                    + " : " + currentPlayer.getFriendShipsWithNPCs().get(npc)
+                    + "\n" + "friendship level with " + npc.getName() + " : "
+                    + currentPlayer.getFriendShipsWithNPCs().get(npc) / 200 + "\n" + "-------------" + "\n");
+        }
+        return new Result(true, result);
     }
 
     public Result questsList() {
-        return new Result(false, "t");
+        String result = "";
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        result += "Only missions with your level are active for you.\n";
+        for (NPC npc : currentPlayer.getFriendShipsWithNPCs().keySet()) {
+            int temp = currentPlayer.getFriendShipsWithNPCs().get(npc) / 200;
+            result += (npc.getName() + "   your friendship level: " + temp + "\n"
+                    + "1- questLeve: " + npc.getRequests().get(0).getLevel() + "\n quest explanation: "
+                    + npc.getRequests().get(0).getQuestExplanation() + "\n" +
+                    (npc.getRequests().get(0).isCompleted() ? " is completed" : " not completed")
+                    + "\n2- questLeve: "
+                    + npc.getRequests().get(1).getLevel()
+                    + "\n quest explanation: " + npc.getRequests().get(1).getQuestExplanation() + "\n" +
+                    (npc.getRequests().get(1).isCompleted() ? " is completed" : " not completed")
+                    + "\n3- questLeve: " + npc.getRequests().get(2).getLevel()
+                    + "\n quest explanation: " + npc.getRequests().get(2).getQuestExplanation() + "\n" +
+                    (npc.getRequests().get(2).isCompleted() ? " is completed" : " not completed")
+                    + "\n" + "------------------------------------" + "\n");
+        }
+        return new Result(false, result);
     }
 
     public Result questFinish(String index) {
-        return new Result(false, "t");
+        int i = Integer.parseInt(index);
+        if (i < 1 || i > 3) {
+            return new Result(false, "invalid index");
+        }
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        NPC npc = null;
+        for (NPC npc2 : App.getCurrentGame().getNPCs()) {
+            if (sideBySide(currentPlayer, npc2)) {
+                npc = npc2;
+                break;
+            }
+        }
+        if (npc == null) {
+            return new Result(false, "npc not found");
+        } else {
+            Quest quest = npc.getRequests().get(i);
+            if (quest.isCompleted()) {
+                return new Result(false, "quest already completed");
+            } else {
+                if (quest.getLevel() <= currentPlayer.getFriendShipsWithNPCs().get(npc) / 200) {
+                    String item = quest.getItem();
+                    int amount = quest.getAmount();
+                    if (currentPlayer.getBackPack().getInventorySize(item) >= amount) {
+                        for (int j = 0; j < amount; j++) {
+                            currentPlayer.getBackPack().useItem(item);
+                        }
+                        //TODO reward
+                        return new Result(true, "the mission was successfully completed." +
+                                "your reward has been added to your backpack");
+                    } else {
+                        return new Result(false, "you can't finish quest because you do not have a the required item");
+                    }
+                } else {
+                    return new Result(false, "you can't finish quest because you do not have a the required level");
+                }
+            }
+        }
     }
 
     public Result showMessage() {
