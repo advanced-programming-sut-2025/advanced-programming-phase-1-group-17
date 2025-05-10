@@ -16,7 +16,7 @@ import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.BackPack;
 import org.example.models.tools.Tool;
-import org.example.models.trade.Trade;
+import org.example.models.Trade;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -222,7 +222,7 @@ public class GameMenuController {
             if (input.equals("y")) {
                 player.setEnergy(player.getEnergy() - energy_needed);
                 if (player.getEnergy() <= 0) {
-                    player.setHasPassedOutToday(true);
+                    player.passOut();
                     player.setEnergy(0);
                     return new Result(false, "you fainted");
                 } else {

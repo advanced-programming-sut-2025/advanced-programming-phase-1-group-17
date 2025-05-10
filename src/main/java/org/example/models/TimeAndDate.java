@@ -1,6 +1,6 @@
 package org.example.models;
 
-import org.example.foraging.ForagingController;
+import org.example.models.foraging.ForagingController;
 import org.example.models.NPCS.NPC;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
