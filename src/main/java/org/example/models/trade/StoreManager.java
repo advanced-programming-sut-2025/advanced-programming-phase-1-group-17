@@ -4,7 +4,6 @@ import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItemType;
-import org.example.models.enums.AnimalHabitat;
 import org.example.models.enums.AnimalType;
 import org.example.models.enums.Season;
 import org.example.models.enums.ToolType;

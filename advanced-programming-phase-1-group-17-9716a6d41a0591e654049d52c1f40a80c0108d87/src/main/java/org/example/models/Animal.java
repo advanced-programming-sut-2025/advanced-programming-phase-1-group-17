@@ -1,7 +1,5 @@
 package org.example.models;
 
-import org.example.models.enums.AnimalHabitat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 

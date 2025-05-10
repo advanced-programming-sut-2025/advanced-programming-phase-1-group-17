@@ -1,7 +1,6 @@
 package org.example.models.trade;
 
 import org.example.models.enums.AnimalType;
-import org.example.models.enums.AnimalHabitat;
 
 public class AnimalItem {
     //TODO: may this class be deleted and integrated with ShopItem
