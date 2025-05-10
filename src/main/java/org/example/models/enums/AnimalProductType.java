@@ -1,6 +1,7 @@
 package org.example.models.enums;
 
 import org.example.models.BackPackableType;
+import org.example.models.trade.ShippingBinType;
 
 public enum AnimalProductType implements BackPackableType {
     Egg(50),

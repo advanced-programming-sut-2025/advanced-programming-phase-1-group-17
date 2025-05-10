@@ -901,15 +901,38 @@ public class GameMenuController {
     }
 
     public Result produce() {
-        return new Result(false, "t");
+        StringBuilder sb = new StringBuilder();
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        for(Animal animal :player.getPlayerMap().getFarm().getAnimals()){
+            if(!animal.getAnimalProducts().isEmpty()){
+                sb.append(animal.getName()).append("\n");
+                for(AnimalProduct animalProduct : animal.getAnimalProducts()){
+                    sb.append(animalProduct.getAnimalProductType()).append("\n")
+                            .append("quantity : ").append(animalProduct.getCount()).append("\n")
+                            .append("quality : ").append(animalProduct.getShippingBinType().name()).append("\n");
+                }
+            }
+        }
+        return new Result(true,sb.toString());
     }
 
     public Result collectProduct(String name) {
-        return new Result(false, "t");
+        if(Animal.findAnimalByName(name) == null){
+            return new Result(false,"animal not found");
+        }
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        if(player.getBackPack().isBackPackFull()){
+            return new Result(false,"your backpack is full");
+        }
+        //TODO  im confused
     }
 
     public Result sellAnimal(String name) {
-        return new Result(false, "t");
+        if(Animal.findAnimalByName(name) == null){
+            return new Result(false,"animal not found");
+        }
+        Animal animal = Animal.findAnimalByName(name);
+        animal.sell();
     }
 
     public Result fishing(String fishingPole) {
