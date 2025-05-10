@@ -1,5 +1,7 @@
 package org.example.models.trade;
 
+import org.example.models.App;
+import org.example.models.NormalItemType;
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
@@ -8,8 +10,11 @@ import org.example.models.enums.AnimalHabitat;
 import org.example.models.enums.AnimalType;
 import org.example.models.enums.Season;
 import org.example.models.enums.ToolType;
+import org.example.models.foraging.MineralType;
+import org.example.models.plant.FertilizerType;
 import org.example.models.plant.FruitType;
 import org.example.models.plant.SeedType;
+import org.example.models.plant.SaplingType;
 import org.example.models.tools.FishingPoleType;
 
 import java.util.HashMap;
@@ -32,7 +37,7 @@ public class StoreManager {
         StoreInventory blacksmith = new StoreInventory(StoreType.Blacksmith);
         blacksmith.addItem(new ShopItem(CraftingItemType.CopperOre, 75, Integer.MAX_VALUE, "A common ore that can be smelted into bars."));
         blacksmith.addItem(new ShopItem(CraftingItemType.IronOre, 150, Integer.MAX_VALUE, "A fairly common ore that can be smelted into bars."));
-        blacksmith.addItem(new ShopItem(CraftingItemType.Coal, 150, Integer.MAX_VALUE, "A combustible rock that is useful for crafting and smelting."));
+        blacksmith.addItem(new ShopItem(MineralType.Coal, 150, Integer.MAX_VALUE, "A combustible rock that is useful for crafting and smelting."));
         blacksmith.addItem(new ShopItem(CraftingItemType.GoldOre, 400, Integer.MAX_VALUE, "A precious ore that can be smelted into bars."));
 
         blacksmith.addUpgradeService(new UpgradeService("Copper Tool", CraftingItemType.CopperBar, 5, 2000, 1));
@@ -82,8 +87,8 @@ public class StoreManager {
 
         // === Carpenter's Shop ===
         StoreInventory carpenterInventory = new StoreInventory(StoreType.CarpentersShop);
-        carpenterInventory.addItem(new ShopItem(CraftingItemType.Wood, 10, Integer.MAX_VALUE, "A sturdy, yet flexible plant material with a wide variety of uses."));
-        carpenterInventory.addItem(new ShopItem(CraftingItemType.Stone, 20, Integer.MAX_VALUE, "A common material with many uses in crafting and building."));
+        carpenterInventory.addItem(new ShopItem(NormalItemType.Wood, 10, Integer.MAX_VALUE, "A sturdy, yet flexible plant material with a wide variety of uses."));
+        carpenterInventory.addItem(new ShopItem(MineralType.Stone, 20, Integer.MAX_VALUE, "A common material with many uses in crafting and building."));
         registerShop(carpenterInventory);
         //TODO: Add Barn and Coop
 
@@ -142,31 +147,37 @@ public class StoreManager {
         // Winter Stock
         jojaInventory.addItem(new ShopItem(SeedType.PowdermelonSeeds, 20, 10, "This special melon grows in the winter. Takes 7 days to grow.", List.of(Season.Winter)));
 
+        registerShop(jojaInventory);
 
         // === Pierre's General Store ===
+        StoreInventory pierre = new StoreInventory(StoreType.PierresGeneralStore);
         // Year-Round Stock
 
         //TODO: find out what these are
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.Rice, 200, Integer.MAX_VALUE, "A basic grain often served under vegetables."));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.WheatFlour, 100, Integer.MAX_VALUE, "A common cooking ingredient made from crushed wheat seeds."));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.Bouquet, 1000, 2, "A gift that shows your romantic interest.\n(Unlocked after reaching level 2 friendship with a player)"));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.WeddingRing, 10000, 2, "It's used to ask for another farmer's hand in marriage.\n(Unlocked after reaching level 3 friendship with a player)"));
-        jojaInventory.addItem(new ShopItem(CraftingItemType.Dehydrator, 10000, 1, "A recipe to make Dehydrator"));
-        //jojaInventory.addItem(new ShopItem(RecipeType.GrassStarter, 1000, 1, "A recipe to make Grass Starter"));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.Sugar, 100, Integer.MAX_VALUE, "Adds sweetness to pastries and candies. Too much can be unhealthy."));
-        jojaInventory.addItem(new ShopItem(ArtisanProductType.Oil, 200, Integer.MAX_VALUE, "All purpose cooking oil."));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.Vinegar, 200, Integer.MAX_VALUE, "An aged fermented liquid used in many cooking recipes."));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.DeluxeRetainingSoil, 150, Integer.MAX_VALUE, "This soil has a 100% chance of staying watered overnight. Mix into tilled soil."));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.GrassStarter, 100, Integer.MAX_VALUE, "Place this on your farm to start a new patch of grass."));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.SpeedGro, 100, Integer.MAX_VALUE, "Makes the plants grow 1 day earlier."));
-        jojaInventory.addItem(new ShopItem(FruitType.Apple, 4000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Apple tree. Bears fruit in the fall. Only grows if the 8 surrounding \"tiles\" are empty."));
-        jojaInventory.addItem(new ShopItem(FruitType.Apricot, 2000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Apricot tree. Bears fruit in the spring. Only grows if the 8 surrounding \"tiles\" are empty."));
-        jojaInventory.addItem(new ShopItem(FruitType.Cherry, 3400, Integer.MAX_VALUE, "Takes 28 days to produce a mature Cherry tree. Bears fruit in the spring. Only grows if the 8 surrounding \"tiles\" are empty."));
-        jojaInventory.addItem(new ShopItem(FruitType.Orange, 4000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Orange tree. Bears fruit in the summer. Only grows if the 8 surrounding \"tiles\" are empty."));
-        jojaInventory.addItem(new ShopItem(FruitType.Peach, 6000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Peach tree. Bears fruit in the summer. Only grows if the 8 surrounding \"tiles\" are empty."));
-        jojaInventory.addItem(new ShopItem(FruitType.Pomegranate, 6000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Pomegranate tree. Bears fruit in the fall. Only grows if the 8 surrounding \"tiles\" are empty."));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.BasicRetainingSoil, 100, Integer.MAX_VALUE, "This soil has a chance of staying watered overnight. Mix into tilled soil."));
-        //jojaInventory.addItem(new ShopItem(CraftingItemType.QualityRetainingSoil, 150, Integer.MAX_VALUE, "This soil has a good chance of staying watered overnight. Mix into tilled soil."));
+        //pierre.addItem(new ShopItem(CraftingItemType.Rice, 200, Integer.MAX_VALUE, "A basic grain often served under vegetables."));
+        //pierre.addItem(new ShopItem(CraftingItemType.WheatFlour, 100, Integer.MAX_VALUE, "A common cooking ingredient made from crushed wheat seeds."));
+        //pierre.addItem(new ShopItem(CraftingItemType.Bouquet, 1000, 2, "A gift that shows your romantic interest.\n(Unlocked after reaching level 2 friendship with a player)"));
+        //pierre.addItem(new ShopItem(CraftingItemType.WeddingRing, 10000, 2, "It's used to ask for another farmer's hand in marriage.\n(Unlocked after reaching level 3 friendship with a player)"));
+        pierre.addItem(new ShopItem(CraftingItemType.Dehydrator, 10000, 1, "A recipe to make Dehydrator"));
+        //pierre.addItem(new ShopItem(RecipeType.GrassStarter, 1000, 1, "A recipe to make Grass Starter"));
+        //pierre.addItem(new ShopItem(CraftingItemType.Sugar, 100, Integer.MAX_VALUE, "Adds sweetness to pastries and candies. Too much can be unhealthy."));
+        pierre.addItem(new ShopItem(ArtisanProductType.Oil, 200, Integer.MAX_VALUE, "All purpose cooking oil."));
+        //pierre.addItem(new ShopItem(CraftingItemType.Vinegar, 200, Integer.MAX_VALUE, "An aged fermented liquid used in many cooking recipes."));
+        //pierre.addItem(new ShopItem(CraftingItemType.DeluxeRetainingSoil, 150, Integer.MAX_VALUE, "This soil has a 100% chance of staying watered overnight. Mix into tilled soil."));
+        //pierre.addItem(new ShopItem(CraftingItemType.GrassStarter, 100, Integer.MAX_VALUE, "Place this on your farm to start a new patch of grass."));
+        pierre.addItem(new ShopItem(FertilizerType.SpeedGro, 100, Integer.MAX_VALUE, "Makes the plants grow 1 day earlier."));
+
+        pierre.addItem(new ShopItem(SaplingType.AppleSapling, 4000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Apple tree. Bears fruit in the fall. Only grows if the 8 surrounding \"tiles\" are empty."));
+        pierre.addItem(new ShopItem(SaplingType.ApricotSapling, 2000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Apricot tree. Bears fruit in the spring. Only grows if the 8 surrounding \"tiles\" are empty."));
+        pierre.addItem(new ShopItem(SaplingType.CherrySapling, 3400, Integer.MAX_VALUE, "Takes 28 days to produce a mature Cherry tree. Bears fruit in the spring. Only grows if the 8 surrounding \"tiles\" are empty."));
+        pierre.addItem(new ShopItem(SaplingType.OrangeSapling, 4000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Orange tree. Bears fruit in the summer. Only grows if the 8 surrounding \"tiles\" are empty."));
+        pierre.addItem(new ShopItem(SaplingType.PeachSapling, 6000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Peach tree. Bears fruit in the summer. Only grows if the 8 surrounding \"tiles\" are empty."));
+        pierre.addItem(new ShopItem(SaplingType.PomegranateSapling, 6000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Pomegranate tree. Bears fruit in the fall. Only grows if the 8 surrounding \"tiles\" are empty."));
+
+        //pierre.addItem(new ShopItem(CraftingItemType.BasicRetainingSoil, 100, Integer.MAX_VALUE, "This soil has a chance of staying watered overnight. Mix into tilled soil."));
+        //pierre.addItem(new ShopItem(CraftingItemType.QualityRetainingSoil, 150, Integer.MAX_VALUE, "This soil has a good chance of staying watered overnight. Mix into tilled soil."));
+
+        registerShop(pierre);
 
         // === Fish Shop ===
         StoreInventory fishShopInventory = new StoreInventory(StoreType.FishShop);
@@ -177,5 +188,113 @@ public class StoreManager {
         fishShopInventory.addItem(new ShopItem(FishingPoleType.Training, 25, 1, "It's a lot easier to use than other rods, but can only catch basic fish."));
         fishShopInventory.addItem(new ShopItem(FishingPoleType.Fiberglass, 1800, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 2
         fishShopInventory.addItem(new ShopItem(FishingPoleType.Iridium, 7500, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 4
+    }
+
+    public String showAllProducts(Store store) {
+        StringBuilder result = new StringBuilder();
+        StoreInventory inventory = shopInventories.get(store.getType());
+
+        result.append("Store Name: %s".formatted(store.getType().name()));
+        int rank = 1;
+
+        for (ShopItem item : inventory.getItems()) {
+            result.append("\n%d- %s(%.2f)".formatted(
+                    rank++,
+                    item.getType().getName(),
+                    item.getType().getPrice()
+            ));
+        }
+
+        if (store.getType().equals(StoreType.Blacksmith)) {
+            rank = 1;
+            for (UpgradeService upgradeService : inventory.getUpgradeServices()) {
+                result.append("\n%d- %s(%d)".formatted(
+                        rank++,
+                        upgradeService.getName(),
+                        upgradeService.getCost()
+                ));
+            }
+        }
+
+        if (store.getType().equals(StoreType.Ranch)) {
+            rank = 1;
+            for (AnimalItem animalItem : inventory.getAnimals()) {
+                result.append("\n%d- %s(%.2f)".formatted(
+                        rank++,
+                        animalItem.getAnimalType().name(),
+                        animalItem.getPrice()
+                ));
+            }
+        }
+
+        return result.toString();
+    }
+
+    public String showAllAvailableProducts(Store store) {
+        StringBuilder result = new StringBuilder();
+        StoreInventory inventory = shopInventories.get(store.getType());
+        Season season = App.getCurrentGame().getDate().getSeason();
+
+        result.append("Store Name: %s".formatted(store.getType().name()));
+        int rank = 1;
+
+        for (ShopItem item : inventory.getItems()) {
+            if (!item.isAvailableInSeason(season) ||
+                    (item.getSoldToday() >= item.getDailyLimit()))
+                continue;
+
+            result.append("\n%d- %s(%.2f)".formatted(
+                    rank++,
+                    item.getType().getName(),
+                    item.getType().getPrice()
+            ));
+        }
+
+        if (store.getType().equals(StoreType.Blacksmith)) {
+            rank = 1;
+            for (UpgradeService upgradeService : inventory.getUpgradeServices()) {
+                if (upgradeService.getSoldToday() >= upgradeService.getDailyLimit())
+                    continue;
+
+                result.append("\n%d- %s(%d)".formatted(
+                        rank++,
+                        upgradeService.getName(),
+                        upgradeService.getCost()
+                ));
+            }
+        }
+
+        if (store.getType().equals(StoreType.Ranch)) {
+            rank = 1;
+            for (AnimalItem animalItem : inventory.getAnimals()) {
+                if (animalItem.getSoldToday() >= animalItem.getDailyLimit())
+                    continue;
+
+                result.append("\n%d- %s(%.2f)".formatted(
+                        rank++,
+                        animalItem.getAnimalType().name(),
+                        animalItem.getPrice()
+                ));
+            }
+        }
+
+        return result.toString();
+    }
+
+    public void resetDailyLimits() {
+        for (StoreType storeType : shopInventories.keySet()) {
+            StoreInventory inventory = shopInventories.get(storeType);
+            for (ShopItem item : inventory.getItems()) {
+                item.setSoldToday(0);
+            }
+
+            for (AnimalItem animal : inventory.getAnimals()) {
+                animal.setSoldToday(0);
+            }
+
+            for (UpgradeService upgradeService : inventory.getUpgradeServices()) {
+                upgradeService.setSoldToday(0);
+            }
+        }
     }
 }

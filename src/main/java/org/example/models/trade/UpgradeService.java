@@ -3,6 +3,7 @@ package org.example.models.trade;
 import org.example.models.BackPackableType;
 
 public class UpgradeService {
+    private int soldToday = 0;
     private final String name;
     private final BackPackableType requiredMaterial;
     private final int requiredQuantity;
@@ -35,5 +36,13 @@ public class UpgradeService {
 
     public int getDailyLimit() {
         return dailyLimit;
+    }
+
+    public int getSoldToday() {
+        return soldToday;
+    }
+
+    public void setSoldToday(int soldToday) {
+        this.soldToday = soldToday;
     }
 }

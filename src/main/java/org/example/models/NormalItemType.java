@@ -2,8 +2,7 @@ package org.example.models;
 
 public enum NormalItemType implements BackPackableType{
     //TODO: Alaf
-    Wood,
-    Stone;
+    Wood;
 
     @Override
     public double getPrice() {
