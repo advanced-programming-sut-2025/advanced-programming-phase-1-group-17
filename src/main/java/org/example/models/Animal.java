@@ -12,5 +12,4 @@ public class Animal implements Placeable {
     private HashMap<String, Integer> products = new HashMap<>();
     private int friendship;
     private ArrayList<AnimalProduct> animalProduct=new ArrayList<>();
-    //tes
 }
