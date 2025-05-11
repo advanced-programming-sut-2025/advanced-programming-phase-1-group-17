@@ -118,4 +118,9 @@ public class Tool implements BackPackable {
     public void setWateringCanStorage(int wateringCanStorage) {
         this.wateringCanStorage = wateringCanStorage;
     }
+
+    public int getNumByMaterial(){
+        return this.material.ordinal();
+    }
+
 }

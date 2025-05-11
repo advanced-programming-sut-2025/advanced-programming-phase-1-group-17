@@ -27,7 +27,6 @@ import org.example.models.Trade;
 import org.example.models.tools.ToolType;
 import org.example.models.market.*;
 import org.example.models.trade.Fish;
-import org.example.models.trade.Trade;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -481,29 +480,52 @@ public class GameMenuController {
         if (tool.getToolType().equals(ToolType.Hoe)) {
             if (tile.getPlaceable() == null) {
                 tile.setPlowed(true);
+                double energy=ToolType.Hoe.getEnergyCosts()[tool.getNumByMaterial()];
+                if(player.getAbilities().getFarmingLevel()==4){
+                    energy --;
+                }
+                energy = Math.max(energy,0);
+                energy = energy*App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
+                player.setEnergy(player.getEnergy() - energy);
                 return new Result(true, "plowed successfully");
             }
         } else if (tool.getToolType().equals(ToolType.Pickaxe)) {
+            double energy=ToolType.Pickaxe.getEnergyCosts()[tool.getNumByMaterial()];
+            if(player.getAbilities().getMiningLevel()==4){
+                energy --;
+            }
             if (tile.getPlaceable() instanceof Mineral mineral) {
-                if (!ForagingController.canBreakMineral(player.getCurrentTool().getMaterial(),
-                        mineral.getType()))
-                    return new Result(false, "this type of pichaxe cannot break this mineral");
 
+                if (!ForagingController.canBreakMineral(player.getCurrentTool().getMaterial(),
+                        mineral.getType())) {
+                    energy--;
+                    energy = Math.max(energy,0);
+                    energy = energy*App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
+                    player.setEnergy(player.getEnergy() - energy);
+                    return new Result(false, "this type of pichaxe cannot break this mineral");
+                }
                 player.getAbilities().increaseMiningAbility(10);
                 if (mineral.isForaging())
                     player.getAbilities().increaseForagingAbility(10);
-
+                energy = Math.max(energy,0);
+                energy = energy*App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
+                player.setEnergy(player.getEnergy() - energy);
                 player.getBackPack().addItemToInventory(mineral);
                 tile.setPlaceable(null);
-                return new Result(true, "stone broke successfully");
+                if(player.getAbilities().getMiningLevel()<2){
+                    return new Result(true, "stone broke successfully");
+                }
                 if (player.getAbilities().getMiningLevel() >= 2) {
                     player.getBackPack().addItemToInventory(mineral);
                     return new Result(true, "stone broke successfully and you also got 1 more because of mining level");
                 }
-                return new Result(true, "stone breaked successfully");
+                return new Result(true, "stone broke successfully");
 
             } else if (tile.isPlowed()) {
                 tile.setPlowed(false);
+                energy = Math.max(energy,0);
+                energy = energy*App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
+                player.setEnergy(player.getEnergy() - energy);
             } //TODO: destroying items of player on the floor
 
         } else if (tool.getToolType().equals(ToolType.Axe)) {
@@ -1049,7 +1071,7 @@ public class GameMenuController {
         }
         fish.setFishType(randomElement);
         player.getBackPack().addItemToInventory(fish);
-        return new Result(true,"fish got cought successfully");
+        return new Result(true,"fish got caught successfully");
     }
 
     public Result artisanUse(String artisanName, String itemNames) {
