@@ -57,6 +57,19 @@ public enum GameMenuCommands {
     CookingShowRecipes("\\s*cooking\\s+show\\s+recipe\\s*"),
     CookingPrepare("\\s*cooking\\s+prepare\\s+(?<recipeName>\\S+)\\s*"),
     Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*"),
+    //For Animal
+    Build("\\s*build\\s+-a\\s+(?<buildName>\\S+)\\s*"),
+    BuyAnimal("\\s*buy\\s+animal\\s+-a\\s+(?<animal>\\S+)\\s+(?<name>\\S+)\\s*"),
+    Pet("\\s*pet\\s+-n\\s+(?<name>\\S+)\\s*"),
+    CheatSetFriendship("\\s*cheat\\s+set\\s+friendship\\s+-n\\s+(?<animalName>\\S+)\\s+-c\\s+(?<count>\\S+)\\s*"),
+    ShowAnimals("\\s*animals\\s*"),
+    ShepherdAnimal("\\s*shepherd\\s+animals\\s+\\s+-n\\s+(?<animalName>\\S+)\\s+-l\\s+(?<x>\\S+)\\s+(?<y>\\S+)\\s*"),
+    FeedHay("\\s*feed\\s+hay\\s+-n\\s+(?<animalName>\\S+)\\s*"),
+    Produces("\\s*produces\\s*"),
+    CollectProduce("\\s*collect\\s+produce\\s+-n\\s+(?<animalName>\\S+)\\s*"),
+    SellAnimal("\\s*sell\\s+animal\\s+(?<animalName>\\S+)\\s*"),
+    //For Fishing
+    Fishing("\\s*fishing\\s+-p\\s+(?<fishingPole>\\S+)\\s*"),
 
     //For artisan
     ArtisanUse("\\s*artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<itemNames>.+)\\s*"),
