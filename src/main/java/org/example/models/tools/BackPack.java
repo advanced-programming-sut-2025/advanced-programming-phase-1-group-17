@@ -79,7 +79,11 @@ public class BackPack {
     }
 
     public void useItem(BackPackableType type) {
+
         backPackItems.get(type).remove(0);
+        if(this.backPackItems.get(type).isEmpty()) {
+            this.backPackItems.remove(type);
+        }
     }
 
     public int getInventorySize(String item) {

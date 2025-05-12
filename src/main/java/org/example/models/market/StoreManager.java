@@ -8,8 +8,8 @@ import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItemType;
-import org.example.models.enums.AnimalPlaceType;
-import org.example.models.enums.AnimalType;
+import org.example.models.animal.AnimalPlaceType;
+import org.example.models.animal.AnimalType;
 import org.example.models.enums.BackPackType;
 import org.example.models.enums.Season;
 import org.example.models.tools.BackPack;
@@ -88,7 +88,7 @@ public class StoreManager {
         pierre.addItem(new ShopItem(ArtisanProductType.Oil, 200, Integer.MAX_VALUE, "All purpose cooking oil."));
         pierre.addItem(new ShopItem(ArtisanProductType.Vinegar, 200, Integer.MAX_VALUE, "An aged fermented liquid used in many cooking recipes."));
         pierre.addItem(new ShopItem(FertilizerType.DeluxeRetainingSoil, 150, Integer.MAX_VALUE, "This soil has a 100% chance of staying watered overnight. Mix into tilled soil."));
-        pierre.addItem(new ShopItem(CraftingItemType.GrassStarter, 100, Integer.MAX_VALUE, "Place this on your farm to start a new patch of grass."));
+        pierre.addItem(new ShopItem(NormalItemType.GrassStarter, 100, Integer.MAX_VALUE, "Place this on your farm to start a new patch of grass."));
         pierre.addItem(new ShopItem(FertilizerType.SpeedGro, 100, Integer.MAX_VALUE, "Makes the plants grow 1 day earlier."));
 
         pierre.addItem(new ShopItem(SaplingType.AppleSapling, 4000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Apple tree. Bears fruit in the fall. Only grows if the 8 surrounding \"tiles\" are empty."));
