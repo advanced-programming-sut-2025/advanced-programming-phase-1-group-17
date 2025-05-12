@@ -7,16 +7,15 @@ import java.util.ArrayList;
 public class GreenHouse implements Placeable {
     //TODO: handle sprinkler
     private static ArrayList<GreenHouse> greenHouse = new ArrayList<GreenHouse>();
-    private boolean isActive = false;
+    private boolean isActive;
     private GreenHouseFence fence;
 
 
     public GreenHouse(Player player) {
         this.fence = new GreenHouseFence();
-        this.isActive = true;
+        this.isActive = false;
         greenHouse.add(this);
     }
-    public void changeDay() {}
 
     public static ArrayList<GreenHouse> getGreenHouse() {
         return greenHouse;
@@ -32,5 +31,13 @@ public class GreenHouse implements Placeable {
 
     public void setFence(GreenHouseFence fence) {
         this.fence = fence;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

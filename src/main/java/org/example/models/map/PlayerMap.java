@@ -6,7 +6,6 @@ import org.example.models.NPCS.*;
 import org.example.models.Player;
 import org.example.models.plant.Tree;
 import org.example.models.market.ShippingBin;
-import org.example.models.market.ShippingBinType;
 import org.example.models.market.Store;
 import org.example.models.market.StoreType;
 
@@ -194,7 +193,6 @@ public class PlayerMap {
                             }
                         }
                     }
-
                 }
             }
 
@@ -211,7 +209,7 @@ public class PlayerMap {
                 int randomIndex_y = randomInt(1, 200);
                 Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
                 if (tile.getPlaceable() == null) {
-                    Tree tree = new Tree(false, ForagingController.getRandomTreeType(), false, tile, false);
+                    Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
                     tile.setPlaceable(tree);
                     tile.setWalkAble(false);
                     numOfTrees--;
@@ -252,16 +250,16 @@ public class PlayerMap {
     }
 
     private void createShippingBins() {
-        Tile.getTile(30, 30).setPlaceable(new ShippingBin(ShippingBinType.Regular));
-        Tile.getTile(30, 130).setPlaceable(new ShippingBin(ShippingBinType.Regular));
-        Tile.getTile(180, 30).setPlaceable(new ShippingBin(ShippingBinType.Regular));
-        Tile.getTile(180, 130).setPlaceable(new ShippingBin(ShippingBinType.Regular));
+        Tile.getTile(30, 30).setPlaceable(new ShippingBin());
+        Tile.getTile(30, 130).setPlaceable(new ShippingBin());
+        Tile.getTile(180, 30).setPlaceable(new ShippingBin());
+        Tile.getTile(180, 130).setPlaceable(new ShippingBin());
 
-        Tile.getTile(70, 50).setPlaceable(new ShippingBin(ShippingBinType.Silver));
-        Tile.getTile(70, 150).setPlaceable(new ShippingBin(ShippingBinType.Gold));
-        Tile.getTile(100, 105).setPlaceable(new ShippingBin(ShippingBinType.Iridium));
-        Tile.getTile(120, 50).setPlaceable(new ShippingBin(ShippingBinType.Gold));
-        Tile.getTile(120, 150).setPlaceable(new ShippingBin(ShippingBinType.Silver));
+        Tile.getTile(70, 50).setPlaceable(new ShippingBin());
+        Tile.getTile(70, 150).setPlaceable(new ShippingBin());
+        Tile.getTile(100, 105).setPlaceable(new ShippingBin());
+        Tile.getTile(120, 50).setPlaceable(new ShippingBin());
+        Tile.getTile(120, 150).setPlaceable(new ShippingBin());
     }
 
     private void createStores() {
@@ -394,7 +392,7 @@ public class PlayerMap {
             int randomIndex_y = randomInt(1 + col, 100 + col);
             Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
             if (tile.getPlaceable() == null) {
-                Tree tree = new Tree(false, ForagingController.getRandomTreeType(), false, tile, false);
+                Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
                 tile.setPlaceable(tree);
                 tile.setWalkAble(false);
                 numOfTrees--;

@@ -5,6 +5,7 @@ import org.example.models.Placeable;
 import org.example.models.map.Tile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Crop extends Plant implements BackPackable, Placeable {
     private CropType type;
@@ -13,19 +14,19 @@ public class Crop extends Plant implements BackPackable, Placeable {
     ArrayList<Crop> neighborGiantTiles = new ArrayList<>();
 
 
-    public Crop(boolean isForaging, CropType type, boolean isFertilized, Tile tile, boolean isInsideGreenHouse) {
-        super(isForaging, isFertilized, tile, isInsideGreenHouse);
-        if (checkCouldBeGiant())
-            return;
+    public Crop(boolean isForaging, CropType type, Tile tile, boolean isInsideGreenHouse) {
+        super(isForaging, tile, isInsideGreenHouse);
         //TODO: ask
         this.isFullyGrown = isForaging;
         this.type = type;
         this.daysTillNextHarvest = type.getRegrowthTime();
+
+        checkCouldBeGiant();
     }
 
-    private boolean checkCouldBeGiant() {
+    private void checkCouldBeGiant() {
         if (isForaging || type == null || !type.isCanBecomeGiant() || isInsideGreenhouse)
-            return false;
+            return;
 
         int x = tile.getX();
         int y = tile.getY();
@@ -55,33 +56,93 @@ public class Crop extends Plant implements BackPackable, Placeable {
                     !c1.isGiant && !c2.isGiant && !c3.isGiant && !c4.isGiant &&
                     c1.type == this.type && c2.type == this.type &&
                     c3.type == this.type && c4.type == this.type) {
-
-                // Mark all as part of a giant crop (you may want to remove 3 and replace with one big one)
-                c1.setGiant(true);
-                c2.setGiant(true);
-                c3.setGiant(true);
-                c4.setGiant(true);
-                c1.setFullyGrown(true); // Optional, depending on rules
-                c2.setFullyGrown(true);
-                c3.setFullyGrown(true);
-                c4.setFullyGrown(true);
-
-                return true;
+                makeGiant(t1, t2, t3, t4, c1, c2, c3, c4);
             }
         }
+    }
 
-        return false;
+    public void makeGiant(Tile t1, Tile t2, Tile t3, Tile t4,
+                          Crop c1, Crop c2, Crop c3, Crop c4) {
+        // Mark all as part of a giant crop (you may want to remove 3 and replace with one big one)
+        c1.setGiant(true);
+        c2.setGiant(true);
+        c3.setGiant(true);
+        c4.setGiant(true);
+
+        if (c1.isFullyGrown || c2.isGiant || c3.isGiant || c4.isGiant) {
+            c1.setFullyGrown(true);
+            c2.setFullyGrown(true);
+            c3.setFullyGrown(true);
+            c4.setFullyGrown(true);
+            return;
+        }
+        Crop maxGrowedCrop = c1;
+        FertilizerType fertilizerType1 = c1.fertilizerType;
+        boolean isWateredToday = c1.isWateredToday;
+        int maxStage = c1.getCurrentStageIndex();
+        if (c2.getCurrentStageIndex() > maxStage) {
+            maxStage = c2.getCurrentStageIndex();
+            maxGrowedCrop = c2;
+            if (fertilizerType1 == null)
+                fertilizerType1 = c2.fertilizerType;
+            if (c2.isWateredToday)
+                isWateredToday = true;
+        }
+        if (c3.getCurrentStageIndex() > maxStage) {
+            maxStage = c3.getCurrentStageIndex();
+            maxGrowedCrop = c3;
+            if (fertilizerType1 == null)
+                fertilizerType1 = c3.fertilizerType;
+            if (c3.isWateredToday)
+                isWateredToday = true;
+        }
+        if (c4.getCurrentStageIndex() > maxStage) {
+            maxStage = c4.getCurrentStageIndex();
+            maxGrowedCrop = c4;
+            if (fertilizerType1 == null)
+                fertilizerType1 = c4.fertilizerType;
+            if (c4.isWateredToday)
+                isWateredToday = true;
+        }
+        c1.isWateredToday = isWateredToday;
+        c1.fertilizerType = fertilizerType1;
+        c1.setCurrentStageIndex(maxStage);
+        c1.setWhichDayOfStage(maxGrowedCrop.whichDayOfStage);
+        c1.neighborGiantTiles = new ArrayList<>(List.of(c2, c3, c4));
+
+        c2.isWateredToday = isWateredToday;
+        c2.fertilizerType = fertilizerType1;
+        c2.setCurrentStageIndex(maxStage);
+        c2.setWhichDayOfStage(maxGrowedCrop.whichDayOfStage);
+        c2.neighborGiantTiles = new ArrayList<>(List.of(c1, c3, c4));
+
+        c3.isWateredToday = isWateredToday;
+        c3.fertilizerType = fertilizerType1;
+        c3.setCurrentStageIndex(maxStage);
+        c3.setWhichDayOfStage(maxGrowedCrop.whichDayOfStage);
+        c3.neighborGiantTiles = new ArrayList<>(List.of(c2, c1, c4));
+
+        c4.isWateredToday = isWateredToday;
+        c4.fertilizerType = fertilizerType1;
+        c4.setCurrentStageIndex(maxStage);
+        c4.setWhichDayOfStage(maxGrowedCrop.whichDayOfStage);
+        c4.neighborGiantTiles = new ArrayList<>(List.of(c2, c3, c1));
     }
 
     public int getDaysTillFullGrowth() {
-        if (isFullyGrown || !this.isWateredToday)
+        if (isFullyGrown)
             return 0;
         int daysPassed = 0;
         for (int i = 0; i < currentStageIndex; i++) {
             daysPassed += type.getStages().get(i);
         }
         daysPassed += whichDayOfStage;
-        return type.getTotalGrowthTime() - daysPassed;
+
+        int fertilizerEffect = 0;
+        if (this.fertilizerType != null && this.fertilizerType.equals(FertilizerType.SpeedGro))
+            fertilizerEffect = 1;
+
+        return type.getTotalGrowthTime() - daysPassed + 1 - fertilizerEffect;
     }
 
     private Crop getCropFromTile(Tile t) {
@@ -105,11 +166,12 @@ public class Crop extends Plant implements BackPackable, Placeable {
 
     void handleStages() {
         this.whichDayOfStage++;
+        if (getDaysTillFullGrowth() == 0){
+            this.isFullyGrown = true;
+            return;
+        }
+
         if (this.whichDayOfStage > this.type.getStages().get(this.currentStageIndex)) {
-            if (this.currentStageIndex == this.type.getStages().size() - 1) {
-                this.isFullyGrown = true;
-                return;
-            }
             this.currentStageIndex++;
             this.whichDayOfStage = 1;
         }
@@ -142,10 +204,28 @@ public class Crop extends Plant implements BackPackable, Placeable {
     }
 
     public void harvest() {
-        if (type.isOneTime())
+        if (type.isOneTime()) {
+            if (isGiant) {
+                for (Crop neighborGiantTile : neighborGiantTiles) {
+                    neighborGiantTile.getTile().setPlaceable(null);
+                }
+            }
             tile.setPlaceable(null);
+        }
         else {
             daysTillNextHarvest = type.getRegrowthTime();
+        }
+    }
+
+    @Override
+    public void wateringPlant() {
+        this.daysWithoutWater = 0;
+        isWateredToday = true;
+        if (isGiant) {
+            for (Crop neighborGiantTile : neighborGiantTiles) {
+                neighborGiantTile.isWateredToday = true;
+                neighborGiantTile.daysWithoutWater = 0;
+            }
         }
     }
 }

@@ -1,31 +1,30 @@
 package org.example.models.plant;
 
 import org.example.models.BackPackable;
-import org.example.models.Placeable;
 
-public class Seed implements BackPackable, Placeable {
-    private SeedType type;
-    public Seed(SeedType type) {
+public class Fertilizer implements BackPackable {
+    private FertilizerType type;
+
+    public Fertilizer(FertilizerType type) {
         this.type = type;
     }
 
-    public SeedType getType() {
+    @Override
+    public FertilizerType getType() {
         return type;
     }
 
-    public void setType(SeedType type) {
+    public void setType(FertilizerType type) {
         this.type = type;
     }
 
     @Override
     public String getName() {
-        return type.name();
+        return type.getName();
     }
 
     @Override
     public double getPrice() {
         return type.getPrice();
     }
-
-
 }

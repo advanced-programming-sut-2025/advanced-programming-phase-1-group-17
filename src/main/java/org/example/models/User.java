@@ -1,24 +1,26 @@
 package org.example.models;
 
+import com.google.gson.annotations.Expose;
 import org.example.models.enums.Gender;
+
+import java.util.Objects;
 
 public class User {
     private String username;
     private String password;
     private String passwordHash; //TODO: encoding in signup menu
-
     private String email;
     private String nickName;
     private Gender gender;
-
     private String securityQuestion;
     private String securityAnswer;
-
     private int numOfPlay;
     private int theMostMoneyInGame;
-    private Game activeGame;
+    private transient Game activeGame;
     public User(){
-        gender = Gender.Male;
+        if (this.username == null){
+            gender = Gender.Male;
+        }
     };
 
     //for signup
@@ -116,5 +118,12 @@ public class User {
 
     public void setActiveGame(Game activeGame) {
         this.activeGame = activeGame;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User other = (User) obj;
+        return Objects.equals(username, other.username); // یا هر فیلدی که یکتاست
     }
 }
