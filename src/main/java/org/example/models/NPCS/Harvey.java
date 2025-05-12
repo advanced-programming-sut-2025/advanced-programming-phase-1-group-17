@@ -1,6 +1,9 @@
 package org.example.models.NPCS;
 
 import org.example.models.Placeable;
+import org.example.models.Player;
+import org.example.models.cooking.Food;
+import org.example.models.cooking.FoodType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +14,7 @@ public class Harvey extends NPC implements Placeable {
     private String name = "Harvey";
     private String job = "teacher";
     private final HashMap<String, String> dialogue = new HashMap<>();
+
     {
         dialogue.put("what's your name?", "Harvey");
         dialogue.put("hello", "hi how are you?");
@@ -20,24 +24,44 @@ public class Harvey extends NPC implements Placeable {
         dialogue.put("how is the weather?", "excellent!");
         dialogue.put("what is your job?", "I am a teacher");
     }
+
     private ArrayList<String> favorites = new ArrayList<>();
 
     @Override
     public ArrayList<String> getFavorites() {
         return favorites;
     }
+
     {
-        favorites.add("");
+        favorites.add("Wine");
+        favorites.add("Pickles");
+        favorites.add("Coffee");
     }
-    private ArrayList<Quest> requests= new ArrayList<>();
-    public ArrayList<Quest> getRequests(){
+
+    private ArrayList<Quest> requests = new ArrayList<>();
+
+    public ArrayList<Quest> getRequests() {
         return requests;
     }
+
     {
-        requests.add(new Quest("Delivery of 12 pieces of a desired CarrotSeed",0,false,"CarrotSeeds",12));
-        requests.add(new Quest("Delivery of a salmon fish",1,false,"SALMON",1));
-        //TODO
-        requests.add(new Quest("Delivery of a bottle of wine",2,false," ",1));
+        requests.add(new Quest("Delivery of 12 pieces of a desired CarrotSeed", 0, false, "CarrotSeeds", 12));
+        requests.add(new Quest("Delivery of a salmon fish", 1, false, "salmon", 1));
+        requests.add(new Quest("Delivery of a bottle of wine", 2, false, "Wine", 1));
+    }
+
+    public void giveReward(Player player, int index) {
+        if (index == 0) {
+            player.getBackPack().addcoin(750);
+        } else if (index == 1) {
+            player.getFriendShipsWithNPCs().put(this, Math.min(799, player.getFriendShipsWithNPCs().get(this) + 200));
+        } else {
+            for (int i = 0; i < 5; i++) {
+                Food f = new Food();
+                f.setFoodtype(FoodType.Salad);
+                player.getBackPack().addItemToInventory(f);
+            }
+        }
     }
 
     public String getName() {
@@ -71,6 +95,7 @@ public class Harvey extends NPC implements Placeable {
     public void setY(int y) {
         this.y = y;
     }
+
     public HashMap<String, String> getDialogue() {
         return dialogue;
     }

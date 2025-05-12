@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerMap {
+    private int x_start;
+    private int y_start;
     private static int width = 50;
     private static int length = 50;
     private int row;
@@ -222,7 +224,7 @@ public class PlayerMap {
                     //                    Stone stone = new Stone();
 //                    tile.setPlaceable(stone);
 //                    tile.setWalkAble(false);
-                    numOfStones--;
+//                    numOfStones--;
                 }
             }
             int counter = 0;
@@ -298,23 +300,22 @@ public class PlayerMap {
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
             this.greenHouse = new GreenHouse(this.player);
+            this.x_start = 4 + row;
+            this.y_start = 4 + col;
 
             for (int i = 4 + row; i < 8 + row; i++) {
                 for (int j = 4 + col; j < 8 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(hut);
-                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 1 + row; i < 12 + row; i++) {
                 for (int j = 20 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(quarry);
-                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 40 + row; i < 46 + row; i++) {
                 for (int j = 30 + col; j < 36 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
-                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
@@ -328,7 +329,7 @@ public class PlayerMap {
                         Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
                     else
                         Tile.getTile(i, j).setPlaceable(greenHouse);
-                    Tile.getTile(i, j).setWalkAble(false);
+                    Tile.getTile(i, j).setWalkAble(true);
                 }
             }
         } else if (type == 2) {
@@ -337,28 +338,26 @@ public class PlayerMap {
             this.lakes.add(new Lake());
             this.greenHouse = new GreenHouse(this.player);
             this.quarry = new Quarry();
+            this.x_start = 40 + row;
+            this.y_start = 40 + col;
             for (int i = 40 + row; i < 44 + row; i++) {
                 for (int j = 40 + col; j < 44 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(hut);
-                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 25 + row; i < 31 + row; i++) {
                 for (int j = 35 + col; j < 41 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(quarry);
-                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 30 + row; i < 36 + row; i++) {
                 for (int j = 15 + col; j < 21 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
-                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = row + 1; i < 7 + row; i++) {
                 for (int j = 25 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(1));
-                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
@@ -408,7 +407,7 @@ public class PlayerMap {
                 //                Stone stone = new Stone();
 //                tile.setPlaceable(stone);
 //                tile.setWalkAble(false);
-                numOfStones--;
+//                numOfStones--;
             }
         }
         int counter = 0;
@@ -497,5 +496,21 @@ public class PlayerMap {
 
     public void setCol(int col) {
         this.col = col;
+    }
+
+    public int getX_start() {
+        return x_start;
+    }
+
+    public void setX_start(int x_start) {
+        this.x_start = x_start;
+    }
+
+    public int getY_start() {
+        return y_start;
+    }
+
+    public void setY_start(int y_start) {
+        this.y_start = y_start;
     }
 }

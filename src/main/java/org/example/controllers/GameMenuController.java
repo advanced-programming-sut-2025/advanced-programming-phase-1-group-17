@@ -85,7 +85,6 @@ public class GameMenuController {
         return new Result(true, "new game created Successfully");
     }
 
-
     public void gameMap(Scanner scanner) {
         boolean done = false;
         int playerChoice = 0;
@@ -237,7 +236,6 @@ public class GameMenuController {
         } else if ((result = aStar(player.getX(), player.getY(), x, y, player)) == null) {
             return new Result(false, "you can't walk to this tile because there is not path to this tile");
         } else {
-            //TODO
             float energy_needed = (float) (result.size() - 1) / 20;
             System.out.println("your energy : " + player.getEnergy());
             System.out.printf("energy needed : %.2f\n", energy_needed);
@@ -250,7 +248,6 @@ public class GameMenuController {
                     player.setEnergy(0);
                     return new Result(false, "you fainted");
                 } else {
-                    //TODO Walkin the path
 //                    for (Tile tile : result) {
 //                        System.out.println(tile.getX() + "__" + tile.getY());
 //                    }
@@ -2130,14 +2127,20 @@ public class GameMenuController {
             if (quest.isCompleted()) {
                 return new Result(false, "quest already completed");
             } else {
-                if (quest.getLevel() <= currentPlayer.getFriendShipsWithNPCs().get(npc) / 200) {
+                if (quest.getLevel() <= currentPlayer.getFriendShipsWithNPCs().get(npc) / 200
+                        && quest.isActive()) {
                     String item = quest.getItem();
                     int amount = quest.getAmount();
                     if (currentPlayer.getBackPack().getInventorySize(item) >= amount) {
                         for (int j = 0; j < amount; j++) {
                             currentPlayer.getBackPack().useItem(item);
                         }
-                        //TODO reward
+                        if (2 < currentPlayer.getFriendShipsWithNPCs().get(npc) / 200) {
+                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                            npc.giveRewars(currentPlayer, Integer.parseInt(index));
+                        } else {
+                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                        }
                         return new Result(true, "the mission was successfully completed." +
                                 "your reward has been added to your backpack");
                     } else {
