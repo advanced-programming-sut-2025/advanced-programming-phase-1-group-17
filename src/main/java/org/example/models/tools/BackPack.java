@@ -62,6 +62,9 @@ public class BackPack {
     public BackPackable useItem(String item) {
         BackPackableType backPackType = null;
         for (BackPackableType b : backPackItems.keySet()) {
+            if (b == null) {
+                continue;
+            }
             if (b.getName().equals(item)) {
                 backPackType = b;
                 break;
@@ -72,8 +75,8 @@ public class BackPack {
         } else if (backPackItems.get(backPackType).isEmpty()) {
             return null;
         } else {
-            BackPackable b = backPackItems.get(backPackType).get(0);
-            backPackItems.get(backPackType).remove(0);
+            BackPackable b = backPackItems.get(backPackType).getFirst();
+            backPackItems.get(backPackType).removeFirst();
             return b;
         }
     }
@@ -84,6 +87,9 @@ public class BackPack {
 
     public int getInventorySize(String item) {
         for (BackPackableType b : backPackItems.keySet()) {
+            if (b == null) {
+                continue;
+            }
             if (b.getName().equals(item)) {
                 return backPackItems.get(b).size();
             }
@@ -92,14 +98,19 @@ public class BackPack {
     }
 
     public void addItemToInventory(BackPackable backPackable) {
-        for (BackPackableType backPackableType : backPackItems.keySet()) {
-            if (backPackItems.get(backPackableType).isEmpty())
+            ArrayList<BackPackableType> b = new ArrayList<>();
+            for (BackPackableType backPackableType : backPackItems.keySet()) {
+                if (backPackItems.get(backPackableType).isEmpty())
+                    b.add(backPackableType);
+
+            }
+            for (BackPackableType backPackableType : b) {
                 backPackItems.remove(backPackableType);
-        }
-        if (isBackPackFull())
-            return;
-        backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
-        backPackItems.get(backPackable.getType()).add(backPackable);
+            }
+            if (isBackPackFull())
+                return;
+            backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
+            backPackItems.get(backPackable.getType()).add(backPackable);
     }
 
     public Player getPlayer() {

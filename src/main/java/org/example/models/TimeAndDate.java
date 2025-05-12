@@ -57,13 +57,11 @@ public class TimeAndDate {
 
     public void goToNextDay() {
         for (Player player : App.getCurrentGame().getPlayers()) {
-
             if (player.getUser().getUsername().equals("NPC")) continue;
             Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
             Tile.getTile(player.getPlayerMap().getX_start(), player.getPlayerMap().getY_start()).setWhoIsHere(player);
             player.setX(player.getPlayerMap().getX_start());
             player.setY(player.getPlayerMap().getY_start());
-
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
             player.setEnergy(player.getMaxEnergy());
@@ -79,7 +77,7 @@ public class TimeAndDate {
             }
             for (NPC npc : App.getCurrentGame().getNPCs()) {
                 player.getTalkedNPCToday().put(npc, false);
-                player.getGiftNPCToday().put(npc, true);
+                player.getGiftNPCToday().put(npc, false);
             }
         }
         // fifty percent chance of receiving a gift from an NPC

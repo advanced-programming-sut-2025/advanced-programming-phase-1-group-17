@@ -1,9 +1,6 @@
 package org.example.models.market;
 
-import org.example.models.App;
-import org.example.models.BackPackableType;
-import org.example.models.NormalItemType;
-import org.example.models.Result;
+import org.example.models.*;
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
@@ -79,9 +76,8 @@ public class StoreManager {
 
         pierre.addItem(new ShopItem(NormalItemType.Rice, 200, Integer.MAX_VALUE, "A basic grain often served under vegetables."));
         pierre.addItem(new ShopItem(NormalItemType.WheatFlour, 100, Integer.MAX_VALUE, "A common cooking ingredient made from crushed wheat seeds."));
-        //TODO: deal with these
-        //pierre.addItem(new ShopItem(CraftingItemType.Bouquet, 1000, 2, "A gift that shows your romantic interest.\n(Unlocked after reaching level 2 friendship with a player)"));
-        //pierre.addItem(new ShopItem(CraftingItemType.WeddingRing, 10000, 2, "It's used to ask for another farmer's hand in marriage.\n(Unlocked after reaching level 3 friendship with a player)"));
+        pierre.addItem(new ShopItem(FlowerType.FLOWER, 1000, 2, "A gift that shows your romantic interest.\n(Unlocked after reaching level 2 friendship with a player)"));
+        pierre.addItem(new ShopItem(RingType.Ring, 10000, 2, "It's used to ask for another farmer's hand in marriage.\n(Unlocked after reaching level 3 friendship with a player)"));
         pierre.addItem(new ShopItem(RecipeType.Dehydrator, 10000, 1, "A recipe to make Dehydrator"));
         pierre.addItem(new ShopItem(RecipeType.GrassStarter, 1000, 1, "A recipe to make Grass Starter"));
         pierre.addItem(new ShopItem(NormalItemType.Sugar, 100, Integer.MAX_VALUE, "Adds sweetness to pastries and candies. Too much can be unhealthy."));

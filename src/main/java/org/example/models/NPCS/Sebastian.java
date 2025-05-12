@@ -44,7 +44,7 @@ public class Sebastian extends NPC implements Placeable {
     }
 
     {
-        requests.add(new Quest("Delivery of 50 units of iron", 0, false, "IRON", 50));
+        requests.add(new Quest("Delivery of 50 units of iron", 0, false, "Iron", 50));
         requests.add(new Quest("Delivery of pumpkin pie", 1, false, "pumpkinPie", 1));
         requests.add(new Quest("Delivery of 150 units of stone", 2, false, "Stone", 150));
     }
