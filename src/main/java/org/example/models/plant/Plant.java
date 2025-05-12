@@ -3,8 +3,9 @@ package org.example.models.plant;
 import org.example.models.Placeable;
 import org.example.models.map.Tile;
 
+import java.util.Random;
+
 public abstract class Plant implements Placeable {
-    //TODO: use this boolean
     protected boolean isInsideGreenhouse;
     protected boolean isWateredToday = false;
     protected Tile tile;
@@ -13,13 +14,12 @@ public abstract class Plant implements Placeable {
     protected boolean isForaging;
     protected int currentStageIndex = 0;
     protected int whichDayOfStage = 1;
-    protected boolean isFertilized;
+    protected FertilizerType fertilizerType = null;
     protected int daysWithoutWater = 0;
     protected int daysTillNextHarvest;
 
-    Plant(boolean isForaging, boolean isFertilized, Tile tile, boolean isInsideGreenhouse) {
+    Plant(boolean isForaging, Tile tile, boolean isInsideGreenhouse) {
         this.isInsideGreenhouse = isInsideGreenhouse;
-        this.isFertilized = isFertilized;
         this.tile = tile;
         this.isForaging = isForaging;
     }
@@ -30,11 +30,7 @@ public abstract class Plant implements Placeable {
         if (this.isFullyGrown)
             return;
 
-        this.daysWithoutWater++;
-        if (this.daysWithoutWater >= 2) {
-            tile.setPlaceable(null);
-            return;
-        }
+        handleDaysWithoutWater();
 
         if (!this.isWateredToday)
             return;
@@ -42,6 +38,33 @@ public abstract class Plant implements Placeable {
         //stage Handling
         handleStages();
         handleFruitCycle();
+        this.isWateredToday = false;
+    }
+
+    private void handleDaysWithoutWater() {
+        Random random = new Random();
+        int randInt = random.nextInt(100);
+        if (fertilizerType != null) {
+            if (fertilizerType.equals(FertilizerType.BasicRetainingSoil)) {
+                if (randInt < 30) {
+                    wateringPlant();
+                    return;
+                }
+            } else if (fertilizerType.equals(FertilizerType.QualityRetainingSoil)) {
+                if (randInt < 60) {
+                    wateringPlant();
+                    return;
+                }
+            } else if (fertilizerType.equals(FertilizerType.DeluxeRetainingSoil)) {
+                wateringPlant();
+                return;
+            }
+        }
+
+        this.daysWithoutWater++;
+        if (this.daysWithoutWater >= 2) {
+            tile.setPlaceable(null);
+        }
     }
 
     abstract void handleFruitCycle();
@@ -50,10 +73,6 @@ public abstract class Plant implements Placeable {
 
     public Tile getTile() {
         return tile;
-    }
-
-    public void setFertilized(boolean fertilized) {
-        isFertilized = fertilized;
     }
 
     public int getDaysWithoutWater() {
@@ -82,10 +101,6 @@ public abstract class Plant implements Placeable {
     }
 
 
-    public boolean isFertilized() {
-        return isFertilized;
-    }
-
     public boolean isFullyGrown() {
         return isFullyGrown;
     }
@@ -100,6 +115,22 @@ public abstract class Plant implements Placeable {
 
     public void setForaging(boolean foraging) {
         isForaging = foraging;
+    }
+
+    public FertilizerType getFertilizerType() {
+        return fertilizerType;
+    }
+
+    public void setFertilizerType(FertilizerType fertilizerType) {
+        this.fertilizerType = fertilizerType;
+    }
+
+    public boolean isInsideGreenhouse() {
+        return isInsideGreenhouse;
+    }
+
+    public void setInsideGreenhouse(boolean insideGreenhouse) {
+        isInsideGreenhouse = insideGreenhouse;
     }
 
     public void wateringPlant() {

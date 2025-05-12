@@ -1,14 +1,14 @@
 package org.example.models;
 
 import org.example.models.enums.AnimalProductType;
-import org.example.models.market.ShippingBinType;
+import org.example.models.market.ItemQuality;
 
 public class AnimalProduct implements BackPackable{
     private Animal animal;
     private String name;
     private int count=1;
     private AnimalProductType animalProductType;
-    private ShippingBinType shippingBinType;
+    private ItemQuality shippingBinType;
 
     public Animal getAnimal() {
         return animal;
@@ -43,11 +43,11 @@ public class AnimalProduct implements BackPackable{
         this.animalProductType = animalProductType;
     }
 
-    public ShippingBinType getShippingBinType() {
+    public ItemQuality getShippingBinType() {
         return shippingBinType;
     }
 
-    public void setShippingBinType(ShippingBinType shippingBinType) {
+    public void setShippingBinType(ItemQuality shippingBinType) {
         this.shippingBinType = shippingBinType;
     }
     @Override

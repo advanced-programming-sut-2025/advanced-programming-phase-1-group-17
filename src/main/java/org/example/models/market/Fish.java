@@ -1,4 +1,4 @@
-package org.example.models.trade;
+package org.example.models.market;
 
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
@@ -6,7 +6,7 @@ import org.example.models.enums.FishType;
 
 public class Fish implements BackPackable {
     private FishType fishType;
-    private ShippingBinType shippingBinType;
+    private ItemQuality shippingBinType;
     private int count=1;
 
     public FishType getFishType() {
@@ -17,11 +17,11 @@ public class Fish implements BackPackable {
         this.fishType = fishType;
     }
 
-    public ShippingBinType getShippingBinType() {
+    public ItemQuality getShippingBinType() {
         return shippingBinType;
     }
 
-    public void setShippingBinType(ShippingBinType shippingBinType) {
+    public void setShippingBinType(ItemQuality shippingBinType) {
         this.shippingBinType = shippingBinType;
     }
 

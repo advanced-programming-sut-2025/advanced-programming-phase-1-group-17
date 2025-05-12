@@ -20,7 +20,7 @@ public enum TreeType {
     MushroomTree(SaplingType.MushroomTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.CommonMushroom, 1, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter)),
     MysticTree(SaplingType.MysticTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.MysticSyrup, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter));
 
-    private final SaplingType source;
+    private final SaplingType sapling;
     private final List<Integer> stages;
     private final int totalGrowthTime;
     private final FruitType fruitType;
@@ -29,7 +29,7 @@ public enum TreeType {
 
     TreeType(SaplingType source, List<Integer> stages, int totalHarvestTime,
              FruitType fruitType, int fruitHarvestCycle, List<Season> seasons) {
-        this.source = source;
+        this.sapling = source;
         this.stages = stages;
         this.totalGrowthTime = totalHarvestTime;
         this.fruitType = fruitType;
@@ -37,8 +37,16 @@ public enum TreeType {
         this.seasons = seasons;
     }
 
-    public SaplingType getSource() {
-        return source;
+    public static TreeType getTreeTypeBySaplingType(SaplingType saplingType){
+        for (TreeType treeType : TreeType.values()) {
+            if (treeType.getSapling().equals(saplingType))
+                return treeType;
+        }
+        return null;
+    }
+
+    public SaplingType getSapling() {
+        return sapling;
     }
 
     public List<Integer> getStages() {

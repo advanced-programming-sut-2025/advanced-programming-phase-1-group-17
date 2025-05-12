@@ -15,11 +15,11 @@ public enum MineralType implements BackPackableType {
     Jade("A pale green ornamental stone.", 200),
     Diamond("A rare and valuable gem.", 750),
     PrismaticShard("A very rare and powerful substance with unknown origins.", 2000),
-    Copper("A common ore that can be smelted into bars.", 5),
-    Iron("A fairly common ore that can be smelted into bars.", 10),
-    Gold("A precious ore that can be smelted into bars.", 25),
-    Iridium("An exotic ore with many curious properties. Can be smelted into bars.", 100),
-    Coal("A combustible rock that is useful for crafting and smelting.", 15),
+    CopperOre("A common ore that can be smelted into bars.", 5),
+    IronOre("A fairly common ore that can be smelted into bars.", 10),
+    GoldOre("A precious ore that can be smelted into bars.", 25),
+    IridiumOre("An exotic ore with many curious properties. Can be smelted into bars.", 100),
+    Coal("A combustible rock that is useful for crafting and smelting.", 150),
     Stone("Normal Stone", 20);
 
     private final String description;

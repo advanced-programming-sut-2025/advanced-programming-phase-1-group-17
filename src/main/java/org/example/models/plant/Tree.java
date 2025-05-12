@@ -5,10 +5,9 @@ import org.example.models.map.Tile;
 
 public class Tree extends Plant implements Placeable {
     private TreeType type;
-    private boolean isHitByLightning = false;
 
-    public Tree(boolean isForaging, TreeType treeType, boolean isFertilized, Tile tile, boolean isInsideGreenHouse) {
-        super(isForaging, isFertilized, tile, isInsideGreenHouse);
+    public Tree(boolean isForaging, TreeType treeType, Tile tile, boolean isInsideGreenHouse) {
+        super(isForaging, tile, isInsideGreenHouse);
         this.type = treeType;
         this.daysTillNextHarvest = type.getFruitHarvestCycle();
     }
@@ -21,16 +20,22 @@ public class Tree extends Plant implements Placeable {
             daysPassed += type.getStages().get(i);
         }
         daysPassed += whichDayOfStage;
-        return type.getTotalGrowthTime() - daysPassed;
+
+        int fertilizerEffect = 0;
+        if (this.fertilizerType != null && this.fertilizerType.equals(FertilizerType.SpeedGro))
+            fertilizerEffect = 1;
+
+        return type.getTotalGrowthTime() - daysPassed + 1 - fertilizerEffect;
     }
 
     void handleStages() {
         this.whichDayOfStage++;
+        if (getDaysTillFullGrowth() == 0) {
+            this.isFullyGrown = true;
+            return;
+        }
+
         if (this.whichDayOfStage > this.type.getStages().get(this.currentStageIndex)) {
-            if (this.currentStageIndex == this.type.getStages().size() - 1) {
-                this.isFullyGrown = true;
-                return;
-            }
             this.currentStageIndex++;
             this.whichDayOfStage = 1;
         }
@@ -53,14 +58,6 @@ public class Tree extends Plant implements Placeable {
 
     public void setType(TreeType type) {
         this.type = type;
-    }
-
-    public boolean isHitByLightning() {
-        return isHitByLightning;
-    }
-
-    public void setHitByLightning(boolean hitByLightning) {
-        isHitByLightning = hitByLightning;
     }
 
     @Override

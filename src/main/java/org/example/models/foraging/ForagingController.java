@@ -52,11 +52,11 @@ public abstract class ForagingController {
         if (mineralType.equals(MineralType.Stone))
             return true;
         if (toolMaterial.equals(ToolMaterial.Basic)) {
-            return mineralType.equals(MineralType.Copper);
+            return mineralType.equals(MineralType.CopperOre);
         } else if (toolMaterial.equals(ToolMaterial.Copper)) {
-            return mineralType.equals(MineralType.Iron) || mineralType.equals(MineralType.Copper);
+            return mineralType.equals(MineralType.IronOre) || mineralType.equals(MineralType.CopperOre);
         } else if (toolMaterial.equals(ToolMaterial.Iron)) {
-            return !mineralType.equals(MineralType.Iridium);
+            return !mineralType.equals(MineralType.IridiumOre);
         }
         return true;
     }
@@ -74,7 +74,7 @@ public abstract class ForagingController {
 
     public static void setTreeForaging(Tile tile) {
         TreeType treeType = getRandomTreeType();
-        tile.setPlaceable(new Tree(true, treeType, false, tile, false));
+        tile.setPlaceable(new Tree(true, treeType, tile, false));
     }
 
 
@@ -85,7 +85,7 @@ public abstract class ForagingController {
             int randInt = random.nextInt(ForagingCropType.values().length);
             foragingCrop = ForagingCropType.values()[randInt];
         } while (!foragingCrop.getSeasons().contains(App.getCurrentGame().getDate().getSeason()));
-        tile.setPlaceable(new Crop(true, foragingCrop.getCropType(), false, tile, false));
+        tile.setPlaceable(new Crop(true, foragingCrop.getCropType(), tile, false));
     }
 
 
