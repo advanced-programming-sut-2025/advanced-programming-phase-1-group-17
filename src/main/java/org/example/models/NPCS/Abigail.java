@@ -25,7 +25,6 @@ public class Abigail extends NPC implements Placeable {
         dialogue.put("what is your job?", "I am a miner");
     }
 
-    //TODO favorite
     private ArrayList<String> favorites = new ArrayList<>();
 
     @Override

@@ -223,6 +223,29 @@ public class GameMenuController {
         return new Result(true, "GreenHouse created Successfully");
     }
 
+    public int countTurns(List<Tile> result) {
+        if (result.size() < 3) {
+            return 0;
+        }
+        int turns = 0;
+        for (int i = 1; i < result.size() - 1; i++) {
+            int dx1 = normalize(result.get(i).getX() - result.get(i - 1).getX());
+            int dy1 = normalize(result.get(i).getY() - result.get(i - 1).getX());
+            int dx2 = normalize(result.get(i + 1).getX() - result.get(i).getX());
+            int dy2 = normalize(result.get(i + 1).getY() - result.get(i).getX());
+
+            if (dx1 != dx2 || dy1 != dy2) {
+                turns++;
+            }
+        }
+        return turns;
+    }
+    private  int normalize(int delta) {
+        if (delta > 0) return 1;
+        if (delta < 0) return -1;
+        return 0;
+    }
+
     public Result walk(int x, int y, Scanner scanner) {
         List<Tile> result;
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
@@ -236,7 +259,7 @@ public class GameMenuController {
         } else if ((result = aStar(player.getX(), player.getY(), x, y, player)) == null) {
             return new Result(false, "you can't walk to this tile because there is not path to this tile");
         } else {
-            float energy_needed = (float) (result.size() - 1) / 20;
+            float energy_needed = (float) (((result.size() - 1) + (10 * countTurns(result))) / 20);
             System.out.println("your energy : " + player.getEnergy());
             System.out.printf("energy needed : %.2f\n", energy_needed);
             System.out.println("do you want to go to the destination? press y or n and press enter");
@@ -249,7 +272,7 @@ public class GameMenuController {
                     return new Result(false, "you fainted");
                 } else {
 //                    for (Tile tile : result) {
-//                        System.out.println(tile.getX() + "__" + tile.getY());
+//                        System.out.println(tile.getX() + " " + tile.getY());
 //                    }
                     Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
                     Tile.getTile(x, y).setWhoIsHere(player);
@@ -371,8 +394,10 @@ public class GameMenuController {
     public Result inventoryShow() {
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
         StringBuilder result = new StringBuilder();
-
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
+            if (backPackableType == null) {
+                continue;
+            }
             result.append("%s: %d\n".formatted(backPackableType.getName(), backPack.getBackPackItems().get(backPackableType).size()));
         }
 
@@ -655,7 +680,7 @@ public class GameMenuController {
         int newY = player.getY() + directions[1];
 
         Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
-        if (tile ==  null) {
+        if (tile == null) {
             return new Result(false, "TIle out of map");
         }
 
@@ -678,8 +703,7 @@ public class GameMenuController {
                 if (!greenHouse.isActive())
                     return new Result(false, "You need to Build the Greenhouse first");
                 tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, true));
-            }
-            else if (tile.getPlaceable() == null)
+            } else if (tile.getPlaceable() == null)
                 tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, false));
 
             player.getBackPack().useItem(seedType);
@@ -698,8 +722,7 @@ public class GameMenuController {
             if (!greenHouse.isActive())
                 return new Result(false, "You need to Build the Greenhouse first");
             tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, true));
-        }
-        else if (tile.getPlaceable() == null)
+        } else if (tile.getPlaceable() == null)
             tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, false));
 
         player.getBackPack().useItem(saplingType);
@@ -752,7 +775,7 @@ public class GameMenuController {
         }
 
         if (player.getBackPack().getInventorySize(fertilizerType.getName()) == 0) {
-            return new Result(false ,"You do not have fertilizer of type %s".formatted(fertilizerType.getName()));
+            return new Result(false, "You do not have fertilizer of type %s".formatted(fertilizerType.getName()));
         }
 
         if (tile.getPlaceable() instanceof Plant plant) {
@@ -1479,10 +1502,12 @@ public class GameMenuController {
                                     player.setEnergy(player.getEnergy() + 50);
                                     currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
                                 }
-                                return new Result(true, "your gift was received by " + player.getUser().getUsername()
+                                message message = new message(player, "your gift was received by " + player.getUser().getUsername()
                                         + "\n" + player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
                                         + "\n" + "your gift : " + item + "\n" + "your gift amount : " + amount + "\n"
                                         + "please rate this gift between one and five Whenever you have time ");
+                                player.addMessage(message);
+                                return new Result(true, "your gift was received by " + player.getUser().getUsername());
                             }
                         }
                     } else {
@@ -1501,7 +1526,7 @@ public class GameMenuController {
             result += player.getUser().getUsername() + "\n";
             for (Gift gift : currentPlayer.getGifts().get(player)) {
                 if (currentPlayer.equals(gift.getPlayerWhoGetGift())) {
-                    result += gift.getItem() + " : " + gift.getAmount() + " ---> " + gift.getGiftNumber() + "\n";
+                    result += gift.getItem() + " : (amount:)" + gift.getAmount() + " ---> (gift number:)" + gift.getGiftNumber() + "\n";
                 }
             }
         }
@@ -1542,7 +1567,7 @@ public class GameMenuController {
                 String result = "";
                 result += player.getUser().getUsername() + "\n";
                 for (Gift gift : currentPlayer.getGifts().get(player)) {
-                    result += "whoGetGift : " + gift.getPlayerWhoGetGift() + "\n" + gift.getItem() + " : " + gift.getAmount() + " ---> " + gift.getGiftNumber() + "\n";
+                    result += "whoGetGift : " + gift.getPlayerWhoGetGift().getUser().getUsername() + "\n" + gift.getItem() + " : (amount:)" + gift.getAmount() + " ---> (gift number:)" + gift.getGiftNumber() + "\n";
                 }
                 return new Result(true, result);
             }
@@ -1872,16 +1897,16 @@ public class GameMenuController {
         }
         if (trade == null) {
             return new Result(false, "invalid id");
-        } else if (accept.equals("accept")) {
+        } else if (accept.equals("-accept")) {
             if (trade.getTradeType().equals("byMoney")) {
-                tradeByMoney(trade.getMatcher(), trade.getMatcher().group("type"), 1);
+                tradeByMoney2(trade.getSender(), trade.getMatcher(), trade.getMatcher().group("type"));
                 trade.getSender().addTradeHistory(trade);
                 currentPlayer.addTradeHistory(trade);
                 trade.getSender().getTrades().remove(trade);
                 currentPlayer.getTrades().remove(trade);
                 return new Result(true, "the operation was successful");
             } else {
-                tradeByItem(trade.getMatcher(), trade.getMatcher().group("type"), 1);
+                tradeByItem2(trade.getSender(), trade.getMatcher(), trade.getMatcher().group("type"));
                 trade.getSender().addTradeHistory(trade);
                 currentPlayer.addTradeHistory(trade);
                 trade.getSender().getTrades().remove(trade);
@@ -1893,6 +1918,94 @@ public class GameMenuController {
             currentPlayer.getTrades().remove(trade);
             return new Result(false, "the operation was successful");
         }
+    }
+
+    public Result tradeByMoney2(Player player, Matcher matcher, String type) {
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (type.trim().equals("offer")) {
+            String item = matcher.group("item");
+            int amount = Integer.parseInt(matcher.group("amount"));
+            double price = Float.parseFloat(matcher.group("price"));
+            if (currentPlayer.getBackPack().getInventorySize(item) >= amount) {
+                player.getBackPack().addcoin(-1 * price);
+                currentPlayer.getBackPack().addcoin(price);
+                for (int i = 0; i < amount; i++) {
+                    BackPackable b = currentPlayer.getBackPack().useItem(item);
+                    player.getBackPack().addItemToInventory(b);
+                }
+            } else {
+                return new Result(false, "you have not enough items in your inventory");
+            }
+            return new Result(false, "this username does not exist in this game");
+        } else {
+            String item = matcher.group("item");
+            int amount = Integer.parseInt(matcher.group("amount"));
+            double price = Float.parseFloat(matcher.group("price"));
+            if (currentPlayer.getBackPack().getCoin() < price) {
+                return new Result(false, "you have not enough coins");
+            }
+            if (player.getBackPack().getInventorySize(item) >= amount) {
+                player.getBackPack().addcoin(price);
+                currentPlayer.getBackPack().addcoin(-1 * price);
+                for (int i = 0; i < amount; i++) {
+                    BackPackable b = player.getBackPack().useItem(item);
+                    currentPlayer.getBackPack().addItemToInventory(b);
+                }
+            } else {
+                return new Result(false, "this player have not enough items in her/his inventory");
+            }
+            return new Result(false, "this username does not exist in this game");
+        }
+
+    }
+
+    public Result tradeByItem2(Player player, Matcher matcher, String type) {
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (type.trim().equals("offer")) {
+            String item = matcher.group("item");
+            int amount = Integer.parseInt(matcher.group("amount"));
+            String targetItem = matcher.group("targetItem");
+            int targetAmount = Integer.parseInt(matcher.group("targetAmount"));
+            if (player.getBackPack().getInventorySize(targetItem) >= targetAmount) {
+                if (currentPlayer.getBackPack().getInventorySize(item) >= amount) {
+                    for (int i = 0; i < amount; i++) {
+                        BackPackable b = currentPlayer.getBackPack().useItem(item);
+                        player.getBackPack().addItemToInventory(b);
+                    }
+                    for (int i = 0; i < targetAmount; i++) {
+                        BackPackable b = player.getBackPack().useItem(targetItem);
+                        currentPlayer.getBackPack().addItemToInventory(b);
+                    }
+                } else {
+                    return new Result(false, "you have not enough item in your inventory");
+                }
+            } else {
+                return new Result(false, "this player have not enough targetItems in her/his inventory");
+            }
+
+        } else {
+            String item = matcher.group("item");
+            int amount = Integer.parseInt(matcher.group("amount"));
+            String targetItem = matcher.group("targetItem");
+            int targetAmount = Integer.parseInt(matcher.group("targetAmount"));
+            if (player.getBackPack().getInventorySize(item) >= amount) {
+                if (currentPlayer.getBackPack().getInventorySize(targetItem) >= targetAmount) {
+                    for (int i = 0; i < amount; i++) {
+                        BackPackable b = player.getBackPack().useItem(item);
+                        currentPlayer.getBackPack().addItemToInventory(b);
+                    }
+                    for (int i = 0; i < targetAmount; i++) {
+                        BackPackable b = currentPlayer.getBackPack().useItem(targetItem);
+                        player.getBackPack().addItemToInventory(b);
+                    }
+                } else {
+                    return new Result(false, "this player have not enough item in your inventory");
+                }
+            } else {
+                return new Result(false, "this player have not enough targetItems in her/his inventory");
+            }
+        }
+        return new Result(false, "this username does not exist in this game");
     }
 
     public Result tradeHistory() {
@@ -1920,7 +2033,7 @@ public class GameMenuController {
                         + "--------------------------------------------------\n");
             }
         }
-        result += "previous trades (accepted) \n";
+        result += "\nprevious trades (accepted): \n";
         for (Trade trade : currentPlayer.getTradeHistory()) {
             if (trade.getTradeType().equals("byMoney")) {
                 result += (trade.getType() + " : " + "\n"
@@ -2059,13 +2172,15 @@ public class GameMenuController {
                 if (!currentPlayer.getGiftNPCToday().get(npc)) {
                     if (npc.getFavorites().contains(item)) {
                         currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 200));
-                        return new Result(true, "your beautiful gift was received by + " + npc.getName());
+                        currentPlayer.getGiftNPCToday().put(npc, true);
+                        return new Result(true, "your beautiful gift was received by  " + npc.getName());
                     } else {
+                        currentPlayer.getGiftNPCToday().put(npc, true);
                         currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 50));
-                        return new Result(true, "your gift was received by + " + npc.getName());
+                        return new Result(true, "your gift was received by  " + npc.getName());
                     }
                 } else {
-                    return new Result(true, "your gift was received by + " + npc.getName());
+                    return new Result(true, "your gift was received by  " + npc.getName());
                 }
 
             }
@@ -2123,7 +2238,7 @@ public class GameMenuController {
         if (npc == null) {
             return new Result(false, "npc not found");
         } else {
-            Quest quest = npc.getRequests().get(i);
+            Quest quest = npc.getRequests().get(i - 1);
             if (quest.isCompleted()) {
                 return new Result(false, "quest already completed");
             } else {
@@ -2136,10 +2251,10 @@ public class GameMenuController {
                             currentPlayer.getBackPack().useItem(item);
                         }
                         if (2 < currentPlayer.getFriendShipsWithNPCs().get(npc) / 200) {
-                            npc.giveReward(currentPlayer, Integer.parseInt(index));
-                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                            npc.giveReward(currentPlayer, Integer.parseInt(index) - 1);
+                            npc.giveReward(currentPlayer, Integer.parseInt(index) - 1);
                         } else {
-                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                            npc.giveReward(currentPlayer, Integer.parseInt(index) - 1);
                         }
                         return new Result(true, "the mission was successfully completed." +
                                 "your reward has been added to your backpack");

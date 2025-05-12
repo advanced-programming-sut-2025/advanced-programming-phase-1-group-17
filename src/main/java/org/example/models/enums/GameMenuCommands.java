@@ -77,7 +77,7 @@ public enum GameMenuCommands {
     giftRate("\\s*gift\\s+rate\\s+-i\\s+(?<giftNumber>\\S+)\\s+-r\\s+(?<rate>\\S+)\\s*"),
     giftHistory("\\s*gift\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),
     flower("flower\\s+-u\\s+(?<username>\\S+)\\s*"),
-    askMarriage("\\s*ask\\s+marriage\\s+-u\\s+(?<username>\\S+)\\s+-r\\s+(?<ring>\\d+)\\s*"),
+    askMarriage("\\s*ask\\s+marriage\\s+-u\\s+(?<username>\\S+)\\s+-r\\s+(?<ring>\\S+)\\s*"),
     respond("\\s*respond\\s+(?<accept>accept|reject)\\s+-u\\s+(?<username>\\S+)\\s*"),
     deleteMessage("\\s*delete\\s+message\\s+(?<index>\\d+)\\s*"),
     startTrade("\\s*start\\s+trade\\s*"),

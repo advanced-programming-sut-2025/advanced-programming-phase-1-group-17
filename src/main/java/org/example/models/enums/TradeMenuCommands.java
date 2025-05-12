@@ -8,7 +8,7 @@ public enum TradeMenuCommands {
             "-a\\s+(?<amount>\\d+)\\s+-p\\s+(?<price>\\d[.|\\d]*)\\s*"),
     tradeByItem("\\s*trade\\s+-u\\s+(?<username>\\S+)\\s+-t\\s+(?<type>request|offer)\\s+-i\\s+(?<item>\\S+)\\s+" +
             "-a\\s+(?<amount>\\d+)\\s+-ti\\s+(?<targetItem>\\S+)\\s+-ta\\s+(?<targetAmount>\\d+)\\s*"),
-    tradeResponse("\\s*trade\\s+response\\s+(?<accept>accept|reject)\\s+-i\\s+(?<id>\\d+)\\s*");
+    tradeResponse("\\s*trade\\s+response\\s+(?<accept>-accept|-reject)\\s+-i\\s+(?<id>\\d+)\\s*");
 
     private final String regex;
 
