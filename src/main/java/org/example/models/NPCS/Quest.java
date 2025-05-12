@@ -8,20 +8,19 @@ public class Quest {
     private String item;
     private boolean completed;
     private String questExplanation;
+    private boolean isActive = true;
     public Quest(String questExplanation, int level, boolean completed, String item, int amount) {
         this.questExplanation = questExplanation;
         this.level = level;
         this.completed = completed;
         this.item = item;
         this.amount = amount;
-    }
-
-    //TODO
-    public void giveReward(Player player){
-        if (completed){
-
+        if (level == 2) {
+            isActive = false;
         }
     }
+
+
 
     public int getLevel() {
         return level;
@@ -59,5 +58,13 @@ public class Quest {
     }
     public void setItem(String item) {
         this.item = item;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

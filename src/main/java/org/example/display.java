@@ -14,7 +14,6 @@ import org.example.models.market.Store;
 import org.example.models.market.StoreType;
 
 public class display {
-    //TODO khoshgel kardanesh
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
@@ -80,7 +79,8 @@ public class display {
                         System.out.print(BOLD + WHITE + "P" + RESET);
                     } else if (tile.getWhoIsHere().equals(game.getPlayers().get(1))) {
                         System.out.print(BOLD + RED + "P" + RESET);
-                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(2))) {System.out.print(BOLD + BLUE + "P" + RESET);
+                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(2))) {
+                        System.out.print(BOLD + BLUE + "P" + RESET);
                     } else if (tile.getWhoIsHere().equals(game.getPlayers().get(3))) {
                         System.out.print(BOLD + YELLOW + "P" + RESET);
                     }
@@ -146,20 +146,22 @@ public class display {
                 }
             }
             System.out.print("|");
-            System.out.println();
+
             if (i == 50) {
+                System.out.println();
                 for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
+
             if (i == 150) {
                 System.out.println();
                 for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
+            System.out.println();
         }
-
         if ((x + size == 201)) {
             System.out.print("   ");
             for (int i = 0; i < size + 3; i++) {

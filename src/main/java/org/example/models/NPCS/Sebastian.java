@@ -1,7 +1,9 @@
 package org.example.models.NPCS;
 
 import org.example.models.Placeable;
-
+import org.example.models.Player;
+import org.example.models.foraging.Mineral;
+import org.example.models.foraging.MineralType;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,6 +13,7 @@ public class Sebastian extends NPC implements Placeable {
     private String name = "Sebastian";
     private String job = "cook";
     private final HashMap<String, String> dialogue = new HashMap<>();
+
     {
         dialogue.put("what's your name?", "Sebastian");
         dialogue.put("hello", "hi how are you?");
@@ -20,25 +23,46 @@ public class Sebastian extends NPC implements Placeable {
         dialogue.put("how is the weather?", "excellent!");
         dialogue.put("what is your job?", "I am a cook");
     }
-    private ArrayList<String> favorites =new ArrayList<>();
+
+    private ArrayList<String> favorites = new ArrayList<>();
 
     @Override
     public ArrayList<String> getFavorites() {
         return favorites;
     }
+
     {
         favorites.add("SheepWool");
         favorites.add("pumpkinPie");
         favorites.add("pizza");
     }
-    private ArrayList<Quest> requests= new ArrayList<>();
-    public ArrayList<Quest> getRequests(){
+
+    private ArrayList<Quest> requests = new ArrayList<>();
+
+    public ArrayList<Quest> getRequests() {
         return requests;
     }
+
     {
-        requests.add(new Quest("Delivery of 50 units of iron",0,false,"IRON",50));
-        requests.add(new Quest("Delivery of pumpkin pie",1,false,"pumpkinPie",1));
-        requests.add(new Quest("Delivery of 150 units of stone",2,false,"Stone",150));
+        requests.add(new Quest("Delivery of 50 units of iron", 0, false, "IRON", 50));
+        requests.add(new Quest("Delivery of pumpkin pie", 1, false, "pumpkinPie", 1));
+        requests.add(new Quest("Delivery of 150 units of stone", 2, false, "Stone", 150));
+    }
+
+    public void giveReward(Player player, int index) {
+        if (index == 0) {
+            for (int i =0 ; i < 2; i++) {
+                Mineral m = new Mineral(MineralType.Diamond,false);
+                player.getBackPack().addItemToInventory(m);
+            }
+        } else if (index == 1) {
+            player.getBackPack().addcoin(5000);
+        } else {
+            for (int i =0 ; i < 50; i++) {
+                Mineral m = new Mineral(MineralType.Quartz,false);
+                player.getBackPack().addItemToInventory(m);
+            }
+        }
     }
 
     public String getName() {

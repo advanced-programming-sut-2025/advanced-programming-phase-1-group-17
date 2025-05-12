@@ -47,6 +47,7 @@ abstract public class NPC {
     public void setFavorites(ArrayList<String> favorites) {
         this.favorites = favorites;
     }
+    public void giveReward(Player player, int index){};
 
 
     public ArrayList<Product> getRewards() {

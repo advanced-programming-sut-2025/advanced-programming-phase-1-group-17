@@ -57,15 +57,24 @@ public class TimeAndDate {
 
     public void goToNextDay() {
         for (Player player : App.getCurrentGame().getPlayers()) {
+
+            if (player.getUser().getUsername().equals("NPC")) continue;
+            Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
+            Tile.getTile(player.getPlayerMap().getX_start(), player.getPlayerMap().getY_start()).setWhoIsHere(player);
+            player.setX(player.getPlayerMap().getX_start());
+            player.setY(player.getPlayerMap().getY_start());
+
+        }
+        for (Player player : App.getCurrentGame().getPlayers()) {
             player.setEnergy(player.getMaxEnergy());
             player.setInteractionWithPartner(false);
-            if(player.getIsbrokenUp() > 0){
-                player.setEnergy(player.getMaxEnergy()/2);
-                player.setIsbrokenUp(player.getIsbrokenUp()-1);
+            if (player.getIsbrokenUp() > 0) {
+                player.setEnergy(player.getMaxEnergy() / 2);
+                player.setIsbrokenUp(player.getIsbrokenUp() - 1);
             }
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
-            if (player.getUser().getUsername().equals("NPC")){
+            if (player.getUser().getUsername().equals("NPC")) {
                 continue;
             }
             for (NPC npc : App.getCurrentGame().getNPCs()) {
@@ -77,7 +86,7 @@ public class TimeAndDate {
         int a = ThreadLocalRandom.current().nextInt(1, 3);
         if (a == 2) {
             for (Player player : App.getCurrentGame().getPlayers()) {
-                if (player.getUser().getUsername().equals("NPC")){
+                if (player.getUser().getUsername().equals("NPC")) {
                     continue;
                 }
                 for (NPC npc : App.getCurrentGame().getNPCs()) {
@@ -105,6 +114,10 @@ public class TimeAndDate {
         day++;
         if (day >= 28) {
             changeSeason();
+            // active quest 3
+            for (NPC npc : App.getCurrentGame().getNPCs()) {
+                npc.getRequests().get(2).setActive(true);
+            }
             day = 1;
         }
     }
