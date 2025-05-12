@@ -124,6 +124,6 @@ public class User {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         User other = (User) obj;
-        return Objects.equals(username, other.username); // یا هر فیلدی که یکتاست
+        return Objects.equals(username, other.username);
     }
 }
