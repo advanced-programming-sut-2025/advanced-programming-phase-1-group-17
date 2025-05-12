@@ -1,6 +1,8 @@
 package org.example.models.enums;
 
-public enum AnimalPlaceType {
+import org.example.models.BackPackableType;
+
+public enum AnimalPlaceType implements BackPackableType {
     Coop(4),
     BigCoop(8),
     DeluxeCoop(12),
@@ -13,5 +15,15 @@ public enum AnimalPlaceType {
     }
     public int getCapacity() {
         return capacity;
+    }
+
+    @Override
+    public double getPrice() {
+        return 0;
+    }
+
+    @Override
+    public String getName() {
+        return name();
     }
 }

@@ -2,6 +2,7 @@ package org.example.models.tools;
 
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
+import org.example.models.Placeable;
 import org.example.models.Player;
 import org.example.models.enums.BackPackType;
 
@@ -18,25 +19,11 @@ public class BackPack {
 
 
     private final BackPackType type;
-    //Coin and wood and stone
-    private int wood;
-    private int stone;
-    private double coin;
+    private double coin = 0;
 
-    public int getWood() {
-        return wood;
-    }
-
-    public void addWood(int wood) {
-        this.wood += wood;
-    }
-
-    public int getStone() {
-        return stone;
-    }
-
-    public void addStone(int stone) {
-        this.stone += stone;
+    public BackPack(BackPackType type, Player player) {
+        this.type = type;
+        this.player = player;
     }
 
     public double getCoin() {
@@ -47,17 +34,13 @@ public class BackPack {
         if (!player.getPartner().equals(player)) {
             player.getBackPack().addcoin(coin);
             player.getPartner().getBackPack().addcoin(coin);
-        }
-        else {
+        } else {
             player.getBackPack().addcoin(coin);
         }
     }
+
     public void addcoin(double coin) {
         this.coin += coin;
-    }
-
-    public BackPack(BackPackType type) {
-        this.type = type;
     }
 
     public boolean isBackPackFull() {
@@ -109,6 +92,12 @@ public class BackPack {
     }
 
     public void addItemToInventory(BackPackable backPackable) {
+        for (BackPackableType backPackableType : backPackItems.keySet()) {
+            if (backPackItems.get(backPackableType).isEmpty())
+                backPackItems.remove(backPackableType);
+        }
+        if (isBackPackFull())
+            return;
         backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
         backPackItems.get(backPackable.getType()).add(backPackable);
     }
@@ -117,7 +106,7 @@ public class BackPack {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setCoin(double coin) {
+        this.coin = coin;
     }
 }

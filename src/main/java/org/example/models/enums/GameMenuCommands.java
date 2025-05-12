@@ -59,14 +59,14 @@ public enum GameMenuCommands {
     Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*"),
 
     //For artisan
-    ArtisanUse("\\s*artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<itemNames>.+)\\s*"),
+    ArtisanUse("\\s*artisan\\s+use\\s+(?<artisanName>\\S+)(\\s+(?<itemNames>.+))?\\s*"),
     ArtisanGet("\\s*artisan\\s+get\\s+(?<artisanName>\\S+)\\s*"),
 
     //For Trade
     ShowAllProducts("\\s*show\\s+all\\s+products\\s*"),
-    ShowAllAvailableProducts("\\s*show\\s+all\\s+available\\s+products\\*"),
+    ShowAllAvailableProducts("\\s*show\\s+all\\s+available\\s+products\\s*"),
     Purchase("\\s*purchase\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
-    CheatAddDollars("\\s*cheat\\s+add\\s+(?<count>\\d+)\\s+dollars\\s*"),
+    CheatAddDollars("\\s*cheat\\s+add\\s+(?<count>\\S+)\\s+dollars\\s*"),
     Sell("\\s*sell\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
 
     //For friendships
@@ -80,7 +80,11 @@ public enum GameMenuCommands {
     askMarriage("\\s*ask\\s+marriage\\s+-u\\s+(?<username>\\S+)\\s+-r\\s+(?<ring>\\d+)\\s*"),
     respond("\\s*respond\\s+(?<accept>accept|reject)\\s+-u\\s+(?<username>\\S+)\\s*"),
     deleteMessage("\\s*delete\\s+message\\s+(?<index>\\d+)\\s*"),
-    startTrade("\\s*start\\s+trade\\s*");
+    startTrade("\\s*start\\s+trade\\s*"),
+    //for NPC
+    meetNPC("\\s*meet\\s+NPC\\s+(?<npcName>\\S+)\\s*"),
+    giftNPC("\\s*gift\\s+NPC\\s+(?<npcName>\\S+)\\s+-i\\s+(?<item>\\S+)\\s*"),
+    questFinish("\\s*quests\\s+finish\\s+-i\\s+(?<index>\\d+)\\s*");
 
 
     private final String regex;

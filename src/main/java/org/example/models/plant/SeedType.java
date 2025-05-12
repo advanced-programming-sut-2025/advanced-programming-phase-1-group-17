@@ -7,63 +7,56 @@ import org.example.models.enums.Season;
 import java.util.Random;
 
 public enum SeedType implements BackPackableType {
-    JazzSeeds(CropType.BlueJazz),
-    CarrotSeeds(CropType.Carrot),
-    CauliflowerSeeds(CropType.Cauliflower),
-    CoffeeBean(CropType.CoffeeBean),
-    GarlicSeeds(CropType.Garlic),
-    BeanStarter(CropType.GreenBean),
-    KaleSeeds(CropType.Kale),
-    ParsnipSeeds(CropType.Parsnip),
-    PotatoSeeds(CropType.Potato),
-    RhubarbSeeds(CropType.Rhubarb),
-    StrawberrySeeds(CropType.Strawberry),
-    TulipBulb(CropType.Tulip),
-    RiceShoot(CropType.UnmilledRice),
-    BlueberrySeeds(CropType.Blueberry),
-    CornSeeds(CropType.Corn),
-    HopsStarter(CropType.Hops),
-    PepperSeeds(CropType.HotPepper),
-    MelonSeeds(CropType.Melon),
-    PoppySeeds(CropType.Poppy),
-    RadishSeeds(CropType.Radish),
-    RedCabbageSeeds(CropType.RedCabbage),
-    StarfruitSeeds(CropType.Starfruit),
-    SpangleSeeds(CropType.SummerSpangle),
-    SummerSquashSeeds(CropType.SummerSquash),
-    SunflowerSeeds(CropType.Sunflower),
-    TomatoSeeds(CropType.Tomato),
-    WheatSeeds(CropType.Wheat),
-    AmaranthSeeds(CropType.Amaranth),
-    ArtichokeSeeds(CropType.Artichoke),
-    BeetSeeds(CropType.Beet),
-    BokChoySeeds(CropType.BokChoy),
-    BroccoliSeeds(CropType.Broccoli),
-    CranberrySeeds(CropType.Cranberries),
-    EggplantSeeds(CropType.Eggplant),
-    FairySeeds(CropType.FairyRose),
-    GrapeStarter(CropType.Grape),
-    PumpkinSeeds(CropType.Pumpkin),
-    YamSeeds(CropType.Yam),
-    RareSeed(CropType.SweetGemBerry),
-    PowdermelonSeeds(CropType.Powdermelon),
-    AncientSeeds(CropType.AncientFruit),
-    Mixed(null); // Special case: not tied to a single crop
+    JazzSeeds,
+    CarrotSeeds,
+    CauliflowerSeeds,
+    CoffeeBean,
+    GarlicSeeds,
+    BeanStarter,
+    KaleSeeds,
+    ParsnipSeeds,
+    PotatoSeeds,
+    RhubarbSeeds,
+    StrawberrySeeds,
+    TulipBulb,
+    RiceShoot,
+    BlueberrySeeds,
+    CornSeeds,
+    HopsStarter,
+    PepperSeeds,
+    MelonSeeds,
+    PoppySeeds,
+    RadishSeeds,
+    RedCabbageSeeds,
+    StarfruitSeeds,
+    SpangleSeeds,
+    SummerSquashSeeds,
+    SunflowerSeeds,
+    TomatoSeeds,
+    WheatSeeds,
+    AmaranthSeeds,
+    ArtichokeSeeds,
+    BeetSeeds,
+    BokChoySeeds,
+    BroccoliSeeds,
+    CranberrySeeds,
+    EggplantSeeds,
+    FairySeeds,
+    GrapeStarter,
+    PumpkinSeeds,
+    YamSeeds,
+    RareSeed,
+    PowdermelonSeeds,
+    AncientSeeds,
+    Mixed; // Special case: not tied to a single crop
 
-    private final CropType cropType;
-
-    SeedType(CropType cropType) {
-        this.cropType = cropType;
-    }
-
-    public CropType getCropType() {
-        if (cropType == null) { //Mixed
-            Season season = App.getCurrentGame().getDate().getSeason();
-            Random random = new Random();
-            int randInt = random.nextInt(MixedSeedPossibleCrops.getCropsForSeason(season).size());
-            return MixedSeedPossibleCrops.getCropsForSeason(season).get(randInt);
+    public static SeedType getSeedTypeByName(String source) {
+        for (SeedType seedType : SeedType.values()) {
+            if (seedType.name().equalsIgnoreCase(source)) {
+                return seedType;
+            }
         }
-        return cropType;
+        return null;
     }
 
     @Override

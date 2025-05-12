@@ -1,8 +1,10 @@
 package org.example.models.map;
 
-import org.example.models.App;
-import org.example.models.Placeable;
-import org.example.models.Player;
+import org.example.models.*;
+import org.example.models.NPCS.NPC;
+import org.example.models.foraging.Mineral;
+import org.example.models.foraging.MineralType;
+import org.example.models.plant.Tree;
 
 import java.util.ArrayList;
 
@@ -10,13 +12,12 @@ public class Tile {
     private int x;
     private int y;
     private Placeable placeable;
-    private boolean isWater=false;
     private boolean isWalkAble = true;
     private boolean isPlowed = false;
     private Player owner;
     private Player whoIsHere;
+    private NPC npcIsHere;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
-    private boolean isLightninged = false;
 
     public Tile(int x, int y, Player owner) {
         this.x = x;
@@ -82,11 +83,12 @@ public class Tile {
     }
 
     public boolean isWater() {
-        return isWater;
-    }
-
-    public void setWater(boolean water) {
-        isWater = water;
+        if (placeable instanceof Lake)
+            return true;
+        else if (placeable instanceof NormalItem normalItem){
+            return normalItem.getType().equals(NormalItemType.Well);
+        }
+        return false;
     }
 
     public static Tile getTile(int x, int y) {
@@ -105,12 +107,13 @@ public class Tile {
     public void setWhoIsHere(Player whoIsHere) {
         this.whoIsHere = whoIsHere;
     }
-    public boolean isLightninged() {
-        return isLightninged;
+
+    public NPC getNpcIsHere() {
+        return npcIsHere;
     }
 
-    public void setLightninged(boolean lightninged) {
-        isLightninged = lightninged;
+    public void setNpcIsHere(NPC npcIsHere) {
+        this.npcIsHere = npcIsHere;
     }
 
     public static Placeable findAround(Placeable placeable){
@@ -128,4 +131,10 @@ public class Tile {
         return null;
     }
 
+    public void lightningStrike() {
+        if (placeable instanceof Tree tree) {
+            if (!tree.isInsideGreenhouse())
+                placeable = new Mineral(MineralType.Coal, false);
+        }
+    }
 }

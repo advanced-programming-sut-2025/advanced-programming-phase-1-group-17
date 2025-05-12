@@ -5,13 +5,9 @@ import org.example.models.map.Tile;
 
 public class Tree extends Plant implements Placeable {
     private TreeType type;
-    private boolean isHitByLightning = false;
-    private boolean isFertilized = false;
-    private boolean isForaging = false;
-    private int daysTillNextHarvest;
 
-    public Tree(boolean isForaging, TreeType treeType, boolean isFertilized, Tile tile){
-        super(isForaging, isFertilized, tile);
+    public Tree(boolean isForaging, TreeType treeType, Tile tile, boolean isInsideGreenHouse) {
+        super(isForaging, tile, isInsideGreenHouse);
         this.type = treeType;
         this.daysTillNextHarvest = type.getFruitHarvestCycle();
     }
@@ -20,53 +16,42 @@ public class Tree extends Plant implements Placeable {
         if (isFullyGrown)
             return 0;
         int daysPassed = 0;
-        for (int i = 0; i < currentStageIndex; i++){
+        for (int i = 0; i < currentStageIndex; i++) {
             daysPassed += type.getStages().get(i);
         }
         daysPassed += whichDayOfStage;
-        return type.getTotalGrowthTime() - daysPassed;
+
+        int fertilizerEffect = 0;
+        if (this.fertilizerType != null && this.fertilizerType.equals(FertilizerType.SpeedGro))
+            fertilizerEffect = 1;
+
+        return type.getTotalGrowthTime() - daysPassed + 1 - fertilizerEffect;
     }
 
-    public boolean isFertilized() {
-        return isFertilized;
-    }
-
-    public void setFertilized(boolean fertilized) {
-        isFertilized = fertilized;
-    }
-
-    public void goToNextDay(){
-        if (this.isFullyGrown)
-            return;
-
-        handleFruitCycle();
-
-        this.daysWithoutWater++;
-        if (this.daysWithoutWater >= 2)
-            tile.setPlaceable(null);
-
-        if (!this.isWateredToday)
-            return;
-
-        //stage Handling
+    void handleStages() {
         this.whichDayOfStage++;
+        if (getDaysTillFullGrowth() == 0) {
+            this.isFullyGrown = true;
+            return;
+        }
+
         if (this.whichDayOfStage > this.type.getStages().get(this.currentStageIndex)) {
-            if (this.currentStageIndex > this.type.getStages().size()) {
-                this.isFullyGrown = true;
-                return;
-            }
             this.currentStageIndex++;
             this.whichDayOfStage = 1;
         }
     }
 
-    private void handleFruitCycle() {
-        if (daysTillNextHarvest == 0){
+    void handleFruitCycle() {
+        if (!isFullyGrown)
+            return;
+
+        if (daysTillNextHarvest == 0) {
             daysTillNextHarvest = type.getFruitHarvestCycle();
-            isFullyGrown = true;
+            hasFruit = true;
         } else
             daysTillNextHarvest--;
     }
+
     public TreeType getType() {
         return type;
     }
@@ -75,11 +60,8 @@ public class Tree extends Plant implements Placeable {
         this.type = type;
     }
 
-    public boolean isHitByLightning() {
-        return isHitByLightning;
-    }
-
-    public void setHitByLightning(boolean hitByLightning) {
-        isHitByLightning = hitByLightning;
+    @Override
+    public void harvest() {
+        daysTillNextHarvest = type.getFruitHarvestCycle();
     }
 }

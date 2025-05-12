@@ -1,11 +1,9 @@
 package org.example.models;
 
 import org.example.models.enums.Menu;
-import org.example.models.enums.ToolType;
-import org.example.models.plant.SeedType;
+import org.example.models.tools.ToolType;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class App {
     private static User loggedInUser;
@@ -93,15 +91,6 @@ public class App {
         return new int[]{10, 10}; // never happens
     }
 
-
-    public static SeedType getSeedType(String name) {
-        for (SeedType seedType : SeedType.values()) {
-            if (seedType.name().equals(name)) {
-                return seedType;
-            }
-        }
-        return null;
-    }
 
     public static ToolType getToolTypeByName(String name) {
         for (ToolType type : ToolType.values()) {

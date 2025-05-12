@@ -166,7 +166,7 @@ public class GameMenu implements AppMenu {
         //For Artisan
         else if ((matcher = GameMenuCommands.ArtisanUse.getMatcher(command)) != null) {
             System.out.println(controller.artisanUse(
-                    matcher.group("artisanUse"),
+                    matcher.group("artisanName"),
                     matcher.group("itemNames")
             ));
         } else if ((matcher = GameMenuCommands.ArtisanGet.getMatcher(command)) != null) {
@@ -228,6 +228,18 @@ public class GameMenu implements AppMenu {
         } else if ((matcher = GameMenuCommands.startTrade.getMatcher(command))!=null) {
             System.out.println(controller.startTrade());
             App.setCurrentMenu(Menu.TradeMenu);
+        }
+        // for NPC
+        else if ((matcher = GameMenuCommands.meetNPC.getMatcher(command)) != null) {
+            System.out.println(controller.meetNPC(matcher.group("npcName"),scanner));
+        }else if ((matcher = GameMenuCommands.giftNPC.getMatcher(command)) != null) {
+            System.out.println(controller.giftNPC(matcher));
+        }else if (command.trim().equals("friendship NPC list")) {
+            System.out.println(controller.friendshipNPCList());
+        }else if (command.trim().equals("quests list")) {
+            System.out.println(controller.questsList());
+        }else if ((matcher = GameMenuCommands.questFinish.getMatcher(command)) != null) {
+            System.out.println(controller.questFinish(matcher.group("index")));
         }
         else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
