@@ -21,7 +21,7 @@ public class Food implements BackPackable {
 
     @Override
     public BackPackableType getType() {
-        return null;
+        return foodtype;
     }
 
 

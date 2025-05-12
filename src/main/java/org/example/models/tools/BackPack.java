@@ -90,6 +90,7 @@ public class BackPack {
     }
 
     public void addItemToInventory(BackPackable backPackable) {
+
         backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
         backPackItems.get(backPackable.getType()).add(backPackable);
     }

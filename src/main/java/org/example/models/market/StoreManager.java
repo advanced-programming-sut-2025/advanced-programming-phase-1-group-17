@@ -6,7 +6,6 @@ import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItemType;
-import org.example.models.enums.AnimalType;
 import org.example.models.enums.Season;
 import org.example.models.tools.ToolType;
 import org.example.models.foraging.MineralType;
@@ -33,19 +32,19 @@ public class StoreManager {
     public void initializeStores() {
         // === Blacksmith ===
         StoreInventory blacksmith = new StoreInventory(StoreType.Blacksmith);
-        blacksmith.addItem(new ShopItem(CraftingItemType.CopperOre, 75, Integer.MAX_VALUE, "A common ore that can be smelted into bars."));
-        blacksmith.addItem(new ShopItem(CraftingItemType.IronOre, 150, Integer.MAX_VALUE, "A fairly common ore that can be smelted into bars."));
+        blacksmith.addItem(new ShopItem(NormalItemType.CopperOre, 75, Integer.MAX_VALUE, "A common ore that can be smelted into bars."));
+        blacksmith.addItem(new ShopItem(NormalItemType.IronOre, 150, Integer.MAX_VALUE, "A fairly common ore that can be smelted into bars."));
         blacksmith.addItem(new ShopItem(MineralType.Coal, 150, Integer.MAX_VALUE, "A combustible rock that is useful for crafting and smelting."));
-        blacksmith.addItem(new ShopItem(CraftingItemType.GoldOre, 400, Integer.MAX_VALUE, "A precious ore that can be smelted into bars."));
+        blacksmith.addItem(new ShopItem(NormalItemType.GoldOre, 400, Integer.MAX_VALUE, "A precious ore that can be smelted into bars."));
 
-        blacksmith.addUpgradeService(new UpgradeService("Copper Tool", CraftingItemType.CopperBar, 5, 2000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Steel Tool", CraftingItemType.IronBar, 5, 5000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Gold Tool", CraftingItemType.GoldBar, 5, 10000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Iridium Tool", CraftingItemType.IridiumBar, 5, 25000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Copper Trash Can", CraftingItemType.CopperBar, 5, 1000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Steel Trash Can", CraftingItemType.IronBar, 5, 2500, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Gold Trash Can", CraftingItemType.GoldBar, 5, 5000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Iridium Trash Can", CraftingItemType.IridiumBar, 5, 12500, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Copper Tool", NormalItemType.CopperBar, 5, 2000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Steel Tool", NormalItemType.IronBar, 5, 5000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Gold Tool", NormalItemType.GoldBar, 5, 10000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Iridium Tool", NormalItemType.IridiumBar, 5, 25000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Copper Trash Can", NormalItemType.CopperBar, 5, 1000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Steel Trash Can", NormalItemType.IronBar, 5, 2500, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Gold Trash Can", NormalItemType.GoldBar, 5, 5000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Iridium Trash Can", NormalItemType.IridiumBar, 5, 12500, 1));
         registerShop(blacksmith);
 
         // === Ranch ===

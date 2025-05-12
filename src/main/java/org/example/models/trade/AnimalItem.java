@@ -1,6 +1,6 @@
 package org.example.models.trade;
 
-import org.example.models.enums.AnimalType;
+import org.example.models.animal.AnimalType;
 
 public class AnimalItem {
     //TODO: may this class be deleted and integrated with ShopItem
@@ -8,14 +8,12 @@ public class AnimalItem {
     private final AnimalType animalType;
     private final String description;
     private final double price;
-    private final AnimalHabitat requiredBuilding;
     private final int dailyLimit;
 
-    public AnimalItem(AnimalType animalType, String description, double price, AnimalHabitat requiredBuilding, int dailyLimit) {
+    public AnimalItem(AnimalType animalType, String description, double price, int dailyLimit) {
         this.animalType = animalType;
         this.description = description;
         this.price = price;
-        this.requiredBuilding = requiredBuilding;
         this.dailyLimit = dailyLimit;
     }
 
@@ -31,9 +29,6 @@ public class AnimalItem {
         return price;
     }
 
-    public AnimalHabitat getRequiredBuilding() {
-        return requiredBuilding;
-    }
 
     public int getDailyLimit() {
         return dailyLimit;

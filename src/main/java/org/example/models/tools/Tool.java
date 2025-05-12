@@ -119,7 +119,7 @@ public class Tool implements BackPackable {
         this.wateringCanStorage = wateringCanStorage;
     }
 
-    public int getNumByMaterial(){
+    public int getLvlByMaterial(){
         return this.material.ordinal();
     }
 

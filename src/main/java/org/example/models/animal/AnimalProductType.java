@@ -1,5 +1,6 @@
-package org.example.models.enums;
+package org.example.models.animal;
 
+import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 
 public enum AnimalProductType implements BackPackableType {
@@ -31,4 +32,5 @@ public enum AnimalProductType implements BackPackableType {
     public double getPrice() {
         return price;
     }
+
 }
