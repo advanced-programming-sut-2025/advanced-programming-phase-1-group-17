@@ -2137,7 +2137,7 @@ public class GameMenuController {
                         }
                         if (2 < currentPlayer.getFriendShipsWithNPCs().get(npc) / 200) {
                             npc.giveReward(currentPlayer, Integer.parseInt(index));
-                            npc.giveRewars(currentPlayer, Integer.parseInt(index));
+                            npc.giveReward(currentPlayer, Integer.parseInt(index));
                         } else {
                             npc.giveReward(currentPlayer, Integer.parseInt(index));
                         }
