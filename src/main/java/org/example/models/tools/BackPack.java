@@ -2,6 +2,7 @@ package org.example.models.tools;
 
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
+import org.example.models.Placeable;
 import org.example.models.Player;
 import org.example.models.enums.BackPackType;
 
@@ -20,6 +21,11 @@ public class BackPack {
     private final BackPackType type;
     private double coin = 0;
 
+    public BackPack(BackPackType type, Player player) {
+        this.type = type;
+        this.player = player;
+    }
+
     public double getCoin() {
         return coin;
     }
@@ -35,10 +41,6 @@ public class BackPack {
 
     public void addcoin(double coin) {
         this.coin += coin;
-    }
-
-    public BackPack(BackPackType type) {
-        this.type = type;
     }
 
     public boolean isBackPackFull() {
@@ -104,7 +106,7 @@ public class BackPack {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setCoin(double coin) {
+        this.coin = coin;
     }
 }

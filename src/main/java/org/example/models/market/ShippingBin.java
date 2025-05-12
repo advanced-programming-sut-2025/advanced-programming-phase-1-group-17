@@ -10,13 +10,10 @@ import java.util.HashMap;
 public class ShippingBin implements Placeable {
     private static ArrayList<ShippingBin> allShippingBins = new ArrayList<>();
     private HashMap<BackPackableType, Integer> items = new HashMap<>();
-    private final ShippingBinType type;
-
     //only one player can have items in a shipping bin each day
     private Player todayItemOwner = null;
 
-    public ShippingBin(ShippingBinType type) {
-        this.type = type;
+    public ShippingBin() {
         allShippingBins.add(this);
     }
 
@@ -29,10 +26,6 @@ public class ShippingBin implements Placeable {
         }
     }
 
-    public ShippingBinType getType() {
-        return type;
-    }
-
     public static void goToNextDay() {
         for (ShippingBin shippingBin : allShippingBins) {
             double total = 0;
@@ -43,7 +36,7 @@ public class ShippingBin implements Placeable {
                 return;
 
             shippingBin.todayItemOwner.getBackPack().addCoin(
-                    Math.floor(total * shippingBin.getType().getLeverage()));
+                    Math.floor(total));
             shippingBin.items = new HashMap<>();
             shippingBin.todayItemOwner = null;
         }

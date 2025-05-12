@@ -1,6 +1,6 @@
 package org.example.models;
 
-public class NormalItem implements BackPackable{
+public class NormalItem implements BackPackable, Placeable{
     private NormalItemType type;
 
     @Override

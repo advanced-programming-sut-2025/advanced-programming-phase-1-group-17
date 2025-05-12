@@ -21,6 +21,7 @@ public enum CraftingItemType implements BackPackableType {
     OilMaker,
     PreservesJar,
     Dehydrator,
+    GrassStarter,
     FishSmoker,
     MysticTreeSeed;
 

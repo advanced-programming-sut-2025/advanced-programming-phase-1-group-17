@@ -15,7 +15,6 @@ import org.example.models.cooking.Recipe;
 import org.example.models.enums.*;
 import org.example.models.foraging.ForagingController;
 import org.example.models.foraging.Mineral;
-import org.example.models.foraging.MineralType;
 import org.example.models.map.AnimalPlace;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Tile;
@@ -26,15 +25,9 @@ import org.example.models.tools.Tool;
 import org.example.models.Trade;
 import org.example.models.tools.ToolType;
 import org.example.models.market.*;
-import org.example.models.trade.Fish;
-import org.example.models.trade.Trade;
-import org.example.models.tools.ToolType;
-import org.example.models.market.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
-
-import static org.example.models.enums.WeatherType.*;
 
 public class GameMenuController {
 
@@ -189,7 +182,7 @@ public class GameMenuController {
         Tile tile = App.getCurrentGame().getTileByIndex(x, y);
         if (tile == null)
             return new Result(false, "tile not found");
-        tile.setLightninged(true);
+        tile.lightningStrike();
         return new Result(true, "Successfully lightninged.");
     }
 
@@ -214,17 +207,21 @@ public class GameMenuController {
 
     public Result buildGreenHouse() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (player.getBackPack().getCoin() >= 1000 && player.getBackPack().getBackPackItems().get(NormalItemType.Wood).size() >= 500) {
-            player.getBackPack().addCoin(-1000);
+        if (player.getBackPack().getCoin() < 1000)
+            return new Result(false, "You only have %.2f coin. (not enough)".formatted(
+                    player.getBackPack().getCoin()
+            ));
+        int woodCount = player.getBackPack().getInventorySize(NormalItemType.Wood.getName());
+        if (woodCount < 500)
+            return new Result(false, "You only have %d wood(not enough wood)".formatted(woodCount));
 
-            for (int i = 0; i < 500; i++)
-                player.getBackPack().useItem(NormalItemType.Wood);
+        player.getBackPack().addCoin(-1000);
 
-            player.getPlayerMap().setGreenHouse(new GreenHouse(player));
-            return new Result(true, "GreenHouse created Successfully");
-        } else {
-            return new Result(false, "you don't have enough coin and wood");
-        }
+        for (int i = 0; i < 500; i++)
+            player.getBackPack().useItem(NormalItemType.Wood);
+
+        player.getPlayerMap().getGreenHouse().setActive(true);
+        return new Result(true, "GreenHouse created Successfully");
     }
 
     public Result walk(int x, int y, Scanner scanner) {
@@ -268,6 +265,7 @@ public class GameMenuController {
             }
         }
     }
+
     public List<Tile> aStar(int startX, int startY, int endX, int endY, Player player) {
         int[][] directions = {
                 {0, 1}, {1, 0}, {0, -1}, {-1, 0},
@@ -319,6 +317,7 @@ public class GameMenuController {
 
         return null;
     }
+
     private boolean isValid(Tile tile, Player player) {
         return tile != null && tile.isWalkAble() &&
                 (tile.getOwner().equals(player) ||
@@ -498,12 +497,11 @@ public class GameMenuController {
 
                 player.getBackPack().addItemToInventory(mineral);
                 tile.setPlaceable(null);
-                return new Result(true, "stone broke successfully");
                 if (player.getAbilities().getMiningLevel() >= 2) {
                     player.getBackPack().addItemToInventory(mineral);
                     return new Result(true, "stone broke successfully and you also got 1 more because of mining level");
                 }
-                return new Result(true, "stone breaked successfully");
+                return new Result(true, "stone broke successfully");
 
             } else if (tile.isPlowed()) {
                 tile.setPlowed(false);
@@ -525,14 +523,11 @@ public class GameMenuController {
             }
         } else if (tool.getToolType().equals(ToolType.Scythe)) {
             //TODO: Alaf
+            //TODO: Giant Crop(*10)
             player.setEnergy(player.getEnergy() - 2);
             if (tile.getPlaceable() instanceof Plant plant) {
                 player.getAbilities().increaseFarmingAbility(5);
                 if (plant instanceof Tree tree) {
-                    if (tree.getTile().isLightninged()) {
-                        //TODO: gives Coal instead of fruit
-                        player.getBackPack().addItemToInventory(new Mineral(MineralType.Coal, false));
-                    }
                     tree.setFullyGrown(false);
                     player.getBackPack().addItemToInventory(
                             new Fruit(tree.getType().getFruitType())
@@ -551,8 +546,8 @@ public class GameMenuController {
         } else if (tool.getToolType().equals(ToolType.MilkPail)) {
             if (tile.getPlaceable() instanceof Animal) {
                 Animal animal = (Animal) tile.getPlaceable();
-                if(animal.getAnimalType().equals(AnimalType.Cow)){
-                    for(AnimalProduct animalProduct : animal.getAnimalProducts()){
+                if (animal.getAnimalType().equals(AnimalType.Cow)) {
+                    for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
                         player.getBackPack().addItemToInventory(animalProduct);
                     }
                 }
@@ -614,7 +609,7 @@ public class GameMenuController {
             }
             result.append("""
                     Name: %s
-                    Source: %s""".formatted(fruitType.name(), tree.getSource().name()));
+                    Source: %s""".formatted(fruitType.name(), tree.getSapling().name()));
             result.append("\nStages: ");
             int counter = 1;
             for (Integer stage : tree.getStages()) {
@@ -663,8 +658,13 @@ public class GameMenuController {
         int newY = player.getY() + directions[1];
 
         Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
-        if (tile.getPlaceable() != null && !(tile.getPlaceable() instanceof GreenHouse))
+        if (tile ==  null) {
+            return new Result(false, "TIle out of map");
+        }
+
+        if (tile.getPlaceable() != null && !(tile.getPlaceable() instanceof GreenHouse greenHouse))
             return new Result(false, "Specified tile is already occupied");
+
 
         if (!tile.isPlowed())
             return new Result(false, "The Specified tile is not Plowed");
@@ -677,12 +677,15 @@ public class GameMenuController {
                     player.getBackPack().getBackPackItems().get(seedType).isEmpty())
                 return new Result(false, "You do not have any seed of this type");
 
-            player.getBackPack().useItem(seedType);
-            if (tile.getPlaceable() instanceof GreenHouse)
-                tile.setPlaceable(new Crop(false, seedType.getCropType(), false, tile, true));
+            if (tile.getPlaceable() instanceof GreenHouse greenHouse) {
+                if (!greenHouse.isActive())
+                    return new Result(false, "You need to Build the Greenhouse first");
+                tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, true));
+            }
             else if (tile.getPlaceable() == null)
-                tile.setPlaceable(new Crop(false, seedType.getCropType(), false, tile, false));
+                tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, false));
 
+            player.getBackPack().useItem(seedType);
             return new Result(true,
                     "Successfully planted a plant of type %s in (%d,%d)".formatted(
                             seedType.name(), newX, newY
@@ -693,12 +696,16 @@ public class GameMenuController {
                 player.getBackPack().getBackPackItems().get(saplingType).isEmpty())
             return new Result(false, "You do not have any sapling of this type");
 
-        player.getBackPack().useItem(saplingType);
-        if (tile.getPlaceable() instanceof GreenHouse)
-            tile.setPlaceable(new Tree(false, saplingType.getTreeType(), false, tile, true));
-        else if (tile.getPlaceable() == null)
-            tile.setPlaceable(new Tree(false, saplingType.getTreeType(), false, tile, false));
 
+        if (tile.getPlaceable() instanceof GreenHouse greenHouse) {
+            if (!greenHouse.isActive())
+                return new Result(false, "You need to Build the Greenhouse first");
+            tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, true));
+        }
+        else if (tile.getPlaceable() == null)
+            tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, false));
+
+        player.getBackPack().useItem(saplingType);
         return new Result(true,
                 "Successfully planted a plant of type %s in (%d,%d)".formatted(
                         saplingType.name(), newX, newY
@@ -709,7 +716,11 @@ public class GameMenuController {
         int x1 = Integer.parseInt(x);
         int y1 = Integer.parseInt(y);
 
-        Tile tile = App.getCurrentGame().getTileByIndex(x1, y1);
+        Tile tile = Tile.getTile(x1, y1);
+        if (tile == null) {
+            return new Result(false, "Tile out of map.");
+        }
+
         if (tile.getPlaceable() instanceof Tree tree) {
             return new Result(true, """
                     Name: %s
@@ -727,7 +738,10 @@ public class GameMenuController {
     }
 
     public Result fertilize(String fertilizer, String direction) {
-        //TODO: Add different kinds of fertilizers
+        FertilizerType fertilizerType = FertilizerType.getFertilizerTypeByName(fertilizer);
+        if (fertilizerType == null) {
+            return new Result(false, "No fertilizer with name %s".formatted(fertilizer));
+        }
 
         int[] directions = App.handleDirection(Integer.parseInt(direction));
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
@@ -736,14 +750,17 @@ public class GameMenuController {
         int newY = player.getY() + directions[1];
         Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
 
-        //TODO: if we don't have any fertilizer
-        //TODO: delete fertilizer from backPack
+        if (tile == null) {
+            return new Result(false, "Tile out of map.");
+        }
 
-        if (tile.getPlaceable() instanceof Tree tree) {
-            tree.setFertilized(true);
-            return new Result(true, "Fertilized successfully");
-        } else if (tile.getPlaceable() instanceof Crop crop) {
-            crop.setFertilized(true);
+        if (player.getBackPack().getInventorySize(fertilizerType.getName()) == 0) {
+            return new Result(false ,"You do not have fertilizer of type %s".formatted(fertilizerType.getName()));
+        }
+
+        if (tile.getPlaceable() instanceof Plant plant) {
+            player.getBackPack().useItem(fertilizerType);
+            plant.setFertilizerType(fertilizerType);
             return new Result(true, "Fertilized successfully");
         }
 
@@ -795,6 +812,10 @@ public class GameMenuController {
     }
 
     public Result placeItem(String itemName, String direction) {
+        //TODO: Shipping Bin and Well
+        //Shipping Bin(if NormalItem.getType().equals(NormalItemType.ShippingBin)): tile.setplaceable(new ShippingBin());
+        //TODO: GrassStarter
+
         if (CraftingItem.findCraftingItemTypeByName(itemName) == null) {
             return new Result(false, "No item found");
         }
@@ -859,105 +880,105 @@ public class GameMenuController {
 
     public Result eat(String foodName) {
 
-        try{
+        try {
             App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(foodName);
             return new Result(true, "you ate " + foodName + " successfully");
-        }catch (Exception e){
-            return new Result(false,"invalid food");
+        } catch (Exception e) {
+            return new Result(false, "invalid food");
         }
     }
 
     public Result build(String name, String x, String y) {
         AnimalPlaceType animalPlaceType;
-        try{
+        try {
             animalPlaceType = AnimalPlaceType.valueOf(name);
-        }catch(Exception e){
+        } catch (Exception e) {
             return new Result(false, "Invalid place");
         }
         AnimalPlace animalPlace = new AnimalPlace(animalPlaceType);
-        int xint=Integer.parseInt(x);
-        int yint=Integer.parseInt(y);
-        for(int i=-2;i<2;i++){
-            for(int j=-2;j<2;j++){
-                Tile tile = Tile.getTile(xint + i,yint+j);
-                if(tile==null){
-                    return new Result(false,"Tile not found");
+        int xint = Integer.parseInt(x);
+        int yint = Integer.parseInt(y);
+        for (int i = -2; i < 2; i++) {
+            for (int j = -2; j < 2; j++) {
+                Tile tile = Tile.getTile(xint + i, yint + j);
+                if (tile == null) {
+                    return new Result(false, "Tile not found");
                 }
-                if(tile.getPlaceable() != null){
-                    return new Result(false,"this area is not empty for building ");
+                if (tile.getPlaceable() != null) {
+                    return new Result(false, "this area is not empty for building ");
                 }
             }
         }
-        for(int i=-2;i<2;i++){
-            for(int j=-2;j<2;j++){
-                Tile tile = Tile.getTile(xint + i,yint+j);
+        for (int i = -2; i < 2; i++) {
+            for (int j = -2; j < 2; j++) {
+                Tile tile = Tile.getTile(xint + i, yint + j);
                 tile.setPlaceable(animalPlace);
             }
         }
-        return new Result(true,"build successfully");
+        return new Result(true, "build successfully");
     }
 
     public Result buyAnimal(String animal, String name) {
         AnimalType animalType;
-        try{
-            animalType=AnimalType.valueOf(animal);
-        }catch (Exception e){
+        try {
+            animalType = AnimalType.valueOf(animal);
+        } catch (Exception e) {
             return new Result(false, "Invalid animal");
         }
-        Animal animal1=new Animal(name,animalType);
+        Animal animal1 = new Animal(name, animalType);
 
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for(AnimalPlace animalPlace : player.getPlayerMap().getFarm().getAnimalPlaces()){
-            if(animal1.getAnimalType().getAnimalPlaceTypes().contains(animalPlace.getAnimalPlaceType())){
-                if(animalPlace.getCapacity()==0){
+        for (AnimalPlace animalPlace : player.getPlayerMap().getFarm().getAnimalPlaces()) {
+            if (animal1.getAnimalType().getAnimalPlaceTypes().contains(animalPlace.getAnimalPlaceType())) {
+                if (animalPlace.getCapacity() == 0) {
                     List<AnimalPlace> list = player.getPlayerMap().getFarm().getAnimalPlaces();
-                    if(animalPlace.equals(player.getPlayerMap().getFarm().getAnimalPlaces().get(list.size()-1))){
-                        return new Result(false,"no valid AnimalPlace with enough space");
+                    if (animalPlace.equals(player.getPlayerMap().getFarm().getAnimalPlaces().get(list.size() - 1))) {
+                        return new Result(false, "no valid AnimalPlace with enough space");
                     }
                     continue;
                 }
                 animalPlace.addAnimal(animal1);
                 player.getPlayerMap().getFarm().getAnimals().add(animal1);
-                return new Result(true,name + " added to your animal successfully");
+                return new Result(true, name + " added to your animal successfully");
             }
         }
-        return new Result(false,"no suitable AnimalPlace for " + name);
+        return new Result(false, "no suitable AnimalPlace for " + name);
     }
 
     public Result pet(String name) {
-        if(Animal.findAnimalByName(name) == null){
-            return new Result(false,"no animal with name : " + name);
+        if (Animal.findAnimalByName(name) == null) {
+            return new Result(false, "no animal with name : " + name);
         }
         Animal animal = Animal.findAnimalByName(name);
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(),player.getY());
-        if(Tile.findAround(animal) ==null){
-            return new Result(false,"you should stand next to " + name + " to pet it");
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (Tile.findAround(animal) == null) {
+            return new Result(false, "you should stand next to " + name + " to pet it");
         }
-        animal.setFriendship(animal.getFriendship()+15);
-        return new Result(true,name + " petted successfully");
+        animal.setFriendship(animal.getFriendship() + 15);
+        return new Result(true, name + " petted successfully");
 
     }
 
     public Result setFriendship(String animalName, String amount) {
-        if(Animal.findAnimalByName(animalName) == null){
-            return new Result(false,"animal not found");
+        if (Animal.findAnimalByName(animalName) == null) {
+            return new Result(false, "animal not found");
         }
         Animal animal = Animal.findAnimalByName(animalName);
         int amountInt = Integer.parseInt(amount);
-        animal.setFriendship(animal.getFriendship()+amountInt);
-        return new Result(true,"friendship is now " + animal.getFriendship());
+        animal.setFriendship(animal.getFriendship() + amountInt);
+        return new Result(true, "friendship is now " + animal.getFriendship());
     }
 
     public Result animals() {
-    StringBuilder sb = new StringBuilder();
-    for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()){
-        sb.append(animal.getName()).append(" (").append(animal.getAnimalType()).append(") ").append("\n")
-                .append("friendship : ").append(animal.getFriendship()).append("\n")
-                .append(animal.isPettedToday()?"petted today" : "not petted today").append("\n")
-                .append(animal.isFedToday()?"feded today" : "not fed today");
-    }
-    return new Result(true,sb.toString());
+        StringBuilder sb = new StringBuilder();
+        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
+            sb.append(animal.getName()).append(" (").append(animal.getAnimalType()).append(") ").append("\n")
+                    .append("friendship : ").append(animal.getFriendship()).append("\n")
+                    .append(animal.isPettedToday() ? "petted today" : "not petted today").append("\n")
+                    .append(animal.isFedToday() ? "feded today" : "not fed today");
+        }
+        return new Result(true, sb.toString());
     }
 
     public Result shepherdAnimal(String animalName, String x, String y) {
@@ -965,94 +986,95 @@ public class GameMenuController {
     }
 
     public Result feedHay(String animalName) {
-        if(Animal.findAnimalByName(animalName) == null){
-            return new Result(false,"no animal with name : " + animalName);
+        if (Animal.findAnimalByName(animalName) == null) {
+            return new Result(false, "no animal with name : " + animalName);
         }
         Animal animal = Animal.findAnimalByName(animalName);
         //TODO enough hay?
-        if(animal.isFedToday()){
-            return new Result(false,"already fed today");
+        if (animal.isFedToday()) {
+            return new Result(false, "already fed today");
         }
         animal.setFedToday(true);
-        return new Result(true,animal.getName() + " feded seccessfully");
+        return new Result(true, animal.getName() + " feded seccessfully");
     }
 
     public Result produce() {
         StringBuilder sb = new StringBuilder();
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for(Animal animal :player.getPlayerMap().getFarm().getAnimals()){
-            if(!animal.getAnimalProducts().isEmpty()){
+        for (Animal animal : player.getPlayerMap().getFarm().getAnimals()) {
+            if (!animal.getAnimalProducts().isEmpty()) {
                 sb.append(animal.getName()).append("\n");
-                for(AnimalProduct animalProduct : animal.getAnimalProducts()){
+                for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
                     sb.append(animalProduct.getAnimalProductType()).append("\n")
                             .append("quantity : ").append(animalProduct.getCount()).append("\n")
                             .append("quality : ").append(animalProduct.getShippingBinType().name()).append("\n");
                 }
             }
         }
-        return new Result(true,sb.toString());
+        return new Result(true, sb.toString());
     }
 
     public Result collectProduct(String name) {
-        if(Animal.findAnimalByName(name) == null){
-            return new Result(false,"animal not found");
+        if (Animal.findAnimalByName(name) == null) {
+            return new Result(false, "animal not found");
         }
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if(player.getBackPack().isBackPackFull()){
-            return new Result(false,"your backpack is full");
+        if (player.getBackPack().isBackPackFull()) {
+            return new Result(false, "your backpack is full");
         }
         //TODO  im confused
+        return new Result(false, "5");
     }
 
     public Result sellAnimal(String name) {
-        if(Animal.findAnimalByName(name) == null){
-            return new Result(false,"animal not found");
+        if (Animal.findAnimalByName(name) == null) {
+            return new Result(false, "animal not found");
         }
         Animal animal = Animal.findAnimalByName(name);
         animal.sell();
-        return new Result(true,"animal sold successfully");
+        return new Result(true, "animal sold successfully");
     }
 
     public Result fishing(String fishingPole) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         FishingPoleType fishingPoleType;
-        try{
-             fishingPoleType = FishingPoleType.valueOf(fishingPole);
-        }catch (Exception e){
-            return new Result(false,"invalid fishing pole");
+        try {
+            fishingPoleType = FishingPoleType.valueOf(fishingPole);
+        } catch (Exception e) {
+            return new Result(false, "invalid fishing pole");
         }
-        if(!player.getBackPack().getBackPackItems().containsKey(fishingPoleType)){
-            return new Result(false,"you dont have this fishing pole in your backpack");
+        if (!player.getBackPack().getBackPackItems().containsKey(fishingPoleType)) {
+            return new Result(false, "you dont have this fishing pole in your backpack");
         }
 
         double R = Math.random();
-        double M=1;
+        double M = 1;
         TimeAndDate date = App.getCurrentGame().getDate();
-        switch (date.getTodayWeatherType()){
-            case Sunny -> M=1.5;
-            case Rainy -> M=1.2;
-            case Storm -> M=0.5;
-            default -> M=0.1;
+        switch (date.getTodayWeatherType()) {
+            case Sunny -> M = 1.5;
+            case Rainy -> M = 1.2;
+            case Storm -> M = 0.5;
+            default -> M = 0.1;
         }
-        int level=player.getAbilities().getFishingLevel();
+        int level = player.getAbilities().getFishingLevel();
         int count = (int) Math.ceil(R * M * (level + 2));
-        count = Math.min(6,count);
+        count = Math.min(6, count);
         double pole = fishingPoleType.getPole();
-        Fish fish=new Fish();
+        Fish fish = new Fish();
         ArrayList<FishType> fishes = new ArrayList<>();
-        for(FishType fishType : FishType.values()){
-            if(fishType.getSeason().equals(date.getSeason())){
+        for (FishType fishType : FishType.values()) {
+            if (fishType.getSeason().equals(date.getSeason())) {
                 fishes.add(fishType);
             }
         }
         Random rand = new Random();
         FishType randomElement = fishes.get(rand.nextInt(fishes.size()));
-        if(player.getBackPack().isBackPackFull()){
-            return new Result(false,"your backpack is full");
+        if (player.getBackPack().isBackPackFull()) {
+            return new Result(false, "your backpack is full");
         }
         fish.setFishType(randomElement);
         player.getBackPack().addItemToInventory(fish);
-        return new Result(true,"fish got cought successfully");
+        return new Result(true, "fish got cought successfully");
     }
 
     public Result artisanUse(String artisanName, String itemNames) {
@@ -1200,8 +1222,13 @@ public class GameMenuController {
         //check is the player in store
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         Tile tile = App.getCurrentGame().getTileByIndex(player.getX(), player.getY());
-        if (tile.getPlaceable() instanceof Store store)
+        if (tile.getPlaceable() instanceof Store store) {
+            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
+                return new Result(false, "Store is open from %d to %d".formatted(
+                        store.getType().getOpeningHour(), store.getType().getClosingHour()
+                ));
             return new Result(true, App.getCurrentGame().getStoreManager().showAllProducts(store));
+        }
         return new Result(false, "You are not in a store");
     }
 
@@ -1210,8 +1237,13 @@ public class GameMenuController {
         //check is the player in store
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         Tile tile = App.getCurrentGame().getTileByIndex(player.getX(), player.getY());
-        if (tile.getPlaceable() instanceof Store store)
+        if (tile.getPlaceable() instanceof Store store) {
+            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
+                return new Result(false, "Store is open from %d to %d".formatted(
+                        store.getType().getOpeningHour(), store.getType().getClosingHour()
+                ));
             return new Result(true, App.getCurrentGame().getStoreManager().showAllAvailableProducts(store));
+        }
         return new Result(false, "You are not in a store");
     }
 
@@ -1224,9 +1256,14 @@ public class GameMenuController {
         } else
             return new Result(false, "The Player is not in a store");
 
+        if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
+            return new Result(false, "Store is open from %d to %d".formatted(
+                    store.getType().getOpeningHour(), store.getType().getClosingHour()
+            ));
+
         ShopItem product = null;
         for (ShopItem shopItem : App.getCurrentGame().getStoreManager().getInventory(storeType).getItems()) {
-            if (shopItem.getName().equals(productName)) {
+            if (shopItem.getName().equalsIgnoreCase(productName)) {
                 product = shopItem;
             }
         }
@@ -1234,6 +1271,10 @@ public class GameMenuController {
             return new Result(false, "no product with name %s in store %s".formatted(
                     productName, storeType.name()
             ));
+
+        if (storeType.equals(StoreType.FishShop))
+            if (!App.getCurrentGame().getStoreManager().checkFishingSkill(product))
+                return new Result(false, "You do not have enough fishing skill to buy this item.");
 
         int count1;
 
@@ -1246,7 +1287,18 @@ public class GameMenuController {
         if (availableCount < count1)
             return new Result(false, "only %d left today".formatted(availableCount));
 
-        double price = product.getPrice() * count1;
+        if (!App.getCurrentGame().getStoreManager().hasIngredients(product))
+            return new Result(false, "You do not have enough ingredients to buy this item");
+
+        App.getCurrentGame().getStoreManager().useIngredients(product);
+
+        double price;
+        if (storeType.equals(StoreType.PierresGeneralStore))
+            price = App.getCurrentGame().getStoreManager().getSeasonalPrice(product);
+        else
+            price = product.getPrice();
+
+        price *= count1;
         if (player.getBackPack().getCoin() < price)
             return new Result(false, "you have only %.2f dollars left(not enough money)".formatted(
                     player.getBackPack().getCoin()
@@ -1255,6 +1307,9 @@ public class GameMenuController {
         //purchasing
         product.setSoldToday(product.getSoldToday() + count1);
         player.getBackPack().addcoin(-price);
+        if (product.getType().equals(BackPackType.LargeBackPack) || product.getType().equals(BackPackType.DeluxeBackPack))
+            return App.getCurrentGame().getStoreManager().purchaseBackpack(product);
+
         for (int i = 0; i < count1; i++)
             player.getBackPack().addItemToInventory(product);
 

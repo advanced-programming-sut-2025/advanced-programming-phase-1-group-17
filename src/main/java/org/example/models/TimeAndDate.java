@@ -91,7 +91,6 @@ public class TimeAndDate {
         }
 
         normalizeMaxEnergies();
-        normalizeLightningedTiles();
 
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
@@ -107,14 +106,6 @@ public class TimeAndDate {
         if (day >= 28) {
             changeSeason();
             day = 1;
-        }
-    }
-
-    private void normalizeLightningedTiles() {
-        for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
-            for (Tile tile : playerMap.getTiles()) {
-                tile.setLightninged(false);
-            }
         }
     }
 
@@ -148,9 +139,13 @@ public class TimeAndDate {
         for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
             for (Tile tile : playerMap.getTiles()) {
                 if (tile.getPlaceable() instanceof Tree tree) {
+                    if (tree.isInsideGreenhouse())
+                        continue;
                     if (!tree.getType().getSeasons().contains(season))
                         tree.getTile().setPlaceable(null);
                 } else if (tile.getPlaceable() instanceof Crop crop) {
+                    if (crop.isInsideGreenhouse())
+                        continue;
                     if (!crop.getType().getSeasons().contains(season))
                         crop.getTile().setPlaceable(null);
                 }
