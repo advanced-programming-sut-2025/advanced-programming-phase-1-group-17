@@ -23,7 +23,7 @@ import org.example.models.tools.BackPack;
 import org.example.models.tools.FishingPoleType;
 import org.example.models.tools.Tool;
 import org.example.models.Fish;
-import org.example.models.trade.Trade;
+import org.example.models.Trade;
 import org.example.models.Trade;
 import org.example.models.tools.ToolType;
 import org.example.models.market.*;
@@ -498,7 +498,6 @@ public class GameMenuController {
 
                 player.getBackPack().addItemToInventory(mineral);
                 tile.setPlaceable(null);
-                return new Result(true, "stone broke successfully");
                 if (player.getAbilities().getMiningLevel() >= 2) {
                     player.getBackPack().addItemToInventory(mineral);
                     return new Result(true, "stone broke successfully and you also got 1 more because of mining level");

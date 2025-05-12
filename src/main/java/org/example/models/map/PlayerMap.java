@@ -224,7 +224,7 @@ public class PlayerMap {
                     //                    Stone stone = new Stone();
 //                    tile.setPlaceable(stone);
 //                    tile.setWalkAble(false);
-//                    numOfStones--;
+                    numOfStones--;
                 }
             }
             int counter = 0;
@@ -407,7 +407,7 @@ public class PlayerMap {
                 //                Stone stone = new Stone();
 //                tile.setPlaceable(stone);
 //                tile.setWalkAble(false);
-//                numOfStones--;
+                numOfStones--;
             }
         }
         int counter = 0;
