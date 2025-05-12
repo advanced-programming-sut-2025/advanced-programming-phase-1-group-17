@@ -1,5 +1,7 @@
 package org.example.models.animal;
 
+import org.example.models.BackPackableType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 import static org.example.models.animal.AnimalPlaceType.*;
 import static org.example.models.animal.AnimalProductType.*;
 
-public enum AnimalType {
+public enum AnimalType implements BackPackableType {
     Chicken(new ArrayList<>( Arrays.asList(Coop,BigCoop,DeluxeCoop)),new ArrayList<>(Arrays.asList(Egg,LargeEgg)), 800),
     Duck(new ArrayList<>(Arrays.asList(BigCoop,DeluxeCoop)),new ArrayList<>(Arrays.asList(DuckEgg,DuckFeather)),1200),
     Rabbit(new ArrayList<>(List.of(DeluxeCoop)),new ArrayList<>(Arrays.asList(Wool,RabbitFoot)),8000),
@@ -28,12 +30,19 @@ public enum AnimalType {
         return placeTypes;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
     public ArrayList<AnimalProductType> getProductTypes() {
         return productTypes;
     }
 
+    public ArrayList<AnimalPlaceType> getPlaceTypes() {
+        return placeTypes;
+    }
 
+    @Override
+    public String getName() {
+        return name();
+    }
 }

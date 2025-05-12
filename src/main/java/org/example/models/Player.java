@@ -48,7 +48,7 @@ public class Player {
     private boolean hasPassedOutToday = false;
 
     //For BackPack
-    private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack);
+    private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack, this);
 
     //For TrashCan & WaterStorage
     private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
@@ -107,7 +107,6 @@ public class Player {
         backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic));
         backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic));
         backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic));
-        backPack.setPlayer(this);
         this.currentTool = wateringCan;
     }
 

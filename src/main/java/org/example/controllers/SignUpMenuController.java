@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import org.example.SaveUser;
 import org.example.models.App;
 import org.example.models.Result;
 import org.example.models.User;
@@ -104,6 +105,7 @@ public class SignUpMenuController {
         System.out.println("Just one more step left to add user!\n");
         chooseSecurityQuestion(newUser, scanner);
         App.getUsers().add(newUser);
+        SaveUser.saveUser(App.getUsers());
         System.out.println("User successfully added!");
     }
 

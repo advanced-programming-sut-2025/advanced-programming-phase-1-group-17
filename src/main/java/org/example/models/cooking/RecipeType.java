@@ -1,42 +1,51 @@
 package org.example.models.cooking;
 
 import org.example.models.BackPackableType;
+import org.example.models.crafting.CraftingItemType;
 
 public enum RecipeType implements BackPackableType {
 
-    FriedEgg(FoodType.FriedEgg),
-    BakedFish(FoodType.BakedFish),
-    Salad(FoodType.Salad),
-    Olmelet(FoodType.Olmelet),
-    PumpkinPie(FoodType.PumpkinPie),
-    Spaghetti(FoodType.Spaghetti),
-    Pizza(FoodType.Pizza),
-    Tortilla(FoodType.Tortilla),
-    MakiRoll(FoodType.MakiRoll),
-    TripleShotEspresso(FoodType.TripleShotEspresso),
-    Cookie(FoodType.Cookie),
-    HashBrowns(FoodType.HashBrowns),
-    Pancakes(FoodType.Pancakes),
-    FruitSalad(FoodType.FruitSalad),
-    RedPlate(FoodType.RedPlate),
-    Bread(FoodType.Bread),
-    SalmonDinner(FoodType.SalmonDinner),
-    VegetableMedley(FoodType.VegetableMedley),
-    FarmersLunch(FoodType.FarmersLunch),
-    SurvivalBurger(FoodType.SurvivalBurger),
-    DishOTheSea(FoodType.DishOTheSea),
-    SeafoamPudding(FoodType.SeafoamPudding),
+    FriedEgg(FoodType.FriedEgg, 0),
+    BakedFish(FoodType.BakedFish, 0),
+    Salad(FoodType.Salad, 0),
+    Olmelet(FoodType.Olmelet, 0),
+    PumpkinPie(FoodType.PumpkinPie, 0),
+    Spaghetti(FoodType.Spaghetti, 0),
+    Pizza(FoodType.Pizza, 0),
+    Tortilla(FoodType.Tortilla, 0),
+    MakiRoll(FoodType.MakiRoll, 0),
+    TripleShotEspresso(FoodType.TripleShotEspresso, 0),
+    Cookie(FoodType.Cookie, 0),
+    HashBrowns(FoodType.HashBrowns, 0),
+    Pancakes(FoodType.Pancakes, 0),
+    FruitSalad(FoodType.FruitSalad, 0),
+    RedPlate(FoodType.RedPlate, 0),
+    Bread(FoodType.Bread, 0),
+    SalmonDinner(FoodType.SalmonDinner, 0),
+    VegetableMedley(FoodType.VegetableMedley, 0),
+    FarmersLunch(FoodType.FarmersLunch, 0),
+    SurvivalBurger(FoodType.SurvivalBurger, 0),
+    DishOTheSea(FoodType.DishOTheSea, 0),
+    SeafoamPudding(FoodType.SeafoamPudding, 0),
 
-    MinersTreat(FoodType.MinersTreat);
+    MinersTreat(FoodType.MinersTreat, 0),
 
-    private final FoodType foodType;
+    //Crafting Item Recipes
+    FishSmoker(CraftingItemType.FishSmoker, 5000), //In Fish Shop
+    Dehydrator(CraftingItemType.Dehydrator, 5000), //In Pierre
+    GrassStarter(CraftingItemType.GrassStarter, 500); //In Pierre
 
-    RecipeType(FoodType foodType) {
-        this.foodType = foodType;
+
+    private final BackPackableType backPackableType;
+    private final double price;
+
+    RecipeType(BackPackableType foodType, double price) {
+        this.backPackableType = foodType;
+        this.price = price;
     }
 
-    public FoodType getFoodType() {
-        return foodType;
+    public BackPackableType getBackPackableType() {
+        return backPackableType;
     }
 
     @Override
@@ -47,6 +56,6 @@ public enum RecipeType implements BackPackableType {
     @Override
     public double getPrice() {
         //TODO
-        return 0;
+        return price;
     }
 }

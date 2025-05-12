@@ -7,7 +7,7 @@ import org.example.models.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.example.models.market.ShippingBinType.*;
+import static org.example.models.market.ItemQuality.*;
 
 public class Animal implements Placeable {
     private String name;

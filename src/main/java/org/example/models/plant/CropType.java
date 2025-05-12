@@ -1,9 +1,11 @@
 package org.example.models.plant;
 
+import org.example.models.App;
 import org.example.models.BackPackableType;
 import org.example.models.enums.Season;
 
 import java.util.List;
+import java.util.Random;
 
 public enum CropType implements BackPackableType {
     BlueJazz(SeedType.JazzSeeds, List.of(1, 2, 2, 2), 7, true, -1, 50, true, 45, List.of(Season.Spring), false),
@@ -99,6 +101,19 @@ public enum CropType implements BackPackableType {
         this.canBecomeGiant = canBecomeGiant;
     }
 
+    public static CropType getCropTypeBySeedType(SeedType seedType) {
+        if (seedType.equals(SeedType.Mixed)) {
+            Season season = App.getCurrentGame().getDate().getSeason();
+            Random random = new Random();
+            int randInt = random.nextInt(MixedSeedPossibleCrops.getCropsForSeason(season).size());
+            return MixedSeedPossibleCrops.getCropsForSeason(season).get(randInt);
+        }
+        for (CropType cropType : CropType.values()) {
+            if (cropType.getSource().equals(seedType))
+                return cropType;
+        }
+        return null;
+    }
 
     public SeedType getSource() {
         return Source;

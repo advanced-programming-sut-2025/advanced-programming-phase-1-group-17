@@ -2,13 +2,13 @@ package org.example.models.animal;
 
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
-import org.example.models.market.ShippingBinType;
+import org.example.models.market.ItemQuality;
 
 public class AnimalProduct implements BackPackable {
     private Animal animal;
     private String name;
     private AnimalProductType animalProductType;
-    private ShippingBinType shippingBinType;
+    private ItemQuality shippingBinType;
 
 
     public Animal getAnimal() {
@@ -37,11 +37,11 @@ public class AnimalProduct implements BackPackable {
         this.animalProductType = animalProductType;
     }
 
-    public ShippingBinType getShippingBinType() {
+    public ItemQuality getShippingBinType() {
         return shippingBinType;
     }
 
-    public void setShippingBinType(ShippingBinType shippingBinType) {
+    public void setShippingBinType(ItemQuality shippingBinType) {
         this.shippingBinType = shippingBinType;
     }
     @Override

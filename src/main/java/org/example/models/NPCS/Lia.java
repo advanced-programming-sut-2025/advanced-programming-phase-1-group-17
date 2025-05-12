@@ -1,6 +1,11 @@
 package org.example.models.NPCS;
 
 import org.example.models.Placeable;
+import org.example.models.Player;
+import org.example.models.cooking.Food;
+import org.example.models.cooking.FoodType;
+import org.example.models.crafting.CraftingItem;
+import org.example.models.crafting.CraftingItemType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +34,7 @@ public class Lia extends NPC implements Placeable {
     {
         favorites.add("Grape");
         favorites.add("salad");
+        favorites.add("Wine");
     }
     private ArrayList<Quest> requests= new ArrayList<>();
     public ArrayList<Quest> getRequests(){
@@ -36,8 +42,22 @@ public class Lia extends NPC implements Placeable {
     }
     {
         requests.add(new Quest("Delivery of 10 woods",0,false,"Wood",10));
-        requests.add(new Quest("Delivery of a salmon fish",1,false,"SALMON",1));
+        requests.add(new Quest("Delivery of a salmon fish",1,false,"salmon",1));
         requests.add(new Quest("Delivery of 200 woods",2,false,"Wood",200));
+    }
+    public void giveReward(Player player, int index) {
+        if (index == 0) {
+            player.getBackPack().addcoin(500);
+        } else if (index == 1) {
+            Food f = new Food();
+            f.setFoodtype(FoodType.SalmonDinner);
+            player.getBackPack().addItemToInventory(f);
+        } else {
+            for (int i =0 ; i < 3; i++) {
+                CraftingItem c = new CraftingItem(CraftingItemType.DeluxeScarecrow);
+                player.getBackPack().addItemToInventory(c);
+            }
+        }
     }
     public String getName() {
         return name;

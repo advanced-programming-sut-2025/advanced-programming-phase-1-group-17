@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import org.example.SaveUser;
 import org.example.models.App;
 import org.example.models.Result;
 import org.example.models.User;
@@ -11,15 +12,15 @@ import java.util.Scanner;
 
 public class LoginMenuController {
     public Result loginUser(String input) {
-        if (input.trim().endsWith("--stay-logged-in")) {
-            //TODO
-        }
         String username = LoginMenuCommands.Login.getMatcher(input).group("username").trim();
         String password = LoginMenuCommands.Login.getMatcher(input).group("password").trim();
         if (App.getUserWithUsername(username) != null) {
             User user = App.getUserWithUsername(username);
             if (user.getPassword().equals(password)) {
                 App.setLoggedInUser(user);
+                if (input.trim().endsWith("--stay-logged-in")) {
+                    SaveUser.saveLoggedInUser(user);
+                }
                 App.setCurrentMenu(Menu.MainMenu);
                 return new Result(true, "you are logged in successfully");
             } else {

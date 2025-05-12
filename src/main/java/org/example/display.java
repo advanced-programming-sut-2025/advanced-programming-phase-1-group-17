@@ -9,12 +9,11 @@ import org.example.models.plant.Crop;
 import org.example.models.plant.Seed;
 import org.example.models.plant.Tree;
 import org.example.models.market.ShippingBin;
-import org.example.models.market.ShippingBinType;
+import org.example.models.market.ItemQuality;
 import org.example.models.market.Store;
 import org.example.models.market.StoreType;
 
 public class display {
-    //TODO khoshgel kardanesh
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
@@ -80,7 +79,8 @@ public class display {
                         System.out.print(BOLD + WHITE + "P" + RESET);
                     } else if (tile.getWhoIsHere().equals(game.getPlayers().get(1))) {
                         System.out.print(BOLD + RED + "P" + RESET);
-                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(2))) {System.out.print(BOLD + BLUE + "P" + RESET);
+                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(2))) {
+                        System.out.print(BOLD + BLUE + "P" + RESET);
                     } else if (tile.getWhoIsHere().equals(game.getPlayers().get(3))) {
                         System.out.print(BOLD + YELLOW + "P" + RESET);
                     }
@@ -92,12 +92,18 @@ public class display {
                     System.out.print(BOLD + CHOCOLATE + "S" + RESET);
                 } else if (tile.getPlaceable() instanceof Hut) {
                     System.out.print(BOLD + YELLOW + "H" + RESET);
-                } else if (tile.getPlaceable() instanceof GreenHouse) {
-                    System.out.print(BOLD + PURPLE + "G" + RESET);
+                } else if (tile.getPlaceable() instanceof GreenHouse greenHouse) {
+                    if (greenHouse.isActive())
+                        System.out.println(BOLD + GREEN + "G" + RESET);
+                    else
+                        System.out.print(BOLD + PURPLE + "G" + RESET);
                 } else if (tile.getPlaceable() instanceof Tree) {
                     System.out.print(BOLD + GREEN + "T" + RESET);
-                } else if (tile.getPlaceable() instanceof Crop) {
-                    System.out.print(BOLD + RED + "C" + RESET);
+                } else if (tile.getPlaceable() instanceof Crop crop) {
+                    if (crop.isGiant())
+                        System.out.print(BOLD + RED + "G" + RESET);
+                    else
+                        System.out.print(BOLD + RED + "C" + RESET);
                 }
                 //TODO: Stone and Minerals
                 else if (tile.getPlaceable() instanceof Abigail) {
@@ -114,16 +120,8 @@ public class display {
                     System.out.printf(BOLD + GREEN + "S" + RESET);
                 } else if (tile.getPlaceable() instanceof GreenHouseFence) {
                     System.out.printf(BOLD + CHOCOLATE + "F" + RESET);
-                } else if (tile.getPlaceable() instanceof ShippingBin bin) {
-                    if (bin.getType().equals(ShippingBinType.Regular)) {
-                        System.out.print(BOLD + RED + "X" + RESET);
-                    } else if (bin.getType().equals(ShippingBinType.Silver)) {
-                        System.out.print(BOLD + CYAN + "X" + RESET);
-                    } else if (bin.getType().equals(ShippingBinType.Gold)) {
-                        System.out.print(BOLD + YELLOW + "X" + RESET);
-                    } else if (bin.getType().equals(ShippingBinType.Iridium)) {
-                        System.out.print(BOLD + WHITE + "X" + RESET);
-                    }
+                } else if (tile.getPlaceable() instanceof ShippingBin) {
+                    System.out.print(BOLD + RED + "X" + RESET);
                 } else if (tile.getPlaceable() instanceof Store store) {
                     if (store.getType().equals(StoreType.Blacksmith))
                         System.out.print(BOLD + YELLOW + "B" + RESET);
@@ -140,7 +138,6 @@ public class display {
                     else if (store.getType().equals(StoreType.FishShop))
                         System.out.print(BOLD + YELLOW + "F" + RESET);
                 } else {
-                    //TODO: Add Crop (with checking isForaging)
                     if (tile.getPlaceable() instanceof Seed) {
                         System.out.print(BOLD + GREEN + "S" + RESET);
                     } else {
@@ -149,20 +146,22 @@ public class display {
                 }
             }
             System.out.print("|");
-            System.out.println();
+
             if (i == 50) {
+                System.out.println();
                 for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
+
             if (i == 150) {
                 System.out.println();
                 for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
+            System.out.println();
         }
-
         if ((x + size == 201)) {
             System.out.print("   ");
             for (int i = 0; i < size + 3; i++) {
@@ -181,20 +180,17 @@ public class display {
         System.out.println(BOLD + YELLOW + "J" + RESET + "is JojaMart");
         System.out.println(BOLD + YELLOW + "P" + RESET + "is Pierre's General Store");
         System.out.println(BOLD + YELLOW + "F" + RESET + "is Fish Shop");
-
-        //Shipping Bins
-        System.out.println(BOLD + RED + "X" + RESET + "is Regular Shipping Bin");
-        System.out.println(BOLD + CYAN + "X" + RESET + "is Silver Shipping Bin");
-        System.out.println(BOLD + YELLOW + "X" + RESET + "is Gold Shipping Bin");
-        System.out.println(BOLD + WHITE + "X" + RESET + "is Iridium Shipping Bin");
+        System.out.println(BOLD + RED + "X" + RESET + "is Shipping Bin");
 
         System.out.println(BOLD + RED + "C" + RESET + " : is Crop");
+        System.out.println(BOLD + RED + "G" + RESET + " : is Giant Crop");
         System.out.println(BOLD + GREEN + "S" + RESET + " : is Seed");
         System.out.println(BOLD + CYAN + "Q" + RESET + " : is quarry");
         System.out.println(BOLD + BLUE + "L" + RESET + " : is lake");
         System.out.println(BOLD + CHOCOLATE + "S" + RESET + " : is mineral");
         System.out.println(BOLD + YELLOW + "H" + RESET + " : is hut");
-        System.out.println(BOLD + PURPLE + "G" + RESET + " : is greenhouse");
+        System.out.println(BOLD + PURPLE + "G" + RESET + " : is inactive greenhouse");
+        System.out.println(BOLD + GREEN + "G" + RESET + " : is active greenhouse");
         System.out.println(BOLD + GREEN + "T" + RESET + " : is tree");
         System.out.println(BOLD + WHITE + "P" + RESET + " : is player");
         System.out.println(BOLD + CHOCOLATE + "F" + RESET + " : is fence");
