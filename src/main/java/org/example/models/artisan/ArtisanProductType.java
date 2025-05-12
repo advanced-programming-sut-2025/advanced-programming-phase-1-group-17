@@ -4,7 +4,7 @@ import org.example.models.BackPackableType;
 import org.example.models.NormalItemType;
 import org.example.models.cooking.FoodType;
 import org.example.models.crafting.CraftingItemType;
-import org.example.models.enums.AnimalProductType;
+import org.example.models.animal.AnimalProductType;
 import org.example.models.plant.CropType;
 import org.example.models.plant.FruitType;
 

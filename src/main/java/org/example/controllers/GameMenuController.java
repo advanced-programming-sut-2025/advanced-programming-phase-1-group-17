@@ -16,6 +16,7 @@ import org.example.models.cooking.Recipe;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.*;
 import org.example.models.foraging.ForagingController;
+import org.example.models.foraging.ForagingCropType;
 import org.example.models.foraging.Mineral;
 import org.example.models.foraging.MineralType;
 import org.example.models.animal.AnimalPlace;
@@ -875,7 +876,7 @@ public class GameMenuController {
         }
         CraftingItem craftingItem = new CraftingItem(recipe.getTargetItem());
         backPack.addItemToInventory(craftingItem);
-        return new Result(true, itemName + "crafted successfully");
+        return new Result(true, itemName + " crafted successfully");
 
     }
 
@@ -883,7 +884,7 @@ public class GameMenuController {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         CraftingItemType craftingItemType;
         try{
-            craftingItemType = CraftingItemType.valueOf(direction);
+            craftingItemType = CraftingItemType.valueOf(itemName);
         }catch (Exception e) {
             return new Result(false, "Invalid item name");
         }
@@ -899,6 +900,151 @@ public class GameMenuController {
 
         App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(craftingItemType);
         tile.setPlaceable(new CraftingItem(craftingItemType));
+        switch (craftingItemType) {
+            case CherryBomb -> {
+                int range=3;
+                for(int i=-range;i<range+1;i++) {
+                    for(int j=-range;j<range+1;j++){
+
+                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
+                        if(target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case Bomb -> {
+                int range=5;
+                for(int i=-range;i<range+1;i++) {
+                    for(int j=-range;j<range+1;j++){
+
+                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
+                        if(target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case MegaBomb -> {
+                int range=7;
+                for(int i=-range;i<range+1;i++) {
+                    for(int j=-range;j<range+1;j++){
+
+                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
+                        if(target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case Sprinkler -> {
+                int[] dx = {0, 1, 0, -1};
+                int [] dy = {1,0,-1,0};
+                for(int i=0;i<4;i++){
+                    Tile target=Tile.getTile(tile.getX() + dx[i], tile.getY() + dy[i]);
+                    if(target != null && target.getPlaceable() instanceof Plant plant) {
+                        plant.wateringPlant();
+                    }
+                }
+            }
+
+            case QualitySprinkler -> {
+                int range=1;
+                for(int i=-range;i<range+1;i++) {
+                    for(int j=-range;j<range+1;j++){
+
+                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
+                        if(target != null && target.getPlaceable() instanceof Plant plant) {
+                            plant.wateringPlant();
+                        }
+                    }
+                }
+            }
+
+            case IridiumSprinkler -> {
+                int range=2;
+                for(int i=-range;i<range+1;i++) {
+                    for(int j=-range;j<range+1;j++){
+
+                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
+                        if(target != null && target.getPlaceable() instanceof Plant plant) {
+                            plant.wateringPlant();
+                        }
+                    }
+                }
+            }
+
+            case Scarecrow -> {
+                int range=8;
+                for(int i=-range;i<range+1;i++) {
+                    for(int j=-range;j<range+1;j++){
+
+                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
+                        if(target != null) {
+                            tile.setCrowImmunity(true);
+                        }
+                    }
+                }
+            }
+
+            case DeluxeScarecrow -> {
+                int range=12;
+                for(int i=-range;i<range+1;i++) {
+                    for(int j=-range;j<range+1;j++){
+
+                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
+                        if(target != null) {
+                            tile.setCrowImmunity(true);
+                        }
+                    }
+                }
+            }
+
+            case BeeHouse -> {
+
+            }
+
+            case CheesePress -> {
+
+            }
+
+            case Keg -> {
+
+            }
+
+            case Loom -> {
+
+            }
+
+            case MayonnaiseMachine -> {
+
+            }
+
+            case OilMaker -> {
+
+            }
+
+            case PreservesJar -> {
+
+            }
+
+            case Dehydrator -> {
+
+            }
+
+            case FishSmoker -> {
+
+            }
+
+            case MysticTreeSeed -> {
+
+            }
+        }
+
+
         return new Result(true, "Item placed Successfully.");
     }
 
@@ -926,7 +1072,49 @@ public class GameMenuController {
                     sampleItem = new Mineral((MineralType) type,true);
                 }
                 catch (Exception e3) {
-                    return new Result(false, "Item not found.");
+                    try {
+                        type = SaplingType.valueOf(itemName);
+                        sampleItem = new Sapling((SaplingType) type);
+                    } catch (IllegalArgumentException e4) {
+                        try {
+                            type = SeedType.valueOf(itemName);
+                            sampleItem = new Seed((SeedType) type);
+                        } catch (IllegalArgumentException e5) {
+                            try {
+                                type = CropType.valueOf(itemName);
+                                sampleItem = new Crop(false,(CropType) type,null,false);
+                            } catch (IllegalArgumentException e6) {
+                                try {
+                                    type = FlowerType.valueOf(itemName);
+                                    sampleItem = new Flower((FlowerType) type);
+                                } catch (IllegalArgumentException e7) { {
+                                        try {
+                                            type = FruitType.valueOf(itemName);
+                                            sampleItem = new Fruit((FruitType) type);
+                                        } catch (IllegalArgumentException e9) {
+                                            try {
+                                                type = AnimalProductType.valueOf(itemName);
+                                                AnimalProduct a= new AnimalProduct();
+                                                a.setAnimalProductType((AnimalProductType) type);
+                                                a.setShippingBinType(ItemQuality.Regular);
+                                                sampleItem = a;
+
+
+                                            } catch (IllegalArgumentException e10) {
+                                                try{
+                                                    type = FishType.valueOf(itemName);
+                                                    sampleItem=new Fish((FishType)type,ItemQuality.Regular);
+                                                }catch (Exception e11) {
+                                                    return new Result(false, "Invalid item name");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -985,18 +1173,31 @@ public class GameMenuController {
 
     public Result cookingPrepare(String recipeName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (Recipe.findRecipe(recipeName) == null) {
+        Recipe recipe = Recipe.findRecipe(recipeName);
+        if (recipe == null) {
             return new Result(false, "Recipe not found");
         }
-        Recipe recipe = Recipe.findRecipe(recipeName);
+        if(player.getBackPack().isBackPackFull()){
+            return new Result(false, "Your back pack is full");
+        }
+
         for(Map.Entry<BackPackableType,Integer> entry: recipe.getFoodToBeCooked().getIngredients().entrySet()) {
             if(!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
             && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
                 return new Result(false,"not enough ingredient");
             }
         }
+        for(Map.Entry<BackPackableType,Integer> entry : recipe.getFoodToBeCooked().getIngredients().entrySet()){
+            for(int i=0;i<entry.getValue();i++) {
+                player.getBackPack().useItem(entry.getKey());
+            }
+        }
+        Food newFood = new Food();
+        newFood.setFoodtype(recipe.getFoodToBeCooked());
+        newFood.setRecipe(recipe);
+        player.getBackPack().addItemToInventory(newFood);
         App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(App.getCurrentGame().getCurrentPlayingPlayer().getEnergy() - 3);
-        return new Result(true, "t");
+        return new Result(true, recipe.getFoodToBeCooked().name() + " cooked");
     }
 
     public Result eat(String foodName) {
@@ -1224,7 +1425,7 @@ public class GameMenuController {
         int count = (int) Math.ceil(R * M * (level + 2));
         count = Math.min(6, count);
         double pole = fishingPoleType.getPole();
-        Fish fish = new Fish();
+        Fish fish = new Fish(null,null);
         ArrayList<FishType> fishes = new ArrayList<>();
         for (FishType fishType : FishType.values()) {
             if (fishType.getSeason().equals(date.getSeason())) {

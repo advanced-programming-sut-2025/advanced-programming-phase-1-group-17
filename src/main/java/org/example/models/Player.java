@@ -5,6 +5,7 @@ import org.example.models.artisan.ArtisanProduct;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
+import org.example.models.crafting.CraftingItemType;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.BackPackType;
 import org.example.models.tools.ToolMaterial;
@@ -108,6 +109,7 @@ public class Player {
         backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic));
         backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic));
         this.currentTool = wateringCan;
+        this.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MegaBomb));
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
