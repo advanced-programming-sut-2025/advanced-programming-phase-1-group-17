@@ -149,17 +149,21 @@ public class display {
                 }
             }
             System.out.print("|");
-            System.out.println();
+
             if (i == 50) {
+                System.out.println();
                 for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
+
             if (i == 150) {
+                System.out.println();
                 for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
+            System.out.println();
         }
 
         if ((x + size == 201)) {
