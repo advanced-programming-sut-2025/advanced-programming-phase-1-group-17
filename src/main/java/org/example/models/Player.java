@@ -5,6 +5,7 @@ import org.example.models.artisan.ArtisanProduct;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
 import org.example.models.cooking.Recipe;
+import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.BackPackType;
 import org.example.models.tools.ToolMaterial;
 import org.example.models.tools.ToolType;
@@ -58,18 +59,18 @@ public class Player {
     private ArrayList<Food> foods = new ArrayList<>();
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ArrayList<Friends> friends = new ArrayList<>();
-    private Ability abilities = new Ability();
-    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
+    private Ability abilities = new Ability(this);
+    private ArrayList<CraftingRecipe> craftingRecipes = new ArrayList<>();
 
     private double balance;
     private int daysSinceBrakUp = 0;
 
-    public ArrayList<CraftingItem> getCraftingRecipes() {
-        return craftingItems;
+    public ArrayList<CraftingRecipe> getCraftingRecipes() {
+        return craftingRecipes;
     }
 
-    public void setCraftingRecipes(ArrayList<CraftingItem> craftingItems) {
-        this.craftingItems = craftingItems;
+    public void setCraftingRecipes(ArrayList<CraftingRecipe> craftingItems) {
+        this.craftingRecipes = craftingItems;
     }
 
     public int getVegetableFarmed() {

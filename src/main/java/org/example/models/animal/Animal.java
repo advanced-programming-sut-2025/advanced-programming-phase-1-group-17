@@ -1,7 +1,8 @@
-package org.example.models;
+package org.example.models.animal;
 
-import org.example.models.enums.AnimalType;
-import org.example.models.map.AnimalPlace;
+import org.example.models.App;
+import org.example.models.Placeable;
+import org.example.models.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,6 @@ public class Animal implements Placeable {
     private AnimalPlace animalPlace;
     private AnimalType animalType;
     private int price;
-    private HashMap<String, Integer> products = new HashMap<>();
     private int friendship;
     private ArrayList<AnimalProduct> animalProducts =new ArrayList<>();
     private boolean isPettedToday=false;
@@ -57,20 +57,27 @@ public class Animal implements Placeable {
         this.price = price;
     }
 
-    public HashMap<String, Integer> getProducts() {
-        return products;
-    }
-
-    public void setProducts(HashMap<String, Integer> products) {
-        this.products = products;
-    }
-
     public int getFriendship() {
         return friendship;
     }
 
     public void setFriendship(int friendship) {
-        this.friendship = friendship;
+        if(friendship>1000){
+            if(friendship<this.friendship){
+                this.friendship = friendship;
+            }
+        }
+        else if(friendship<0){
+            if(friendship>this.friendship){
+                this.friendship = friendship;
+            }
+        }
+        else {
+            this.friendship = friendship;
+        }
+    }
+    public void cheatSetFriendship(int friendship){
+        this.friendship=friendship;
     }
 
     public ArrayList<AnimalProduct> getAnimalProducts() {
@@ -121,12 +128,16 @@ public class Animal implements Placeable {
         isOutside = outside;
     }
     public void produce(){
+        if(!isFedToday){
+            return;
+        }
         double randomNumber = 0.5 + Math.random();
         double chance = (double)(friendship + 150*randomNumber)/1500;
         double r = Math.random();
         double quality= ((double) friendship /1000)*(0.5 + r/2);
+        AnimalProductType animalProductType;
         AnimalProduct animalProduct=new AnimalProduct();
-        if(Math.random()<=chance){
+        if(Math.random()<=chance && friendship>100){
             if(this.animalType.getProductTypes().size()==2) {
                 animalProduct.setAnimalProductType(this.animalType.getProductTypes().get(1));
             }
@@ -152,12 +163,7 @@ public class Animal implements Placeable {
 
     }
     public void addProduct(AnimalProduct animalProduct){
-        if(this.getAnimalProducts().contains(animalProduct)){
-            animalProduct.setCount(animalProduct.getCount()+1);
-        }
-        else{
             this.getAnimalProducts().add(animalProduct);
-        }
     }
     public void sell(){
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
@@ -167,5 +173,23 @@ public class Animal implements Placeable {
         }
         double price = this.animalType.getPrice() * (((double) friendship /1000) + 0.3);
         player.getBackPack().addcoin(price);
+    }
+    public static void goToNextDay(){
+        for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
+            if(animal.isFedToday){
+                animal.produce();
+                animal.setFedToday(false);
+            }
+            else{
+                animal.setFriendship(animal.getFriendship()-20);
+            }
+            if(!animal.isPettedToday){
+                animal.setFriendship(animal.getFriendship() - 10);
+            }
+            if(animal.isOutside){
+                animal.setFriendship(animal.getFriendship() - 20);
+                animal.setOutside(false);
+            }
+        }
     }
 }

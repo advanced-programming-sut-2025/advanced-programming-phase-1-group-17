@@ -1,4 +1,4 @@
-package org.example.models.enums;
+package org.example.models.animal;
 
 public enum AnimalPlaceType {
     Coop(4),

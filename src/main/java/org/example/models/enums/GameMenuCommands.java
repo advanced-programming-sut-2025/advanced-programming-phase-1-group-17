@@ -50,7 +50,8 @@ public enum GameMenuCommands {
     //For Crafting
     CraftingShowRecipes("\\s*crafting\\s+show\\s+recipes\\s*"),
     CraftingCraft("\\s*crafting\\s+craft\\s+(?<itemName>\\S+)\\s*"),
-
+    PlaceItem("\\s*place\\s+item\\s+-n\\s+(?<itemName>\\S+)\\s+-d\\s+(?<direction>\\d+)\\s*"),
+    CheatAddItem("\\s*cheat\\s+add\\s+item\\s+-n\\s+(?<itemName>\\S+)\\s+-c\\s+(?<count>\\d+)\\s*"),
 
     //For Cooking
     CookingRefrigerator("\\s*cooking\\s+refrigerator\\s+(?<mod>put|pick)\\s+(?<item>\\S+)\\s*"),
@@ -58,12 +59,12 @@ public enum GameMenuCommands {
     CookingPrepare("\\s*cooking\\s+prepare\\s+(?<recipeName>\\S+)\\s*"),
     Eat("\\s*eat\\s+(?<foodName>\\S+)\\s*"),
     //For Animal
-    Build("\\s*build\\s+-a\\s+(?<buildName>\\S+)\\s*"),
-    BuyAnimal("\\s*buy\\s+animal\\s+-a\\s+(?<animal>\\S+)\\s+(?<name>\\S+)\\s*"),
+    Build("\\s*build\\s+-a\\s+(?<buildName>\\S+)\\s+(?<x>\\d+)\\s+(?<y>\\d+)\\s*"),
+    BuyAnimal("\\s*buy\\s+animal\\s+-a\\s+(?<animal>\\S+)\\s+-n\\s+(?<name>\\S+)\\s*"),
     Pet("\\s*pet\\s+-n\\s+(?<name>\\S+)\\s*"),
-    CheatSetFriendship("\\s*cheat\\s+set\\s+friendship\\s+-n\\s+(?<animalName>\\S+)\\s+-c\\s+(?<count>\\S+)\\s*"),
+    CheatSetFriendshipWithAnimal("\\s*cheat\\s+set\\s+friendship\\s+-n\\s+(?<animalName>\\S+)\\s+-c\\s+(?<amount>\\S+)\\s*"),
     ShowAnimals("\\s*animals\\s*"),
-    ShepherdAnimal("\\s*shepherd\\s+animals\\s+\\s+-n\\s+(?<animalName>\\S+)\\s+-l\\s+(?<x>\\S+)\\s+(?<y>\\S+)\\s*"),
+    ShepherdAnimal("\\s*shepherd\\s+animals\\s+-n\\s+(?<animalName>\\S+)\\s+-l\\s+(?<x>\\S+)\\s+(?<y>\\S+)\\s*"),
     FeedHay("\\s*feed\\s+hay\\s+-n\\s+(?<animalName>\\S+)\\s*"),
     Produces("\\s*produces\\s*"),
     CollectProduce("\\s*collect\\s+produce\\s+-n\\s+(?<animalName>\\S+)\\s*"),

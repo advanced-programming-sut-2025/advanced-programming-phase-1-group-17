@@ -25,7 +25,9 @@ public enum FishType implements BackPackableType {
     Legend(5000, Season.Spring, true),
     GlacierFish(1000, Season.Winter, true),
     Angler(900, Season.Fall, true),
-    CrimsonFish(1500, Season.Summer, true);
+    CrimsonFish(1500, Season.Summer, true),
+    //AnyFish
+    AnyFish(0,null,false);
 
     private final int price;
     private final Season season;

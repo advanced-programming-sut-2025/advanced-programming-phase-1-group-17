@@ -1,6 +1,8 @@
 package org.example.models.map;
-import org.example.models.Animal;
+import org.example.models.animal.Animal;
 import org.example.models.Placeable;
+import org.example.models.animal.AnimalPlace;
+
 import java.util.ArrayList;
 
 public class Farm implements Placeable {

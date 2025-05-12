@@ -1,5 +1,6 @@
 package org.example.models;
 
+import org.example.models.animal.Animal;
 import org.example.models.foraging.ForagingController;
 import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
@@ -89,6 +90,8 @@ public class TimeAndDate {
                 }
             }
         }
+        //Animal
+        Animal.goToNextDay();
 
         normalizeMaxEnergies();
         normalizeLightningedTiles();
@@ -104,7 +107,7 @@ public class TimeAndDate {
 
         changeDayOfTheWeek();
         day++;
-        if (day >= 28) {
+        if (day > 28) {
             changeSeason();
             day = 1;
         }
@@ -241,7 +244,7 @@ public class TimeAndDate {
     }
 
     public int getMonth() {
-        return month;
+        return season.ordinal()+1;
     }
 
     public void setMonth(int month) {

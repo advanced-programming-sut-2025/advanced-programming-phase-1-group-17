@@ -3,6 +3,7 @@ package org.example.models.trade;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.enums.FishType;
+import org.example.models.market.ShippingBinType;
 
 public class Fish implements BackPackable {
     private FishType fishType;
