@@ -240,7 +240,8 @@ public class GameMenuController {
         }
         return turns;
     }
-    private  int normalize(int delta) {
+
+    private int normalize(int delta) {
         if (delta > 0) return 1;
         if (delta < 0) return -1;
         return 0;
@@ -265,10 +266,27 @@ public class GameMenuController {
             System.out.println("do you want to go to the destination? press y or n and press enter");
             String input = scanner.nextLine();
             if (input.equals("y")) {
+                double energy = player.getEnergy();
                 player.setEnergy(player.getEnergy() - energy_needed);
                 if (player.getEnergy() <= 0) {
+                    int temp = 0;
+                    for (int i = 0; i < result.size(); i++) {
+                        if ((i + 1) * energy_needed / result.size() >= energy) {
+                            temp = i + 1;
+                            break;
+                        }
+                    }
                     player.passOut();
                     player.setEnergy(0);
+                    try {
+                        Tile tile = result.get(temp);
+                        Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
+                        tile.setWhoIsHere(player);
+                        player.setX(tile.getX());
+                        player.setY(tile.getY());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     return new Result(false, "you fainted");
                 } else {
 //                    for (Tile tile : result) {
