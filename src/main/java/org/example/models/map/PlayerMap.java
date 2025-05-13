@@ -202,7 +202,6 @@ public class PlayerMap {
 
             //TREE FORAGING STONES
             int numOfTrees = randomInt(15, 25);
-            int numOfStones = randomInt(10, 20);
             int numOfForagings = randomInt(10, 20);
             while (numOfTrees != 0) {
                 int randomIndex_x = randomInt(51, 151);
@@ -215,18 +214,6 @@ public class PlayerMap {
                     numOfTrees--;
                 }
             }
-//            while (numOfStones != 0) {
-//                int randomIndex_x = randomInt(51, 151);
-//                int randomIndex_y = randomInt(1, 200);
-//                Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
-//                if (tile.getPlaceable() == null) {
-////TODO: Stone generating
-//                    //                    Stone stone = new Stone();
-////                    tile.setPlaceable(stone);
-////                    tile.setWalkAble(false);
-////                    numOfStones--;
-//                }
-//            }
             int counter = 0;
             while (numOfForagings != 0) {
                 int randomIndex_x = randomInt(51, 151);
@@ -385,31 +372,12 @@ public class PlayerMap {
 
     private void randomFillMap() {
         int numOfTrees = randomInt(8, 11);
-        int numOfStones = randomInt(7, 10);
         int numOfForagings = randomInt(4, 10);
-        while (numOfTrees != 0) {
-            int randomIndex_x = randomInt(1 + row, 50 + row);
-            int randomIndex_y = randomInt(1 + col, 100 + col);
-            Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
-            if (tile.getPlaceable() == null) {
-                Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
-                tile.setPlaceable(tree);
-                tile.setWalkAble(false);
-                numOfTrees--;
-            }
-        }
-//        while (numOfStones != 0) {
-//            int randomIndex_x = randomInt(1 + row, 50 + row);
-//            int randomIndex_y = randomInt(1 + col, 100 + col);
-//            Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
-//            if (tile.getPlaceable() == null) {
-////TODO: Stone
-//                //                Stone stone = new Stone();
-////                tile.setPlaceable(stone);
-////                tile.setWalkAble(false);
-////                numOfStones--;
-//            }
-//        }
+        generateTrees(numOfTrees);
+        generateForagings(numOfForagings);
+    }
+
+    private void generateForagings(int numOfForagings) {
         int counter = 0;
         while (numOfForagings != 0) {
             int randomIndex_x = randomInt(1 + row, 50 + row);
@@ -427,6 +395,20 @@ public class PlayerMap {
                 tile.setWalkAble(false);
                 numOfForagings--;
                 counter++;
+            }
+        }
+    }
+
+    private void generateTrees(int numOfTrees) {
+        while (numOfTrees != 0) {
+            int randomIndex_x = randomInt(1 + row, 50 + row);
+            int randomIndex_y = randomInt(1 + col, 100 + col);
+            Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+            if (tile.getPlaceable() == null) {
+                Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
+                tile.setPlaceable(tree);
+                tile.setWalkAble(false);
+                numOfTrees--;
             }
         }
     }

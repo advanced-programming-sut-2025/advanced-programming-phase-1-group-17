@@ -9,7 +9,7 @@ public class Tree extends Plant implements Placeable {
     public Tree(boolean isForaging, TreeType treeType, Tile tile, boolean isInsideGreenHouse) {
         super(isForaging, tile, isInsideGreenHouse);
         this.type = treeType;
-        this.daysTillNextHarvest = type.getFruitHarvestCycle();
+        this.daysTillNextHarvest = 0;
     }
 
     public int getDaysTillFullGrowth() {
@@ -62,6 +62,9 @@ public class Tree extends Plant implements Placeable {
 
     @Override
     public void harvest() {
+        if(!hasFruit)
+            return;;
         daysTillNextHarvest = type.getFruitHarvestCycle();
+        this.hasFruit = false;
     }
 }
