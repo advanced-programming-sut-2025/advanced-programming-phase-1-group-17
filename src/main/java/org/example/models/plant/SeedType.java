@@ -2,6 +2,7 @@ package org.example.models.plant;
 
 import org.example.models.App;
 import org.example.models.BackPackableType;
+import org.example.models.Placeable;
 import org.example.models.enums.Season;
 
 import java.util.Random;

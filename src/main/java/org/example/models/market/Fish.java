@@ -3,11 +3,17 @@ package org.example.models.market;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.enums.FishType;
+import org.example.models.market.ItemQuality;
 
 public class Fish implements BackPackable {
     private FishType fishType;
     private ItemQuality shippingBinType;
     private int count=1;
+
+    public Fish(FishType fishType, ItemQuality shippingBinType) {
+        this.fishType = fishType;
+        this.shippingBinType = shippingBinType;
+    }
 
     public FishType getFishType() {
         return fishType;
@@ -45,6 +51,6 @@ public class Fish implements BackPackable {
 
     @Override
     public BackPackableType getType() {
-        return null;
+        return this.fishType;
     }
 }

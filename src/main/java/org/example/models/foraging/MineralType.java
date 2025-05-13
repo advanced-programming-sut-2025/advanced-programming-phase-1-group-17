@@ -2,7 +2,7 @@ package org.example.models.foraging;
 
 import org.example.models.BackPackableType;
 
-public enum MineralType implements BackPackableType {
+public enum MineralType implements BackPackableType  {
     Quartz("A clear crystal commonly found in caves and mines.", 25),
     EarthCrystal("A resinous substance found near the surface.", 50),
     FrozenTear("A crystal fabled to be the frozen tears of a yeti.", 75),

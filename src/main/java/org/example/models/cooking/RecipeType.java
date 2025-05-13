@@ -1,6 +1,7 @@
 package org.example.models.cooking;
 
 import org.example.models.BackPackableType;
+import org.example.models.NormalItemType;
 import org.example.models.crafting.CraftingItemType;
 
 public enum RecipeType implements BackPackableType {
@@ -33,7 +34,7 @@ public enum RecipeType implements BackPackableType {
     //Crafting Item Recipes
     FishSmoker(CraftingItemType.FishSmoker, 5000), //In Fish Shop
     Dehydrator(CraftingItemType.Dehydrator, 5000), //In Pierre
-    GrassStarter(CraftingItemType.GrassStarter, 500); //In Pierre
+    GrassStarter(NormalItemType.GrassStarter, 500); //In Pierre
 
 
     private final BackPackableType backPackableType;
