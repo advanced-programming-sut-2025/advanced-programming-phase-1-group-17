@@ -5,38 +5,23 @@ import org.example.models.App;
 import java.util.ArrayList;
 
 public class Recipe {
-    private RecipeType type;
-    private String name;
-    private Food foodToBeCooked;
-    private ArrayList<Food> ingredients = new ArrayList<>();
+    private FoodType foodToBeCooked;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Food getFoodToBeCooked() {
-        return foodToBeCooked;
-    }
-
-    public void setFoodToBeCooked(Food foodToBeCooked) {
+    public Recipe(FoodType foodToBeCooked) {
         this.foodToBeCooked = foodToBeCooked;
     }
 
-    public ArrayList<Food> getIngredients() {
-        return ingredients;
+    public FoodType getFoodToBeCooked() {
+        return foodToBeCooked;
     }
 
-    public void setIngredients(ArrayList<Food> ingredients) {
-        this.ingredients = ingredients;
+    public void setFoodToBeCooked(FoodType foodToBeCooked) {
+        this.foodToBeCooked = foodToBeCooked;
     }
 
     public static Recipe findRecipe(String recipeName) {
         for(Recipe recipe : App.getCurrentGame().getCurrentPlayingPlayer().getRecipes()){
-            if(recipe.getName().equals(recipeName)){
+            if(recipe.getFoodToBeCooked().name().equals(recipeName)){
                 return recipe;
             }
         }

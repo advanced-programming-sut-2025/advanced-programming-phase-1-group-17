@@ -3,6 +3,11 @@ package org.example.models;
 public class Flower implements BackPackable {
 
     private FlowerType flowerType = FlowerType.FLOWER;
+
+    public Flower(FlowerType flowerType) {
+        this.flowerType = flowerType;
+    }
+
     public String getName(){
         return FlowerType.FLOWER.getName();
     }

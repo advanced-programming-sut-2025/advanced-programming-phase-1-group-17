@@ -1,16 +1,17 @@
 package org.example.models;
 
+import org.example.models.animal.Animal;
 import org.example.models.foraging.ForagingController;
 import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
+import org.example.models.foraging.Mineral;
+import org.example.models.foraging.MineralType;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
-import org.example.models.plant.Crop;
-import org.example.models.plant.PlantGrowthController;
-import org.example.models.plant.Tree;
+import org.example.models.plant.*;
 import org.example.models.market.ShippingBin;
 
 import java.util.Random;
@@ -91,13 +92,16 @@ public class TimeAndDate {
                 }
                 for (NPC npc : App.getCurrentGame().getNPCs()) {
                     if (player.getFriendShipsWithNPCs().get(npc) >= 600) {
-                        Flower flower = new Flower();
+                        Flower flower = new Flower(FlowerType.FLOWER);
+                        //TODO flower
                         message message = new message(npc, "you received a flower");
                         player.getBackPack().addItemToInventory(flower);
                     }
                 }
             }
         }
+        //Animal
+        Animal.goToNextDay();
 
         normalizeMaxEnergies();
 
@@ -112,13 +116,40 @@ public class TimeAndDate {
 
         changeDayOfTheWeek();
         day++;
-        if (day >= 28) {
+        if (day > 28) {
             changeSeason();
             // active quest 3
             for (NPC npc : App.getCurrentGame().getNPCs()) {
                 npc.getRequests().get(2).setActive(true);
             }
             day = 1;
+        }
+
+        if(tomorrowWeather.equals(WeatherType.Rainy)){
+            for(Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()){
+                if(tile.getPlaceable() instanceof Plant){
+                    Plant plant = (Plant) tile.getPlaceable();
+                    plant.wateringPlant();
+                }
+            }
+        }
+        else if(tomorrowWeather.equals(WeatherType.Storm)){
+            for(Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()){
+                if(tile.getPlaceable() instanceof Plant){
+                    Plant plant = (Plant) tile.getPlaceable();
+                    plant.wateringPlant();
+                    double rand = Math.random();
+                    if(rand<=0.2 ) {
+                        if(plant instanceof Tree) {
+                            tile.setPlaceable(new Mineral(MineralType.Coal,true));
+                        }
+                        else if(plant instanceof Crop){
+                            Crop crop = (Crop) plant;
+                            tile.setPlaceable(new Seed(crop.getType().getSource()));
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -222,7 +253,7 @@ public class TimeAndDate {
     }
 
     public int getMonth() {
-        return month;
+        return season.ordinal()+1;
     }
 
     public void setMonth(int month) {

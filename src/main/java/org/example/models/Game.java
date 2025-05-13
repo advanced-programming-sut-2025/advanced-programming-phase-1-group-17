@@ -2,6 +2,10 @@ package org.example.models;
 
 
 import org.example.models.NPCS.*;
+import org.example.models.cooking.FoodType;
+import org.example.models.cooking.Recipe;
+import org.example.models.crafting.CraftingItemType;
+import org.example.models.crafting.CraftingRecipe;
 import org.example.models.map.GameMap;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
@@ -73,6 +77,15 @@ public class Game {
         this.gameMap = new GameMap(players);
         App.getCurrentGame().setCurrentPlayingPlayer(creator);
         this.storeManager.initializeStores();
+        //cooking recipes
+        for(Player player : App.getCurrentGame().getPlayers()){
+            player.getRecipes().add(new Recipe(FoodType.FriedEgg));
+            player.getRecipes().add(new Recipe(FoodType.BakedFish));
+            player.getRecipes().add(new Recipe(FoodType.Salad));
+            player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.Furnace));
+            player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.Scarecrow));
+            player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MayonnaiseMachine));
+        }
     }
 
     public Player getPlayerByPlayerMap(PlayerMap playerMap) {

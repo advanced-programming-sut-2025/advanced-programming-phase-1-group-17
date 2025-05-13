@@ -4,16 +4,11 @@ import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.Placeable;
-import org.example.models.crafting.CraftingItemType;
-
-import java.util.HashMap;
-
 public class CraftingItem implements BackPackable, Placeable {
     private CraftingItemType targetItem;
     public CraftingItem(CraftingItemType targetItem) {
         this.targetItem = targetItem;
     }
-    private HashMap<CraftingItemType, Integer> craftIngredients = new HashMap<>();
 
     public CraftingItemType getTargetItem() {
         return targetItem;
@@ -23,23 +18,7 @@ public class CraftingItem implements BackPackable, Placeable {
         this.targetItem = targetItem;
     }
 
-    public HashMap<CraftingItemType, Integer> getCraftIngredients() {
-        return craftIngredients;
-    }
 
-    public void setCraftIngredients(HashMap<CraftingItemType, Integer> craftIngredients) {
-        this.craftIngredients = craftIngredients;
-    }
-
-
-    public static CraftingItem findCraftingItemTypeByName(String CraftingItemTypeName) {
-        for (CraftingItem Item : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()) {
-            if (Item.getTargetItem().getName().equals(CraftingItemTypeName)) {
-                return Item;
-            }
-        }
-        return null;
-    }
 
     public static CraftingItem findItemInBackPack(CraftingItem craftingItem) {
         for (BackPackableType backPackableType : App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getBackPackItems().keySet()) {
@@ -62,6 +41,6 @@ public class CraftingItem implements BackPackable, Placeable {
 
     @Override
     public BackPackableType getType() {
-        return null;
+        return targetItem;
     }
 }

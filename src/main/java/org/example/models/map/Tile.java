@@ -17,6 +17,7 @@ public class Tile {
     private Player owner;
     private Player whoIsHere;
     private NPC npcIsHere;
+    private boolean crowImmunity = false;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
 
     public Tile(int x, int y, Player owner) {
@@ -136,5 +137,13 @@ public class Tile {
             if (!tree.isInsideGreenhouse())
                 placeable = new Mineral(MineralType.Coal, false);
         }
+    }
+
+    public boolean isCrowImmunity() {
+        return crowImmunity;
+    }
+
+    public void setCrowImmunity(boolean crowImmunity) {
+        this.crowImmunity = crowImmunity;
     }
 }

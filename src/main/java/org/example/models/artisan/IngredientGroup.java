@@ -2,7 +2,7 @@ package org.example.models.artisan;
 
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
-import org.example.models.enums.AnimalProductType;
+import org.example.models.animal.AnimalProductType;
 import org.example.models.enums.FishType;
 import org.example.models.foraging.ForagingCropType;
 import org.example.models.plant.CropType;
