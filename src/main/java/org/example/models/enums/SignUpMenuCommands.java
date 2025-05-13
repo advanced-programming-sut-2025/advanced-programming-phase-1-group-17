@@ -11,8 +11,6 @@ public enum SignUpMenuCommands {
     Register("\\s*register\\s+-u\\s+(?<username>\\S+)\\s+-p\\s+(?<password>\\S+)\\s+" +
             "(?<passwordConfirm>\\S+)\\s+-n\\s+(?<nickname>\\S+)\\s+-e\\s+(?<email>\\S+)\\s+-g\\s+(?<gender>\\S+)\\s*"),
     Username("[a-zA-Z\\d-]+"),
-    //Email("((?!.*\\.\\.)[a-zA-Z\\d]([a-zA-Z\\d._-]*[a-zA-Z\\d])*)@" +
-      //      "((?=.*\\.)[a-zA-Z\\d]([a-zA-Z\\d-]*[a-zA-Z\\d])*)\\.[a-zA-Z]{2,}"),
     Email("^(?!.*\\.\\.)[a-zA-Z\\d]([a-zA-Z\\d._-]*[a-zA-Z\\d])?@([a-zA-Z\\d]([a-zA-Z\\d-]*[a-zA-Z\\d])?\\.)+[a-zA-Z]{2,}$"),
     ValidPassword( "^[a-zA-Z\\d!#$%\\^&*()=+{}\\[\\]|\\\\/:;'\\" + "\",<>?]+$");
 

@@ -10,11 +10,9 @@ public class Ability {
     private int foragingLevel = 0;
     private int fishingLevel = 0;
 
-    public void increaseFarmingAbility(int abilityAdded) {
-        //TODO: every time you pick an animal or plant product, you gain 5 ability
+    public void increaseFarmingAbility() {
         //TODO: in higher levels, you can gain better products
-
-        farmingAbility += abilityAdded;
+        farmingAbility += 5;
 
         if (farmingAbility < 150) return;
         else if (farmingAbility < 250) {
@@ -33,11 +31,8 @@ public class Ability {
     }
 
 
-    public void increaseMiningAbility(int abilityAdded) {
-        //TODO: with every stone broken, you gain 10 points
-        //TODO: in lvl2, with every stone, you get another element
-
-        miningAbility += abilityAdded;
+    public void increaseMiningAbility() {
+        miningAbility += 10;
 
         if (miningAbility < 150) return;
         else if (miningAbility < 250){
@@ -55,10 +50,8 @@ public class Ability {
         miningLevel = 4;
     }
 
-    public void increaseForagingAbility(int abilityAdded) {
-        //TODO: with every foraging taken, you gain 10 points
-
-        foragingAbility += abilityAdded;
+    public void increaseForagingAbility() {
+        foragingAbility += 10;
 
         if (foragingAbility < 150) return;
         else if (foragingAbility < 250){
@@ -76,10 +69,10 @@ public class Ability {
         foragingLevel = 4;
     }
 
-    public void increaseFishingAbility(int abilityAdded) {
+    public void increaseFishingAbility() {
         //TODO: with every fish fished, you gain 5 points
 
-        fishingAbility += abilityAdded;
+        fishingAbility += 5;
 
         if (fishingAbility < 150) return;
         else if (fishingAbility < 250){

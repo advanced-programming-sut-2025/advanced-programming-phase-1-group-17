@@ -1,9 +1,6 @@
 package org.example.models.market;
 
-import org.example.models.App;
-import org.example.models.BackPackableType;
-import org.example.models.NormalItemType;
-import org.example.models.Result;
+import org.example.models.*;
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
@@ -62,7 +59,7 @@ public class StoreManager {
         StoreInventory fishShopInventory = new StoreInventory(StoreType.FishShop);
 
         //TODO: test fishing poles
-        fishShopInventory.addItem(new ShopItem(RecipeType.FishSmoker, 10000, 1, "A recipe to make Fish Smoker"));
+        fishShopInventory.addItem(new ShopItem(RecipeType.FishSmokerRecipe, 10000, 1, "A recipe to make Fish Smoker"));
 
         fishShopInventory.addItem(new ShopItem(NormalItemType.TroutSoup, 250, 1, "Pretty salty."));
 
@@ -79,11 +76,10 @@ public class StoreManager {
 
         pierre.addItem(new ShopItem(NormalItemType.Rice, 200, Integer.MAX_VALUE, "A basic grain often served under vegetables."));
         pierre.addItem(new ShopItem(NormalItemType.WheatFlour, 100, Integer.MAX_VALUE, "A common cooking ingredient made from crushed wheat seeds."));
-        //TODO: deal with these
-        //pierre.addItem(new ShopItem(CraftingItemType.Bouquet, 1000, 2, "A gift that shows your romantic interest.\n(Unlocked after reaching level 2 friendship with a player)"));
-        //pierre.addItem(new ShopItem(CraftingItemType.WeddingRing, 10000, 2, "It's used to ask for another farmer's hand in marriage.\n(Unlocked after reaching level 3 friendship with a player)"));
-        pierre.addItem(new ShopItem(RecipeType.Dehydrator, 10000, 1, "A recipe to make Dehydrator"));
-        pierre.addItem(new ShopItem(RecipeType.GrassStarter, 1000, 1, "A recipe to make Grass Starter"));
+        pierre.addItem(new ShopItem(FlowerType.FLOWER, 1000, 2, "A gift that shows your romantic interest.\n(Unlocked after reaching level 2 friendship with a player)"));
+        pierre.addItem(new ShopItem(RingType.Ring, 10000, 2, "It's used to ask for another farmer's hand in marriage.\n(Unlocked after reaching level 3 friendship with a player)"));
+        pierre.addItem(new ShopItem(RecipeType.DehydratorRecipe, 10000, 1, "A recipe to make Dehydrator"));
+        pierre.addItem(new ShopItem(RecipeType.GrassStarterRecipe, 1000, 1, "A recipe to make Grass Starter"));
         pierre.addItem(new ShopItem(NormalItemType.Sugar, 100, Integer.MAX_VALUE, "Adds sweetness to pastries and candies. Too much can be unhealthy."));
         pierre.addItem(new ShopItem(ArtisanProductType.Oil, 200, Integer.MAX_VALUE, "All purpose cooking oil."));
         pierre.addItem(new ShopItem(ArtisanProductType.Vinegar, 200, Integer.MAX_VALUE, "An aged fermented liquid used in many cooking recipes."));
@@ -209,14 +205,84 @@ public class StoreManager {
         carpenterInventory.addItem(new ShopItem(MineralType.Stone, 20, Integer.MAX_VALUE, "A common material with many uses in crafting and building."));
 
         // Farm buildings
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.Barn, 6000, 1, "Houses 4 barn-dwelling animals."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.BigBarn, 12000, 1, "Houses 8 barn-dwelling animals. Unlocks goats."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.DeluxeBarn, 25000, 1, "Houses 12 barn-dwelling animals. Unlocks sheep and pigs."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.Coop, 4000, 1, "Houses 4 coop-dwelling animals."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.BigCoop, 10000, 1, "Houses 8 coop-dwelling animals. Unlocks ducks."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.DeluxeCoop, 20000, 1, "Houses 12 coop-dwelling animals. Unlocks rabbits."));
-        carpenterInventory.addItem(new ShopItem(NormalItemType.Well, 1000, 1, "Provides a place for you to refill your watering can."));
-        carpenterInventory.addItem(new ShopItem(NormalItemType.ShippingBin, 250, Integer.MAX_VALUE, "Items placed in it will be included in the nightly shipment."));
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.Barn,
+                6000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 350,
+                        MineralType.Stone, 150
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.BigBarn,
+                12000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 450,
+                        MineralType.Stone, 200
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.DeluxeBarn,
+                25000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 550,
+                        MineralType.Stone, 300
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.Coop,
+                4000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 300,
+                        MineralType.Stone, 100
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.BigCoop,
+                10000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 400,
+                        MineralType.Stone, 150
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.DeluxeCoop,
+                20000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 500,
+                        MineralType.Stone, 200
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                NormalItemType.Well,
+                1000,
+                new HashMap<>(Map.of(
+                        MineralType.Stone, 75
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                NormalItemType.ShippingBin,
+                250,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 150
+                )),
+                Integer.MAX_VALUE
+        ));
+
         registerShop(carpenterInventory);
     }
 
@@ -229,15 +295,15 @@ public class StoreManager {
         saloon.addItem(new ShopItem(FoodType.Pizza, 600, Integer.MAX_VALUE, "It's popular for all the right reasons."));
         saloon.addItem(new ShopItem(ArtisanProductType.Coffee, 300, Integer.MAX_VALUE, "It smells delicious. This is sure to give you a boost."));
 
-        saloon.addItem(new ShopItem(RecipeType.HashBrowns, 50, 1, "A recipe to make Hashbrowns"));
-        saloon.addItem(new ShopItem(RecipeType.Olmelet, 100, 1, "A recipe to make Omelet"));
-        saloon.addItem(new ShopItem(RecipeType.Pancakes, 100, 1, "A recipe to make Pancakes"));
-        saloon.addItem(new ShopItem(RecipeType.Bread, 100, 1, "A recipe to make Bread"));
-        saloon.addItem(new ShopItem(RecipeType.Tortilla, 100, 1, "A recipe to make Tortilla"));
-        saloon.addItem(new ShopItem(RecipeType.Pizza, 150, 1, "A recipe to make Pizza"));
-        saloon.addItem(new ShopItem(RecipeType.MakiRoll, 300, 1, "A recipe to make Maki Roll"));
-        saloon.addItem(new ShopItem(RecipeType.TripleShotEspresso, 5000, 1, "A recipe to make Triple Shot Espresso"));
-        saloon.addItem(new ShopItem(RecipeType.Cookie, 300, 1, "A recipe to make Cookie"));
+        saloon.addItem(new ShopItem(RecipeType.HashBrownsRecipe, 50, 1, "A recipe to make Hashbrowns"));
+        saloon.addItem(new ShopItem(RecipeType.OlmeletRecipe, 100, 1, "A recipe to make Omelet"));
+        saloon.addItem(new ShopItem(RecipeType.PancakesRecipe, 100, 1, "A recipe to make Pancakes"));
+        saloon.addItem(new ShopItem(RecipeType.BreadRecipe, 100, 1, "A recipe to make Bread"));
+        saloon.addItem(new ShopItem(RecipeType.TortillaRecipe, 100, 1, "A recipe to make Tortilla"));
+        saloon.addItem(new ShopItem(RecipeType.PizzaRecipe, 150, 1, "A recipe to make Pizza"));
+        saloon.addItem(new ShopItem(RecipeType.MakiRollRecipe, 300, 1, "A recipe to make Maki Roll"));
+        saloon.addItem(new ShopItem(RecipeType.TripleShotEspressoRecipe, 5000, 1, "A recipe to make Triple Shot Espresso"));
+        saloon.addItem(new ShopItem(RecipeType.CookieRecipe, 300, 1, "A recipe to make Cookie"));
         registerShop(saloon);
     }
 
@@ -300,7 +366,7 @@ public class StoreManager {
         }
 
         if (store.getType().equals(StoreType.Blacksmith)) {
-            result.append("\nUpgrade Services:\n");
+            result.append("\nUpgrade Services:");
             rank = 1;
             for (UpgradeService upgradeService : inventory.getUpgradeServices()) {
                 result.append("\n%d- %s(%d)".formatted(
