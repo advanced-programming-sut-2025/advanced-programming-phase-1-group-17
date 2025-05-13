@@ -87,17 +87,18 @@ public class Tool implements BackPackable {
     }
 
     public int getTrashCanRefundPercentage() {
-        if (type.equals(ToolType.TrashCan))
-            return 0;
-        if (material.equals(ToolMaterial.Basic))
-            return 0;
-        else if (material.equals(ToolMaterial.Copper))
-            return 15;
-        else if (material.equals(ToolMaterial.Iron))
-            return 30;
-        else if (material.equals(ToolMaterial.Gold))
-            return 45;
-        return 60; //Iridium
+        if (type.equals(ToolType.TrashCan)) {
+            if (material.equals(ToolMaterial.Basic))
+                return 0;
+            else if (material.equals(ToolMaterial.Copper))
+                return 15;
+            else if (material.equals(ToolMaterial.Iron))
+                return 30;
+            else if (material.equals(ToolMaterial.Gold))
+                return 45;
+            return 60; //Iridium
+        }
+        return 0;
     }
 
 

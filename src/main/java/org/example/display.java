@@ -3,6 +3,8 @@ package org.example;
 import org.example.models.App;
 import org.example.models.Game;
 import org.example.models.NPCS.*;
+import org.example.models.NormalItem;
+import org.example.models.NormalItemType;
 import org.example.models.foraging.Mineral;
 import org.example.models.map.*;
 import org.example.models.plant.Crop;
@@ -89,12 +91,12 @@ public class display {
                 } else if (tile.getPlaceable() instanceof Lake) {
                     System.out.print(BOLD + BLUE + "L" + RESET);
                 } else if (tile.getPlaceable() instanceof Mineral) {
-                    System.out.print(BOLD + CHOCOLATE + "S" + RESET);
+                    System.out.print(BOLD + CHOCOLATE + "M" + RESET);
                 } else if (tile.getPlaceable() instanceof Hut) {
                     System.out.print(BOLD + YELLOW + "H" + RESET);
                 } else if (tile.getPlaceable() instanceof GreenHouse greenHouse) {
                     if (greenHouse.isActive())
-                        System.out.println(BOLD + GREEN + "G" + RESET);
+                        System.out.print(BOLD + GREEN + "G" + RESET);
                     else
                         System.out.print(BOLD + PURPLE + "G" + RESET);
                 } else if (tile.getPlaceable() instanceof Tree) {
@@ -104,8 +106,17 @@ public class display {
                         System.out.print(BOLD + RED + "G" + RESET);
                     else
                         System.out.print(BOLD + RED + "C" + RESET);
+                } else if (tile.getPlaceable() instanceof NormalItem normalItem) {
+                    if (normalItem.getType().equals(NormalItemType.Wood))
+                        System.out.print(BOLD + CHOCOLATE + "W" + RESET);
+                    else if (normalItem.getType().equals(NormalItemType.Grass))
+                        System.out.print(BOLD + WHITE + "G" + RESET);
+                    else if (normalItem.getType().equals(NormalItemType.Fibre))
+                        System.out.print(BOLD + GREEN + "F" + RESET);
                 }
-                //TODO: Stone and Minerals
+
+
+
                 else if (tile.getPlaceable() instanceof Abigail) {
                     System.out.print(BOLD + BLUE + "A" + RESET);
                 } else if (tile.getPlaceable() instanceof Harvey) {
@@ -187,13 +198,16 @@ public class display {
         System.out.println(BOLD + GREEN + "S" + RESET + " : is Seed");
         System.out.println(BOLD + CYAN + "Q" + RESET + " : is quarry");
         System.out.println(BOLD + BLUE + "L" + RESET + " : is lake");
-        System.out.println(BOLD + CHOCOLATE + "S" + RESET + " : is mineral");
+        System.out.println(BOLD + CHOCOLATE + "M" + RESET + " : is mineral");
         System.out.println(BOLD + YELLOW + "H" + RESET + " : is hut");
         System.out.println(BOLD + PURPLE + "G" + RESET + " : is inactive greenhouse");
         System.out.println(BOLD + GREEN + "G" + RESET + " : is active greenhouse");
         System.out.println(BOLD + GREEN + "T" + RESET + " : is tree");
         System.out.println(BOLD + WHITE + "P" + RESET + " : is player");
         System.out.println(BOLD + CHOCOLATE + "F" + RESET + " : is fence");
+        System.out.println(BOLD + CHOCOLATE + "W" + RESET + " : is Wood");
+        System.out.println(BOLD + WHITE + "G" + RESET + " : is Grass");
+        System.out.println(BOLD + GREEN + "F" + RESET + " : is Fibre");
 
         System.out.println(BOLD + BLUE + "A" + RESET + " : is Abigail Home");
         System.out.println(BOLD + CHOCOLATE + "L" + RESET + " : is Lia Home");

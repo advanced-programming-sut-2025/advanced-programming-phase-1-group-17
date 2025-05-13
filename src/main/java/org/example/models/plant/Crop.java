@@ -16,10 +16,9 @@ public class Crop extends Plant implements BackPackable, Placeable {
 
     public Crop(boolean isForaging, CropType type, Tile tile, boolean isInsideGreenHouse) {
         super(isForaging, tile, isInsideGreenHouse);
-        //TODO: ask
         this.isFullyGrown = isForaging;
         this.type = type;
-        this.daysTillNextHarvest = type.getRegrowthTime();
+        this.daysTillNextHarvest = 0;
 
         checkCouldBeGiant();
     }
@@ -69,11 +68,15 @@ public class Crop extends Plant implements BackPackable, Placeable {
         c3.setGiant(true);
         c4.setGiant(true);
 
-        if (c1.isFullyGrown || c2.isGiant || c3.isGiant || c4.isGiant) {
+        if (c1.isFullyGrown || c2.isFullyGrown || c3.isFullyGrown || c4.isFullyGrown) {
             c1.setFullyGrown(true);
+            c1.hasFruit = true;
             c2.setFullyGrown(true);
+            c2.hasFruit = true;
             c3.setFullyGrown(true);
+            c3.hasFruit = true;
             c4.setFullyGrown(true);
+            c4.hasFruit = true;
             return;
         }
         Crop maxGrowedCrop = c1;
@@ -204,6 +207,8 @@ public class Crop extends Plant implements BackPackable, Placeable {
     }
 
     public void harvest() {
+        if (!hasFruit)
+            return;
         if (type.isOneTime()) {
             if (isGiant) {
                 for (Crop neighborGiantTile : neighborGiantTiles) {
@@ -213,7 +218,14 @@ public class Crop extends Plant implements BackPackable, Placeable {
             tile.setPlaceable(null);
         }
         else {
+            if (isGiant) {
+                for (Crop neighborGiantTile : neighborGiantTiles) {
+                    neighborGiantTile.hasFruit = false;
+                    neighborGiantTile.daysTillNextHarvest = type.getRegrowthTime();
+                }
+            }
             daysTillNextHarvest = type.getRegrowthTime();
+            this.hasFruit = false;
         }
     }
 
