@@ -462,11 +462,11 @@ public class GameMenuController {
         }
         Tool tool = Tool.findToolByName(toolName);
         if (tool.getLevel() == 4) {
-            return new Result(false, toolName + "is alredy at max level");
+            return new Result(false, toolName + " is alredy at max level");
         }
-        //TODO money needed for Upgrade
+
         tool.setLevel(tool.getLevel() + 1);
-        return new Result(true, toolName + "upgraded to " + tool.getLevel());
+        return new Result(true, toolName + " upgraded to " + tool.getLevelMaterial());
 
     }
 
@@ -480,23 +480,26 @@ public class GameMenuController {
         Tile tile = Tile.getTile(x, y);
 
         if (tile == null) {
-            return new Result(false, "unknown error");
+            return new Result(false, "invalid tile");
         }
 
         if (tool.getToolType().equals(ToolType.Hoe)) {
+            double energy=ToolType.Hoe.getEnergyCosts()[tool.getLevel()];
+            if(player.getAbilities().getFarmingLevel()==4){
+                energy --;
+            }
+            energy = Math.max(energy,0);
             if (tile.getPlaceable() == null) {
                 tile.setPlowed(true);
-                double energy=ToolType.Hoe.getEnergyCosts()[tool.getLvlByMaterial()];
-                if(player.getAbilities().getFarmingLevel()==4){
-                    energy --;
-                }
-                energy = Math.max(energy,0);
                 player.setEnergy(player.getEnergy() - energy*leverage);
                 player.getAbilities().increaseFarmingAbility(10);
                 return new Result(true, "plowed successfully");
             }
-        } else if (tool.getToolType().equals(ToolType.Pickaxe)) {
-            double energy=ToolType.Pickaxe.getEnergyCosts()[tool.getLvlByMaterial()];
+            player.setEnergy(player.getEnergy() - energy*leverage);
+            return new Result(true, "Hoe used but incorrectly");
+        }
+        else if (tool.getToolType().equals(ToolType.Pickaxe)) {
+            double energy=ToolType.Pickaxe.getEnergyCosts()[tool.getLevel()];
             if(player.getAbilities().getMiningLevel()==4){
                 energy --;
             }
@@ -529,10 +532,21 @@ public class GameMenuController {
                 tile.setPlowed(false);
                 energy = Math.max(energy,0);
                 player.setEnergy(player.getEnergy() - energy*leverage);
-            } //TODO: destroying items of player on the floor
+                return new Result(true,"unplowed successfully");
+            }
+            else if(tile.getPlaceable() instanceof  BackPackable item){
+                tile.setPlaceable(null);
+                energy = Math.max(energy,0);
+                player.setEnergy(player.getEnergy() - energy*leverage);
+                return new Result(true,item.getName() + " destroyed successfully");
+            }
+            energy = Math.max(energy-1,0);
+            player.setEnergy(player.getEnergy() - energy*leverage);
+            return new Result(true,"you used pickaxe but incorrectly");
+
 
         } else if (tool.getToolType().equals(ToolType.Axe)) {
-            double energy=ToolType.Axe.getEnergyCosts()[tool.getLvlByMaterial()];
+            double energy=ToolType.Axe.getEnergyCosts()[tool.getLevel()];
             if(player.getAbilities().getForagingLevel()==4){
                 energy --;
             }
@@ -551,8 +565,13 @@ public class GameMenuController {
                     return new Result(true,"you destroyed wood");
                 }
             }
-        } else if (tool.getToolType().equals(ToolType.WateringCan)) {
-            double energy=ToolType.WateringCan.getEnergyCosts()[tool.getLvlByMaterial()];
+            energy--;
+            energy = Math.max(energy,0);
+            player.setEnergy(player.getEnergy() - energy*leverage);
+            return new Result(true,"you used axe but incorrectly");
+        }
+        else if (tool.getToolType().equals(ToolType.WateringCan)) {
+            double energy=ToolType.WateringCan.getEnergyCosts()[tool.getLevel()];
             if(player.getAbilities().getForagingLevel()==4){
                 energy --;
             }
@@ -561,10 +580,15 @@ public class GameMenuController {
                     plant.wateringPlant();
                     tool.setWateringCanStorage(tool.getWateringCanStorage() - 1);
                     player.getAbilities().increaseForagingAbility(5);
-                    player.setEnergy(player.getEnergy() - energy*leverage);
+                    return new Result(true,"plant watered sucessfully");
                 }
             } else if (tile.isWater()) {
+                player.setEnergy(player.getEnergy() - energy*leverage);
+                if(tool.isWateringCanFull()){
+                    return new Result(true,"watering can is already full");
+                }
                 tool.handleWateringCanStorage();
+                return new Result(true,"watering can is now full of water");
             }
         } else if (tool.getToolType().equals(ToolType.Scythe)) {
             player.setEnergy(player.getEnergy() - 2*leverage);
@@ -590,12 +614,29 @@ public class GameMenuController {
             player.setEnergy(player.getEnergy() - 4*leverage);
             if (tile.getPlaceable() instanceof Animal animal) {
                 if(animal.getAnimalType().equals(AnimalType.Cow)){
+                    ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
                     for(AnimalProduct animalProduct : animal.getAnimalProducts()){
                         player.getBackPack().addItemToInventory(animalProduct);
+                        toRemoved.add(animalProduct);
                         if(player.getBackPack().isBackPackFull()){
-                            return new Result(false,"backpack is full");
+                            animal.getAnimalProducts().removeAll(toRemoved);
+                            StringBuilder sb= new StringBuilder();
+                            for(Map.Entry<AnimalProduct,Integer> entry : Animal.getMapListOfAnimalProducts(toRemoved).entrySet()){
+                                sb.append(entry.getKey().getAnimalProductType().name()).append(" : ")
+                                        .append(entry.getValue()).append("\n");
+                            }
+                            return new Result(false,"backpack gets full , you collect these -> \n"
+                             + sb.toString());
                         }
                     }
+                    StringBuilder sb= new StringBuilder();
+                    for(Map.Entry<AnimalProduct,Integer> entry : Animal.getMapListOfAnimalProducts(toRemoved).entrySet()){
+                        sb.append(entry.getKey().getAnimalProductType().name()).append(" : ")
+                                .append(entry.getValue()).append("\n");
+                    }
+                    animal.getAnimalProducts().removeAll(toRemoved);
+                    return new Result(true,"you collected all product -> \n " +
+                            sb.toString());
                 }
             }
         }
@@ -603,12 +644,18 @@ public class GameMenuController {
             player.setEnergy(player.getEnergy() - 4*leverage);
             if (tile.getPlaceable() instanceof Animal animal) {
                 if(animal.getAnimalType().equals(AnimalType.Sheep)){
+                    ArrayList<AnimalProduct>toRemoved = new ArrayList<>();
                     for(AnimalProduct animalProduct : animal.getAnimalProducts()){
                         player.getBackPack().addItemToInventory(animalProduct);
+                        toRemoved.add(animalProduct);
                         if(player.getBackPack().isBackPackFull()){
-                            return new Result(false,"backpack is full");
+                            animal.getAnimalProducts().removeAll(toRemoved);
+                            return new Result(false,"back pack gets full , you collected these -> \n" +
+                                    animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size());
                         }
                     }
+                    animal.getAnimalProducts().removeAll(toRemoved);
+                    return new Result(true,"you collected all" + toRemoved.size() + " wools of " + animal.getName());
                 }
             }
         }
@@ -1201,10 +1248,13 @@ public class GameMenuController {
     }
 
     public Result eat(String foodName) {
-
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         try {
-            App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(foodName);
-            return new Result(true, "you ate " + foodName + " successfully");
+            FoodType food = FoodType.valueOf(foodName);
+            player.getBackPack().useItem(food);
+            player.setEnergy(player.getEnergy() + food.getEnergy());
+            return new Result(true, "you ate " + foodName + " successfully , " +
+                    food.getEnergy() + " energy added");
         } catch (Exception e) {
             return new Result(false, "invalid food");
         }
@@ -1256,12 +1306,10 @@ public class GameMenuController {
         for (int i = 0; i < animalPlaces.size(); i++) {
             AnimalPlace place = animalPlaces.get(i);
 
-            // بررسی سازگاری نوع حیوان با مکان
             if (!animalType.getAnimalPlaceTypes().contains(place.getAnimalPlaceType())) {
                 continue;
             }
 
-            // بررسی ظرفیت واقعی
             if (place.getAnimals().size() >= place.getAnimalPlaceType().getCapacity()) {
                 if (i == animalPlaces.size() - 1) {
                     return new Result(false, "No valid AnimalPlace with enough space");
@@ -1323,11 +1371,54 @@ public class GameMenuController {
 
     public Result shepherdAnimal(String animalName, String x, String y) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        StringBuilder sb = new StringBuilder();
-    for(AnimalPlace animalPlace : player.getPlayerMap().getFarm().getAnimalPlaces()){
-        sb.append(animalPlace.getAnimalPlaceType().name()).append("\n");
-    }
-    return new Result(true,sb.toString());
+        Animal animal = Animal.findAnimalByName(animalName);
+        if(animal == null){
+            return new Result(false,"animal not found with name : " + animalName);
+        }
+        int xInt = Integer.parseInt(x);
+        int yInt = Integer.parseInt(y);
+        AnimalPlace animalPlace = animal.getAnimalPlace();
+        Tile tile = Tile.getTile(xInt,yInt);
+        if(tile == null){
+            return new Result(false,"tile not found");
+        }
+        if(!animal.isOutside()){
+            if(tile.getPlaceable() instanceof AnimalPlace){
+                return new Result(false,"animal is already in a animalPlace");
+            }
+            if(tile.getPlaceable() == null){
+                animalPlace.getAnimals().remove(animal);
+                tile.setPlaceable(animal);
+                animal.setTile(tile);
+                animal.setOutside(true);
+                animal.setFedOutside(true);
+                return new Result(true,"animal is outside now");
+            }
+        }
+        else {
+            if(tile.getPlaceable() instanceof AnimalPlace animalPlace1){
+                if(!animal.getAnimalType().getAnimalPlaceTypes().contains(animalPlace1.getAnimalPlaceType())){
+                    return new Result(false,"you can't put " + animal.getAnimalType().name() + " in "
+                     + animalPlace1.getAnimalPlaceType().name());
+                }
+                if(animalPlace1.isFull()){
+                    return new Result(false,"this " + animalPlace1.getAnimalPlaceType().name() + " is full");
+                }
+                animal.getTile().setPlaceable(null);
+                animal.setTile(null);
+                animal.setOutside(false);
+                animalPlace1.getAnimals().add(animal);
+                return new Result(true,animalName + " went to " + animalPlace1.getAnimalPlaceType().name());
+
+            }
+            if(tile.getPlaceable() == null){
+                return new Result(false,animalName + " is already outside");
+            }
+            if(tile.getPlaceable() != null){
+                return new Result(false,"you can't put animals here");
+            }
+        }
+        return new Result(true,"DONE");
     }
 
     public Result feedHay(String animalName) {

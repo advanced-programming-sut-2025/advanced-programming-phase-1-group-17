@@ -10,6 +10,7 @@ public class Tool implements BackPackable {
     private int level = 0;
     private double price;
     private int wateringCanStorage = 0;
+    private boolean isWateringCanFull = true;
 
 
     public Tool(ToolType type, ToolMaterial material) {
@@ -31,6 +32,7 @@ public class Tool implements BackPackable {
             else
                 wateringCanStorage = 100; //Iridium
         }
+        isWateringCanFull = true;
     }
 
     public ToolType getToolType() {
@@ -55,6 +57,9 @@ public class Tool implements BackPackable {
 
     public int getLevel() {
         return level;
+    }
+    public ToolMaterial getLevelMaterial(){
+        return ToolMaterial.values()[this.level];
     }
 
     public void setLevel(int level) {
@@ -117,10 +122,14 @@ public class Tool implements BackPackable {
 
     public void setWateringCanStorage(int wateringCanStorage) {
         this.wateringCanStorage = wateringCanStorage;
+        this.isWateringCanFull=false;
     }
 
-    public int getLvlByMaterial(){
-        return this.material.ordinal();
+    public boolean isWateringCanFull() {
+        return isWateringCanFull;
     }
 
+    public void setWateringCanFull(boolean wateringCanFull) {
+        isWateringCanFull = wateringCanFull;
+    }
 }

@@ -3,9 +3,11 @@ package org.example.models.animal;
 import org.example.models.App;
 import org.example.models.Placeable;
 import org.example.models.Player;
+import org.example.models.map.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.example.models.market.ItemQuality.*;
 
@@ -20,9 +22,18 @@ public class Animal implements Placeable {
     private boolean isFedToday = false;
     private boolean isFedOutside = false;
     private boolean isOutside=false;
+    private Tile tile=null;
     public Animal(String name, AnimalType animalType){
         this.name=name;
         this.animalType=animalType;
+    }
+
+    public Tile getTile() {
+        return tile;
+    }
+
+    public void setTile(Tile tile) {
+        this.tile = tile;
     }
 
     public String getName() {
@@ -118,6 +129,7 @@ public class Animal implements Placeable {
 
     public void setFedOutside(boolean fedOutside) {
         isFedOutside = fedOutside;
+        isFedToday = fedOutside;
     }
 
     public boolean isOutside() {
@@ -191,5 +203,17 @@ public class Animal implements Placeable {
                 animal.setOutside(false);
             }
         }
+    }
+    public static Map<AnimalProduct,Integer> getMapListOfAnimalProducts(ArrayList<AnimalProduct> animalProducts){
+        Map<AnimalProduct,Integer> productIntegerMap= new HashMap<>();
+        for(AnimalProduct animalProduct : animalProducts){
+            if(productIntegerMap.containsKey(animalProduct)){
+                productIntegerMap.put(animalProduct,productIntegerMap.get(animalProduct)+1);
+            }
+            else{
+                productIntegerMap.put(animalProduct,1);
+            }
+        }
+        return productIntegerMap;
     }
 }

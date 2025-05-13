@@ -19,6 +19,10 @@ public class AnimalPlace implements Placeable {
         return animals;
     }
 
+    public boolean isFull(){
+        return animals.size() >= capacity;
+    }
+
     public void setAnimals(ArrayList<Animal> animals) {
         this.animals = animals;
     }
