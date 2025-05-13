@@ -68,4 +68,20 @@ public enum TreeType {
     public List<Season> getSeasons() {
         return seasons;
     }
+
+    public static TreeType getTreeTypeByName(String name) {
+        for (TreeType value : TreeType.values()) {
+            if (value.name().equalsIgnoreCase(name))
+                return value;
+        }
+        return null;
+    }
+
+    public static TreeType getTreeTypeByFruitType(FruitType fruitType) {
+        for (TreeType value : TreeType.values()) {
+            if (value.getFruitType().equals(fruitType))
+                return value;
+        }
+        return null;
+    }
 }

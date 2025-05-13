@@ -1,5 +1,8 @@
 package org.example.controllers;
 
+import org.example.controllers.helperControllers.ArtisanController;
+import org.example.controllers.helperControllers.FarmingController;
+import org.example.controllers.helperControllers.MarketsController;
 import org.example.display;
 import org.example.models.*;
 import org.example.models.artisan.ArtisanProduct;
@@ -7,6 +10,7 @@ import org.example.models.artisan.ArtisanProductType;
 import org.example.models.artisan.IngredientGroup;
 import org.example.models.NPCS.NPC;
 import org.example.models.NPCS.Quest;
+import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.cooking.Food;
@@ -30,6 +34,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 public class GameMenuController {
+    private final ArtisanController artisanController = new ArtisanController();
+    private final FarmingController farmingController = new FarmingController();
+    private final MarketsController marketsController = new MarketsController();
 
     public Result newGame(String username1, String username2, String username3, String rest, Scanner scanner) {
         if (rest != null && !rest.trim().isEmpty())
@@ -478,7 +485,7 @@ public class GameMenuController {
         }
 
         if (tool.getToolType().equals(ToolType.Hoe)) {
-            if (tile.getPlaceable() == null) {
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof GreenHouse) {
                 tile.setPlowed(true);
                 return new Result(true, "plowed successfully");
             }
@@ -488,9 +495,9 @@ public class GameMenuController {
                         mineral.getType()))
                     return new Result(false, "this type of pichaxe cannot break this mineral");
 
-                player.getAbilities().increaseMiningAbility(10);
+                player.getAbilities().increaseMiningAbility();
                 if (mineral.isForaging())
-                    player.getAbilities().increaseForagingAbility(10);
+                    player.getAbilities().increaseForagingAbility();
 
                 player.getBackPack().addItemToInventory(mineral);
                 tile.setPlaceable(null);
@@ -506,8 +513,8 @@ public class GameMenuController {
 
         } else if (tool.getToolType().equals(ToolType.Axe)) {
             if (tile.getPlaceable() instanceof Tree) {
-
-                tile.setPlaceable(null);
+                player.getAbilities().increaseForagingAbility();
+                tile.setPlaceable(new NormalItem(NormalItemType.Wood));
             }
         } else if (tool.getToolType().equals(ToolType.WateringCan)) {
             if (tile.getPlaceable() instanceof Plant plant) {
@@ -519,24 +526,35 @@ public class GameMenuController {
                 tool.handleWateringCanStorage();
             }
         } else if (tool.getToolType().equals(ToolType.Scythe)) {
-            //TODO: Alaf
-            //TODO: Giant Crop(*10)
             player.setEnergy(player.getEnergy() - 2);
-            if (tile.getPlaceable() instanceof Plant plant) {
-                player.getAbilities().increaseFarmingAbility(5);
+            if (tile.getPlaceable() instanceof NormalItem normalItem) {
+                if (normalItem.getType().equals(NormalItemType.Grass))
+                    tile.setPlaceable(null);
+                else if (normalItem.getType().equals(NormalItemType.Fibre)) {
+                    tile.setPlaceable(null);
+                    player.getBackPack().addItemToInventory(new NormalItem(NormalItemType.Fibre));
+                }
+            } else if (tile.getPlaceable() instanceof Plant plant) {
+                player.getAbilities().increaseFarmingAbility();
                 if (plant instanceof Tree tree) {
-                    tree.setFullyGrown(false);
+                    tree.harvest();
                     player.getBackPack().addItemToInventory(
                             new Fruit(tree.getType().getFruitType())
                     );
-                    tree.setFullyGrown(false);
                     if (tree.isForaging())
-                        player.getAbilities().increaseForagingAbility(5);
+                        player.getAbilities().increaseForagingAbility();
                 } else if (plant instanceof Crop crop) {
-                    if (crop.isFullyGrown()) {
-                        //TODO: chandbar bardasht
+                    crop.harvest();
+                    if (crop.isGiant()) {
+                        if (crop.isForaging())
+                            player.getAbilities().increaseForagingAbility();
+                        for (int i = 0; i < 10; i++) {
+                            player.getBackPack().addItemToInventory(crop);
+                        }
+                    } else {
+                        if (crop.isForaging())
+                            player.getAbilities().increaseForagingAbility();
                         player.getBackPack().addItemToInventory(crop);
-                        crop.getTile().setPlaceable(null);
                     }
                 }
             }
@@ -554,225 +572,23 @@ public class GameMenuController {
     }
 
     public Result craftInfo(String name) {
-        StringBuilder result = new StringBuilder();
-
-        for (CropType cropType : CropType.values()) {
-            if (!cropType.name().equals(name)) {
-                continue;
-            }
-            result.append("""
-                    Name: %s
-                    Source: %s""".formatted(cropType.name(), cropType.getSource().name()));
-            result.append("\nStages: ");
-            int counter = 1;
-            for (Integer stage : cropType.getStages()) {
-                result.append("%s".formatted(stage));
-                if (counter != cropType.getStages().size())
-                    result.append("-");
-                counter++;
-            }
-            result.append("\n");
-            result.append("""
-                    Total Harvest Time: %d
-                    One Time: %s
-                    Regrowth Time: %s
-                    Base Sell Price: %.0f
-                    Is Edible: %s
-                    Base Energy: %d
-                    Base Health:
-                    Season: """.formatted(
-                    cropType.getTotalGrowthTime(), cropType.isOneTime(),
-                    (cropType.getRegrowthTime() == -1) ? "" : cropType.getRegrowthTime(),
-                    cropType.getBaseSellPrice(), cropType.isEdible(), cropType.getEnergy()
-            ));
-
-            counter = 1;
-            for (Season season : cropType.getSeasons()) {
-                result.append("%s".formatted(season));
-                if (counter != cropType.getSeasons().size())
-                    result.append("-");
-                counter++;
-            }
-
-            result.append("\nCan Become Giant: %s".formatted(cropType.isCanBecomeGiant()));
-            return new Result(true, result.toString());
-        }
-
-
-        for (FruitType fruitType : FruitType.values()) {
-            TreeType tree = fruitType.getSourceTreeType();
-            if (fruitType.name().equals(name)) {
-                break;
-            }
-            result.append("""
-                    Name: %s
-                    Source: %s""".formatted(fruitType.name(), tree.getSapling().name()));
-            result.append("\nStages: ");
-            int counter = 1;
-            for (Integer stage : tree.getStages()) {
-                result.append("%s".formatted(stage));
-                if (counter != tree.getStages().size())
-                    result.append("-");
-                counter++;
-            }
-            result.append("\n");
-            result.append("""
-                    Total Harvest Time: %d
-                    One Time: False
-                    Regrowth Time: %s
-                    Base Sell Price: %.0f
-                    Is Edible: %s
-                    Base Energy: %d
-                    Base Health:
-                    Season: """.formatted(
-                    tree.getTotalGrowthTime(),
-                    (tree.getFruitHarvestCycle() == -1) ? "" : tree.getFruitHarvestCycle(),
-                    fruitType.getBaseSellPrice(), fruitType.isEdible(), fruitType.getEnergy()
-            ));
-
-            counter = 1;
-            for (Season season : tree.getSeasons()) {
-                result.append("%s".formatted(season));
-                if (counter != tree.getSeasons().size())
-                    result.append("-");
-                counter++;
-            }
-
-            result.append("Can Become Giant: False");
-            return new Result(true, result.toString());
-        }
-
-        return new Result(false, "No Crop or Fruit Found with this Name");
+        return farmingController.craftInfo(name);
     }
 
     public Result plantSeed(String source, String direction) {
-        int[] directions = App.handleDirection(Integer.parseInt(direction));
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        SeedType seedType = SeedType.getSeedTypeByName(source);
-        SaplingType saplingType = SaplingType.getTypeByName(source);
-
-        int newX = player.getX() + directions[0];
-        int newY = player.getY() + directions[1];
-
-        Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
-        if (tile ==  null) {
-            return new Result(false, "TIle out of map");
-        }
-
-        if (tile.getPlaceable() != null && !(tile.getPlaceable() instanceof GreenHouse greenHouse))
-            return new Result(false, "Specified tile is already occupied");
-
-
-        if (!tile.isPlowed())
-            return new Result(false, "The Specified tile is not Plowed");
-
-        else if (seedType == null && saplingType == null)
-            return new Result(false, "No SeedType with this Name");
-
-        if (seedType != null) {
-            if (player.getBackPack().getBackPackItems().get(seedType) == null ||
-                    player.getBackPack().getBackPackItems().get(seedType).isEmpty())
-                return new Result(false, "You do not have any seed of this type");
-
-            if (tile.getPlaceable() instanceof GreenHouse greenHouse) {
-                if (!greenHouse.isActive())
-                    return new Result(false, "You need to Build the Greenhouse first");
-                tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, true));
-            }
-            else if (tile.getPlaceable() == null)
-                tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, false));
-
-            player.getBackPack().useItem(seedType);
-            return new Result(true,
-                    "Successfully planted a plant of type %s in (%d,%d)".formatted(
-                            seedType.name(), newX, newY
-                    ));
-        }
-        //if saplingType != null
-        if (player.getBackPack().getBackPackItems().get(saplingType) == null ||
-                player.getBackPack().getBackPackItems().get(saplingType).isEmpty())
-            return new Result(false, "You do not have any sapling of this type");
-
-
-        if (tile.getPlaceable() instanceof GreenHouse greenHouse) {
-            if (!greenHouse.isActive())
-                return new Result(false, "You need to Build the Greenhouse first");
-            tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, true));
-        }
-        else if (tile.getPlaceable() == null)
-            tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, false));
-
-        player.getBackPack().useItem(saplingType);
-        return new Result(true,
-                "Successfully planted a plant of type %s in (%d,%d)".formatted(
-                        saplingType.name(), newX, newY
-                ));
+        return farmingController.plantSeed(source, direction);
     }
 
     public Result showPlant(String x, String y) {
-        int x1 = Integer.parseInt(x);
-        int y1 = Integer.parseInt(y);
-
-        Tile tile = Tile.getTile(x1, y1);
-        if (tile == null) {
-            return new Result(false, "Tile out of map.");
-        }
-
-        if (tile.getPlaceable() instanceof Tree tree) {
-            return new Result(true, """
-                    Name: %s
-                    Days Left Till Full Growth: %d
-                    Current Stage: %d
-                    Fertilizer:""".formatted(tree.getType().name(), tree.getDaysTillFullGrowth(), tree.getCurrentStageIndex() + 1));
-        } else if (tile.getPlaceable() instanceof Crop crop) {
-            return new Result(true, """
-                    Name: %s
-                    Days Left Till Full Growth: %d
-                    Current Stage: %d
-                    Fertilizer:""".formatted(crop.getName(), crop.getDaysTillFullGrowth(), crop.getCurrentStageIndex() + 1));
-        }
-        return new Result(false, "There is no plant in this tile");
+        return farmingController.showPlant(x, y);
     }
 
     public Result fertilize(String fertilizer, String direction) {
-        FertilizerType fertilizerType = FertilizerType.getFertilizerTypeByName(fertilizer);
-        if (fertilizerType == null) {
-            return new Result(false, "No fertilizer with name %s".formatted(fertilizer));
-        }
-
-        int[] directions = App.handleDirection(Integer.parseInt(direction));
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
-        int newX = player.getX() + directions[0];
-        int newY = player.getY() + directions[1];
-        Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
-
-        if (tile == null) {
-            return new Result(false, "Tile out of map.");
-        }
-
-        if (player.getBackPack().getInventorySize(fertilizerType.getName()) == 0) {
-            return new Result(false ,"You do not have fertilizer of type %s".formatted(fertilizerType.getName()));
-        }
-
-        if (tile.getPlaceable() instanceof Plant plant) {
-            player.getBackPack().useItem(fertilizerType);
-            plant.setFertilizerType(fertilizerType);
-            return new Result(true, "Fertilized successfully");
-        }
-
-        return new Result(false, "No plant in this tile");
+        return farmingController.fertilize(fertilizer, direction);
     }
 
     public Result howMuchWater() {
-        //TODO: Harvesting with scythe
-        //TODO: Watering Plant when using 'use tool'
-        Tool tool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
-        if (tool.getToolType().equals(ToolType.WateringCan)) {
-            return new Result(true, "%d".formatted(tool.getWateringCanStorage()));
-        }
-        //TODO: it must always return how much water is left
-        return new Result(false, "");
+        return farmingController.howMuchWater();
     }
 
     public Result craftingShowRecipes() {
@@ -1075,305 +891,36 @@ public class GameMenuController {
     }
 
     public Result artisanUse(String artisanName, String itemNames) {
-        // 1. Find artisan tool by name
-        CraftingItemType artisan = CraftingItemType.getCraftingItemTypeByName(artisanName);
-
-        if (artisan == null) {
-            return new Result(false, "No artisan found with name '%s'".formatted(artisanName));
-        }
-
-        // 2. Check ownership of artisan tool
-        BackPack playerBackPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-        if (!playerBackPack.getBackPackItems().containsKey(artisan)) {
-            return new Result(false, "You do not own the artisan tool '%s'.".formatted(artisan.getName()));
-        }
-
-        // 3. Parse input ingredient names into BackPackableTypes
-        String[] tokens = itemNames.trim().split("\\s+");
-        Map<BackPackableType, Integer> provided = new HashMap<>();
-        for (String token : tokens) {
-            Optional<BackPackableType> maybeIngredient = parseBackPackable(token);
-            if (maybeIngredient.isEmpty()) {
-                return new Result(false, "Ingredient '%s' not recognized.".formatted(token));
-            }
-            BackPackableType type = maybeIngredient.get();
-            provided.put(type, provided.getOrDefault(type, 0) + 1);
-        }
-
-        // 4. Try to match an ArtisanProductType with given artisan and ingredients
-        for (ArtisanProductType product : ArtisanProductType.values()) {
-            if (!product.getArtisan().equals(artisan)) continue;
-
-            Map<Object, Integer> requiredIngredients = product.getIngredients();
-
-            // Check if all required ingredients are present in the provided map
-            boolean match = true;
-            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
-                Object key = entry.getKey();
-                int requiredAmount = entry.getValue();
-                int providedAmount = 0;
-
-                if (key instanceof BackPackableType type) {
-                    providedAmount = provided.getOrDefault(type, 0);
-                } else if (key instanceof IngredientGroup group) {
-                    for (BackPackableType type : group.getMembers()) {
-                        providedAmount += provided.getOrDefault(type, 0);
-                    }
-                }
-
-                if (providedAmount < requiredAmount) {
-                    match = false;
-                    break;
-                }
-            }
-
-            if (!match) continue;
-
-            // 5. Check if player owns enough of each required ingredient
-            //TODO: check if is already artisan is producing something
-            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
-                int required = entry.getValue();
-
-                if (entry.getKey() instanceof BackPackableType type) {
-                    int owned = playerBackPack.getBackPackItems()
-                            .getOrDefault(type, new ArrayList<>()).size();
-                    if (owned < required) {
-                        return new Result(false, "Not enough of '%s'.".formatted(type.getName()));
-                    }
-                } else if (entry.getKey() instanceof IngredientGroup group) {
-                    int available = group.countInBackPack(playerBackPack);
-                    if (available < required) {
-                        return new Result(false, "Not enough items from group '%s'.".formatted(group.name()));
-                    }
-                }
-            }
-
-            // 6. Remove ingredients from backpack
-            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
-                int amount = entry.getValue();
-                if (entry.getKey() instanceof BackPackableType type) {
-                    for (int i = 0; i < amount; i++) {
-                        playerBackPack.useItem(type);
-                    }
-                } else if (entry.getKey() instanceof IngredientGroup group) {
-                    group.removeFromBackPack(amount, playerBackPack);
-                }
-            }
-
-            // 7. Start artisan production
-            App.getCurrentGame().getCurrentPlayingPlayer()
-                    .getArtisanProductsInProgress().add(new ArtisanProduct(product));
-
-            return new Result(true, "'%s' is now being produced.".formatted(product.getName()));
-        }
-
-        return new Result(false, "No matching artisan product found for '%s' with given ingredients.".formatted(artisanName));
-    }
-
-
-    private Optional<BackPackableType> parseBackPackable(String name) {
-        List<Class<? extends Enum<?>>> enumClasses = List.of(
-                FruitType.class,
-                FishType.class,
-                AnimalProductType.class,
-                CraftingItemType.class,
-                SeedType.class,
-                CropType.class,
-                NormalItemType.class
-                //TODO: Add more if needed
-        );
-
-        for (Class<? extends Enum<?>> enumClass : enumClasses) {
-            for (Enum<?> constant : enumClass.getEnumConstants()) {
-                if (constant.name().equalsIgnoreCase(name)) {
-                    return Optional.of((BackPackableType) constant);
-                }
-            }
-        }
-        return Optional.empty();
+        return artisanController.artisanUse(artisanName, itemNames, marketsController);
     }
 
 
     public Result artisanGet(String artisanName) {
-        CraftingItemType type = CraftingItemType.getCraftingItemTypeByName(artisanName);
-        if (type == null) {
-            return new Result(false, "there is no artisan with name %s".formatted(artisanName));
-        }
-
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for (ArtisanProduct artisanProduct : player.getArtisanProductsInProgress()) {
-            if (artisanProduct.getType().getArtisan().equals(type)) {
-                if (artisanProduct.isReady()) {
-                    player.getBackPack().addItemToInventory(artisanProduct);
-                    return new Result(true, "artisan product added to backpack");
-                } else {
-                    return new Result(false, "artisan product is not ready.");
-                }
-            }
-        }
-        return new Result(false, "artisan with name %s is not producing anything".formatted(artisanName));
+        return artisanController.artisanGet(artisanName);
     }
 
 
     public Result showAllProducts() {
-        //check is the player in store
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = App.getCurrentGame().getTileByIndex(player.getX(), player.getY());
-        if (tile.getPlaceable() instanceof Store store) {
-            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-                return new Result(false, "Store is open from %d to %d".formatted(
-                        store.getType().getOpeningHour(), store.getType().getClosingHour()
-                ));
-            return new Result(true, App.getCurrentGame().getStoreManager().showAllProducts(store));
-        }
-        return new Result(false, "You are not in a store");
+        return marketsController.showAllProducts();
     }
 
 
     public Result showAllAvailableProducts() {
-        //check is the player in store
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = App.getCurrentGame().getTileByIndex(player.getX(), player.getY());
-        if (tile.getPlaceable() instanceof Store store) {
-            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-                return new Result(false, "Store is open from %d to %d".formatted(
-                        store.getType().getOpeningHour(), store.getType().getClosingHour()
-                ));
-            return new Result(true, App.getCurrentGame().getStoreManager().showAllAvailableProducts(store));
-        }
-        return new Result(false, "You are not in a store");
+        return marketsController.showAllAvailableProducts();
     }
 
 
     public Result purchase(String productName, String count) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        StoreType storeType;
-        if (App.getCurrentGame().getTileByIndex(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
-            storeType = store.getType();
-        } else
-            return new Result(false, "The Player is not in a store");
-
-        if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-            return new Result(false, "Store is open from %d to %d".formatted(
-                    store.getType().getOpeningHour(), store.getType().getClosingHour()
-            ));
-
-        ShopItem product = null;
-        for (ShopItem shopItem : App.getCurrentGame().getStoreManager().getInventory(storeType).getItems()) {
-            if (shopItem.getName().equalsIgnoreCase(productName)) {
-                product = shopItem;
-            }
-        }
-        if (product == null)
-            return new Result(false, "no product with name %s in store %s".formatted(
-                    productName, storeType.name()
-            ));
-
-        if (storeType.equals(StoreType.FishShop))
-            if (!App.getCurrentGame().getStoreManager().checkFishingSkill(product))
-                return new Result(false, "You do not have enough fishing skill to buy this item.");
-
-        int count1;
-
-        if (count == null)
-            count1 = 1;
-        else
-            count1 = Integer.parseInt(count);
-
-        int availableCount = product.getDailyLimit() - product.getSoldToday();
-        if (availableCount < count1)
-            return new Result(false, "only %d left today".formatted(availableCount));
-
-        if (!App.getCurrentGame().getStoreManager().hasIngredients(product))
-            return new Result(false, "You do not have enough ingredients to buy this item");
-
-        App.getCurrentGame().getStoreManager().useIngredients(product);
-
-        double price;
-        if (storeType.equals(StoreType.PierresGeneralStore))
-            price = App.getCurrentGame().getStoreManager().getSeasonalPrice(product);
-        else
-            price = product.getPrice();
-
-        price *= count1;
-        if (player.getBackPack().getCoin() < price)
-            return new Result(false, "you have only %.2f dollars left(not enough money)".formatted(
-                    player.getBackPack().getCoin()
-            ));
-
-        //purchasing
-        product.setSoldToday(product.getSoldToday() + count1);
-        player.getBackPack().addcoin(-price);
-        if (product.getType().equals(BackPackType.LargeBackPack) || product.getType().equals(BackPackType.DeluxeBackPack))
-            return App.getCurrentGame().getStoreManager().purchaseBackpack(product);
-
-        for (int i = 0; i < count1; i++)
-            player.getBackPack().addItemToInventory(product);
-
-        return new Result(false, "purhcased successfully");
+        return marketsController.purchase(productName, count);
     }
 
 
     public Result cheatAddDollars(String count) {
-        double amount;
-        try {
-            amount = Double.parseDouble(count);
-        } catch (Exception e) {
-            return new Result(false, "Amount must be number.");
-        }
-
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addCoin(amount);
-        return new Result(false, "Your new Balance: %.1f".formatted(
-                App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin()
-        ));
+        return marketsController.cheatAddDollars(count);
     }
 
     public Result sellProduct(String productName, String count) {
-        //TODO: find out what does the first error in the document means
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
-        int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
-        int[] dy = {1, 1, 0, -1, -1, -1, 0, 1};
-
-        ShippingBin bin = null;
-        for (int i = 0; i < 8; i++) {
-            if (App.getCurrentGame().getTileByIndex((player.getX() + dx[i]), (player.getY() + dy[i])).getPlaceable()
-                    instanceof ShippingBin shippingBin) {
-                if (shippingBin.getTodayItemOwner() != null) {
-                    if (!shippingBin.getTodayItemOwner().equals(player))
-                        return new Result(false, "this shipping bin is already used by %s today.".formatted(
-                                shippingBin.getTodayItemOwner().getUser().getUsername()) +
-                                "you may be able to use it tomorrow.");
-                }
-                bin = shippingBin;
-            }
-        }
-        if (bin == null)
-            return new Result(false, "you are not near a shipping bin");
-
-        Optional<BackPackableType> productType = parseBackPackable(productName);
-        if (productType.isEmpty())
-            return new Result(false, "no product type found with name %s".formatted(productName));
-
-        int count1;
-        if (count == null)
-            count1 = 1;
-        else
-            count1 = Integer.parseInt(count);
-
-        if (player.getBackPack().getBackPackItems().get(productType) == null)
-            return new Result(false, "you do not have item of type %s".formatted(productType.get().getName()));
-
-        int availableCount = player.getBackPack().getBackPackItems().get(productType).size();
-        if (availableCount < count1)
-            return new Result(false, "not enough count: you only have %d of this item".formatted(availableCount));
-
-        bin.addItems(productType.get(), count1, player);
-        for (int i = 0; i < count1; i++) {
-            player.getBackPack().useItem(productType.get());
-        }
-
-        return new Result(true, "sold successfully");
+        return marketsController.sellProduct(productName, count);
     }
 
 

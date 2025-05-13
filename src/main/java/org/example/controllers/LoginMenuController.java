@@ -54,4 +54,7 @@ public class LoginMenuController {
         App.setCurrentMenu(Menu.SignUpMenu);
     }
 
+    public void goToSignUpMenu() {
+        App.setCurrentMenu(Menu.SignUpMenu);
+    }
 }

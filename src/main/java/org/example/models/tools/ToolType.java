@@ -13,7 +13,7 @@ public enum ToolType implements BackPackableType {
     Shear(new int[]{0, 1, 2, 3, 4}),
     TrashCan(new int[]{40, 1, 2, 3, 4});
 
-    private final int[] levels; // آرایه‌ی مقادیر
+    private final int[] levels;
 
     ToolType(int[] levels) {
         this.levels = levels;

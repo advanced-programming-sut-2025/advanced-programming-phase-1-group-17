@@ -10,6 +10,10 @@ public class Recipe {
     private Food foodToBeCooked;
     private ArrayList<Food> ingredients = new ArrayList<>();
 
+    public Recipe(RecipeType type) {
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }
