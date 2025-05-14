@@ -1,9 +1,11 @@
 package org.example.views;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 import org.example.controllers.MainMenuController;
 import org.example.models.App;
+import org.example.models.enums.LoginMenuCommands;
 import org.example.models.enums.MainMenuCommands;
 import org.example.models.enums.Menu;
 
@@ -18,7 +20,15 @@ public class MainMenu implements AppMenu {
             System.out.println(mainMenuController.changeMenu(command));
         } else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
-        } else {
+        }
+        else if (command.trim().equals("load game")) {
+            System.out.println(mainMenuController.loadGame());
+        }else if (command.trim().equals("menu exit")) {
+            App.setLoggedInUser(null);
+            App.setCurrentMenu(Menu.LoginMenu);
+            System.out.println("You are in Login menu now");
+        }
+        else {
             System.out.println("invalid command");
         }
 

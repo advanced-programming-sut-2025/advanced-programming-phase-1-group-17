@@ -17,6 +17,7 @@ import org.example.models.foraging.ForagingController;
 import org.example.models.foraging.Mineral;
 import org.example.models.map.AnimalPlace;
 import org.example.models.map.GreenHouse;
+import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.BackPack;
@@ -114,16 +115,67 @@ public class GameMenuController {
 
 
     public Result loadGame() {
-        return new Result(false, "t");
+        User user = App.getLoggedInUser();
+        Player currentPlayer = null;
+        if (user.getLastGame() == null) {
+            return new Result(false, "you have no game to load");
+        }else {
+            Game game = user.getLastGame();
+            for (Player player : game.getPlayers()) {
+                if (!(player.getUser().getLastGame() != null && player.getUser().getLastGame().equals(game)))
+                    return new Result(false, "your friends have another active game");
+                if(player.getUser().equals(user)) {
+                    currentPlayer = player;
+                }
+            }
+            App.setCurrentGame(game);
+            App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
+            App.getCurrentGame().setCreator(currentPlayer);
+            for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
+                for (Tile tile : pm.getTiles()) {
+                    Tile.getTiles().add(tile);
+                }
+            }
+            NPC.setFatherPlayer(game.getPlayers().get(4));
+            NPC.setFatherUser(game.getPlayers().get(4).getUser());
+            GreenHouse.setGreenHouse(App.getCurrentGame().getGreenHouses());
+            App.setCurrentMenu(Menu.GameMenu);
+            return new Result(false, "you are in GameMenu now");
+        }
     }
 
+    public Result deleteAndExitThisGame(Scanner scanner) {
+        System.out.println("enter your comment about deleting this game");
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer())) continue;
+            if (player.getUser().getUsername().equals("NPC") || player.isGuest()) continue;
+            System.out.println(player.getUser().getUsername()+" please enter your comment (y/n)");
+            String input = scanner.nextLine();
+            if (input.equals("n")) {
+                return  new Result(false,"Not all players agree, so the game will not be deleted. You are in gameMenu now.");
+            }
+        }
+        App.setLoggedInUser(App.getCurrentGame().getCreator().getUser());
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            player.getUser().setLastGame(null);
+            player.getUser().setActiveGame(null);
+        }
+        App.getGames().remove(App.getCurrentGame());
+        App.setCurrentGame(null);
+        App.setCurrentMenu(Menu.MainMenu);
+        return new Result(true,"game deleted, you are in MainMenu now.");
 
+    }
     public Result exitGame() {
-        if (!App.getCurrentGame().getCurrentPlayingPlayer().equals(App.getCurrentGame()))
+        if (!App.getCurrentGame().getCurrentPlayingPlayer().equals(App.getCurrentGame().getCreator()))
             return new Result(false, "Only the game creator can exit the game.");
-        //TODO: saving the game
-        App.setCurrentMenu(null);
-        return new Result(true, "Game saved successfully.");
+        for (Player p :App.getCurrentGame().getPlayers()) {
+            p.getUser().setLastGame(App.getCurrentGame());
+            p.getUser().setActiveGame(null);
+        }
+        App.setCurrentGame(null);
+        App.setCurrentMenu(Menu.MainMenu);
+        return new Result(true, "Game saved successfully.you are now in main menu");
     }
 
     public Result removeCurrentGame() {
