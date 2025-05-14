@@ -55,4 +55,8 @@ public enum FishType implements BackPackableType {
     public boolean isLegendary() {
         return isLegendary;
     }
+
+    public double getEnergy() {
+        return 0;
+    }
 }

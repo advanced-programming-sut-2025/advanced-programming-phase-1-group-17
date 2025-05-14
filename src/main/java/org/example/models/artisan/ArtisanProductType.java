@@ -38,8 +38,8 @@ public enum ArtisanProductType implements BackPackableType {
     Coffee("Coffee", 75, 0, 2,
             mapOf(entry(org.example.models.plant.CropType.CoffeeBean, 5)), 150, CraftingItemType.Keg),
 
-//    Coal("Coal", -1, 0, 1,
-//            mapOf(entry(NormalItemType.Wood, 10)), 50, CraftingItemType.CharcoalKlin),
+    Coal("Coal", -1, 0, 1,
+            mapOf(entry(NormalItemType.Wood, 10)), 50, CraftingItemType.CharcoalKlin),
 
     Mead("Mead", 100, 0, 10,
             mapOf(entry(Honey, 1)), 300, CraftingItemType.Keg),
@@ -53,7 +53,7 @@ public enum ArtisanProductType implements BackPackableType {
     Vinegar("Vinegar", 13, 0, 10,
             mapOf(entry(NormalItemType.Rice, 1)), 100, CraftingItemType.Keg),
 
-    Oil("Oil", 13, 0, 6,
+    Oil("Oil", 13, 2, 0,
             mapOf(entry(org.example.models.plant.CropType.Corn, 1)), 100, CraftingItemType.OilMaker),
 
     TruffleOil("Truffle Oil", 38, 0, 6,
