@@ -1,16 +1,18 @@
 package org.example.models;
 
+import org.example.models.animal.Animal;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.foraging.ForagingController;
 import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
 import org.example.models.enums.DaysOfTheWeek;
 import org.example.models.enums.Season;
 import org.example.models.enums.WeatherType;
+import org.example.models.foraging.Mineral;
+import org.example.models.foraging.MineralType;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
-import org.example.models.plant.Crop;
-import org.example.models.plant.PlantGrowthController;
-import org.example.models.plant.Tree;
+import org.example.models.plant.*;
 import org.example.models.market.ShippingBin;
 
 import java.util.Random;
@@ -37,16 +39,15 @@ public class TimeAndDate {
     public void increaseHour() {
         hour++;
         for (Player player : App.getCurrentGame().getPlayers()) {
-            for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
+            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
                 artisanItemsInProgress.goToNextHour();
             }
         }
 
         if (hour > 22) {
             for (Player player : App.getCurrentGame().getPlayers()) {
-                for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
-                    for (int i = 0; i < 11; i++)
-                        artisanItemsInProgress.goToNextHour();
+                for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
+                    artisanItemsInProgress.goToNextDay();
                 }
             }
             hour = 9;
@@ -89,13 +90,16 @@ public class TimeAndDate {
                 }
                 for (NPC npc : App.getCurrentGame().getNPCs()) {
                     if (player.getFriendShipsWithNPCs().get(npc) >= 600) {
-                        Flower flower = new Flower();
+                        Flower flower = new Flower(FlowerType.FLOWER);
+                        //TODO flower
                         message message = new message(npc, "you received a flower");
                         player.getBackPack().addItemToInventory(flower);
                     }
                 }
             }
         }
+        //Animal
+        Animal.goToNextDay();
 
         normalizeMaxEnergies();
 
@@ -103,6 +107,7 @@ public class TimeAndDate {
         setTomorrowWeather(getRandomWeather());
 
         //Actions Needed to be done every day
+        weatherEffect();
         PlantGrowthController.growOneDay();
         ForagingController.setForagingForNextDay();
         ShippingBin.goToNextDay();
@@ -110,13 +115,38 @@ public class TimeAndDate {
 
         changeDayOfTheWeek();
         day++;
-        if (day >= 28) {
+        if (day > 28) {
             changeSeason();
             // active quest 3
             for (NPC npc : App.getCurrentGame().getNPCs()) {
                 npc.getRequests().get(2).setActive(true);
             }
             day = 1;
+        }
+    }
+
+    private void weatherEffect() {
+        if (todayWeather.equals(WeatherType.Rainy)) {
+            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
+                if (tile.getPlaceable() instanceof Plant plant) {
+                    if (!plant.isInsideGreenhouse())
+                        plant.wateringPlant();
+                }
+            }
+        } else if (todayWeather.equals(WeatherType.Storm)) {
+            int counter = 3;
+            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
+                double rand = Math.random();
+                if (rand <= 0.01) {
+                    if (counter > 0) {
+                        tile.lightningStrike();
+                        counter--;
+                    }
+                }
+                if (tile.getPlaceable() instanceof Plant plant) {
+                    plant.wateringPlant();
+                }
+            }
         }
     }
 
@@ -143,7 +173,7 @@ public class TimeAndDate {
         }
 
         //removing all crops that are not compatible with this season
-        handleIncompatiblePlants();
+        //handleIncompatiblePlants();
     }
 
     private void handleIncompatiblePlants() {
@@ -220,7 +250,7 @@ public class TimeAndDate {
     }
 
     public int getMonth() {
-        return month;
+        return season.ordinal() + 1;
     }
 
     public void setMonth(int month) {

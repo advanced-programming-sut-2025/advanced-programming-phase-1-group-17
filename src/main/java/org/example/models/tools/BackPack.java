@@ -82,7 +82,15 @@ public class BackPack {
     }
 
     public void useItem(BackPackableType type) {
+        if (backPackItems.get(type) == null)
+            return;
+        if (backPackItems.get(type).isEmpty())
+            return;
+
         backPackItems.get(type).remove(0);
+        if(this.backPackItems.get(type).isEmpty()) {
+            this.backPackItems.remove(type);
+        }
     }
 
     public int getInventorySize(String item) {
@@ -109,6 +117,9 @@ public class BackPack {
             }
             if (isBackPackFull())
                 return;
+            if (backPackable == null) {
+                return;
+            }
             backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
             backPackItems.get(backPackable.getType()).add(backPackable);
     }

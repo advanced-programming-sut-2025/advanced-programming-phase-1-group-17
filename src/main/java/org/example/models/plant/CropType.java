@@ -105,8 +105,13 @@ public enum CropType implements BackPackableType {
         if (seedType.equals(SeedType.Mixed)) {
             Season season = App.getCurrentGame().getDate().getSeason();
             Random random = new Random();
-            int randInt = random.nextInt(MixedSeedPossibleCrops.getCropsForSeason(season).size());
-            return MixedSeedPossibleCrops.getCropsForSeason(season).get(randInt);
+            CropType type;
+            //Filtering Foraging Types
+            do {
+                int randInt = random.nextInt(MixedSeedPossibleCrops.getCropsForSeason(season).size());
+                type = MixedSeedPossibleCrops.getCropsForSeason(season).get(randInt);
+            } while (type.Source == null);
+            return type;
         }
         for (CropType cropType : CropType.values()) {
             if (cropType.getSource().equals(seedType))
@@ -163,5 +168,13 @@ public enum CropType implements BackPackableType {
     @Override
     public double getPrice() {
         return 0;
+    }
+
+    public static CropType getCropTypeByName(String name) {
+        for (CropType value : CropType.values()) {
+            if (value.name().equalsIgnoreCase(name))
+                return value;
+        }
+        return null;
     }
 }

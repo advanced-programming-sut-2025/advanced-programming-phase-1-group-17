@@ -6,8 +6,13 @@ import org.example.models.enums.FishType;
 
 public class Fish implements BackPackable {
     private FishType fishType;
-    private ItemQuality shippingBinType;
+    private ItemQuality quality;
     private int count=1;
+
+    public Fish(FishType fishType, ItemQuality shippingBinType) {
+        this.fishType = fishType;
+        this.quality = shippingBinType;
+    }
 
     public FishType getFishType() {
         return fishType;
@@ -17,12 +22,12 @@ public class Fish implements BackPackable {
         this.fishType = fishType;
     }
 
-    public ItemQuality getShippingBinType() {
-        return shippingBinType;
+    public ItemQuality getQuality() {
+        return quality;
     }
 
-    public void setShippingBinType(ItemQuality shippingBinType) {
-        this.shippingBinType = shippingBinType;
+    public void setQuality(ItemQuality quality) {
+        this.quality = quality;
     }
 
     public int getCount() {
@@ -45,6 +50,6 @@ public class Fish implements BackPackable {
 
     @Override
     public BackPackableType getType() {
-        return null;
+        return this.fishType;
     }
 }

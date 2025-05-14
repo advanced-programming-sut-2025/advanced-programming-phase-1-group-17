@@ -1,30 +1,35 @@
 package org.example.models.plant;
 
+import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.Placeable;
+import org.example.models.Player;
 import org.example.models.map.Tile;
+import org.example.models.market.ItemQuality;
+import org.example.models.tools.Tool;
+import org.example.models.tools.ToolMaterial;
+import org.example.models.tools.ToolType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Crop extends Plant implements BackPackable, Placeable {
     private CropType type;
     private boolean isGiant = false;
+    private ItemQuality quality;
 
     ArrayList<Crop> neighborGiantTiles = new ArrayList<>();
 
 
     public Crop(boolean isForaging, CropType type, Tile tile, boolean isInsideGreenHouse) {
         super(isForaging, tile, isInsideGreenHouse);
-        //TODO: ask
         this.isFullyGrown = isForaging;
         this.type = type;
-        this.daysTillNextHarvest = type.getRegrowthTime();
-
-        checkCouldBeGiant();
+        this.daysTillNextHarvest = 0;
     }
 
-    private void checkCouldBeGiant() {
+    public void checkCouldBeGiant() {
         if (isForaging || type == null || !type.isCanBecomeGiant() || isInsideGreenhouse)
             return;
 
@@ -69,11 +74,15 @@ public class Crop extends Plant implements BackPackable, Placeable {
         c3.setGiant(true);
         c4.setGiant(true);
 
-        if (c1.isFullyGrown || c2.isGiant || c3.isGiant || c4.isGiant) {
+        if (c1.isFullyGrown || c2.isFullyGrown || c3.isFullyGrown || c4.isFullyGrown) {
             c1.setFullyGrown(true);
+            c1.hasFruit = true;
             c2.setFullyGrown(true);
+            c2.hasFruit = true;
             c3.setFullyGrown(true);
+            c3.hasFruit = true;
             c4.setFullyGrown(true);
+            c4.hasFruit = true;
             return;
         }
         Crop maxGrowedCrop = c1;
@@ -165,6 +174,8 @@ public class Crop extends Plant implements BackPackable, Placeable {
     }
 
     void handleStages() {
+        if (isFullyGrown)
+            return;
         this.whichDayOfStage++;
         if (getDaysTillFullGrowth() == 0){
             this.isFullyGrown = true;
@@ -203,17 +214,105 @@ public class Crop extends Plant implements BackPackable, Placeable {
         isGiant = giant;
     }
 
+    public ArrayList<Crop> getNeighborGiantTiles() {
+        return neighborGiantTiles;
+    }
+
+    public void setNeighborGiantTiles(ArrayList<Crop> neighborGiantTiles) {
+        this.neighborGiantTiles = neighborGiantTiles;
+    }
+
     public void harvest() {
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+
+        if (!hasFruit)
+            return;
+        if (this.isForaging())
+            player.getAbilities().increaseForagingAbility();
+
         if (type.isOneTime()) {
             if (isGiant) {
+                for (int i = 0; i < 10; i++) {
+                    player.getBackPack().addItemToInventory(this);
+                }
                 for (Crop neighborGiantTile : neighborGiantTiles) {
                     neighborGiantTile.getTile().setPlaceable(null);
                 }
+            } else {
+                player.getBackPack().addItemToInventory(this);
             }
-            tile.setPlaceable(null);
+            if (this.isInsideGreenhouse)
+                tile.setPlaceable(Tile.getTile(tile.getX(), tile.getY()).getOwner().getPlayerMap().getGreenHouse());
+            else
+                tile.setPlaceable(null);
         }
         else {
+            if (isGiant) {
+                for (int i = 0; i < 10; i++) {
+                    player.getBackPack().addItemToInventory(this);
+                }
+                for (Crop neighborGiantTile : neighborGiantTiles) {
+                    neighborGiantTile.hasFruit = false;
+                    neighborGiantTile.daysTillNextHarvest = type.getRegrowthTime();
+                }
+            } else
+                player.getBackPack().addItemToInventory(this);
             daysTillNextHarvest = type.getRegrowthTime();
+            this.hasFruit = false;
+        }
+        //setItemQuality();
+    }
+
+    private void setItemQuality() {
+        Random random = new Random();
+        int randInt = random.nextInt(100);
+
+        ToolMaterial toolMaterial = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool().getMaterial();
+        if (toolMaterial.equals(ToolMaterial.Basic)) {
+            if (randInt< 25)
+                quality = ItemQuality.Regular;
+            else if (randInt < 50)
+                quality = ItemQuality.Silver;
+            else if (randInt < 75)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        } else if (toolMaterial.equals(ToolMaterial.Copper)) {
+            if (randInt< 20)
+                quality = ItemQuality.Regular;
+            else if (randInt < 40)
+                quality = ItemQuality.Silver;
+            else if (randInt < 60)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        } else if (toolMaterial.equals(ToolMaterial.Iron)) {
+            if (randInt< 15)
+                quality = ItemQuality.Regular;
+            else if (randInt < 30)
+                quality = ItemQuality.Silver;
+            else if (randInt < 45)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        } else if (toolMaterial.equals(ToolMaterial.Gold)) {
+            if (randInt< 10)
+                quality = ItemQuality.Regular;
+            else if (randInt < 20)
+                quality = ItemQuality.Silver;
+            else if (randInt < 30)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        } else if (toolMaterial.equals(ToolMaterial.Iridium)) {
+            if (randInt< 5)
+                quality = ItemQuality.Regular;
+            else if (randInt < 10)
+                quality = ItemQuality.Silver;
+            else if (randInt < 15)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
         }
     }
 
@@ -227,5 +326,13 @@ public class Crop extends Plant implements BackPackable, Placeable {
                 neighborGiantTile.daysWithoutWater = 0;
             }
         }
+    }
+
+    public ItemQuality getQuality() {
+        return quality;
+    }
+
+    public void setQuality(ItemQuality quality) {
+        this.quality = quality;
     }
 }

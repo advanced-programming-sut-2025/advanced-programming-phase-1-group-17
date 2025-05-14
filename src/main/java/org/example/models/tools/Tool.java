@@ -10,12 +10,15 @@ public class Tool implements BackPackable {
     private int level = 0;
     private double price;
     private int wateringCanStorage = 0;
+    private boolean isWateringCanFull = true;
+    private FishingPoleType fishingPoleMaterial;
 
 
-    public Tool(ToolType type, ToolMaterial material) {
+    public Tool(ToolType type, ToolMaterial material,FishingPoleType fishingPoleMaterial) {
         this.type = type;
         this.material = material;
         handleWateringCanStorage();
+        this.fishingPoleMaterial = fishingPoleMaterial;
     }
 
     public void handleWateringCanStorage() {
@@ -31,6 +34,7 @@ public class Tool implements BackPackable {
             else
                 wateringCanStorage = 100; //Iridium
         }
+        isWateringCanFull = true;
     }
 
     public ToolType getToolType() {
@@ -49,23 +53,17 @@ public class Tool implements BackPackable {
         return material;
     }
 
-    public void setMaterial(ToolMaterial material) {
-        this.material = material;
-    }
-
     public int getLevel() {
         return level;
+    }
+    public ToolMaterial getLevelMaterial(){
+        return ToolMaterial.values()[this.level];
     }
 
     public void setLevel(int level) {
         this.level = level;
     }
 
-    public void toolUse(Tool tool) {
-        switch (tool.getToolType()) {
-            case Pickaxe:
-        }
-    }
 
     public static Tool findToolByName(String toolName) {
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
@@ -82,17 +80,18 @@ public class Tool implements BackPackable {
     }
 
     public int getTrashCanRefundPercentage() {
-        if (type.equals(ToolType.TrashCan))
-            return 0;
-        if (material.equals(ToolMaterial.Basic))
-            return 0;
-        else if (material.equals(ToolMaterial.Copper))
-            return 15;
-        else if (material.equals(ToolMaterial.Iron))
-            return 30;
-        else if (material.equals(ToolMaterial.Gold))
-            return 45;
-        return 60; //Iridium
+        if (type.equals(ToolType.TrashCan)) {
+            if (material.equals(ToolMaterial.Basic))
+                return 0;
+            else if (material.equals(ToolMaterial.Copper))
+                return 15;
+            else if (material.equals(ToolMaterial.Iron))
+                return 30;
+            else if (material.equals(ToolMaterial.Gold))
+                return 45;
+            return 60; //Iridium
+        }
+        return 0;
     }
 
 
@@ -107,7 +106,10 @@ public class Tool implements BackPackable {
 
 
     @Override
-    public ToolType getType() {
+    public BackPackableType getType() {
+        if (type == ToolType.FishingPole && fishingPoleMaterial != null) {
+            return fishingPoleMaterial;
+        }
         return type;
     }
 
@@ -117,5 +119,22 @@ public class Tool implements BackPackable {
 
     public void setWateringCanStorage(int wateringCanStorage) {
         this.wateringCanStorage = wateringCanStorage;
+        this.isWateringCanFull=false;
+    }
+
+    public boolean isWateringCanFull() {
+        return isWateringCanFull;
+    }
+
+    public void setWateringCanFull(boolean wateringCanFull) {
+        isWateringCanFull = wateringCanFull;
+    }
+
+    public FishingPoleType getFishingPoleMaterial() {
+        return fishingPoleMaterial;
+    }
+
+    public void setFishingPoleMaterial(FishingPoleType fishingPoleMaterial) {
+        this.fishingPoleMaterial = fishingPoleMaterial;
     }
 }

@@ -1,10 +1,13 @@
-package org.example.models;
+package org.example.models.animal;
 
-import org.example.models.enums.AnimalType;
-import org.example.models.map.AnimalPlace;
+import org.example.models.App;
+import org.example.models.Placeable;
+import org.example.models.Player;
+import org.example.models.map.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.example.models.market.ItemQuality.*;
 
@@ -13,16 +16,24 @@ public class Animal implements Placeable {
     private AnimalPlace animalPlace;
     private AnimalType animalType;
     private int price;
-    private HashMap<String, Integer> products = new HashMap<>();
     private int friendship;
     private ArrayList<AnimalProduct> animalProducts =new ArrayList<>();
     private boolean isPettedToday=false;
     private boolean isFedToday = false;
     private boolean isFedOutside = false;
     private boolean isOutside=false;
+    private Tile tile=null;
     public Animal(String name, AnimalType animalType){
         this.name=name;
         this.animalType=animalType;
+    }
+
+    public Tile getTile() {
+        return tile;
+    }
+
+    public void setTile(Tile tile) {
+        this.tile = tile;
     }
 
     public String getName() {
@@ -57,20 +68,27 @@ public class Animal implements Placeable {
         this.price = price;
     }
 
-    public HashMap<String, Integer> getProducts() {
-        return products;
-    }
-
-    public void setProducts(HashMap<String, Integer> products) {
-        this.products = products;
-    }
-
     public int getFriendship() {
         return friendship;
     }
 
     public void setFriendship(int friendship) {
-        this.friendship = friendship;
+        if(friendship>1000){
+            if(friendship<this.friendship){
+                this.friendship = friendship;
+            }
+        }
+        else if(friendship<0){
+            if(friendship>this.friendship){
+                this.friendship = friendship;
+            }
+        }
+        else {
+            this.friendship = friendship;
+        }
+    }
+    public void cheatSetFriendship(int friendship){
+        this.friendship=friendship;
     }
 
     public ArrayList<AnimalProduct> getAnimalProducts() {
@@ -111,6 +129,7 @@ public class Animal implements Placeable {
 
     public void setFedOutside(boolean fedOutside) {
         isFedOutside = fedOutside;
+        isFedToday = fedOutside;
     }
 
     public boolean isOutside() {
@@ -121,12 +140,16 @@ public class Animal implements Placeable {
         isOutside = outside;
     }
     public void produce(){
+        if(!isFedToday){
+            return;
+        }
         double randomNumber = 0.5 + Math.random();
         double chance = (double)(friendship + 150*randomNumber)/1500;
         double r = Math.random();
         double quality= ((double) friendship /1000)*(0.5 + r/2);
+        AnimalProductType animalProductType;
         AnimalProduct animalProduct=new AnimalProduct();
-        if(Math.random()<=chance){
+        if(Math.random()<=chance && friendship>100){
             if(this.animalType.getProductTypes().size()==2) {
                 animalProduct.setAnimalProductType(this.animalType.getProductTypes().get(1));
             }
@@ -135,16 +158,16 @@ public class Animal implements Placeable {
             animalProduct.setAnimalProductType(this.animalType.getProductTypes().get(0));
         }
         if(quality<0.5){
-            animalProduct.setShippingBinType(Regular);
+            animalProduct.setQuality(Regular);
         }
         else if(quality<0.7){
-            animalProduct.setShippingBinType(Silver);
+            animalProduct.setQuality(Silver);
         }
         else if(quality<0.9){
-            animalProduct.setShippingBinType(Gold);
+            animalProduct.setQuality(Gold);
         }
         else{
-            animalProduct.setShippingBinType(Iridium);
+            animalProduct.setQuality(Iridium);
         }
         animalProduct.setAnimal(this);
         addProduct(animalProduct);
@@ -152,12 +175,7 @@ public class Animal implements Placeable {
 
     }
     public void addProduct(AnimalProduct animalProduct){
-        if(this.getAnimalProducts().contains(animalProduct)){
-            animalProduct.setCount(animalProduct.getCount()+1);
-        }
-        else{
             this.getAnimalProducts().add(animalProduct);
-        }
     }
     public void sell(){
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
@@ -167,5 +185,34 @@ public class Animal implements Placeable {
         }
         double price = this.animalType.getPrice() * (((double) friendship /1000) + 0.3);
         player.getBackPack().addcoin(price);
+    }
+    public static void goToNextDay(){
+        for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
+            if(animal.isFedToday){
+                animal.produce();
+                animal.setFedToday(false);
+            }
+            else{
+                animal.setFriendship(animal.getFriendship()-20);
+            }
+            if(!animal.isPettedToday){
+                animal.setFriendship(animal.getFriendship() - 10);
+            }
+            if(animal.isOutside){
+                animal.setFriendship(animal.getFriendship() - 20);
+            }
+        }
+    }
+    public static Map<AnimalProduct,Integer> getMapListOfAnimalProducts(ArrayList<AnimalProduct> animalProducts){
+        Map<AnimalProduct,Integer> productIntegerMap= new HashMap<>();
+        for(AnimalProduct animalProduct : animalProducts){
+            if(productIntegerMap.containsKey(animalProduct)){
+                productIntegerMap.put(animalProduct,productIntegerMap.get(animalProduct)+1);
+            }
+            else{
+                productIntegerMap.put(animalProduct,1);
+            }
+        }
+        return productIntegerMap;
     }
 }

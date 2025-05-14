@@ -2,8 +2,10 @@ package org.example.models.map;
 
 import org.example.models.*;
 import org.example.models.NPCS.NPC;
+import org.example.models.animal.Animal;
 import org.example.models.foraging.Mineral;
 import org.example.models.foraging.MineralType;
+import org.example.models.plant.Crop;
 import org.example.models.plant.Tree;
 
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ public class Tile {
     private Player owner;
     private Player whoIsHere;
     private NPC npcIsHere;
+    private boolean crowImmunity = false;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
 
     public Tile(int x, int y, Player owner) {
@@ -116,25 +119,37 @@ public class Tile {
         this.npcIsHere = npcIsHere;
     }
 
-    public static Placeable findAround(Placeable placeable){
+    public static boolean findAround(Animal animal){
         Player player=App.getCurrentGame().getCurrentPlayingPlayer();
         int x=player.getX();
         int y=player.getY();
         for(int i=-1;i<2;i++){
             for(int j=-1;j<2;j++){
                 Tile tile = Tile.getTile(x+i,y+j);
-                if(tile.getPlaceable().equals(placeable)){
-                    return tile.getPlaceable();
+
+                if(tile != null && tile.getPlaceable() != null && tile.getPlaceable().equals(animal)){
+                     return true;
                 }
             }
         }
-        return null;
+        return false;
     }
 
     public void lightningStrike() {
         if (placeable instanceof Tree tree) {
             if (!tree.isInsideGreenhouse())
                 placeable = new Mineral(MineralType.Coal, false);
+        } else if (placeable instanceof Crop crop) {
+            if (!crop.isInsideGreenhouse())
+                crop.getTile().setPlaceable(null);
         }
+    }
+
+    public boolean isCrowImmunity() {
+        return crowImmunity;
+    }
+
+    public void setCrowImmunity(boolean crowImmunity) {
+        this.crowImmunity = crowImmunity;
     }
 }

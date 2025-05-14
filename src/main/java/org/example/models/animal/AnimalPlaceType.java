@@ -1,17 +1,19 @@
-package org.example.models.enums;
+package org.example.models.animal;
 
 import org.example.models.BackPackableType;
 
 public enum AnimalPlaceType implements BackPackableType {
-    Coop(4),
-    BigCoop(8),
-    DeluxeCoop(12),
-    Barn(4),
-    BigBarn(8),
-    DeluxeBarn(12);
+    Coop(4,4000),
+    BigCoop(8,10000),
+    DeluxeCoop(12,20000),
+    Barn(4,6000),
+    BigBarn(8,12000),
+    DeluxeBarn(12,25000);
     private final int capacity;
-    AnimalPlaceType(int capacity) {
+    private final int price;
+    AnimalPlaceType(int capacity, int price) {
         this.capacity = capacity;
+        this.price = price;
     }
     public int getCapacity() {
         return capacity;
@@ -19,7 +21,7 @@ public enum AnimalPlaceType implements BackPackableType {
 
     @Override
     public double getPrice() {
-        return 0;
+        return price;
     }
 
     @Override

@@ -15,6 +15,8 @@ public class LoginMenu implements AppMenu {
         Matcher matcher;
         if ((matcher = LoginMenuCommands.Login.getMatcher(command)) != null) {
             System.out.println(loginMenuController.loginUser(command));
+        } else if ((matcher = LoginMenuCommands.GoToSignUpMenu.getMatcher(command)) != null) {
+            loginMenuController.goToSignUpMenu();
         } else if ((matcher = LoginMenuCommands.ForgetPassword.getMatcher(command)) != null) {
             System.out.println(loginMenuController.forgetPassword(command,scanner));
         } else if ((matcher = LoginMenuCommands.Exit.getMatcher(command)) != null){
