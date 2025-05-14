@@ -16,7 +16,8 @@ public enum NormalItemType implements BackPackableType,Placeable{
     Sugar(50),
     WheatFlour(50),
     Rice(100),
-    TroutSoup(125);
+    TroutSoup(125),
+    AnyFish(0);
 
 
     private final double price;

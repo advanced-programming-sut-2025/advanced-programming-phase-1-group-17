@@ -7,7 +7,6 @@ import org.example.models.Result;
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
-import org.example.models.crafting.CraftingItemType;
 import org.example.models.animal.AnimalPlaceType;
 import org.example.models.animal.AnimalType;
 import org.example.models.enums.BackPackType;
@@ -66,10 +65,10 @@ public class StoreManager {
 
         fishShopInventory.addItem(new ShopItem(NormalItemType.TroutSoup, 250, 1, "Pretty salty."));
 
-        fishShopInventory.addItem(new ShopItem(FishingPoleType.Bamboo, 500, 1, "Use in the water to catch fish."));
-        fishShopInventory.addItem(new ShopItem(FishingPoleType.Training, 25, 1, "It's a lot easier to use than other rods, but can only catch basic fish."));
-        fishShopInventory.addItem(new ShopItem(FishingPoleType.Fiberglass, 1800, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 2
-        fishShopInventory.addItem(new ShopItem(FishingPoleType.Iridium, 7500, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 4
+        fishShopInventory.addItem(new ShopItem(FishingPoleType.BambooFishingPole, 500, 1, "Use in the water to catch fish."));
+        fishShopInventory.addItem(new ShopItem(FishingPoleType.TrainingFishingPole, 25, 1, "It's a lot easier to use than other rods, but can only catch basic fish."));
+        fishShopInventory.addItem(new ShopItem(FishingPoleType.FiberglassFishingPole, 1800, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 2
+        fishShopInventory.addItem(new ShopItem(FishingPoleType.IridiumFishingPole, 7500, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 4
         registerShop(fishShopInventory);
     }
 
@@ -393,9 +392,9 @@ public class StoreManager {
 
     public boolean checkFishingSkill(ShopItem item) {
         int fishingLevel = App.getCurrentGame().getCurrentPlayingPlayer().getAbilities().getFishingLevel();
-        if (item.getType().equals(FishingPoleType.Iridium)) {
+        if (item.getType().equals(FishingPoleType.IridiumFishingPole)) {
             return fishingLevel >= 4;
-        } else if (item.getType().equals(FishingPoleType.Fiberglass)) {
+        } else if (item.getType().equals(FishingPoleType.FiberglassFishingPole)) {
             return fishingLevel >= 2;
         }
         return true;

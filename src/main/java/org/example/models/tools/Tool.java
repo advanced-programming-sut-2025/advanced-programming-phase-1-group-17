@@ -11,12 +11,14 @@ public class Tool implements BackPackable {
     private double price;
     private int wateringCanStorage = 0;
     private boolean isWateringCanFull = true;
+    private FishingPoleType fishingPoleMaterial;
 
 
-    public Tool(ToolType type, ToolMaterial material) {
+    public Tool(ToolType type, ToolMaterial material,FishingPoleType fishingPoleMaterial) {
         this.type = type;
         this.material = material;
         handleWateringCanStorage();
+        this.fishingPoleMaterial = fishingPoleMaterial;
     }
 
     public void handleWateringCanStorage() {
@@ -51,10 +53,6 @@ public class Tool implements BackPackable {
         return material;
     }
 
-    public void setMaterial(ToolMaterial material) {
-        this.material = material;
-    }
-
     public int getLevel() {
         return level;
     }
@@ -66,11 +64,6 @@ public class Tool implements BackPackable {
         this.level = level;
     }
 
-    public void toolUse(Tool tool) {
-        switch (tool.getToolType()) {
-            case Pickaxe:
-        }
-    }
 
     public static Tool findToolByName(String toolName) {
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
@@ -112,7 +105,10 @@ public class Tool implements BackPackable {
 
 
     @Override
-    public ToolType getType() {
+    public BackPackableType getType() {
+        if (type == ToolType.FishingPole && fishingPoleMaterial != null) {
+            return fishingPoleMaterial;
+        }
         return type;
     }
 
@@ -131,5 +127,13 @@ public class Tool implements BackPackable {
 
     public void setWateringCanFull(boolean wateringCanFull) {
         isWateringCanFull = wateringCanFull;
+    }
+
+    public FishingPoleType getFishingPoleMaterial() {
+        return fishingPoleMaterial;
+    }
+
+    public void setFishingPoleMaterial(FishingPoleType fishingPoleMaterial) {
+        this.fishingPoleMaterial = fishingPoleMaterial;
     }
 }

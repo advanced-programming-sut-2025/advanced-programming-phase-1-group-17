@@ -29,7 +29,8 @@ public enum CraftingItemType implements BackPackableType {
     PreservesJar(Map.of(Wood, 50, Stone, 40, Coal, 8), "سبزیجات را به ترشی و میوه ها را به مربا تبدیل می‌کند", 0),
     Dehydrator(Map.of(Wood, 30, Stone, 20, Fiber, 30), "میوه یا قارچ را خشک می‌کند", 0),
     FishSmoker(Map.of(Wood, 50, IronBar, 3, Coal, 10), "هر ماهی را با یک ذغال با حفظ کیفیتش تبدیل به ماهی دودی می‌کند", 0),
-    MysticTreeSeed(Map.of(Acorns, 5, MapleSeeds, 5, PineCones, 5, MahoganySeeds, 5), "می‌تواند کاشته شود تا mystic tree رشد کند", 100);
+    MysticTreeSeed(Map.of(Acorns, 5, MapleSeeds, 5, PineCones, 5, MahoganySeeds, 5), "می‌تواند کاشته شود تا mystic tree رشد کند", 100),
+    GrassStarter(Map.of(Wood,1,Fiber,1),"",0);
 
     private final Map<BackPackableType, Integer> ingredients;
     private final String description;

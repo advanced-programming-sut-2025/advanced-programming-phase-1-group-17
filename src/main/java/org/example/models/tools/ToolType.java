@@ -2,7 +2,7 @@ package org.example.models.tools;
 
 import org.example.models.BackPackableType;
 
-public enum ToolType implements BackPackableType {
+public enum ToolType implements BackPackableType  {
     Pickaxe(new int[]{0, 1, 2, 3, 4},new int[]{5,4,3,2,1}),
     Scythe(new int[]{0, 1, 2, 3, 4},new int[]{5,4,3,2,1}),
     Hoe(new int[]{0, 1, 2, 3, 4},new int[]{5,4,3,2,1}),
