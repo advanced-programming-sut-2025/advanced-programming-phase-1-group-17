@@ -4,8 +4,16 @@ import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.BackPackableType;
 import org.example.models.Placeable;
+import org.example.models.artisan.ArtisanProduct;
+import org.example.models.artisan.ArtisanProductType;
+
+import java.util.ArrayList;
+
 public class CraftingItem implements BackPackable, Placeable {
     private CraftingItemType targetItem;
+    private ArtisanProduct artisanProductInProgress = null;
+    private static ArrayList<ArtisanProduct> allArtisanProductsInProgress = new ArrayList<>();
+
     public CraftingItem(CraftingItemType targetItem) {
         this.targetItem = targetItem;
     }
@@ -42,5 +50,17 @@ public class CraftingItem implements BackPackable, Placeable {
     @Override
     public BackPackableType getType() {
         return targetItem;
+    }
+
+    public ArtisanProduct getArtisanProductInProgress() {
+        return artisanProductInProgress;
+    }
+
+    public void setArtisanProductInProgress(ArtisanProduct artisanProductInProgress) {
+        this.artisanProductInProgress = artisanProductInProgress;
+    }
+
+    public static ArrayList<ArtisanProduct> getAllArtisanProductsInProgress() {
+        return allArtisanProductsInProgress;
     }
 }

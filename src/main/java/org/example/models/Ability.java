@@ -20,8 +20,9 @@ public class Ability {
         this.player = player;
     }
 
-    public void increaseFarmingAbility(int abilityAdded) {
-        farmingAbility += abilityAdded;
+    public void increaseFarmingAbility() {
+        //TODO: in higher levels, you can gain better products
+        farmingAbility += 5;
 
         if (farmingAbility < 150) return;
         else if (farmingAbility < 250) {
@@ -52,9 +53,8 @@ public class Ability {
     }
 
 
-
-    public void increaseMiningAbility(int abilityAdded) {
-        miningAbility += abilityAdded;
+    public void increaseMiningAbility() {
+        miningAbility += 10;
 
         if (miningAbility < 150) return;
         else if (miningAbility < 250) {
@@ -77,9 +77,8 @@ public class Ability {
         miningLevel = 4;
     }
 
-
-    public void increaseForagingAbility(int abilityAdded) {
-        foragingAbility += abilityAdded;
+    public void increaseForagingAbility() {
+        foragingAbility += 10;
 
         if (foragingAbility < 150) return;
         else if (foragingAbility < 250) {
@@ -101,11 +100,10 @@ public class Ability {
         foragingLevel = 4;
     }
 
-
-    public void increaseFishingAbility(int abilityAdded) {
+    public void increaseFishingAbility() {
         //TODO: with every fish fished, you gain 5 points
 
-        fishingAbility += abilityAdded;
+        fishingAbility += 5;
 
         if (fishingAbility < 150) return;
         else if (fishingAbility < 250){

@@ -27,17 +27,12 @@ public abstract class Plant implements Placeable {
     public abstract int getDaysTillFullGrowth();
 
     public void goToNextDay() {
-        if (this.isFullyGrown)
-            return;
-
         handleDaysWithoutWater();
-
+        handleFruitCycle();
         if (!this.isWateredToday)
             return;
-
         //stage Handling
         handleStages();
-        handleFruitCycle();
         this.isWateredToday = false;
     }
 
@@ -62,8 +57,11 @@ public abstract class Plant implements Placeable {
         }
 
         this.daysWithoutWater++;
-        if (this.daysWithoutWater >= 2) {
-            tile.setPlaceable(null);
+        if (this.daysWithoutWater > 2) {
+            if (this.isInsideGreenhouse)
+                tile.setPlaceable(Tile.getTile(this.tile.getX(), this.tile.getY()).getOwner().getPlayerMap().getGreenHouse());
+            else
+                tile.setPlaceable(null);
         }
     }
 

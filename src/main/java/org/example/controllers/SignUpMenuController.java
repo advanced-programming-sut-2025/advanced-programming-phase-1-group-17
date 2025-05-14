@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import org.example.PasswordUtil;
 import org.example.SaveUser;
 import org.example.models.App;
 import org.example.models.Result;
@@ -99,8 +100,8 @@ public class SignUpMenuController {
             gender1 = Gender.Male;
         }
 
-        //TODO: SAVING
-        User newUser = new User(username, password, email, nickname, gender1);
+        String hashedPassword = PasswordUtil.hashPassword(password);
+        User newUser = new User(username, password, hashedPassword, email, nickname, gender1);
 
         System.out.println("Just one more step left to add user!\n");
         chooseSecurityQuestion(newUser, scanner);

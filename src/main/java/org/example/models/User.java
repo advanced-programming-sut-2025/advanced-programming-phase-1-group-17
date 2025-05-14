@@ -1,14 +1,13 @@
 package org.example.models;
 
-import com.google.gson.annotations.Expose;
 import org.example.models.enums.Gender;
 
 import java.util.Objects;
 
 public class User {
     private String username;
-    private String password;
-    private String passwordHash; //TODO: encoding in signup menu
+    private String rawPassword;
+    private String passwordHash;
     private String email;
     private String nickName;
     private Gender gender;
@@ -17,16 +16,20 @@ public class User {
     private int numOfPlay;
     private int theMostMoneyInGame;
     private transient Game activeGame;
-    public User(){
-        if (this.username == null){
+
+    public User() {
+        if (this.username == null) {
             gender = Gender.Male;
         }
-    };
+    }
+
+
 
     //for signup
-    public User(String username, String password, String email, String nickName, Gender gender) {
+    public User(String username, String rawPassword, String hashedPassword, String email, String nickName, Gender gender) {
         this.username = username;
-        this.password = password;
+        this.rawPassword = rawPassword;
+        this.passwordHash = hashedPassword;
         this.email = email;
         this.nickName = nickName;
         this.gender = gender;
@@ -72,12 +75,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getRawPassword() {
+        return rawPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setRawPassword(String rawPassword) {
+        this.rawPassword = rawPassword;
     }
 
     public String getUsername() {
@@ -124,6 +127,6 @@ public class User {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         User other = (User) obj;
-        return Objects.equals(username, other.username); // یا هر فیلدی که یکتاست
+        return Objects.equals(username, other.username);
     }
 }

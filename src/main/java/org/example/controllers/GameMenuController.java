@@ -1,11 +1,11 @@
 package org.example.controllers;
 
+import org.example.controllers.helperControllers.ArtisanController;
+import org.example.controllers.helperControllers.FarmingController;
+import org.example.controllers.helperControllers.MarketsController;
 import org.example.display;
 import org.example.models.*;
 import org.example.models.animal.*;
-import org.example.models.artisan.ArtisanProduct;
-import org.example.models.artisan.ArtisanProductType;
-import org.example.models.artisan.IngredientGroup;
 import org.example.models.NPCS.NPC;
 import org.example.models.NPCS.Quest;
 import org.example.models.crafting.CraftingItem;
@@ -17,7 +17,6 @@ import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.*;
 import org.example.models.foraging.ForagingController;
 import org.example.models.foraging.Mineral;
-import org.example.models.foraging.MineralType;
 import org.example.models.animal.AnimalPlace;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Tile;
@@ -30,6 +29,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 public class GameMenuController {
+    private final ArtisanController artisanController = new ArtisanController();
+    private final FarmingController farmingController = new FarmingController();
+    private final MarketsController marketsController = new MarketsController();
 
     public Result newGame(String username1, String username2, String username3, String rest, Scanner scanner) {
         if (rest != null && !rest.trim().isEmpty())
@@ -476,7 +478,7 @@ public class GameMenuController {
     }
 
     public Result toolUse(String direction) {
-        double leverage =App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
+        double leverage = App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         int x = player.getX() + App.handleDirection(Integer.parseInt(direction))[0];
         int y = player.getY() + App.handleDirection(Integer.parseInt(direction))[1];
@@ -489,24 +491,23 @@ public class GameMenuController {
         }
 
         if (tool.getToolType().equals(ToolType.Hoe)) {
-            double energy=ToolType.Hoe.getEnergyCosts()[tool.getLevel()];
-            if(player.getAbilities().getFarmingLevel()==4){
-                energy --;
+            double energy = ToolType.Hoe.getEnergyCosts()[tool.getLevel()];
+            if (player.getAbilities().getFarmingLevel() == 4) {
+                energy--;
             }
-            energy = Math.max(energy,0);
-            if (tile.getPlaceable() == null) {
+            energy = Math.max(energy, 0);
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof GreenHouse) {
                 tile.setPlowed(true);
-                player.setEnergy(player.getEnergy() - energy*leverage);
-                player.getAbilities().increaseFarmingAbility(10);
+                player.setEnergy(player.getEnergy() - energy * leverage);
+                player.getAbilities().increaseFarmingAbility();
                 return new Result(true, "plowed successfully");
             }
-            player.setEnergy(player.getEnergy() - energy*leverage);
+            player.setEnergy(player.getEnergy() - energy * leverage);
             return new Result(true, "Hoe used but incorrectly");
-        }
-        else if (tool.getToolType().equals(ToolType.Pickaxe)) {
-            double energy=ToolType.Pickaxe.getEnergyCosts()[tool.getLevel()];
-            if(player.getAbilities().getMiningLevel()==4){
-                energy --;
+        } else if (tool.getToolType().equals(ToolType.Pickaxe)) {
+            double energy = ToolType.Pickaxe.getEnergyCosts()[tool.getLevel()];
+            if (player.getAbilities().getMiningLevel() == 4) {
+                energy--;
             }
             if (tile.getPlaceable() instanceof Mineral mineral) {
 
@@ -517,9 +518,9 @@ public class GameMenuController {
                     player.setEnergy(player.getEnergy() - energy*leverage);
                     return new Result(false, "this type of pickaxe cannot break this mineral");
                 }
-                player.getAbilities().increaseMiningAbility(10);
+                player.getAbilities().increaseMiningAbility();
                 if (mineral.isForaging())
-                    player.getAbilities().increaseForagingAbility(10);
+                    player.getAbilities().increaseForagingAbility();
                 energy = Math.max(energy,0);
                 player.setEnergy(player.getEnergy() - energy*leverage);
                 player.getBackPack().addItemToInventory(mineral);
@@ -533,138 +534,143 @@ public class GameMenuController {
                 }
                 return new Result(true, "stone broke successfully");
 
-            } else if (tile.isPlowed()) {
-                tile.setPlowed(false);
-                energy = Math.max(energy,0);
-                player.setEnergy(player.getEnergy() - energy*leverage);
-                return new Result(true,"unplowed successfully");
+                } else if (tile.isPlowed()) {
+                    tile.setPlowed(false);
+                    energy = Math.max(energy, 0);
+                    player.setEnergy(player.getEnergy() - energy * leverage);
+                    return new Result(true, "unplowed successfully");
+                } else if (tile.getPlaceable() instanceof BackPackable item) {
+                    tile.setPlaceable(null);
+                    energy = Math.max(energy, 0);
+                    player.setEnergy(player.getEnergy() - energy * leverage);
+                    return new Result(true, item.getName() + " destroyed successfully");
+                }
+                energy = Math.max(energy - 1, 0);
+                player.setEnergy(player.getEnergy() - energy * leverage);
+                return new Result(true, "you used pickaxe but incorrectly");
             }
-            else if(tile.getPlaceable() instanceof  BackPackable item){
-                tile.setPlaceable(null);
-                energy = Math.max(energy,0);
-                player.setEnergy(player.getEnergy() - energy*leverage);
-                return new Result(true,item.getName() + " destroyed successfully");
-            }
-            energy = Math.max(energy-1,0);
-            player.setEnergy(player.getEnergy() - energy*leverage);
-            return new Result(true,"you used pickaxe but incorrectly");
-
 
         } else if (tool.getToolType().equals(ToolType.Axe)) {
-            double energy=ToolType.Axe.getEnergyCosts()[tool.getLevel()];
-            if(player.getAbilities().getForagingLevel()==4){
-                energy --;
+            double energy = ToolType.Axe.getEnergyCosts()[tool.getLevel()];
+            if (player.getAbilities().getForagingLevel() == 4) {
+                energy--;
             }
             if (tile.getPlaceable() instanceof Tree) {
-                tile.setPlaceable(null);
+                player.getAbilities().increaseForagingAbility();
                 tile.setPlaceable(new NormalItem(NormalItemType.Wood));
-                player.getAbilities().increaseForagingAbility(10);
-                player.setEnergy(player.getEnergy() - energy*leverage);
+                player.setEnergy(player.getEnergy() - energy * leverage);
                 return new Result(true, "you broke tree successfully");
             }
-            if(tile.getPlaceable() instanceof NormalItem normalItem){
-                if(normalItem.getType().equals(NormalItemType.Wood)){
+            if (tile.getPlaceable() instanceof NormalItem normalItem) {
+                if (normalItem.getType().equals(NormalItemType.Wood)) {
                     tile.setPlaceable(null);
-                    player.getAbilities().increaseForagingAbility(10);
-                    player.setEnergy(player.getEnergy() - energy*leverage);
-                    return new Result(true,"you destroyed wood");
+                    player.getAbilities().increaseForagingAbility();
+                    player.setEnergy(player.getEnergy() - energy * leverage);
+                    return new Result(true, "you destroyed wood");
                 }
             }
             energy--;
-            energy = Math.max(energy,0);
-            player.setEnergy(player.getEnergy() - energy*leverage);
-            return new Result(true,"you used axe but incorrectly");
-        }
-        else if (tool.getToolType().equals(ToolType.WateringCan)) {
-            double energy=ToolType.WateringCan.getEnergyCosts()[tool.getLevel()];
-            if(player.getAbilities().getForagingLevel()==4){
-                energy --;
+            energy = Math.max(energy, 0);
+            player.setEnergy(player.getEnergy() - energy * leverage);
+            return new Result(true, "you used axe but incorrectly");
+        } else if (tool.getToolType().equals(ToolType.WateringCan)) {
+            double energy = ToolType.WateringCan.getEnergyCosts()[tool.getLevel()];
+            if (player.getAbilities().getForagingLevel() == 4) {
+                energy--;
             }
             if (tile.getPlaceable() instanceof Plant plant) {
                 if (tool.getWateringCanStorage() > 0) {
                     plant.wateringPlant();
                     tool.setWateringCanStorage(tool.getWateringCanStorage() - 1);
-                    player.getAbilities().increaseForagingAbility(5);
-                    return new Result(true,"plant watered successfully");
+                    player.getAbilities().increaseForagingAbility();
+                    return new Result(true, "plant watered sucessfully");
                 }
             } else if (tile.isWater()) {
-                player.setEnergy(player.getEnergy() - energy*leverage);
-                if(tool.isWateringCanFull()){
-                    return new Result(true,"watering can is already full");
+                player.setEnergy(player.getEnergy() - energy * leverage);
+                if (tool.isWateringCanFull()) {
+                    return new Result(true, "watering can is already full");
                 }
                 tool.handleWateringCanStorage();
-                return new Result(true,"watering can is now full of water");
+                return new Result(true, "watering can is now full of water");
             }
         } else if (tool.getToolType().equals(ToolType.Scythe)) {
-            player.setEnergy(player.getEnergy() - 2*leverage);
-            if (tile.getPlaceable() instanceof Plant plant) {
-                player.getAbilities().increaseFarmingAbility(5);
+            player.setEnergy(player.getEnergy() - 2 * leverage);
+            if (tile.getPlaceable() instanceof NormalItem normalItem) {
+                if (normalItem.getType().equals(NormalItemType.Grass))
+                    tile.setPlaceable(null);
+                else if (normalItem.getType().equals(NormalItemType.Fiber)) {
+                    tile.setPlaceable(null);
+                    player.getBackPack().addItemToInventory(new NormalItem(NormalItemType.Fiber));
+                }
+            } else if (tile.getPlaceable() instanceof Plant plant) {
+                player.getAbilities().increaseFarmingAbility();
                 if (plant instanceof Tree tree) {
-                    tree.setFullyGrown(false);
+                    tree.harvest();
+                    Fruit fruit = new Fruit(tree.getType().getFruitType());
+                    fruit.setItemQuality();
                     player.getBackPack().addItemToInventory(
-                            new Fruit(tree.getType().getFruitType())
-                    );
-                    tree.setFullyGrown(false);
+                            fruit);
                     if (tree.isForaging())
-                        player.getAbilities().increaseForagingAbility(5);
+                        player.getAbilities().increaseForagingAbility();
                 } else if (plant instanceof Crop crop) {
-                    if (crop.isFullyGrown()) {
-                        //TODO: chandbar bardasht
-                        player.getBackPack().addItemToInventory(crop);
-                        crop.getTile().setPlaceable(null);
-                    }
+                    crop.harvest();
                 }
             }
         } else if (tool.getToolType().equals(ToolType.MilkPail)) {
-            player.setEnergy(player.getEnergy() - 4*leverage);
+            player.setEnergy(player.getEnergy() - 4 * leverage);
             if (tile.getPlaceable() instanceof Animal animal) {
-                if(animal.getAnimalType().equals(AnimalType.Cow)){
+                if (animal.getAnimalType().equals(AnimalType.Cow)) {
                     ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
-                    for(AnimalProduct animalProduct : animal.getAnimalProducts()){
+                    for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
                         player.getBackPack().addItemToInventory(animalProduct);
                         toRemoved.add(animalProduct);
-                        if(player.getBackPack().isBackPackFull()){
+                        if (player.getBackPack().isBackPackFull()) {
                             animal.getAnimalProducts().removeAll(toRemoved);
-                            StringBuilder sb= new StringBuilder();
-                            for(Map.Entry<AnimalProduct,Integer> entry : Animal.getMapListOfAnimalProducts(toRemoved).entrySet()){
+                            StringBuilder sb = new StringBuilder();
+                            for (Map.Entry<AnimalProduct, Integer> entry : Animal.getMapListOfAnimalProducts(toRemoved).entrySet()) {
                                 sb.append(entry.getKey().getAnimalProductType().name()).append(" : ")
                                         .append(entry.getValue()).append("\n");
                             }
-                            return new Result(false,"backpack gets full , you collect these -> \n"
-                             + sb.toString());
+                            return new Result(false, "backpack gets full , you collect these -> \n"
+                                    + sb.toString());
                         }
                     }
-                    StringBuilder sb= new StringBuilder();
-                    for(Map.Entry<AnimalProduct,Integer> entry : Animal.getMapListOfAnimalProducts(toRemoved).entrySet()){
+                    StringBuilder sb = new StringBuilder();
+                    for (Map.Entry<AnimalProduct, Integer> entry : Animal.getMapListOfAnimalProducts(toRemoved).entrySet()) {
                         sb.append(entry.getKey().getAnimalProductType().name()).append(" : ")
                                 .append(entry.getValue()).append("\n");
                     }
                     animal.getAnimalProducts().removeAll(toRemoved);
-                    return new Result(true,"you collected all product -> \n " +
+                    return new Result(true, "you collected all product -> \n " +
                             sb.toString());
                 }
             }
-        }
-        else if(tool.getToolType().equals(ToolType.Shear)) {
-            player.setEnergy(player.getEnergy() - 4*leverage);
-            if (tile.getPlaceable() instanceof Animal animal) {
-                if(animal.getAnimalType().equals(AnimalType.Sheep)){
-                    ArrayList<AnimalProduct>toRemoved = new ArrayList<>();
-                    for(AnimalProduct animalProduct : animal.getAnimalProducts()){
-                        player.getBackPack().addItemToInventory(animalProduct);
-                        toRemoved.add(animalProduct);
-                        if(player.getBackPack().isBackPackFull()){
-                            animal.getAnimalProducts().removeAll(toRemoved);
-                            return new Result(false,"back pack gets full , you collected these -> \n" +
-                                    animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size());
-                        }
+        } else if (tool.getToolType().equals(ToolType.Shear))
+
+    {
+        player.setEnergy(player.getEnergy() - 4 * leverage);
+        if (tile.getPlaceable() instanceof Animal animal) {
+            if (animal.getAnimalType().equals(AnimalType.Sheep)) {
+                ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
+                for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
+                    player.getBackPack().addItemToInventory(animalProduct);
+                    toRemoved.add(animalProduct);
+                    if (player.getBackPack().isBackPackFull()) {
+                        animal.getAnimalProducts().removeAll(toRemoved);
+                        return new Result(false, "back pack gets full , you collected these -> \n" +
+                                animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size());
                     }
-                    animal.getAnimalProducts().removeAll(toRemoved);
-                    return new Result(true,"you collected all" + toRemoved.size() + " wools of " + animal.getName());
                 }
+                animal.getAnimalProducts().removeAll(toRemoved);
+                return new Result(true, "you collected all" + toRemoved.size() + " wools of " + animal.getName());
             }
         }
-        else if(tool.getToolType().equals(ToolType.FishingPole)) {
+    }
+        else if(tool.getToolType().
+
+    equals(ToolType.FishingPole))
+
+    {
             double energy=2;
             switch (tool.getFishingPoleMaterial()){
                 case TrainingFishingPole -> energy = 8;
@@ -681,226 +687,26 @@ public class GameMenuController {
         return new Result(true, "Tool used.");
     }
 
+
+
     public Result craftInfo(String name) {
-        StringBuilder result = new StringBuilder();
-
-        for (CropType cropType : CropType.values()) {
-            if (!cropType.name().equals(name)) {
-                continue;
-            }
-            result.append("""
-                    Name: %s
-                    Source: %s""".formatted(cropType.name(), cropType.getSource().name()));
-            result.append("\nStages: ");
-            int counter = 1;
-            for (Integer stage : cropType.getStages()) {
-                result.append("%s".formatted(stage));
-                if (counter != cropType.getStages().size())
-                    result.append("-");
-                counter++;
-            }
-            result.append("\n");
-            result.append("""
-                    Total Harvest Time: %d
-                    One Time: %s
-                    Regrowth Time: %s
-                    Base Sell Price: %.0f
-                    Is Edible: %s
-                    Base Energy: %d
-                    Base Health:
-                    Season: """.formatted(
-                    cropType.getTotalGrowthTime(), cropType.isOneTime(),
-                    (cropType.getRegrowthTime() == -1) ? "" : cropType.getRegrowthTime(),
-                    cropType.getBaseSellPrice(), cropType.isEdible(), cropType.getEnergy()
-            ));
-
-            counter = 1;
-            for (Season season : cropType.getSeasons()) {
-                result.append("%s".formatted(season));
-                if (counter != cropType.getSeasons().size())
-                    result.append("-");
-                counter++;
-            }
-
-            result.append("\nCan Become Giant: %s".formatted(cropType.isCanBecomeGiant()));
-            return new Result(true, result.toString());
-        }
-
-
-        for (FruitType fruitType : FruitType.values()) {
-            TreeType tree = fruitType.getSourceTreeType();
-            if (fruitType.name().equals(name)) {
-                break;
-            }
-            result.append("""
-                    Name: %s
-                    Source: %s""".formatted(fruitType.name(), tree.getSapling().name()));
-            result.append("\nStages: ");
-            int counter = 1;
-            for (Integer stage : tree.getStages()) {
-                result.append("%s".formatted(stage));
-                if (counter != tree.getStages().size())
-                    result.append("-");
-                counter++;
-            }
-            result.append("\n");
-            result.append("""
-                    Total Harvest Time: %d
-                    One Time: False
-                    Regrowth Time: %s
-                    Base Sell Price: %.0f
-                    Is Edible: %s
-                    Base Energy: %d
-                    Base Health:
-                    Season: """.formatted(
-                    tree.getTotalGrowthTime(),
-                    (tree.getFruitHarvestCycle() == -1) ? "" : tree.getFruitHarvestCycle(),
-                    fruitType.getBaseSellPrice(), fruitType.isEdible(), fruitType.getEnergy()
-            ));
-
-            counter = 1;
-            for (Season season : tree.getSeasons()) {
-                result.append("%s".formatted(season));
-                if (counter != tree.getSeasons().size())
-                    result.append("-");
-                counter++;
-            }
-
-            result.append("Can Become Giant: False");
-            return new Result(true, result.toString());
-        }
-
-        return new Result(false, "No Crop or Fruit Found with this Name");
+        return farmingController.craftInfo(name);
     }
 
     public Result plantSeed(String source, String direction) {
-        int[] directions = App.handleDirection(Integer.parseInt(direction));
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        SeedType seedType = SeedType.getSeedTypeByName(source);
-        SaplingType saplingType = SaplingType.getTypeByName(source);
-
-        int newX = player.getX() + directions[0];
-        int newY = player.getY() + directions[1];
-
-        Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
-        if (tile ==  null) {
-            return new Result(false, "TIle out of map");
-        }
-
-        if (tile.getPlaceable() != null && !(tile.getPlaceable() instanceof GreenHouse greenHouse))
-            return new Result(false, "Specified tile is already occupied");
-
-
-        if (!tile.isPlowed())
-            return new Result(false, "The Specified tile is not Plowed");
-
-        else if (seedType == null && saplingType == null)
-            return new Result(false, "No SeedType with this Name");
-
-        if (seedType != null) {
-            if (player.getBackPack().getBackPackItems().get(seedType) == null ||
-                    player.getBackPack().getBackPackItems().get(seedType).isEmpty())
-                return new Result(false, "You do not have any seed of this type");
-
-            if (tile.getPlaceable() instanceof GreenHouse greenHouse) {
-                if (!greenHouse.isActive())
-                    return new Result(false, "You need to Build the Greenhouse first");
-                tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, true));
-            }
-            else if (tile.getPlaceable() == null)
-                tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, false));
-
-            player.getBackPack().useItem(seedType);
-            return new Result(true,
-                    "Successfully planted a plant of type %s in (%d,%d)".formatted(
-                            seedType.name(), newX, newY
-                    ));
-        }
-        //if saplingType != null
-        if (player.getBackPack().getBackPackItems().get(saplingType) == null ||
-                player.getBackPack().getBackPackItems().get(saplingType).isEmpty())
-            return new Result(false, "You do not have any sapling of this type");
-
-
-        if (tile.getPlaceable() instanceof GreenHouse greenHouse) {
-            if (!greenHouse.isActive())
-                return new Result(false, "You need to Build the Greenhouse first");
-            tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, true));
-        }
-        else if (tile.getPlaceable() == null)
-            tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, false));
-
-        player.getBackPack().useItem(saplingType);
-        return new Result(true,
-                "Successfully planted a plant of type %s in (%d,%d)".formatted(
-                        saplingType.name(), newX, newY
-                ));
+        return farmingController.plantSeed(source, direction);
     }
 
     public Result showPlant(String x, String y) {
-        int x1 = Integer.parseInt(x);
-        int y1 = Integer.parseInt(y);
-
-        Tile tile = Tile.getTile(x1, y1);
-        if (tile == null) {
-            return new Result(false, "Tile out of map.");
-        }
-
-        if (tile.getPlaceable() instanceof Tree tree) {
-            return new Result(true, """
-                    Name: %s
-                    Days Left Till Full Growth: %d
-                    Current Stage: %d
-                    Fertilizer:""".formatted(tree.getType().name(), tree.getDaysTillFullGrowth(), tree.getCurrentStageIndex() + 1));
-        } else if (tile.getPlaceable() instanceof Crop crop) {
-            return new Result(true, """
-                    Name: %s
-                    Days Left Till Full Growth: %d
-                    Current Stage: %d
-                    Fertilizer:""".formatted(crop.getName(), crop.getDaysTillFullGrowth(), crop.getCurrentStageIndex() + 1));
-        }
-        return new Result(false, "There is no plant in this tile");
+        return farmingController.showPlant(x, y);
     }
 
     public Result fertilize(String fertilizer, String direction) {
-        FertilizerType fertilizerType = FertilizerType.getFertilizerTypeByName(fertilizer);
-        if (fertilizerType == null) {
-            return new Result(false, "No fertilizer with name %s".formatted(fertilizer));
-        }
-
-        int[] directions = App.handleDirection(Integer.parseInt(direction));
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
-        int newX = player.getX() + directions[0];
-        int newY = player.getY() + directions[1];
-        Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
-
-        if (tile == null) {
-            return new Result(false, "Tile out of map.");
-        }
-
-        if (player.getBackPack().getInventorySize(fertilizerType.getName()) == 0) {
-            return new Result(false ,"You do not have fertilizer of type %s".formatted(fertilizerType.getName()));
-        }
-
-        if (tile.getPlaceable() instanceof Plant plant) {
-            player.getBackPack().useItem(fertilizerType);
-            plant.setFertilizerType(fertilizerType);
-            return new Result(true, "Fertilized successfully");
-        }
-
-        return new Result(false, "No plant in this tile");
+        return farmingController.fertilize(fertilizer, direction);
     }
 
     public Result howMuchWater() {
-        //TODO: Harvesting with scythe
-        //TODO: Watering Plant when using 'use tool'
-        Tool tool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
-        if (tool.getToolType().equals(ToolType.WateringCan)) {
-            return new Result(true, "%d".formatted(tool.getWateringCanStorage()));
-        }
-        //TODO: it must always return how much water is left
-        return new Result(false, "");
+        return farmingController.howMuchWater();
     }
 
     public Result craftingShowRecipes() {
@@ -908,9 +714,9 @@ public class GameMenuController {
             return new Result(false, "No crafting recipes found");
         }
         StringBuilder sb = new StringBuilder();
-        for(CraftingRecipe craftingRecipe : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()) {
+        for (CraftingRecipe craftingRecipe : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()) {
             sb.append(craftingRecipe.getTargetItem().name()).append(" :\n     ");
-            for(Map.Entry<BackPackableType,Integer> entry : craftingRecipe.getTargetItem().getIngredients().entrySet()) {
+            for (Map.Entry<BackPackableType, Integer> entry : craftingRecipe.getTargetItem().getIngredients().entrySet()) {
                 sb.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n     ");
             }
             sb.append("\n");
@@ -929,32 +735,31 @@ public class GameMenuController {
             return new Result(false, "no free space in inventory");
         }
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-        for(Map.Entry<BackPackableType,Integer> entry: recipe.getTargetItem().getIngredients().entrySet()) {
-            if(!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
+        for (Map.Entry<BackPackableType, Integer> entry : recipe.getTargetItem().getIngredients().entrySet()) {
+            if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
                     && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
-                return new Result(false,"not enough ingredient");
+                return new Result(false, "not enough ingredient");
             }
         }
-        for(Map.Entry<BackPackableType,Integer> entry: recipe.getTargetItem().getIngredients().entrySet()) {
-            for(int i=0;i<entry.getValue();i++) {
+        for (Map.Entry<BackPackableType, Integer> entry : recipe.getTargetItem().getIngredients().entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
                 player.getBackPack().useItem(entry.getKey());
             }
         }
         CraftingItem craftingItem = new CraftingItem(recipe.getTargetItem());
         backPack.addItemToInventory(craftingItem);
         return new Result(true, itemName + " crafted successfully");
-
     }
 
     public Result placeItem(String itemName, String direction) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         CraftingItemType craftingItemType;
-        try{
+        try {
             craftingItemType = CraftingItemType.valueOf(itemName);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return new Result(false, "Invalid item name");
         }
-        if(!player.getBackPack().getBackPackItems().containsKey(craftingItemType)) {
+        if (!player.getBackPack().getBackPackItems().containsKey(craftingItemType)) {
             return new Result(false, " you dont have " + craftingItemType.name());
         }
         int[] direction1 = App.handleDirection(Integer.parseInt(direction));
@@ -968,12 +773,12 @@ public class GameMenuController {
         tile.setPlaceable(new CraftingItem(craftingItemType));
         switch (craftingItemType) {
             case CherryBomb -> {
-                int range=3;
-                for(int i=-range;i<range+1;i++) {
-                    for(int j=-range;j<range+1;j++){
+                int range = 3;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
 
-                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
-                        if(target != null) {
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
                             target.setPlaceable(null);
                         }
                     }
@@ -981,12 +786,12 @@ public class GameMenuController {
             }
 
             case Bomb -> {
-                int range=5;
-                for(int i=-range;i<range+1;i++) {
-                    for(int j=-range;j<range+1;j++){
+                int range = 5;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
 
-                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
-                        if(target != null) {
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
                             target.setPlaceable(null);
                         }
                     }
@@ -994,12 +799,12 @@ public class GameMenuController {
             }
 
             case MegaBomb -> {
-                int range=7;
-                for(int i=-range;i<range+1;i++) {
-                    for(int j=-range;j<range+1;j++){
+                int range = 7;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
 
-                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
-                        if(target != null) {
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
                             target.setPlaceable(null);
                         }
                     }
@@ -1008,22 +813,22 @@ public class GameMenuController {
 
             case Sprinkler -> {
                 int[] dx = {0, 1, 0, -1};
-                int [] dy = {1,0,-1,0};
-                for(int i=0;i<4;i++){
-                    Tile target=Tile.getTile(tile.getX() + dx[i], tile.getY() + dy[i]);
-                    if(target != null && target.getPlaceable() instanceof Plant plant) {
+                int[] dy = {1, 0, -1, 0};
+                for (int i = 0; i < 4; i++) {
+                    Tile target = Tile.getTile(tile.getX() + dx[i], tile.getY() + dy[i]);
+                    if (target != null && target.getPlaceable() instanceof Plant plant) {
                         plant.wateringPlant();
                     }
                 }
             }
 
             case QualitySprinkler -> {
-                int range=1;
-                for(int i=-range;i<range+1;i++) {
-                    for(int j=-range;j<range+1;j++){
+                int range = 1;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
 
-                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
-                        if(target != null && target.getPlaceable() instanceof Plant plant) {
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null && target.getPlaceable() instanceof Plant plant) {
                             plant.wateringPlant();
                         }
                     }
@@ -1031,12 +836,12 @@ public class GameMenuController {
             }
 
             case IridiumSprinkler -> {
-                int range=2;
-                for(int i=-range;i<range+1;i++) {
-                    for(int j=-range;j<range+1;j++){
+                int range = 2;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
 
-                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
-                        if(target != null && target.getPlaceable() instanceof Plant plant) {
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null && target.getPlaceable() instanceof Plant plant) {
                             plant.wateringPlant();
                         }
                     }
@@ -1044,12 +849,12 @@ public class GameMenuController {
             }
 
             case Scarecrow -> {
-                int range=8;
-                for(int i=-range;i<range+1;i++) {
-                    for(int j=-range;j<range+1;j++){
+                int range = 8;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
 
-                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
-                        if(target != null) {
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
                             tile.setCrowImmunity(true);
                         }
                     }
@@ -1057,12 +862,12 @@ public class GameMenuController {
             }
 
             case DeluxeScarecrow -> {
-                int range=12;
-                for(int i=-range;i<range+1;i++) {
-                    for(int j=-range;j<range+1;j++){
+                int range = 12;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
 
-                        Tile target = Tile.getTile(tile.getX()+i,tile.getY()+j);
-                        if(target != null) {
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
                             tile.setCrowImmunity(true);
                         }
                     }
@@ -1123,99 +928,16 @@ public class GameMenuController {
             return new Result(false, "Invalid number format for count.");
         }
 
-        BackPackableType type = null;
-        BackPackable sampleItem = null;
+        ArrayList<Object> result = marketsController.addItem(itemName);
 
-        try {
-            type = CraftingItemType.valueOf(itemName);
-            sampleItem = new CraftingItem((CraftingItemType) type);
-        } catch (IllegalArgumentException e1) {
-            try {
-                type = NormalItemType.valueOf(itemName);
-                sampleItem = new NormalItem((NormalItemType) type);
-            } catch (IllegalArgumentException e2) {
-                try{
-                    type = MineralType.valueOf(itemName);
-                    sampleItem = new Mineral((MineralType) type,true);
-                }
-                catch (Exception e3) {
-                    try {
-                        type = SaplingType.valueOf(itemName);
-                        sampleItem = new Sapling((SaplingType) type);
-                    } catch (IllegalArgumentException e4) {
-                        try {
-                            type = SeedType.valueOf(itemName);
-                            sampleItem = new Seed((SeedType) type);
-                        } catch (IllegalArgumentException e5) {
-                            try {
-                                type = CropType.valueOf(itemName);
-                                sampleItem = new Crop(false,(CropType) type,null,false);
-                            } catch (IllegalArgumentException e6) {
-                                try {
-                                    type = FlowerType.valueOf(itemName);
-                                    sampleItem = new Flower((FlowerType) type);
-                                } catch (IllegalArgumentException e7) { {
-                                        try {
-                                            type = FruitType.valueOf(itemName);
-                                            sampleItem = new Fruit((FruitType) type);
-                                        } catch (IllegalArgumentException e9) {
-                                            try {
-                                                type = AnimalProductType.valueOf(itemName);
-                                                AnimalProduct a= new AnimalProduct();
-                                                a.setAnimalProductType((AnimalProductType) type);
-                                                a.setShippingBinType(ItemQuality.Regular);
-                                                sampleItem = a;
+        BackPackableType type = (BackPackableType) result.get(0);
+        BackPackable sampleItem = (BackPackable) result.get(1);
 
-
-                                            } catch (IllegalArgumentException e10) {
-                                                try{
-                                                    type = FishType.valueOf(itemName);
-                                                    sampleItem=new Fish((FishType)type,ItemQuality.Regular);
-                                                }catch (Exception e11) {
-                                                    try{
-                                                        type = ToolType.valueOf(itemName);
-                                                        sampleItem = new Tool((ToolType)type, ToolMaterial.Basic, null);
-                                                        if(type.equals(ToolType.FishingPole)){
-                                                            return new Result(false,"please specify which fishing pole you want");
-                                                        }
-                                                        if(player.getBackPack().getBackPackItems().containsKey(type)) {
-                                                            return new Result(false, "tool already exists.");
-                                                        }
-                                                        count =1;
-                                                    } catch (Exception e12) {
-                                                        try{
-                                                            type = FoodType.valueOf(itemName);
-                                                            Food food = new Food();
-                                                            food.setFoodtype((FoodType) type);
-                                                            sampleItem = food;
-
-                                                        }
-                                                        catch (Exception e13) {
-                                                            try{
-                                                                type = FishingPoleType.valueOf(itemName);
-                                                                sampleItem = new Tool(ToolType.FishingPole,null,(FishingPoleType) type);
-                                                            }
-                                                            catch (Exception e14) {
-                                                                return new Result(false, "Invalid item name");
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
+        if (type == null && sampleItem == null)
+            return new Result(false, "Invalid item name");
 
 
         for (int i = 0; i < count; i++) {
-
             player.getBackPack().addItemToInventory(sampleItem);
         }
 
@@ -1237,10 +959,9 @@ public class GameMenuController {
                     }
                 }
             }
-        }
-        else if(mode.equals("pick")){
-            for(Food food : player.getPlayerMap().getHut().getRefrigerator().getFoods()) {
-                if(food.getFoodtype().getName().equals(itemName)) {
+        } else if (mode.equals("pick")) {
+            for (Food food : player.getPlayerMap().getHut().getRefrigerator().getFoods()) {
+                if (food.getFoodtype().getName().equals(itemName)) {
                     player.getPlayerMap().getHut().getRefrigerator().getFoods().remove(food);
                     player.getBackPack().addItemToInventory(food);
                 }
@@ -1256,7 +977,7 @@ public class GameMenuController {
         StringBuilder sb = new StringBuilder();
         for (Recipe recipe : App.getCurrentGame().getCurrentPlayingPlayer().getRecipes()) {
             sb.append(recipe.getFoodToBeCooked().name()).append(" : ").append("\n     ");
-            for(Map.Entry<BackPackableType,Integer> entry: recipe.getFoodToBeCooked().getIngredients().entrySet()) {
+            for (Map.Entry<BackPackableType, Integer> entry : recipe.getFoodToBeCooked().getIngredients().entrySet()) {
                 sb.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n     ");
             }
             sb.append("\n");
@@ -1270,7 +991,7 @@ public class GameMenuController {
         if (recipe == null) {
             return new Result(false, "Recipe not found");
         }
-        if(player.getBackPack().isBackPackFull()){
+        if (player.getBackPack().isBackPackFull()) {
             return new Result(false, "Your back pack is full");
         }
         if (recipe.getFoodToBeCooked().equals(FoodType.MakiRoll)) {
@@ -1375,7 +1096,7 @@ public class GameMenuController {
             }
         }
         App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimalPlaces().add(animalPlace);
-        return new Result(true,"build successfully");
+        return new Result(true, "build successfully");
     }
 
     public Result buyAnimal(String animal, String name) {
@@ -1423,8 +1144,8 @@ public class GameMenuController {
 
     public Result pet(String name) {
         Animal animal = Animal.findAnimalByName(name);
-        if(animal == null){
-            return new Result(false,"no animal with name : " + name);
+        if (animal == null) {
+            return new Result(false, "no animal with name : " + name);
         }
 
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
@@ -1444,14 +1165,14 @@ public class GameMenuController {
         }
         animal.setFriendship(animal.getFriendship()+15);
         animal.setPettedToday(true);
-        return new Result(true,name + " petted successfully");
+        return new Result(true, name + " petted successfully");
 
     }
 
     public Result setFriendship(String animalName, String amount) {
         Animal animal = Animal.findAnimalByName(animalName);
-        if(animal == null){
-            return new Result(false,"animal not found");
+        if (animal == null) {
+            return new Result(false, "animal not found");
         }
 
         int amountInt = Integer.parseInt(amount);
@@ -1466,9 +1187,6 @@ public class GameMenuController {
                 .append("friendship : ").append(animal.getFriendship()).append("\n")
                 .append(animal.isPettedToday()?"petted today" : "not petted today").append("\n")
                 .append(animal.isFedToday()?"feded today" : "not fed today").append("\n\n");
-        if(animal.getTile() != null){
-            sb.append(animal.getTile().getX()).append(", ").append(animal.getTile().getY()).append("\n");
-        }
     }
     return new Result(true,sb.toString());
     }
@@ -1477,81 +1195,80 @@ public class GameMenuController {
     public Result shepherdAnimal(String animalName, String x, String y) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         Animal animal = Animal.findAnimalByName(animalName);
-        if(animal == null){
-            return new Result(false,"animal not found with name : " + animalName);
+        if (animal == null) {
+            return new Result(false, "animal not found with name : " + animalName);
         }
         int xInt = Integer.parseInt(x);
         int yInt = Integer.parseInt(y);
         AnimalPlace animalPlace = animal.getAnimalPlace();
-        Tile tile = Tile.getTile(xInt,yInt);
-        if(tile == null){
-            return new Result(false,"tile not found");
+        Tile tile = Tile.getTile(xInt, yInt);
+        if (tile == null) {
+            return new Result(false, "tile not found");
         }
-        if(!animal.isOutside()){
-            if(tile.getPlaceable() instanceof AnimalPlace){
-                return new Result(false,"animal is already in a animalPlace");
+        if (!animal.isOutside()) {
+            if (tile.getPlaceable() instanceof AnimalPlace) {
+                return new Result(false, "animal is already in a animalPlace");
             }
-            if(tile.getPlaceable() == null){
+            if (tile.getPlaceable() == null) {
                 animalPlace.getAnimals().remove(animal);
                 tile.setPlaceable(animal);
                 animal.setTile(tile);
                 animal.setOutside(true);
                 animal.setFedOutside(true);
-                return new Result(true,"animal is outside now");
+                return new Result(true, "animal is outside now");
             }
-        }
-        else {
-            if(tile.getPlaceable() instanceof AnimalPlace animalPlace1){
-                if(!animal.getAnimalType().getAnimalPlaceTypes().contains(animalPlace1.getAnimalPlaceType())){
-                    return new Result(false,"you can't put " + animal.getAnimalType().name() + " in "
-                     + animalPlace1.getAnimalPlaceType().name());
+        } else {
+            if (tile.getPlaceable() instanceof AnimalPlace animalPlace1) {
+                if (!animal.getAnimalType().getAnimalPlaceTypes().contains(animalPlace1.getAnimalPlaceType())) {
+                    return new Result(false, "you can't put " + animal.getAnimalType().name() + " in "
+                            + animalPlace1.getAnimalPlaceType().name());
                 }
-                if(animalPlace1.isFull()){
-                    return new Result(false,"this " + animalPlace1.getAnimalPlaceType().name() + " is full");
+                if (animalPlace1.isFull()) {
+                    return new Result(false, "this " + animalPlace1.getAnimalPlaceType().name() + " is full");
                 }
                 animal.getTile().setPlaceable(null);
                 animal.setTile(null);
                 animal.setOutside(false);
                 animalPlace1.getAnimals().add(animal);
-                return new Result(true,animalName + " went to " + animalPlace1.getAnimalPlaceType().name());
+                return new Result(true, animalName + " went to " + animalPlace1.getAnimalPlaceType().name());
 
             }
-            if(tile.getPlaceable() == null){
-                return new Result(false,animalName + " is already outside");
+            if (tile.getPlaceable() == null) {
+                return new Result(false, animalName + " is already outside");
             }
-            if(tile.getPlaceable() != null){
-                return new Result(false,"you can't put animals here");
+            if (tile.getPlaceable() != null) {
+                return new Result(false, "you can't put animals here");
             }
         }
-        return new Result(true,"DONE");
+        return new Result(true, "DONE");
     }
 
     public Result feedHay(String animalName) {
         Animal animal = Animal.findAnimalByName(animalName);
-        if(animal == null){
-            return new Result(false,"no animal with name : " + animalName);
+        if (animal == null) {
+            return new Result(false, "no animal with name : " + animalName);
         }
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if(!player.getBackPack().getBackPackItems().containsKey(NormalItemType.Hay)){
-            return new Result(false,"not enough hay");
+        if (!player.getBackPack().getBackPackItems().containsKey(NormalItemType.Hay)) {
+            return new Result(false, "not enough hay");
         }
-        if(animal.isFedToday()){
-            return new Result(false,"already fed today");
+        if (animal.isFedToday()) {
+            return new Result(false, "already fed today");
         }
         animal.setFedToday(true);
-        animal.setFriendship(animal.getFriendship()+15);
-        return new Result(true,animal.getName() + " feded seccessfully");
+        animal.setFriendship(animal.getFriendship() + 15);
+        return new Result(true, animal.getName() + " feded seccessfully");
     }
 
     public Result produces() {
         StringBuilder sb = new StringBuilder();
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for(Animal animal :player.getPlayerMap().getFarm().getAnimals()){
-            if(!animal.getAnimalProducts().isEmpty()){
+        for (Animal animal : player.getPlayerMap().getFarm().getAnimals()) {
+            if (!animal.getAnimalProducts().isEmpty()) {
                 sb.append(animal.getName()).append("\n");
-                for(AnimalProduct animalProduct : animal.getAnimalProducts()){
+                for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
                     sb.append(animalProduct.getAnimalProductType().name()).append("\n")
-                            .append("quality : ").append(animalProduct.getShippingBinType().name()).append("\n");
+                            .append("quality : ").append(animalProduct.getQuality().name()).append("\n");
                 }
             }
         }
@@ -1587,8 +1304,8 @@ public class GameMenuController {
 
     public Result sellAnimal(String name) {
         Animal animal = Animal.findAnimalByName(name);
-        if(animal == null){
-            return new Result(false,"animal not found");
+        if (animal == null) {
+            return new Result(false, "animal not found");
         }
 
         animal.sell();
@@ -1672,307 +1389,36 @@ public class GameMenuController {
     }
 
     public Result artisanUse(String artisanName, String itemNames) {
-        // 1. Find artisan tool by name
-        CraftingItemType artisan = CraftingItemType.getCraftingItemTypeByName(artisanName);
-
-        if (artisan == null) {
-            return new Result(false, "No artisan found with name '%s'".formatted(artisanName));
-        }
-
-        // 2. Check ownership of artisan tool
-        BackPack playerBackPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-        if (!playerBackPack.getBackPackItems().containsKey(artisan)) {
-            return new Result(false, "You do not own the artisan tool '%s'.".formatted(artisan.getName()));
-        }
-
-        // 3. Parse input ingredient names into BackPackableTypes
-        String[] tokens = itemNames.trim().split("\\s+");
-        Map<BackPackableType, Integer> provided = new HashMap<>();
-        for (String token : tokens) {
-            Optional<BackPackableType> maybeIngredient = parseBackPackable(token);
-            if (maybeIngredient.isEmpty()) {
-                return new Result(false, "Ingredient '%s' not recognized.".formatted(token));
-            }
-            BackPackableType type = maybeIngredient.get();
-            provided.put(type, provided.getOrDefault(type, 0) + 1);
-        }
-
-        // 4. Try to match an ArtisanProductType with given artisan and ingredients
-        for (ArtisanProductType product : ArtisanProductType.values()) {
-            if (!product.getArtisan().equals(artisan)) continue;
-
-            Map<Object, Integer> requiredIngredients = product.getIngredients();
-
-            // Check if all required ingredients are present in the provided map
-            boolean match = true;
-            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
-                Object key = entry.getKey();
-                int requiredAmount = entry.getValue();
-                int providedAmount = 0;
-
-                if (key instanceof BackPackableType type) {
-                    providedAmount = provided.getOrDefault(type, 0);
-                } else if (key instanceof IngredientGroup group) {
-                    for (BackPackableType type : group.getMembers()) {
-                        providedAmount += provided.getOrDefault(type, 0);
-                    }
-                }
-
-                if (providedAmount < requiredAmount) {
-                    match = false;
-                    break;
-                }
-            }
-
-            if (!match) continue;
-
-            // 5. Check if player owns enough of each required ingredient
-            //TODO: check if is already artisan is producing something
-            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
-                int required = entry.getValue();
-
-                if (entry.getKey() instanceof BackPackableType type) {
-                    int owned = playerBackPack.getBackPackItems()
-                            .getOrDefault(type, new ArrayList<>()).size();
-                    if (owned < required) {
-                        return new Result(false, "Not enough of '%s'.".formatted(type.getName()));
-                    }
-                } else if (entry.getKey() instanceof IngredientGroup group) {
-                    int available = group.countInBackPack(playerBackPack);
-                    if (available < required) {
-                        return new Result(false, "Not enough items from group '%s'.".formatted(group.name()));
-                    }
-                }
-            }
-
-            // 6. Remove ingredients from backpack
-            for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
-                int amount = entry.getValue();
-                if (entry.getKey() instanceof BackPackableType type) {
-                    for (int i = 0; i < amount; i++) {
-                        playerBackPack.useItem(type);
-                    }
-                } else if (entry.getKey() instanceof IngredientGroup group) {
-                    group.removeFromBackPack(amount, playerBackPack);
-                }
-            }
-
-            // 7. Start artisan production
-            App.getCurrentGame().getCurrentPlayingPlayer()
-                    .getArtisanProductsInProgress().add(new ArtisanProduct(product));
-
-            return new Result(true, "'%s' is now being produced.".formatted(product.getName()));
-        }
-
-        return new Result(false, "No matching artisan product found for '%s' with given ingredients.".formatted(artisanName));
-    }
-
-
-    private Optional<BackPackableType> parseBackPackable(String name) {
-        List<Class<? extends Enum<?>>> enumClasses = List.of(
-                FruitType.class,
-                FishType.class,
-                AnimalProductType.class,
-                CraftingItemType.class,
-                SeedType.class,
-                CropType.class,
-                NormalItemType.class,
-                FoodType.class,
-                MineralType.class
-                //TODO: Add more if needed
-        );
-
-        for (Class<? extends Enum<?>> enumClass : enumClasses) {
-            for (Enum<?> constant : enumClass.getEnumConstants()) {
-                if (constant.name().equalsIgnoreCase(name)) {
-                    return Optional.of((BackPackableType) constant);
-                }
-            }
-        }
-        return Optional.empty();
+        return artisanController.artisanUse(artisanName, itemNames, marketsController);
     }
 
 
     public Result artisanGet(String artisanName) {
-        CraftingItemType type = CraftingItemType.getCraftingItemTypeByName(artisanName);
-        if (type == null) {
-            return new Result(false, "there is no artisan with name %s".formatted(artisanName));
-        }
-
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for (ArtisanProduct artisanProduct : player.getArtisanProductsInProgress()) {
-            if (artisanProduct.getType().getArtisan().equals(type)) {
-                if (artisanProduct.isReady()) {
-                    player.getBackPack().addItemToInventory(artisanProduct);
-                    return new Result(true, "artisan product added to backpack");
-                } else {
-                    return new Result(false, "artisan product is not ready.");
-                }
-            }
-        }
-        return new Result(false, "artisan with name %s is not producing anything".formatted(artisanName));
+        return artisanController.artisanGet(artisanName);
     }
 
 
     public Result showAllProducts() {
-        //check is the player in store
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = App.getCurrentGame().getTileByIndex(player.getX(), player.getY());
-        if (tile.getPlaceable() instanceof Store store) {
-            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-                return new Result(false, "Store is open from %d to %d".formatted(
-                        store.getType().getOpeningHour(), store.getType().getClosingHour()
-                ));
-            return new Result(true, App.getCurrentGame().getStoreManager().showAllProducts(store));
-        }
-        return new Result(false, "You are not in a store");
+        return marketsController.showAllProducts();
     }
 
 
     public Result showAllAvailableProducts() {
-        //check is the player in store
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = App.getCurrentGame().getTileByIndex(player.getX(), player.getY());
-        if (tile.getPlaceable() instanceof Store store) {
-            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-                return new Result(false, "Store is open from %d to %d".formatted(
-                        store.getType().getOpeningHour(), store.getType().getClosingHour()
-                ));
-            return new Result(true, App.getCurrentGame().getStoreManager().showAllAvailableProducts(store));
-        }
-        return new Result(false, "You are not in a store");
+        return marketsController.showAllAvailableProducts();
     }
 
 
     public Result purchase(String productName, String count) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        StoreType storeType;
-        if (App.getCurrentGame().getTileByIndex(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
-            storeType = store.getType();
-        } else
-            return new Result(false, "The Player is not in a store");
-
-        if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-            return new Result(false, "Store is open from %d to %d".formatted(
-                    store.getType().getOpeningHour(), store.getType().getClosingHour()
-            ));
-
-        ShopItem product = null;
-        for (ShopItem shopItem : App.getCurrentGame().getStoreManager().getInventory(storeType).getItems()) {
-            if (shopItem.getName().equalsIgnoreCase(productName)) {
-                product = shopItem;
-            }
-        }
-        if (product == null)
-            return new Result(false, "no product with name %s in store %s".formatted(
-                    productName, storeType.name()
-            ));
-
-        if (storeType.equals(StoreType.FishShop))
-            if (!App.getCurrentGame().getStoreManager().checkFishingSkill(product))
-                return new Result(false, "You do not have enough fishing skill to buy this item.");
-
-        int count1;
-
-        if (count == null)
-            count1 = 1;
-        else
-            count1 = Integer.parseInt(count);
-
-        int availableCount = product.getDailyLimit() - product.getSoldToday();
-        if (availableCount < count1)
-            return new Result(false, "only %d left today".formatted(availableCount));
-
-        if (!App.getCurrentGame().getStoreManager().hasIngredients(product))
-            return new Result(false, "You do not have enough ingredients to buy this item");
-
-        App.getCurrentGame().getStoreManager().useIngredients(product);
-
-        double price;
-        if (storeType.equals(StoreType.PierresGeneralStore))
-            price = App.getCurrentGame().getStoreManager().getSeasonalPrice(product);
-        else
-            price = product.getPrice();
-
-        price *= count1;
-        if (player.getBackPack().getCoin() < price)
-            return new Result(false, "you have only %.2f dollars left(not enough money)".formatted(
-                    player.getBackPack().getCoin()
-            ));
-
-        //purchasing
-        product.setSoldToday(product.getSoldToday() + count1);
-        player.getBackPack().addcoin(-price);
-        if (product.getType().equals(BackPackType.LargeBackPack) || product.getType().equals(BackPackType.DeluxeBackPack))
-            return App.getCurrentGame().getStoreManager().purchaseBackpack(product);
-
-        for (int i = 0; i < count1; i++)
-            player.getBackPack().addItemToInventory(product);
-
-        return new Result(false, "purhcased successfully");
+        return marketsController.purchase(productName, count);
     }
 
 
     public Result cheatAddDollars(String count) {
-        double amount;
-        try {
-            amount = Double.parseDouble(count);
-        } catch (Exception e) {
-            return new Result(false, "Amount must be number.");
-        }
-
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addCoin(amount);
-        return new Result(false, "Your new Balance: %.1f".formatted(
-                App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin()
-        ));
+        return marketsController.cheatAddDollars(count);
     }
 
     public Result sellProduct(String productName, String count) {
-        //TODO: find out what does the first error in the document means
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
-        int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
-        int[] dy = {1, 1, 0, -1, -1, -1, 0, 1};
-
-        ShippingBin bin = null;
-        for (int i = 0; i < 8; i++) {
-            if (App.getCurrentGame().getTileByIndex((player.getX() + dx[i]), (player.getY() + dy[i])).getPlaceable()
-                    instanceof ShippingBin shippingBin) {
-                if (shippingBin.getTodayItemOwner() != null) {
-                    if (!shippingBin.getTodayItemOwner().equals(player))
-                        return new Result(false, "this shipping bin is already used by %s today.".formatted(
-                                shippingBin.getTodayItemOwner().getUser().getUsername()) +
-                                "you may be able to use it tomorrow.");
-                }
-                bin = shippingBin;
-            }
-        }
-        if (bin == null)
-            return new Result(false, "you are not near a shipping bin");
-
-        Optional<BackPackableType> productType = parseBackPackable(productName);
-        if (productType.isEmpty())
-            return new Result(false, "no product type found with name %s".formatted(productName));
-
-        int count1;
-        if (count == null)
-            count1 = 1;
-        else
-            count1 = Integer.parseInt(count);
-
-        if (player.getBackPack().getBackPackItems().get(productType) == null)
-            return new Result(false, "you do not have item of type %s".formatted(productType.get().getName()));
-
-        int availableCount = player.getBackPack().getBackPackItems().get(productType).size();
-        if (availableCount < count1)
-            return new Result(false, "not enough count: you only have %d of this item".formatted(availableCount));
-
-        bin.addItems(productType.get(), count1, player);
-        for (int i = 0; i < count1; i++) {
-            player.getBackPack().useItem(productType.get());
-        }
-
-        return new Result(true, "sold successfully");
+        return marketsController.sellProduct(productName, count);
     }
 
 

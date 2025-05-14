@@ -158,16 +158,16 @@ public class Animal implements Placeable {
             animalProduct.setAnimalProductType(this.animalType.getProductTypes().get(0));
         }
         if(quality<0.5){
-            animalProduct.setShippingBinType(Regular);
+            animalProduct.setQuality(Regular);
         }
         else if(quality<0.7){
-            animalProduct.setShippingBinType(Silver);
+            animalProduct.setQuality(Silver);
         }
         else if(quality<0.9){
-            animalProduct.setShippingBinType(Gold);
+            animalProduct.setQuality(Gold);
         }
         else{
-            animalProduct.setShippingBinType(Iridium);
+            animalProduct.setQuality(Iridium);
         }
         animalProduct.setAnimal(this);
         addProduct(animalProduct);
