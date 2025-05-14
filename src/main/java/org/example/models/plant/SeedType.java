@@ -69,5 +69,6 @@ public enum SeedType implements BackPackableType {
     public double getPrice() {
         //TODO
         return 0;
+
     }
 }
