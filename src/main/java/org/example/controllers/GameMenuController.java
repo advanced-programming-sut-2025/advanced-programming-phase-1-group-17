@@ -156,10 +156,12 @@ public class GameMenuController {
             }
         }
         App.setLoggedInUser(App.getCurrentGame().getCreator().getUser());
+
         for (Player player : App.getCurrentGame().getPlayers()) {
             player.getUser().setLastGame(null);
             player.getUser().setActiveGame(null);
         }
+
         App.getGames().remove(App.getCurrentGame());
         App.setCurrentGame(null);
         App.setCurrentMenu(Menu.MainMenu);
