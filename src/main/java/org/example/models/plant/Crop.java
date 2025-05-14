@@ -5,13 +5,19 @@ import org.example.models.BackPackable;
 import org.example.models.Placeable;
 import org.example.models.Player;
 import org.example.models.map.Tile;
+import org.example.models.market.ItemQuality;
+import org.example.models.tools.Tool;
+import org.example.models.tools.ToolMaterial;
+import org.example.models.tools.ToolType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Crop extends Plant implements BackPackable, Placeable {
     private CropType type;
     private boolean isGiant = false;
+    private ItemQuality quality;
 
     ArrayList<Crop> neighborGiantTiles = new ArrayList<>();
 
@@ -254,6 +260,60 @@ public class Crop extends Plant implements BackPackable, Placeable {
             daysTillNextHarvest = type.getRegrowthTime();
             this.hasFruit = false;
         }
+        setItemQuality();
+    }
+
+    private void setItemQuality() {
+        Random random = new Random();
+        int randInt = random.nextInt(100);
+
+        ToolMaterial toolMaterial = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool().getMaterial();
+        if (toolMaterial.equals(ToolMaterial.Basic)) {
+            if (randInt< 25)
+                quality = ItemQuality.Regular;
+            else if (randInt < 50)
+                quality = ItemQuality.Silver;
+            else if (randInt < 75)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        } else if (toolMaterial.equals(ToolMaterial.Copper)) {
+            if (randInt< 20)
+                quality = ItemQuality.Regular;
+            else if (randInt < 40)
+                quality = ItemQuality.Silver;
+            else if (randInt < 60)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        } else if (toolMaterial.equals(ToolMaterial.Iron)) {
+            if (randInt< 15)
+                quality = ItemQuality.Regular;
+            else if (randInt < 30)
+                quality = ItemQuality.Silver;
+            else if (randInt < 45)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        } else if (toolMaterial.equals(ToolMaterial.Gold)) {
+            if (randInt< 10)
+                quality = ItemQuality.Regular;
+            else if (randInt < 20)
+                quality = ItemQuality.Silver;
+            else if (randInt < 30)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        } else if (toolMaterial.equals(ToolMaterial.Iridium)) {
+            if (randInt< 5)
+                quality = ItemQuality.Regular;
+            else if (randInt < 10)
+                quality = ItemQuality.Silver;
+            else if (randInt < 15)
+                quality = ItemQuality.Gold;
+            else
+                quality = ItemQuality.Iridium;
+        }
     }
 
     @Override
@@ -266,5 +326,13 @@ public class Crop extends Plant implements BackPackable, Placeable {
                 neighborGiantTile.daysWithoutWater = 0;
             }
         }
+    }
+
+    public ItemQuality getQuality() {
+        return quality;
+    }
+
+    public void setQuality(ItemQuality quality) {
+        this.quality = quality;
     }
 }

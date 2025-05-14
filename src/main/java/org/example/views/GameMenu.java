@@ -237,7 +237,7 @@ public class GameMenu implements AppMenu {
             ));
         } else if ((matcher = GameMenuCommands.Sell.getMatcher(command)) != null) {
             System.out.println(controller.sellProduct(
-                    matcher.group("productName"),
+                    matcher.group("productName").trim(),
                     matcher.group("count")
             ));
         }

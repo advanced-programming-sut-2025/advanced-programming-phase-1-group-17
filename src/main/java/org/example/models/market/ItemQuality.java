@@ -15,5 +15,4 @@ public enum ItemQuality {
     public double getLeverage() {
         return leverage;
     }
-
 }

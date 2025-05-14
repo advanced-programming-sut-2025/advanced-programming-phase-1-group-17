@@ -81,7 +81,7 @@ public enum GameMenuCommands {
     ShowAllAvailableProducts("\\s*show\\s+all\\s+available\\s+products\\s*"),
     Purchase("\\s*purchase\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
     CheatAddDollars("\\s*cheat\\s+add\\s+(?<count>\\S+)\\s+dollars\\s*"),
-    Sell("\\s*sell\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
+    Sell("\\s*sell\\s+(?<productName>.+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
 
     //For friendships
     talk("\\s*talk\\s+-u\\s+(?<username>\\S+)\\s+-m\\s+(?<message>[\\S ]+)\\s*"),
