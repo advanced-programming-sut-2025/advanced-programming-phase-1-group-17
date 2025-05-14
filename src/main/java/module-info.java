@@ -1,6 +1,7 @@
 module StardewValley17 {
     requires java.desktop;
     requires com.google.gson;
+    requires jdk.compiler;
 
     exports org.example.views;
     opens org.example.views to javafx.fxml;

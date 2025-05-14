@@ -2,18 +2,19 @@ package org.example.models;
 
 import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
-import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
+import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
+import org.example.models.crafting.CraftingItemType;
+import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.BackPackType;
-import org.example.models.tools.ToolMaterial;
-import org.example.models.tools.ToolType;
+import org.example.models.tools.*;
 import org.example.models.map.PlayerMap;
-import org.example.models.tools.BackPack;
-import org.example.models.tools.Tool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Player {
     private PlayerMap playerMap;
@@ -27,7 +28,6 @@ public class Player {
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
 
 
-    private ArrayList<ArtisanProduct> artisanProductsInProgress = new ArrayList();
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
     private ArrayList<message> messages = new ArrayList<>();
     private ArrayList<Trade> trades = new ArrayList<>();
@@ -50,27 +50,21 @@ public class Player {
     private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack, this);
 
     //For TrashCan & WaterStorage
-    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
-    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
+    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic, null);
+    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic, null);
     private Tool currentTool;
 
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
-    private ArrayList<Recipe> recipes = new ArrayList<>();
+    private HashSet<Recipe> recipes = new HashSet<>();
     private ArrayList<Friends> friends = new ArrayList<>();
-    private Ability abilities = new Ability();
-    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
+    private Ability abilities = new Ability(this);
+    private HashSet<CraftingRecipe> craftingRecipes = new HashSet<>();
 
     private double balance;
     private int daysSinceBrakUp = 0;
 
-    public ArrayList<CraftingItem> getCraftingRecipes() {
-        return craftingItems;
-    }
 
-    public void setCraftingRecipes(ArrayList<CraftingItem> craftingItems) {
-        this.craftingItems = craftingItems;
-    }
 
     public int getVegetableFarmed() {
         return vegetableFarmed;
@@ -88,11 +82,19 @@ public class Player {
         this.abilities = abilities;
     }
 
-    public ArrayList<Recipe> getRecipes() {
+    public HashSet<CraftingRecipe> getCraftingRecipes() {
+        return craftingRecipes;
+    }
+
+    public void setCraftingRecipes(HashSet<CraftingRecipe> craftingRecipes) {
+        this.craftingRecipes = craftingRecipes;
+    }
+
+    public HashSet<Recipe> getRecipes() {
         return recipes;
     }
 
-    public void setRecipes(ArrayList<Recipe> recipes) {
+    public void setRecipes(HashSet<Recipe> recipes) {
         this.recipes = recipes;
     }
 
@@ -100,13 +102,17 @@ public class Player {
         this.user = user;
         this.isGuest = isGuest;
         this.energy = maxEnergy;
-        Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
+        Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic, null);
         backPack.addItemToInventory(wateringCan);
-        backPack.addItemToInventory(new Tool(ToolType.Scythe, null));
-        backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic));
-        backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic));
-        backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic));
+        backPack.addItemToInventory(new Tool(ToolType.Scythe, null, null));
+        backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic, null));
+        backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic, null));
+        backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic, null));
         this.currentTool = wateringCan;
+        this.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MegaBomb));
+        backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));
+        this.getRecipes().add(new Recipe(FoodType.MakiRoll));
+        this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -229,14 +235,6 @@ public class Player {
 
     public void addTalk(Player player, Talk talk) {
         this.talk.put(player, talk);
-    }
-
-    public ArrayList<ArtisanProduct> getArtisanProductsInProgress() {
-        return artisanProductsInProgress;
-    }
-
-    public void setArtisanProductsInProgress(ArrayList<ArtisanProduct> artisanProductsInProgress) {
-        this.artisanProductsInProgress = artisanProductsInProgress;
     }
 
     public void addGift(Player player) {

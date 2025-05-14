@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import org.example.PasswordUtil;
 import org.example.SaveUser;
 import org.example.models.App;
 import org.example.models.Result;
@@ -16,7 +17,8 @@ public class LoginMenuController {
         String password = LoginMenuCommands.Login.getMatcher(input).group("password").trim();
         if (App.getUserWithUsername(username) != null) {
             User user = App.getUserWithUsername(username);
-            if (user.getPassword().equals(password)) {
+            String hashedInput = PasswordUtil.hashPassword(password);
+            if (user.getPasswordHash().equals(hashedInput)) {
                 App.setLoggedInUser(user);
                 if (input.trim().endsWith("--stay-logged-in")) {
                     SaveUser.saveLoggedInUser(user);
@@ -39,7 +41,7 @@ public class LoginMenuController {
             System.out.println("please, enter your answer");
             String answer = scanner.nextLine();
             if (answer.equals(user.getSecurityAnswer())) {
-                return new Result(true, "your password : " + user.getPassword());
+                return new Result(true, "your password : " + user.getRawPassword());
             }
             else {
                 return new Result(false, "wrong answer! try later");
@@ -54,4 +56,7 @@ public class LoginMenuController {
         App.setCurrentMenu(Menu.SignUpMenu);
     }
 
+    public void goToSignUpMenu() {
+        App.setCurrentMenu(Menu.SignUpMenu);
+    }
 }

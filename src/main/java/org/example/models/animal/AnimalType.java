@@ -1,4 +1,4 @@
-package org.example.models.enums;
+package org.example.models.animal;
 
 import org.example.models.BackPackableType;
 
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.example.models.enums.AnimalPlaceType.*;
-import static org.example.models.enums.AnimalProductType.*;
+import static org.example.models.animal.AnimalPlaceType.*;
+import static org.example.models.animal.AnimalProductType.*;
 
 public enum AnimalType implements BackPackableType {
     Chicken(new ArrayList<>( Arrays.asList(Coop,BigCoop,DeluxeCoop)),new ArrayList<>(Arrays.asList(Egg,LargeEgg)), 800),

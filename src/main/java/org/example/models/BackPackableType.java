@@ -1,6 +1,7 @@
 package org.example.models;
 
-public interface BackPackableType {
+
+public interface BackPackableType  {
     String getName();
     double getPrice();
 }

@@ -4,9 +4,10 @@ import org.example.models.*;
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.RecipeType;
+import org.example.models.animal.AnimalPlaceType;
+import org.example.models.animal.AnimalType;
 import org.example.models.crafting.CraftingItemType;
-import org.example.models.enums.AnimalPlaceType;
-import org.example.models.enums.AnimalType;
+import org.example.models.crafting.CraftingRecipeType;
 import org.example.models.enums.BackPackType;
 import org.example.models.enums.Season;
 import org.example.models.tools.BackPack;
@@ -59,14 +60,14 @@ public class StoreManager {
         StoreInventory fishShopInventory = new StoreInventory(StoreType.FishShop);
 
         //TODO: test fishing poles
-        fishShopInventory.addItem(new ShopItem(RecipeType.FishSmoker, 10000, 1, "A recipe to make Fish Smoker"));
+        fishShopInventory.addItem(new ShopItem(CraftingRecipeType.FishSmokerRecipe, 10000, 1, "A recipe to make Fish Smoker"));
 
         fishShopInventory.addItem(new ShopItem(NormalItemType.TroutSoup, 250, 1, "Pretty salty."));
 
-        fishShopInventory.addItem(new ShopItem(FishingPoleType.Bamboo, 500, 1, "Use in the water to catch fish."));
-        fishShopInventory.addItem(new ShopItem(FishingPoleType.Training, 25, 1, "It's a lot easier to use than other rods, but can only catch basic fish."));
-        fishShopInventory.addItem(new ShopItem(FishingPoleType.Fiberglass, 1800, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 2
-        fishShopInventory.addItem(new ShopItem(FishingPoleType.Iridium, 7500, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 4
+        fishShopInventory.addItem(new ShopItem(FishingPoleType.BambooFishingPole, 500, 1, "Use in the water to catch fish."));
+        fishShopInventory.addItem(new ShopItem(FishingPoleType.TrainingFishingPole, 25, 1, "It's a lot easier to use than other rods, but can only catch basic fish."));
+        fishShopInventory.addItem(new ShopItem(FishingPoleType.FiberglassFishingPole, 1800, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 2
+        fishShopInventory.addItem(new ShopItem(FishingPoleType.IridiumFishingPole, 7500, 1, "Use in the water to catch fish.")); // TODO: Fishing skill level 4
         registerShop(fishShopInventory);
     }
 
@@ -78,13 +79,13 @@ public class StoreManager {
         pierre.addItem(new ShopItem(NormalItemType.WheatFlour, 100, Integer.MAX_VALUE, "A common cooking ingredient made from crushed wheat seeds."));
         pierre.addItem(new ShopItem(FlowerType.FLOWER, 1000, 2, "A gift that shows your romantic interest.\n(Unlocked after reaching level 2 friendship with a player)"));
         pierre.addItem(new ShopItem(RingType.Ring, 10000, 2, "It's used to ask for another farmer's hand in marriage.\n(Unlocked after reaching level 3 friendship with a player)"));
-        pierre.addItem(new ShopItem(RecipeType.Dehydrator, 10000, 1, "A recipe to make Dehydrator"));
-        pierre.addItem(new ShopItem(RecipeType.GrassStarter, 1000, 1, "A recipe to make Grass Starter"));
+        pierre.addItem(new ShopItem(CraftingRecipeType.DehydratorRecipe, 10000, 1, "A recipe to make Dehydrator"));
+        pierre.addItem(new ShopItem(CraftingRecipeType.GrassStarterRecipe, 1000, 1, "A recipe to make Grass Starter"));
         pierre.addItem(new ShopItem(NormalItemType.Sugar, 100, Integer.MAX_VALUE, "Adds sweetness to pastries and candies. Too much can be unhealthy."));
         pierre.addItem(new ShopItem(ArtisanProductType.Oil, 200, Integer.MAX_VALUE, "All purpose cooking oil."));
         pierre.addItem(new ShopItem(ArtisanProductType.Vinegar, 200, Integer.MAX_VALUE, "An aged fermented liquid used in many cooking recipes."));
         pierre.addItem(new ShopItem(FertilizerType.DeluxeRetainingSoil, 150, Integer.MAX_VALUE, "This soil has a 100% chance of staying watered overnight. Mix into tilled soil."));
-        pierre.addItem(new ShopItem(CraftingItemType.GrassStarter, 100, Integer.MAX_VALUE, "Place this on your farm to start a new patch of grass."));
+        pierre.addItem(new ShopItem(NormalItemType.GrassStarter, 100, Integer.MAX_VALUE, "Place this on your farm to start a new patch of grass."));
         pierre.addItem(new ShopItem(FertilizerType.SpeedGro, 100, Integer.MAX_VALUE, "Makes the plants grow 1 day earlier."));
 
         pierre.addItem(new ShopItem(SaplingType.AppleSapling, 4000, Integer.MAX_VALUE, "Takes 28 days to produce a mature Apple tree. Bears fruit in the fall. Only grows if the 8 surrounding \"tiles\" are empty."));
@@ -205,14 +206,84 @@ public class StoreManager {
         carpenterInventory.addItem(new ShopItem(MineralType.Stone, 20, Integer.MAX_VALUE, "A common material with many uses in crafting and building."));
 
         // Farm buildings
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.Barn, 6000, 1, "Houses 4 barn-dwelling animals."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.BigBarn, 12000, 1, "Houses 8 barn-dwelling animals. Unlocks goats."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.DeluxeBarn, 25000, 1, "Houses 12 barn-dwelling animals. Unlocks sheep and pigs."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.Coop, 4000, 1, "Houses 4 coop-dwelling animals."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.BigCoop, 10000, 1, "Houses 8 coop-dwelling animals. Unlocks ducks."));
-        carpenterInventory.addItem(new ShopItem(AnimalPlaceType.DeluxeCoop, 20000, 1, "Houses 12 coop-dwelling animals. Unlocks rabbits."));
-        carpenterInventory.addItem(new ShopItem(NormalItemType.Well, 1000, 1, "Provides a place for you to refill your watering can."));
-        carpenterInventory.addItem(new ShopItem(NormalItemType.ShippingBin, 250, Integer.MAX_VALUE, "Items placed in it will be included in the nightly shipment."));
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.Barn,
+                6000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 350,
+                        MineralType.Stone, 150
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.BigBarn,
+                12000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 450,
+                        MineralType.Stone, 200
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.DeluxeBarn,
+                25000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 550,
+                        MineralType.Stone, 300
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.Coop,
+                4000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 300,
+                        MineralType.Stone, 100
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.BigCoop,
+                10000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 400,
+                        MineralType.Stone, 150
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                AnimalPlaceType.DeluxeCoop,
+                20000,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 500,
+                        MineralType.Stone, 200
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                NormalItemType.Well,
+                1000,
+                new HashMap<>(Map.of(
+                        MineralType.Stone, 75
+                )),
+                1
+        ));
+
+        carpenterInventory.addItem(new ShopItem(
+                NormalItemType.ShippingBin,
+                250,
+                new HashMap<>(Map.of(
+                        NormalItemType.Wood, 150
+                )),
+                Integer.MAX_VALUE
+        ));
+
         registerShop(carpenterInventory);
     }
 
@@ -225,15 +296,15 @@ public class StoreManager {
         saloon.addItem(new ShopItem(FoodType.Pizza, 600, Integer.MAX_VALUE, "It's popular for all the right reasons."));
         saloon.addItem(new ShopItem(ArtisanProductType.Coffee, 300, Integer.MAX_VALUE, "It smells delicious. This is sure to give you a boost."));
 
-        saloon.addItem(new ShopItem(RecipeType.HashBrowns, 50, 1, "A recipe to make Hashbrowns"));
-        saloon.addItem(new ShopItem(RecipeType.Olmelet, 100, 1, "A recipe to make Omelet"));
-        saloon.addItem(new ShopItem(RecipeType.Pancakes, 100, 1, "A recipe to make Pancakes"));
-        saloon.addItem(new ShopItem(RecipeType.Bread, 100, 1, "A recipe to make Bread"));
-        saloon.addItem(new ShopItem(RecipeType.Tortilla, 100, 1, "A recipe to make Tortilla"));
-        saloon.addItem(new ShopItem(RecipeType.Pizza, 150, 1, "A recipe to make Pizza"));
-        saloon.addItem(new ShopItem(RecipeType.MakiRoll, 300, 1, "A recipe to make Maki Roll"));
-        saloon.addItem(new ShopItem(RecipeType.TripleShotEspresso, 5000, 1, "A recipe to make Triple Shot Espresso"));
-        saloon.addItem(new ShopItem(RecipeType.Cookie, 300, 1, "A recipe to make Cookie"));
+        saloon.addItem(new ShopItem(RecipeType.HashBrownsRecipe, 50, 1, "A recipe to make Hashbrowns"));
+        saloon.addItem(new ShopItem(RecipeType.OmeletRecipe, 100, 1, "A recipe to make Omelet"));
+        saloon.addItem(new ShopItem(RecipeType.PancakesRecipe, 100, 1, "A recipe to make Pancakes"));
+        saloon.addItem(new ShopItem(RecipeType.BreadRecipe, 100, 1, "A recipe to make Bread"));
+        saloon.addItem(new ShopItem(RecipeType.TortillaRecipe, 100, 1, "A recipe to make Tortilla"));
+        saloon.addItem(new ShopItem(RecipeType.PizzaRecipe, 150, 1, "A recipe to make Pizza"));
+        saloon.addItem(new ShopItem(RecipeType.MakiRollRecipe, 300, 1, "A recipe to make Maki Roll"));
+        saloon.addItem(new ShopItem(RecipeType.TripleShotEspressoRecipe, 5000, 1, "A recipe to make Triple Shot Espresso"));
+        saloon.addItem(new ShopItem(RecipeType.CookieRecipe, 300, 1, "A recipe to make Cookie"));
         registerShop(saloon);
     }
 
@@ -262,14 +333,14 @@ public class StoreManager {
         blacksmith.addItem(new ShopItem(MineralType.Coal, 150, Integer.MAX_VALUE, "A combustible rock that is useful for crafting and smelting."));
         blacksmith.addItem(new ShopItem(MineralType.GoldOre, 400, Integer.MAX_VALUE, "A precious ore that can be smelted into bars."));
 
-        blacksmith.addUpgradeService(new UpgradeService("Copper Tool", NormalItemType.CopperBar, 5, 2000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Steel Tool", NormalItemType.IronBar, 5, 5000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Gold Tool", NormalItemType.GoldBar, 5, 10000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Iridium Tool", NormalItemType.IridiumBar, 5, 25000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Copper Trash Can", NormalItemType.CopperBar, 5, 1000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Steel Trash Can", NormalItemType.IronBar, 5, 2500, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Gold Trash Can", NormalItemType.GoldBar, 5, 5000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Iridium Trash Can", NormalItemType.IridiumBar, 5, 12500, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Copper Tool", ArtisanProductType.CopperBar, 5, 2000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Steel Tool", ArtisanProductType.IronBar, 5, 5000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Gold Tool", ArtisanProductType.GoldBar, 5, 10000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Iridium Tool", ArtisanProductType.IridiumBar, 5, 25000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Copper Trash Can", ArtisanProductType.CopperBar, 5, 1000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Steel Trash Can", ArtisanProductType.IronBar, 5, 2500, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Gold Trash Can", ArtisanProductType.GoldBar, 5, 5000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Iridium Trash Can", ArtisanProductType.IridiumBar, 5, 12500, 1));
         registerShop(blacksmith);
 
     }
@@ -296,7 +367,7 @@ public class StoreManager {
         }
 
         if (store.getType().equals(StoreType.Blacksmith)) {
-            result.append("\nUpgrade Services:\n");
+            result.append("\nUpgrade Services:");
             rank = 1;
             for (UpgradeService upgradeService : inventory.getUpgradeServices()) {
                 result.append("\n%d- %s(%d)".formatted(
@@ -389,9 +460,9 @@ public class StoreManager {
 
     public boolean checkFishingSkill(ShopItem item) {
         int fishingLevel = App.getCurrentGame().getCurrentPlayingPlayer().getAbilities().getFishingLevel();
-        if (item.getType().equals(FishingPoleType.Iridium)) {
+        if (item.getType().equals(FishingPoleType.IridiumFishingPole)) {
             return fishingLevel >= 4;
-        } else if (item.getType().equals(FishingPoleType.Fiberglass)) {
+        } else if (item.getType().equals(FishingPoleType.FiberglassFishingPole)) {
             return fishingLevel >= 2;
         }
         return true;

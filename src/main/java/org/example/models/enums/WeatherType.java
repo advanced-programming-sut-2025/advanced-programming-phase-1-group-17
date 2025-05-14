@@ -14,6 +14,21 @@ public enum WeatherType {
     WeatherType(boolean automaticallyWatering,
                 double energyConsume,
                 boolean canBreakTrees) {
+        this.automaticallyWatering = automaticallyWatering;
+        this.energyConsume = energyConsume;
+        this.canBreakTrees = canBreakTrees;
 
+    }
+
+    public boolean isAutomaticallyWatering() {
+        return automaticallyWatering;
+    }
+
+    public double getEnergyConsume() {
+        return energyConsume;
+    }
+
+    public boolean isCanBreakTrees() {
+        return canBreakTrees;
     }
 }

@@ -1,25 +1,25 @@
 package org.example.models;
 
-public enum NormalItemType implements BackPackableType{
-    //TODO: Alaf
-    //CopperOre(75),
-    //IronOre(150),
-    //GoldOre(150),
-    CopperBar(0),
-    IronBar(0),
-    GoldBar(0),
-    IridiumBar(0),
+public enum NormalItemType implements BackPackableType,Placeable{
+//    CopperBar(50),
+//    IronBar(100),
+//    GoldBar(250),
+//    IridiumBar(1000),
     Wood(10),
-    Fibre(0),
+    Fiber(0),
     Hay(50),
-    Well(500), //TODO: provides a place to fill your watering can
+    Well(500),
     ShippingBin(125),
     JojaCola(37.5),
     GrassStarter(62.5),
     Sugar(50),
     WheatFlour(50),
     Rice(100),
-    TroutSoup(125);
+    TroutSoup(125),
+    AnyFish(0),
+    Grass(0); //TODO: Make sure it is never added to backpack
+
+
 
     private final double price;
 

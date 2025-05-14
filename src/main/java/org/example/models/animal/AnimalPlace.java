@@ -1,8 +1,7 @@
-package org.example.models.map;
+package org.example.models.animal;
 
-import org.example.models.Animal;
 import org.example.models.Placeable;
-import org.example.models.enums.AnimalPlaceType;
+import org.example.models.map.Tile;
 
 import java.util.ArrayList;
 
@@ -18,6 +17,10 @@ public class AnimalPlace implements Placeable {
 
     public ArrayList<Animal> getAnimals() {
         return animals;
+    }
+
+    public boolean isFull(){
+        return animals.size() >= capacity;
     }
 
     public void setAnimals(ArrayList<Animal> animals) {
@@ -49,6 +52,5 @@ public class AnimalPlace implements Placeable {
     }
     public void addAnimal(Animal animal){
         animals.add(animal);
-        this.capacity--;
     }
 }
