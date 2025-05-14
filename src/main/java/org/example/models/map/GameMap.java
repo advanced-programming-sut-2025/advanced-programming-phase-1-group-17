@@ -14,7 +14,7 @@ public class GameMap {
     private ArrayList<PlayerMap> playerMaps = new ArrayList<>();
 
     public GameMap(ArrayList<Player> players) {
-        User user = new User("NPC", "NPC", "NPC", "NPC", Gender.Male);
+        User user = new User("NPC",  "NPC", "NPC", "NPC", "NPC", Gender.Male);
         NPC.setFatherUser(user);
         Player player = new Player(user, true);
         NPC.setFatherPlayer(player);
@@ -31,5 +31,4 @@ public class GameMap {
     public void setPlayerMaps(ArrayList<PlayerMap> playerMaps) {
         this.playerMaps = playerMaps;
     }
-    //TODO NPC village
 }

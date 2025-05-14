@@ -1,11 +1,9 @@
 package org.example.models.cooking;
 
 import org.example.models.BackPackableType;
-import org.example.models.NormalItemType;
 import org.example.models.crafting.CraftingItemType;
 
 public enum RecipeType implements BackPackableType {
-
     FriedEggRecipe(FoodType.FriedEgg, 0),
     Recipe(FoodType.BakedFish, 0),
     SaladRecipe(FoodType.Salad, 0),
@@ -43,6 +41,10 @@ public enum RecipeType implements BackPackableType {
     RecipeType(BackPackableType foodType, double price) {
         this.backPackableType = foodType;
         this.price = price;
+    }
+
+    public BackPackableType getFoodType() {
+        return backPackableType;
     }
 
     public BackPackableType getBackPackableType() {
