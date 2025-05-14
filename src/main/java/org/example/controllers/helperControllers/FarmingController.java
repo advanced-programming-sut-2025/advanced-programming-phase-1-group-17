@@ -66,6 +66,13 @@ public class FarmingController {
         if (tile.getPlaceable() instanceof Plant plant) {
             player.getBackPack().useItem(fertilizerType);
             plant.setFertilizerType(fertilizerType);
+            if (plant instanceof Crop crop) {
+                if (crop.isGiant()) {
+                    for (Crop neighborGiantTile : crop.getNeighborGiantTiles()) {
+                        neighborGiantTile.setFertilizerType(fertilizerType);
+                    }
+                }
+            }
             return new Result(true, "Fertilized successfully");
         }
 
@@ -113,9 +120,8 @@ public class FarmingController {
                             cropType.name(), App.getCurrentGame().getDate().getSeason()
                     ));
                 tile.setPlaceable(new Crop(false, cropType, tile, false));
+                ((Crop)tile.getPlaceable()).checkCouldBeGiant();
             }
-
-            player.getBackPack().useItem(seedType);
 
             player.getBackPack().useItem(seedType);
             return new Result(true,

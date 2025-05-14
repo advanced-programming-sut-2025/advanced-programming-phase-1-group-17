@@ -55,7 +55,7 @@ public abstract class ForagingController {
         Random random = new Random();
         int randInt = random.nextInt(2);
         if (randInt == 0)
-            tile.setPlaceable(new NormalItem(NormalItemType.Fibre));
+            tile.setPlaceable(new NormalItem(NormalItemType.Fiber));
         else
             tile.setPlaceable(new NormalItem(NormalItemType.Grass));
     }

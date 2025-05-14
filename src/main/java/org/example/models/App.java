@@ -85,7 +85,7 @@ public class App {
                 return (new int[]{0, -1}); //Left
             }
             case 8 -> {
-                return (new int[]{1, -1}); //Up-Left
+                return (new int[]{-1, -1}); //Up-Left
             }
         }
         return new int[]{10, 10}; // never happens

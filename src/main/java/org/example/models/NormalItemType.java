@@ -1,11 +1,6 @@
 package org.example.models;
 
 public enum NormalItemType implements BackPackableType,Placeable{
-    //TODO: Alaf
-    CopperBar(0),
-    IronBar(0),
-    GoldBar(0),
-    IridiumBar(0),
     Wood(10),
     Fiber(0),
     Hay(50),

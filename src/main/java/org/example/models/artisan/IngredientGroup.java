@@ -11,6 +11,7 @@ import org.example.models.tools.BackPack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public enum IngredientGroup {
@@ -21,7 +22,7 @@ public enum IngredientGroup {
     GoatMilkOrLargeGoatMilk(Set.of(AnimalProductType.GoatMilk, AnimalProductType.LargeGoatMilk)),
     EggOrLargeEgg(Set.of(AnimalProductType.Egg, AnimalProductType.LargeEgg)),
     Grapes(Set.of(CropType.Grape, ForagingCropType.GRAPE)),
-    AnyFish(Set.of(FishType.values())); // Completed here
+    AnyFish(Set.of(FishType.values()));
 
     private final Set<BackPackableType> members;
 

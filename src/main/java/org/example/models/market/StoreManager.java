@@ -332,14 +332,14 @@ public class StoreManager {
         blacksmith.addItem(new ShopItem(MineralType.Coal, 150, Integer.MAX_VALUE, "A combustible rock that is useful for crafting and smelting."));
         blacksmith.addItem(new ShopItem(MineralType.GoldOre, 400, Integer.MAX_VALUE, "A precious ore that can be smelted into bars."));
 
-        blacksmith.addUpgradeService(new UpgradeService("Copper Tool", NormalItemType.CopperBar, 5, 2000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Steel Tool", NormalItemType.IronBar, 5, 5000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Gold Tool", NormalItemType.GoldBar, 5, 10000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Iridium Tool", NormalItemType.IridiumBar, 5, 25000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Copper Trash Can", NormalItemType.CopperBar, 5, 1000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Steel Trash Can", NormalItemType.IronBar, 5, 2500, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Gold Trash Can", NormalItemType.GoldBar, 5, 5000, 1));
-        blacksmith.addUpgradeService(new UpgradeService("Iridium Trash Can", NormalItemType.IridiumBar, 5, 12500, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Copper Tool", ArtisanProductType.CopperBar, 5, 2000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Steel Tool", ArtisanProductType.IronBar, 5, 5000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Gold Tool", ArtisanProductType.GoldBar, 5, 10000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Iridium Tool", ArtisanProductType.IridiumBar, 5, 25000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Copper Trash Can", ArtisanProductType.CopperBar, 5, 1000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Steel Trash Can", ArtisanProductType.IronBar, 5, 2500, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Gold Trash Can", ArtisanProductType.GoldBar, 5, 5000, 1));
+        blacksmith.addUpgradeService(new UpgradeService("Iridium Trash Can", ArtisanProductType.IridiumBar, 5, 12500, 1));
         registerShop(blacksmith);
 
     }

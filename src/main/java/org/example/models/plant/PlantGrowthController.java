@@ -17,7 +17,8 @@ public abstract class PlantGrowthController {
             for (Tile tile : playerMap.getTiles()) {
                 if (tile.getPlaceable() instanceof Tree tree) {
                     tree.goToNextDay();
-                    plants.add(tree);
+                    if (!tree.isForaging)
+                        plants.add(tree);
                 } else if (tile.getPlaceable() instanceof Crop crop) {
                     crop.goToNextDay();
                     handleCropAdding(plants, crop);
@@ -32,6 +33,8 @@ public abstract class PlantGrowthController {
     }
 
     private static void handleCropAdding(ArrayList<Plant> plants, Crop crop) {
+        if (crop.isForaging)
+            return;
         if (!crop.isGiant())
             plants.add(crop);
         else {
