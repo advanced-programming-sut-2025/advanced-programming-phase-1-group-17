@@ -1,6 +1,7 @@
 package org.example.models;
 
 import org.example.models.animal.Animal;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.foraging.ForagingController;
 import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
@@ -38,14 +39,14 @@ public class TimeAndDate {
     public void increaseHour() {
         hour++;
         for (Player player : App.getCurrentGame().getPlayers()) {
-            for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
+            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
                 artisanItemsInProgress.goToNextHour();
             }
         }
 
         if (hour > 22) {
             for (Player player : App.getCurrentGame().getPlayers()) {
-                for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
+                for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
                     artisanItemsInProgress.goToNextDay();
                 }
             }

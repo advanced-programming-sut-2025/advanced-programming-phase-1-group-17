@@ -20,23 +20,51 @@ import java.util.Optional;
 public class ArtisanController {
 
     public Result artisanGet(String artisanName) {
-        CraftingItemType type = CraftingItemType.getCraftingItemTypeByName(artisanName);
-        if (type == null) {
+        CraftingItemType artisan = CraftingItemType.getCraftingItemTypeByName(artisanName);
+        if (artisan == null) {
             return new Result(false, "there is no artisan with name %s".formatted(artisanName));
         }
 
+        int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
+        int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for (ArtisanProduct artisanProduct : player.getArtisanProductsInProgress()) {
-            if (artisanProduct.getType().getArtisan().equals(type)) {
-                if (artisanProduct.isReady()) {
-                    player.getBackPack().addItemToInventory(artisanProduct);
-                    return new Result(true, "artisan product added to backpack");
-                } else {
-                    return new Result(false, "artisan product is not ready.");
+
+        Tile artisanTile = null;
+        for (int i = 0; i < 8; i++) {
+            Tile tile = Tile.getTile(player.getX() + dx[i], player.getY() + dy[i]);
+            if (tile == null)
+                continue;
+            if (tile.getPlaceable() == null)
+                continue;
+            if (tile.getPlaceable().getClass().equals(CraftingItem.class)) {
+                CraftingItem craftingItem = (CraftingItem) tile.getPlaceable();
+                if (craftingItem.getType().equals(artisan)) {
+                    artisanTile = tile;
+                    if (craftingItem.getArtisanProductInProgress() == null)
+                        continue;
+                    break;
                 }
             }
         }
-        return new Result(false, "artisan with name %s is not producing anything".formatted(artisanName));
+
+        if (artisanTile == null)
+            return new Result(false, "You must be near the artisan machine of type %s.".formatted(artisan.getName()));
+
+        CraftingItem craftingItem = (CraftingItem) artisanTile.getPlaceable();
+        if (craftingItem.getArtisanProductInProgress() == null)
+            return new Result(false, "artisan with name %s is not producing anything".formatted(artisanName));
+
+        ArtisanProduct artisanProduct = craftingItem.getArtisanProductInProgress();
+
+        if (artisanProduct.isReady()) {
+            craftingItem.setArtisanProductInProgress(null);
+            //TODO
+            player.getBackPack().addItemToInventory(artisanProduct);
+            CraftingItem.getAllArtisanProductsInProgress().remove(artisanProduct);
+            return new Result(true, "artisan product added to backpack");
+        } else {
+            return new Result(false, "artisan product is not ready.");
+        }
     }
 
 
@@ -47,7 +75,6 @@ public class ArtisanController {
         if (artisan == null) {
             return new Result(false, "No artisan found with name '%s'".formatted(artisanName));
         }
-
 
         // 2. (alternative)
         int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
@@ -72,6 +99,7 @@ public class ArtisanController {
         if (artisanTile == null)
             return new Result(false, "You must be near the artisan machine of type %s.".formatted(artisan.getName()));
 
+
 //        // 2. Check ownership of artisan tool
         BackPack playerBackPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
 //        if (!playerBackPack.getBackPackItems().containsKey(artisan)) {
@@ -84,14 +112,14 @@ public class ArtisanController {
             tokens = new String[0];
         else
             tokens = itemNames.trim().split("\\s+");
-        Map<BackPackableType, Integer> provided = new HashMap<>();
+        ArrayList<BackPackableType> provided = new ArrayList<>();
         for (String token : tokens) {
             Optional<BackPackableType> maybeIngredient = marketsController.parseBackPackable(token);
             if (maybeIngredient.isEmpty()) {
                 return new Result(false, "Ingredient '%s' not recognized.".formatted(token));
             }
             BackPackableType type = maybeIngredient.get();
-            provided.put(type, provided.getOrDefault(type, 0) + 1);
+            provided.add(type);
         }
 
         // 4. Try to match an ArtisanProductType with given artisan and ingredients
@@ -104,20 +132,19 @@ public class ArtisanController {
             boolean match = true;
             for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
                 Object key = entry.getKey();
-                int requiredAmount = entry.getValue();
-                int providedAmount = 0;
 
                 if (key instanceof BackPackableType type) {
-                    providedAmount = provided.getOrDefault(type, 0);
+                    if (!provided.contains(type))
+                        match = false;
                 } else if (key instanceof IngredientGroup group) {
+                    boolean isFound = false;
                     for (BackPackableType type : group.getMembers()) {
-                        providedAmount += provided.getOrDefault(type, 0);
+                        if (provided.contains(type)){
+                            isFound = true;
+                            break;
+                        }
                     }
-                }
-
-                if (providedAmount < requiredAmount) {
-                    match = false;
-                    break;
+                    match = isFound;
                 }
             }
             if (tokens.length != product.getIngredients().size())
@@ -157,8 +184,9 @@ public class ArtisanController {
             }
 
             // 7. Start artisan production
-            App.getCurrentGame().getCurrentPlayingPlayer()
-                    .getArtisanProductsInProgress().add(new ArtisanProduct(product, ArtisanProduct.getIngredient(product, itemNames)));
+            ArtisanProduct artisanProduct = new ArtisanProduct(product, ArtisanProduct.getIngredient(product, provided));
+            CraftingItem.getAllArtisanProductsInProgress().add(artisanProduct);
+            ((CraftingItem)artisanTile.getPlaceable()).setArtisanProductInProgress(artisanProduct);
 
             return new Result(true, "'%s' is now being produced.".formatted(product.getName()));
         }

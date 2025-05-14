@@ -29,7 +29,6 @@ public class Player {
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
 
 
-    private ArrayList<ArtisanProduct> artisanProductsInProgress = new ArrayList();
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
     private ArrayList<message> messages = new ArrayList<>();
     private ArrayList<Trade> trades = new ArrayList<>();
@@ -232,14 +231,6 @@ public class Player {
 
     public void addTalk(Player player, Talk talk) {
         this.talk.put(player, talk);
-    }
-
-    public ArrayList<ArtisanProduct> getArtisanProductsInProgress() {
-        return artisanProductsInProgress;
-    }
-
-    public void setArtisanProductsInProgress(ArrayList<ArtisanProduct> artisanProductsInProgress) {
-        this.artisanProductsInProgress = artisanProductsInProgress;
     }
 
     public void addGift(Player player) {
