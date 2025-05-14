@@ -458,14 +458,14 @@ public class GameMenuController {
         if (tool == null) {
             return new Result(false, "Tool with this name doesn't exist in your backpack.");
         }
-        if(tool.getToolType().equals(ToolType.FishingPole)){
+        if (tool.getToolType().equals(ToolType.FishingPole)) {
 //            if(tool.getLevel()==3){
 //                return new Result(true, "Your Fishing Pole is at max level");
 //            }
 //            tool.setLevel(tool.getLevel()+1);
 //            return new Result(true,"your fishing pole is now "
 //                    + FishingPoleType.values()[tool.getLevel()].name());
-            return new Result(false,"you should buy better fishing pole from shop");
+            return new Result(false, "you should buy better fishing pole from shop");
         }
 
         if (tool.getLevel() == 4) {
@@ -514,18 +514,18 @@ public class GameMenuController {
                 if (!ForagingController.canBreakMineral(player.getCurrentTool().getMaterial(),
                         mineral.getType())) {
                     energy--;
-                    energy = Math.max(energy,0);
-                    player.setEnergy(player.getEnergy() - energy*leverage);
+                    energy = Math.max(energy, 0);
+                    player.setEnergy(player.getEnergy() - energy * leverage);
                     return new Result(false, "this type of pickaxe cannot break this mineral");
                 }
                 player.getAbilities().increaseMiningAbility();
                 if (mineral.isForaging())
                     player.getAbilities().increaseForagingAbility();
-                energy = Math.max(energy,0);
-                player.setEnergy(player.getEnergy() - energy*leverage);
+                energy = Math.max(energy, 0);
+                player.setEnergy(player.getEnergy() - energy * leverage);
                 player.getBackPack().addItemToInventory(mineral);
                 tile.setPlaceable(null);
-                if(player.getAbilities().getMiningLevel()<2){
+                if (player.getAbilities().getMiningLevel() < 2) {
                     return new Result(true, "stone broke successfully");
                 }
                 if (player.getAbilities().getMiningLevel() >= 2) {
@@ -534,22 +534,20 @@ public class GameMenuController {
                 }
                 return new Result(true, "stone broke successfully");
 
-                } else if (tile.isPlowed()) {
-                    tile.setPlowed(false);
-                    energy = Math.max(energy, 0);
-                    player.setEnergy(player.getEnergy() - energy * leverage);
-                    return new Result(true, "unplowed successfully");
-                } else if (tile.getPlaceable() instanceof BackPackable item) {
-                    tile.setPlaceable(null);
-                    energy = Math.max(energy, 0);
-                    player.setEnergy(player.getEnergy() - energy * leverage);
-                    return new Result(true, item.getName() + " destroyed successfully");
-                }
-                energy = Math.max(energy - 1, 0);
+            } else if (tile.isPlowed()) {
+                tile.setPlowed(false);
+                energy = Math.max(energy, 0);
                 player.setEnergy(player.getEnergy() - energy * leverage);
-                return new Result(true, "you used pickaxe but incorrectly");
+                return new Result(true, "unplowed successfully");
+            } else if (tile.getPlaceable() instanceof BackPackable item) {
+                tile.setPlaceable(null);
+                energy = Math.max(energy, 0);
+                player.setEnergy(player.getEnergy() - energy * leverage);
+                return new Result(true, item.getName() + " destroyed successfully");
             }
-
+            energy = Math.max(energy - 1, 0);
+            player.setEnergy(player.getEnergy() - energy * leverage);
+            return new Result(true, "you used pickaxe but incorrectly");
         } else if (tool.getToolType().equals(ToolType.Axe)) {
             double energy = ToolType.Axe.getEnergyCosts()[tool.getLevel()];
             if (player.getAbilities().getForagingLevel() == 4) {
@@ -607,7 +605,7 @@ public class GameMenuController {
                 if (plant instanceof Tree tree) {
                     tree.harvest();
                     Fruit fruit = new Fruit(tree.getType().getFruitType());
-                    fruit.setItemQuality();
+                    //fruit.setItemQuality();
                     player.getBackPack().addItemToInventory(
                             fruit);
                     if (tree.isForaging())
@@ -645,48 +643,42 @@ public class GameMenuController {
                             sb.toString());
                 }
             }
-        } else if (tool.getToolType().equals(ToolType.Shear))
-
-    {
-        player.setEnergy(player.getEnergy() - 4 * leverage);
-        if (tile.getPlaceable() instanceof Animal animal) {
-            if (animal.getAnimalType().equals(AnimalType.Sheep)) {
-                ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
-                for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
-                    player.getBackPack().addItemToInventory(animalProduct);
-                    toRemoved.add(animalProduct);
-                    if (player.getBackPack().isBackPackFull()) {
-                        animal.getAnimalProducts().removeAll(toRemoved);
-                        return new Result(false, "back pack gets full , you collected these -> \n" +
-                                animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size());
+        } else if (tool.getToolType().equals(ToolType.Shear)) {
+            player.setEnergy(player.getEnergy() - 4 * leverage);
+            if (tile.getPlaceable() instanceof Animal animal) {
+                if (animal.getAnimalType().equals(AnimalType.Sheep)) {
+                    ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
+                    for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
+                        player.getBackPack().addItemToInventory(animalProduct);
+                        toRemoved.add(animalProduct);
+                        if (player.getBackPack().isBackPackFull()) {
+                            animal.getAnimalProducts().removeAll(toRemoved);
+                            return new Result(false, "back pack gets full , you collected these -> \n" +
+                                    animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size());
+                        }
                     }
+                    animal.getAnimalProducts().removeAll(toRemoved);
+                    return new Result(true, "you collected all" + toRemoved.size() + " wools of " + animal.getName());
                 }
-                animal.getAnimalProducts().removeAll(toRemoved);
-                return new Result(true, "you collected all" + toRemoved.size() + " wools of " + animal.getName());
             }
-        }
-    }
-        else if(tool.getToolType().
+        } else if (tool.getToolType().
 
-    equals(ToolType.FishingPole))
-
-    {
-            double energy=2;
-            switch (tool.getFishingPoleMaterial()){
+                equals(ToolType.FishingPole)) {
+            double energy = 2;
+            switch (tool.getFishingPoleMaterial()) {
                 case TrainingFishingPole -> energy = 8;
                 case BambooFishingPole -> energy = 6;
                 case FiberglassFishingPole -> energy = 4;
                 case IridiumFishingPole -> energy = 2;
             }
-            if(player.getAbilities().getFishingLevel() == 4){
-                energy --;
+            if (player.getAbilities().getFishingLevel() == 4) {
+                energy--;
             }
-            player.setEnergy(player.getEnergy() - energy*leverage);
+            player.setEnergy(player.getEnergy() - energy * leverage);
             fishing(tool.getFishingPoleMaterial().name());
         }
         return new Result(true, "Tool used.");
     }
-
 
 
     public Result craftInfo(String name) {
@@ -1017,9 +1009,7 @@ public class GameMenuController {
             } else {
                 return new Result(false, "not enough ingredients");
             }
-        }
-
-        else{
+        } else {
             for (Map.Entry<BackPackableType, Integer> entry : recipe.getFoodToBeCooked().getIngredients().entrySet()) {
                 if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
                         && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
@@ -1044,14 +1034,14 @@ public class GameMenuController {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         try {
             FoodType food = FoodType.valueOf(foodName);
-            if(!player.getBackPack().getBackPackItems().containsKey(food)) {
+            if (!player.getBackPack().getBackPackItems().containsKey(food)) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("you dont have ").append(foodName).append(" in your backpack ").append("\n")
                         .append("you can cook it with : ").append("\n");
-                for(Map.Entry<BackPackableType,Integer> entry : food.getIngredients().entrySet()) {
+                for (Map.Entry<BackPackableType, Integer> entry : food.getIngredients().entrySet()) {
                     sb.append(" x").append(entry.getValue()).append(" ").append(entry.getKey()).append("\n");
                 }
-                return new Result(false,sb.toString());
+                return new Result(false, sb.toString());
             }
             player.getBackPack().useItem(food);
             player.setEnergy(player.getEnergy() + food.getEnergy());
@@ -1072,7 +1062,7 @@ public class GameMenuController {
         AnimalPlace animalPlace = new AnimalPlace(animalPlaceType);
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         double money = player.getBackPack().getCoin();
-        if(money < animalPlaceType.getPrice()){
+        if (money < animalPlaceType.getPrice()) {
             return new Result(false, "you dont have enough money");
         }
         player.getBackPack().addcoin(-animalPlaceType.getPrice());
@@ -1110,7 +1100,7 @@ public class GameMenuController {
         Animal newAnimal = new Animal(name, animalType);
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         double money = player.getBackPack().getCoin();
-        if(money < animalType.getPrice()){
+        if (money < animalType.getPrice()) {
             return new Result(false, "you dont have enough money");
         }
         player.getBackPack().addcoin(-animalType.getPrice());
@@ -1149,21 +1139,21 @@ public class GameMenuController {
         }
 
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(),player.getY());
-        if(animal.isPettedToday()){
-            return new Result(false,animal.getName() + " is a already petted today");
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (animal.isPettedToday()) {
+            return new Result(false, animal.getName() + " is a already petted today");
         }
 
 
-        if(animal.isOutside() && !Tile.findAround(animal)){
-            return new Result(false,"you should stand next to " + name + " to pet it");
+        if (animal.isOutside() && !Tile.findAround(animal)) {
+            return new Result(false, "you should stand next to " + name + " to pet it");
         }
-        if(tile.getPlaceable() instanceof AnimalPlace animalPlace && animalPlace.getAnimals().contains(animal)){
-            animal.setFriendship(animal.getFriendship()+15);
+        if (tile.getPlaceable() instanceof AnimalPlace animalPlace && animalPlace.getAnimals().contains(animal)) {
+            animal.setFriendship(animal.getFriendship() + 15);
             animal.setPettedToday(true);
-            return new Result(true,name + " petted successfully :)");
+            return new Result(true, name + " petted successfully :)");
         }
-        animal.setFriendship(animal.getFriendship()+15);
+        animal.setFriendship(animal.getFriendship() + 15);
         animal.setPettedToday(true);
         return new Result(true, name + " petted successfully");
 
@@ -1177,18 +1167,18 @@ public class GameMenuController {
 
         int amountInt = Integer.parseInt(amount);
         animal.cheatSetFriendship(amountInt);
-        return new Result(true,"friendship is now " + animal.getFriendship());
+        return new Result(true, "friendship is now " + animal.getFriendship());
     }
 
     public Result animals() {
-    StringBuilder sb = new StringBuilder();
-    for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()){
-        sb.append(animal.getName()).append(" (").append(animal.getAnimalType()).append(") ").append("\n")
-                .append("friendship : ").append(animal.getFriendship()).append("\n")
-                .append(animal.isPettedToday()?"petted today" : "not petted today").append("\n")
-                .append(animal.isFedToday()?"feded today" : "not fed today").append("\n\n");
-    }
-    return new Result(true,sb.toString());
+        StringBuilder sb = new StringBuilder();
+        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
+            sb.append(animal.getName()).append(" (").append(animal.getAnimalType()).append(") ").append("\n")
+                    .append("friendship : ").append(animal.getFriendship()).append("\n")
+                    .append(animal.isPettedToday() ? "petted today" : "not petted today").append("\n")
+                    .append(animal.isFedToday() ? "feded today" : "not fed today").append("\n\n");
+        }
+        return new Result(true, sb.toString());
     }
 
 
@@ -1341,37 +1331,33 @@ public class GameMenuController {
         int count = (int) Math.ceil(R * M * (level + 2));
         count = Math.min(6, count);
         double pole = fishingPoleType.getPole();
-        double qualityInt = ((R  * (level + 2) * pole)/(7-M));
+        double qualityInt = ((R * (level + 2) * pole) / (7 - M));
         ItemQuality quality;
-        if(qualityInt < 0.5){
+        if (qualityInt < 0.5) {
             quality = ItemQuality.Regular;
-        }
-        else if(qualityInt < 0.7){
+        } else if (qualityInt < 0.7) {
             quality = ItemQuality.Silver;
-        }
-        else if(qualityInt < 0.9){
+        } else if (qualityInt < 0.9) {
             quality = ItemQuality.Gold;
-        }
-        else {
+        } else {
             quality = ItemQuality.Iridium;
         }
-        Fish fish = new Fish(null,null);
+        Fish fish = new Fish(null, null);
         ArrayList<FishType> fishes = new ArrayList<>();
-        if(fishingPoleType.equals(FishingPoleType.TrainingFishingPole)){
+        if (fishingPoleType.equals(FishingPoleType.TrainingFishingPole)) {
             fishes.addAll(new ArrayList<>(Arrays.asList
-                    (FishType.Sardine,FishType.Perch,FishType.Herring,FishType.SunFish)));
-        }
-        else{
+                    (FishType.Sardine, FishType.Perch, FishType.Herring, FishType.SunFish)));
+        } else {
             for (FishType fishType : FishType.values()) {
                 if (fishType.getSeason().equals(date.getSeason())) {
                     fishes.add(fishType);
                 }
             }
         }
-        if(player.getAbilities().getFishingLevel() != 4 ) {
+        if (player.getAbilities().getFishingLevel() != 4) {
             ArrayList<FishType> fishesToRemove = new ArrayList<>();
-            for(FishType fishType : fishes){
-                if(fishType.isLegendary()){
+            for (FishType fishType : fishes) {
+                if (fishType.isLegendary()) {
                     fishesToRemove.add(fishType);
                 }
             }
@@ -1380,12 +1366,12 @@ public class GameMenuController {
         Random rand = new Random();
         FishType randomElement = fishes.get(rand.nextInt(fishes.size()));
         fish.setFishType(randomElement);
-        fish.setShippingBinType(quality);
-        for(int i=0;i<count;i++){
+        fish.setQuality(quality);
+        for (int i = 0; i < count; i++) {
             player.getBackPack().addItemToInventory(fish);
         }
-        player.getAbilities().increaseFishingAbility(10);
-        return new Result(true,count + " " +fish.getFishType().getName()+ " got caught successfully");
+        player.getAbilities().increaseFishingAbility();
+        return new Result(true, count + " " + fish.getFishType().getName() + " got caught successfully");
     }
 
     public Result artisanUse(String artisanName, String itemNames) {

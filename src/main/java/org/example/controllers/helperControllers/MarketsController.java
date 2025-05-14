@@ -10,6 +10,8 @@ import org.example.models.cooking.Recipe;
 import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
+import org.example.models.crafting.CraftingRecipe;
+import org.example.models.crafting.CraftingRecipeType;
 import org.example.models.enums.BackPackType;
 import org.example.models.enums.FishType;
 import org.example.models.foraging.Mineral;
@@ -120,9 +122,18 @@ public class MarketsController {
 
         if (product.getType().getClass().equals(RecipeType.class)) {
             player.getRecipes().add(new Recipe((FoodType) ((RecipeType) product.getType()).getFoodType()));
-        } else if (product.getType().getClass().equals(ToolType.class)) {
+        }else if (product.getType().getClass().equals(CraftingRecipeType.class)) {
+            CraftingRecipeType craftingRecipeType = ((CraftingRecipeType) product.getType());
+            if (craftingRecipeType.equals(CraftingRecipeType.DehydratorRecipe)) {
+                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.Dehydrator));
+            } else if (craftingRecipeType.equals(CraftingRecipeType.FishSmokerRecipe)) {
+                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.FishSmoker));
+            } else if (craftingRecipeType.equals(CraftingRecipeType.GrassStarterRecipe)) {
+                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.GrassStarter));
+            }
+        }else if (product.getType().getClass().equals(ToolType.class)) {
             //milkpail and shear in marine's ranch
-            player.getBackPack().addItemToInventory(new Tool((ToolType) product.getType(), null));
+            player.getBackPack().addItemToInventory(new Tool((ToolType) product.getType(), null,null));
         } else {
             for (int i = 0; i < count1; i++) {
                 //player.getBackPack().addItemToInventory(product);

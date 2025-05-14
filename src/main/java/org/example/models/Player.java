@@ -13,6 +13,8 @@ import org.example.models.map.PlayerMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Player {
     private PlayerMap playerMap;
@@ -54,21 +56,15 @@ public class Player {
 
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
-    private ArrayList<Recipe> recipes = new ArrayList<>();
+    private HashSet<Recipe> recipes = new HashSet<>();
     private ArrayList<Friends> friends = new ArrayList<>();
     private Ability abilities = new Ability(this);
-    private ArrayList<CraftingRecipe> craftingRecipes = new ArrayList<>();
+    private HashSet<CraftingRecipe> craftingRecipes = new HashSet<>();
 
     private double balance;
     private int daysSinceBrakUp = 0;
 
-    public ArrayList<CraftingRecipe> getCraftingRecipes() {
-        return craftingRecipes;
-    }
 
-    public void setCraftingRecipes(ArrayList<CraftingRecipe> craftingItems) {
-        this.craftingRecipes = craftingItems;
-    }
 
     public int getVegetableFarmed() {
         return vegetableFarmed;
@@ -86,11 +82,19 @@ public class Player {
         this.abilities = abilities;
     }
 
-    public ArrayList<Recipe> getRecipes() {
+    public HashSet<CraftingRecipe> getCraftingRecipes() {
+        return craftingRecipes;
+    }
+
+    public void setCraftingRecipes(HashSet<CraftingRecipe> craftingRecipes) {
+        this.craftingRecipes = craftingRecipes;
+    }
+
+    public HashSet<Recipe> getRecipes() {
         return recipes;
     }
 
-    public void setRecipes(ArrayList<Recipe> recipes) {
+    public void setRecipes(HashSet<Recipe> recipes) {
         this.recipes = recipes;
     }
 

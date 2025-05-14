@@ -260,7 +260,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
             daysTillNextHarvest = type.getRegrowthTime();
             this.hasFruit = false;
         }
-        setItemQuality();
+        //setItemQuality();
     }
 
     private void setItemQuality() {
