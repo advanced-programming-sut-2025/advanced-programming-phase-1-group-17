@@ -30,7 +30,7 @@ public enum CraftingItemType implements BackPackableType {
     OilMaker(Map.of(() -> Wood, 100, () -> ArtisanProductType.GoldBar, 1, () -> ArtisanProductType.IronBar, 1), 0),
     PreservesJar(Map.of(() -> Wood, 50, () -> Stone, 40, () -> Coal, 8), 0),
     Dehydrator(Map.of(() -> Wood, 30, () -> Stone, 20, () -> Fiber, 30), 0),
-    GrassStarter(Map.of(Wood,1,Fiber,1),0),
+    GrassStarter(Map.of(() -> Wood,1, () -> Fiber,1),0),
     FishSmoker(Map.of(() -> Wood, 50, () -> ArtisanProductType.IronBar, 3, () -> Coal, 10), 0),
     MysticTreeSeed(Map.of(() -> Acorns, 5, () -> MapleSeeds, 5, () -> PineCones, 5, () -> MahoganySeeds, 5), 100);
 

@@ -1,13 +1,12 @@
 package org.example.models.cooking;
 
 import org.example.models.BackPackableType;
-import org.example.models.crafting.CraftingItemType;
 
 public enum RecipeType implements BackPackableType {
     FriedEggRecipe(FoodType.FriedEgg, 0),
     Recipe(FoodType.BakedFish, 0),
     SaladRecipe(FoodType.Salad, 0),
-    OlmeletRecipe(FoodType.Olmelet, 0),
+    OmeletRecipe(FoodType.Omelet, 0),
     PumpkinPieRecipe(FoodType.PumpkinPie, 0),
     SpaghettiRecipe(FoodType.Spaghetti, 0),
     PizzaRecipe(FoodType.Pizza, 0),
@@ -27,28 +26,19 @@ public enum RecipeType implements BackPackableType {
     DishOTheSeaRecipe(FoodType.DishOTheSea, 0),
     SeafoamPuddingRecipe(FoodType.SeafoamPudding, 0),
 
-    MinersTreatRecipe(FoodType.MinersTreat, 0),
-
-    //Crafting Item Recipes
-    FishSmokerRecipe(CraftingItemType.FishSmoker, 5000), //In Fish Shop
-    DehydratorRecipe(CraftingItemType.Dehydrator, 5000), //In Pierre
-    GrassStarterRecipe(CraftingItemType.GrassStarter, 500); //In Pierre
+    MinersTreatRecipe(FoodType.MinersTreat, 0);
 
 
-    private final BackPackableType backPackableType;
+    private final FoodType foodType;
     private final double price;
 
-    RecipeType(BackPackableType foodType, double price) {
-        this.backPackableType = foodType;
+    RecipeType(FoodType foodType, double price) {
+        this.foodType = foodType;
         this.price = price;
     }
 
-    public BackPackableType getFoodType() {
-        return backPackableType;
-    }
-
-    public BackPackableType getBackPackableType() {
-        return backPackableType;
+    public FoodType getFoodType() {
+        return foodType;
     }
 
     @Override
