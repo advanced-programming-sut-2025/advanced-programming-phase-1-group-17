@@ -15,7 +15,7 @@ public class User {
     private String securityQuestion;
     private String securityAnswer;
     private int numOfPlay;
-    private int theMostMoneyInGame;
+    private double theMostMoneyInGame;
     private transient Game activeGame;
     private transient Game lastGame;
     public User(){
@@ -41,11 +41,11 @@ public class User {
         this.numOfPlay = numOfPlay;
     }
 
-    public int getTheMostMoneyInGame() {
+    public double getTheMostMoneyInGame() {
         return theMostMoneyInGame;
     }
 
-    public void setTheMostMoneyInGame(int theMostMoneyInGame) {
+    public void setTheMostMoneyInGame(double theMostMoneyInGame) {
         this.theMostMoneyInGame = theMostMoneyInGame;
     }
 
