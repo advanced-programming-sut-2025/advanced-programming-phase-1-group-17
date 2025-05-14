@@ -55,17 +55,17 @@ public class ProfileMenuController {
     public Result changePassword(String input) {
         User user = App.getLoggedInUser();
         String oldPassword = ProfileMenuCommands.changePassword.getMatcher(input).group("oldPassword").trim();
-        if (!user.getPassword().equals(oldPassword)) {
+        if (!user.getRawPassword().equals(oldPassword)) {
             return new Result(false, "your old password is incorrect");
         }
         String newPassword = ProfileMenuCommands.changePassword.getMatcher(input).group("newPassword").trim();
         if (SignUpMenuCommands.ValidPassword.getMatcher(newPassword) == null) {
             return new Result(false, "new password format is invalid");
         }
-        if (newPassword.equals(user.getPassword())) {
+        if (newPassword.equals(user.getRawPassword())) {
             return new Result(false, "your new password is already taken");
         }
-        user.setPassword(newPassword);
+        user.setRawPassword(newPassword);
         return new Result(true, "set successfully");
     }
 

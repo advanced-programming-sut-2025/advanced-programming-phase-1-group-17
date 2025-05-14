@@ -3,7 +3,10 @@ package org.example.controllers.helperControllers;
 import org.example.models.*;
 import org.example.models.animal.AnimalProduct;
 import org.example.models.animal.AnimalProductType;
+import org.example.models.artisan.ArtisanProduct;
+import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.FoodType;
+import org.example.models.cooking.Recipe;
 import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
@@ -116,10 +119,8 @@ public class MarketsController {
             return App.getCurrentGame().getStoreManager().purchaseBackpack(product);
 
         if (product.getType().getClass().equals(RecipeType.class)) {
-            //TODO: Merge Conflict
-            //player.getRecipes().add(new Recipe(((RecipeType) product.getType()));
-        }
-        else if (product.getType().getClass().equals(ToolType.class)) {
+            player.getRecipes().add(new Recipe((FoodType) ((RecipeType) product.getType()).getFoodType()));
+        } else if (product.getType().getClass().equals(ToolType.class)) {
             //milkpail and shear in marine's ranch
             player.getBackPack().addItemToInventory(new Tool((ToolType) product.getType(), null));
         } else {
@@ -149,7 +150,6 @@ public class MarketsController {
 
 
     public Result sellProduct(String productName, String count) {
-        //TODO: find out what does the first error in the document means
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
 
         int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
@@ -273,8 +273,18 @@ public class MarketsController {
                                                     type = FishType.valueOf(itemName);
                                                     sampleItem = new Fish((FishType) type, ItemQuality.Regular);
                                                 } catch (Exception e11) {
-                                                    sampleItem = null;
-                                                    type = null;
+                                                    try {
+                                                        type = FertilizerType.valueOf(itemName);
+                                                        sampleItem = new Fertilizer((FertilizerType) type);
+                                                    } catch (Exception e12) {
+                                                        try {
+                                                            type = ArtisanProductType.valueOf(itemName);
+                                                            sampleItem = new ArtisanProduct((ArtisanProductType) type, null);
+                                                        } catch (Exception e13) {
+                                                            sampleItem = null;
+                                                            type = null;
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -283,7 +293,6 @@ public class MarketsController {
                             }
                         }
                     }
-
                 }
             }
         }
