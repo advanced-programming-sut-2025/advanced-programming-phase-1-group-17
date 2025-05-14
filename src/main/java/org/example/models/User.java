@@ -17,6 +17,7 @@ public class User {
     private int numOfPlay;
     private int theMostMoneyInGame;
     private transient Game activeGame;
+    private transient Game lastGame;
     public User(){
         if (this.username == null){
             gender = Gender.Male;
@@ -125,5 +126,13 @@ public class User {
         if (obj == null || getClass() != obj.getClass()) return false;
         User other = (User) obj;
         return Objects.equals(username, other.username); // یا هر فیلدی که یکتاست
+    }
+
+    public Game getLastGame() {
+        return lastGame;
+    }
+
+    public void setLastGame(Game lastGame) {
+        this.lastGame = lastGame;
     }
 }

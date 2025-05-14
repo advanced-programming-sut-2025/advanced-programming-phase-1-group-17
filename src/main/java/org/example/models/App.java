@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class App {
     private static User loggedInUser;
-    private static User lastUser;
     private static Menu currentMenu = Menu.SignUpMenu;
     private static Game currentGame;
     private static ArrayList<User> users = new ArrayList<>();

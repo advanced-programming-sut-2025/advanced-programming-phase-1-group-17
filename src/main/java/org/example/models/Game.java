@@ -3,6 +3,7 @@ package org.example.models;
 
 import org.example.models.NPCS.*;
 import org.example.models.map.GameMap;
+import org.example.models.map.GreenHouse;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
 import org.example.models.market.StoreManager;
@@ -18,6 +19,7 @@ public class Game {
     private GameMap gameMap;
     private ArrayList<NPC> NPCs = new ArrayList<>();
     private StoreManager storeManager = new StoreManager();
+    private ArrayList<GreenHouse>GreenHouses = new ArrayList<>();
 
 
     public Game(User user1, User user2, User user3) {
@@ -173,5 +175,13 @@ public class Game {
             }
         }
         return null;
+    }
+
+    public ArrayList<GreenHouse> getGreenHouses() {
+        return GreenHouses;
+    }
+
+    public void addGreenHouses(GreenHouse greenHouse) {
+        GreenHouses.add(greenHouse);
     }
 }

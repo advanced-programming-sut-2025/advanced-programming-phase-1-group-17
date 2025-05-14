@@ -335,4 +335,8 @@ public class Player {
     public void setGiftNPCToday(NPC npc) {
         this.giftNPCToday.put(npc,false);
     }
+
+    public boolean isGuest() {
+        return isGuest;
+    }
 }
