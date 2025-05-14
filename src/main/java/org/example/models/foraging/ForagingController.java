@@ -1,6 +1,8 @@
 package org.example.models.foraging;
 
 import org.example.models.App;
+import org.example.models.NormalItem;
+import org.example.models.NormalItemType;
 import org.example.models.enums.Season;
 import org.example.models.tools.ToolMaterial;
 import org.example.models.map.PlayerMap;
@@ -9,6 +11,7 @@ import org.example.models.map.Tile;
 import org.example.models.plant.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public abstract class ForagingController {
@@ -30,18 +33,39 @@ public abstract class ForagingController {
                 if (randInt == 1) {
                     if (tile.isPlowed()) {
                         setSeedForaging(tile);
-                        return;
+                        continue;
                     }
-                    randInt = random.nextInt(2) + 1;
+                    randInt = random.nextInt(5) + 1;
                     if (randInt == 1) {
                         setCropForaging(tile);
-                    } else {
+                    } else if (randInt == 2){
                         setTreeForaging(tile);
-                    }
-                    return;
+                    } else if (randInt == 3) {
+                        setStoneForaging(tile);
+                    } else if (randInt == 4) {
+                        setWoodForaging(tile);
+                    } else
+                        setGrassForaging(tile);
                 }
             }
         }
+    }
+
+    private static void setGrassForaging(Tile tile) {
+        Random random = new Random();
+        int randInt = random.nextInt(2);
+        if (randInt == 0)
+            tile.setPlaceable(new NormalItem(NormalItemType.Fiber));
+        else
+            tile.setPlaceable(new NormalItem(NormalItemType.Grass));
+    }
+
+    private static void setWoodForaging(Tile tile) {
+        tile.setPlaceable(new NormalItem(NormalItemType.Wood));
+    }
+
+    private static void setStoneForaging(Tile tile) {
+        tile.setPlaceable(new Mineral(MineralType.Stone, true));
     }
 
     public static void setMineralForaging(Tile tile) {
@@ -96,11 +120,10 @@ public abstract class ForagingController {
         Random random = new Random();
         SeedType chosenSeed = validSeeds.get(random.nextInt(validSeeds.size()));
 
-        //Crop crop = new Crop(false, chosenSeed.getCropType(), false, tile);
-        //tile.setPlowed(false);
-        //tile.setPlaceable(crop);
-        Seed seed = new Seed(chosenSeed);
-        tile.setPlaceable(seed);
+        Crop crop = new Crop(false, Objects.requireNonNull(CropType.getCropTypeBySeedType(chosenSeed)), tile, false);
+        tile.setPlowed(false);
+        tile.setPlaceable(crop);
+
     }
 
 }

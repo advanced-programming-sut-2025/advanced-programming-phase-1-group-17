@@ -8,7 +8,7 @@ public class AnimalProduct implements BackPackable {
     private Animal animal;
     private String name;
     private AnimalProductType animalProductType;
-    private ItemQuality shippingBinType;
+    private ItemQuality quality;
 
 
     public Animal getAnimal() {
@@ -37,12 +37,12 @@ public class AnimalProduct implements BackPackable {
         this.animalProductType = animalProductType;
     }
 
-    public ItemQuality getShippingBinType() {
-        return shippingBinType;
+    public ItemQuality getQuality() {
+        return quality;
     }
 
-    public void setShippingBinType(ItemQuality shippingBinType) {
-        this.shippingBinType = shippingBinType;
+    public void setQuality(ItemQuality quality) {
+        this.quality = quality;
     }
     @Override
     public double getPrice() {

@@ -3,11 +3,11 @@ package org.example.models.foraging;
 import org.example.models.plant.TreeType;
 
 public enum ForagingTree {
-    ACORNS(TreeType.OakTree),
-    MAPLE_SEEDS(TreeType.MapleTree),
-    PINE_CONES(TreeType.PineTree),
-    MAHOGANY_SEEDS(TreeType.MahoganyTree),
-    MUSHROOM_TREE_SEEDS(TreeType.MushroomTree);
+    Acorns(TreeType.OakTree),
+    MapleSeeds(TreeType.MapleTree),
+    PineCones(TreeType.PineTree),
+    MahoganySeeds(TreeType.MahoganyTree),
+    MushroomTreeSeeds(TreeType.MushroomTree);
 
     private final TreeType treeType;
 

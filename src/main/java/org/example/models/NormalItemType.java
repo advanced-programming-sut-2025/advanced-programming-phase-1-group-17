@@ -1,11 +1,10 @@
 package org.example.models;
 
 public enum NormalItemType implements BackPackableType,Placeable{
-    //TODO: Alaf
-    CopperBar(0),
-    IronBar(0),
-    GoldBar(0),
-    IridiumBar(0),
+//    CopperBar(50),
+//    IronBar(100),
+//    GoldBar(250),
+//    IridiumBar(1000),
     Wood(10),
     Fiber(0),
     Hay(50),
@@ -17,7 +16,9 @@ public enum NormalItemType implements BackPackableType,Placeable{
     WheatFlour(50),
     Rice(100),
     TroutSoup(125),
-    AnyFish(0);
+    AnyFish(0),
+    Grass(0); //TODO: Make sure it is never added to backpack
+
 
 
     private final double price;

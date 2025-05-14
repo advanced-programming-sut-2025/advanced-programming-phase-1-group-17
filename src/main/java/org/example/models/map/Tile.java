@@ -5,6 +5,7 @@ import org.example.models.NPCS.NPC;
 import org.example.models.animal.Animal;
 import org.example.models.foraging.Mineral;
 import org.example.models.foraging.MineralType;
+import org.example.models.plant.Crop;
 import org.example.models.plant.Tree;
 
 import java.util.ArrayList;
@@ -138,6 +139,9 @@ public class Tile {
         if (placeable instanceof Tree tree) {
             if (!tree.isInsideGreenhouse())
                 placeable = new Mineral(MineralType.Coal, false);
+        } else if (placeable instanceof Crop crop) {
+            if (!crop.isInsideGreenhouse())
+                crop.getTile().setPlaceable(null);
         }
     }
 
