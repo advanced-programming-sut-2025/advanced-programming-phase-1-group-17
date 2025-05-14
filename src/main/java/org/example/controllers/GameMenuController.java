@@ -6,12 +6,8 @@ import org.example.controllers.helperControllers.MarketsController;
 import org.example.display;
 import org.example.models.*;
 import org.example.models.animal.*;
-import org.example.models.artisan.ArtisanProduct;
-import org.example.models.artisan.ArtisanProductType;
-import org.example.models.artisan.IngredientGroup;
 import org.example.models.NPCS.NPC;
 import org.example.models.NPCS.Quest;
-import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.cooking.Food;
@@ -20,9 +16,7 @@ import org.example.models.cooking.Recipe;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.*;
 import org.example.models.foraging.ForagingController;
-import org.example.models.foraging.ForagingCropType;
 import org.example.models.foraging.Mineral;
-import org.example.models.foraging.MineralType;
 import org.example.models.animal.AnimalPlace;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Tile;
@@ -607,9 +601,10 @@ public class GameMenuController {
                 player.getAbilities().increaseFarmingAbility();
                 if (plant instanceof Tree tree) {
                     tree.harvest();
+                    Fruit fruit = new Fruit(tree.getType().getFruitType());
+                    fruit.setItemQuality();
                     player.getBackPack().addItemToInventory(
-                            new Fruit(tree.getType().getFruitType())
-                    );
+                            fruit);
                     if (tree.isForaging())
                         player.getAbilities().increaseForagingAbility();
                 } else if (plant instanceof Crop crop) {
@@ -906,73 +901,17 @@ public class GameMenuController {
             return new Result(false, "Invalid number format for count.");
         }
 
-        BackPackableType type = null;
-        BackPackable sampleItem = null;
+        ArrayList<Object> result = marketsController.addItem(itemName);
 
-        try {
-            type = CraftingItemType.valueOf(itemName);
-            sampleItem = new CraftingItem((CraftingItemType) type);
-        } catch (IllegalArgumentException e1) {
-            try {
-                type = NormalItemType.valueOf(itemName);
-                sampleItem = new NormalItem((NormalItemType) type);
-            } catch (IllegalArgumentException e2) {
-                try {
-                    type = MineralType.valueOf(itemName);
-                    sampleItem = new Mineral((MineralType) type, true);
-                } catch (Exception e3) {
-                    try {
-                        type = SaplingType.valueOf(itemName);
-                        sampleItem = new Sapling((SaplingType) type);
-                    } catch (IllegalArgumentException e4) {
-                        try {
-                            type = SeedType.valueOf(itemName);
-                            sampleItem = new Seed((SeedType) type);
-                        } catch (IllegalArgumentException e5) {
-                            try {
-                                type = CropType.valueOf(itemName);
-                                sampleItem = new Crop(false, (CropType) type, null, false);
-                            } catch (IllegalArgumentException e6) {
-                                try {
-                                    type = FlowerType.valueOf(itemName);
-                                    sampleItem = new Flower((FlowerType) type);
-                                } catch (IllegalArgumentException e7) {
-                                    {
-                                        try {
-                                            type = FruitType.valueOf(itemName);
-                                            sampleItem = new Fruit((FruitType) type);
-                                        } catch (IllegalArgumentException e9) {
-                                            try {
-                                                type = AnimalProductType.valueOf(itemName);
-                                                AnimalProduct a = new AnimalProduct();
-                                                a.setAnimalProductType((AnimalProductType) type);
-                                                a.setShippingBinType(ItemQuality.Regular);
-                                                sampleItem = a;
+        BackPackableType type = (BackPackableType) result.get(0);
+        BackPackable sampleItem = (BackPackable) result.get(1);
 
-
-                                            } catch (IllegalArgumentException e10) {
-                                                try {
-                                                    type = FishType.valueOf(itemName);
-                                                    sampleItem = new Fish((FishType) type, ItemQuality.Regular);
-                                                } catch (Exception e11) {
-                                                    return new Result(false, "Invalid item name");
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
+        if (type == null && sampleItem == null)
+            return new Result(false, "Invalid item name");
 
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
 
         for (int i = 0; i < count; i++) {
-
             player.getBackPack().addItemToInventory(sampleItem);
         }
 
@@ -1247,7 +1186,7 @@ public class GameMenuController {
                 sb.append(animal.getName()).append("\n");
                 for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
                     sb.append(animalProduct.getAnimalProductType().name()).append("\n")
-                            .append("quality : ").append(animalProduct.getShippingBinType().name()).append("\n");
+                            .append("quality : ").append(animalProduct.getQuality().name()).append("\n");
                 }
             }
         }

@@ -1,25 +1,23 @@
 package org.example.controllers.helperControllers;
 
 import org.example.models.*;
+import org.example.models.animal.AnimalProduct;
 import org.example.models.animal.AnimalProductType;
 import org.example.models.cooking.FoodType;
-import org.example.models.cooking.Recipe;
 import org.example.models.cooking.RecipeType;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.enums.BackPackType;
 import org.example.models.enums.FishType;
+import org.example.models.foraging.Mineral;
 import org.example.models.foraging.MineralType;
 import org.example.models.map.Tile;
-import org.example.models.market.ShippingBin;
-import org.example.models.market.ShopItem;
-import org.example.models.market.Store;
-import org.example.models.market.StoreType;
-import org.example.models.plant.CropType;
-import org.example.models.plant.FruitType;
-import org.example.models.plant.SeedType;
+import org.example.models.market.*;
+import org.example.models.plant.*;
 import org.example.models.tools.Tool;
 import org.example.models.tools.ToolType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -121,15 +119,14 @@ public class MarketsController {
             //TODO: Merge Conflict
             //player.getRecipes().add(new Recipe(((RecipeType) product.getType()));
         }
-        else if (product.getType().equals(ToolType.TrashCan)) {
-            //TODO
-            //player.setTrashCan(new Tool(ToolType.TrashCan, product.getType()));
-        } else if (product.getType().getClass().equals(ToolType.class)) {
+        else if (product.getType().getClass().equals(ToolType.class)) {
             //milkpail and shear in marine's ranch
             player.getBackPack().addItemToInventory(new Tool((ToolType) product.getType(), null));
         } else {
-            for (int i = 0; i < count1; i++)
-                player.getBackPack().addItemToInventory(product);
+            for (int i = 0; i < count1; i++) {
+                //player.getBackPack().addItemToInventory(product);
+                player.getBackPack().addItemToInventory((BackPackable) addItem(product.getName()).get(1));
+            }
         }
 
         return new Result(false, "purhcased successfully");
@@ -178,24 +175,27 @@ public class MarketsController {
         if (productType.isEmpty())
             return new Result(false, "no product type found with name %s".formatted(productName));
 
+        if (productType.get().getClass().equals(ToolType.class))
+            return new Result(false, "Can not sell item of type tool");
+
         int count1;
         if (count == null)
-            count1 = 1;
+            count1 = player.getBackPack().getInventorySize(productName);
         else
             count1 = Integer.parseInt(count);
 
-        if (player.getBackPack().getBackPackItems().get(productType) == null)
+        if (player.getBackPack().getBackPackItems().get(productType.get()) == null)
             return new Result(false, "you do not have item of type %s".formatted(productType.get().getName()));
 
-        int availableCount = player.getBackPack().getBackPackItems().get(productType).size();
+        int availableCount = player.getBackPack().getBackPackItems().get(productType.get()).size();
         if (availableCount < count1)
             return new Result(false, "not enough count: you only have %d of this item".formatted(availableCount));
 
-        bin.addItems(productType.get(), count1, player);
+        bin.setTodayItemOwner(player);
         for (int i = 0; i < count1; i++) {
+            bin.addItem(player.getBackPack().getBackPackItems().get(productType.get()).get(0), player);
             player.getBackPack().useItem(productType.get());
         }
-
         return new Result(true, "sold successfully");
     }
 
@@ -222,5 +222,74 @@ public class MarketsController {
             }
         }
         return Optional.empty();
+    }
+
+    public ArrayList<Object> addItem(String itemName) {
+        BackPackableType type = null;
+        BackPackable sampleItem = null;
+        try {
+            type = CraftingItemType.valueOf(itemName);
+            sampleItem = new CraftingItem((CraftingItemType) type);
+        } catch (IllegalArgumentException e1) {
+            try {
+                type = NormalItemType.valueOf(itemName);
+                sampleItem = new NormalItem((NormalItemType) type);
+            } catch (IllegalArgumentException e2) {
+                try {
+                    type = MineralType.valueOf(itemName);
+                    sampleItem = new Mineral((MineralType) type, true);
+                } catch (Exception e3) {
+                    try {
+                        type = SaplingType.valueOf(itemName);
+                        sampleItem = new Sapling((SaplingType) type);
+                    } catch (IllegalArgumentException e4) {
+                        try {
+                            type = SeedType.valueOf(itemName);
+                            sampleItem = new Seed((SeedType) type);
+                        } catch (IllegalArgumentException e5) {
+                            try {
+                                type = CropType.valueOf(itemName);
+                                sampleItem = new Crop(false, (CropType) type, null, false);
+                            } catch (IllegalArgumentException e6) {
+                                try {
+                                    type = FlowerType.valueOf(itemName);
+                                    sampleItem = new Flower((FlowerType) type);
+                                } catch (IllegalArgumentException e7) {
+                                    {
+                                        try {
+                                            type = FruitType.valueOf(itemName);
+                                            sampleItem = new Fruit((FruitType) type);
+                                        } catch (IllegalArgumentException e9) {
+                                            try {
+                                                type = AnimalProductType.valueOf(itemName);
+                                                AnimalProduct a = new AnimalProduct();
+                                                a.setAnimalProductType((AnimalProductType) type);
+                                                a.setQuality(ItemQuality.Regular);
+                                                sampleItem = a;
+
+
+                                            } catch (IllegalArgumentException e10) {
+                                                try {
+                                                    type = FishType.valueOf(itemName);
+                                                    sampleItem = new Fish((FishType) type, ItemQuality.Regular);
+                                                } catch (Exception e11) {
+                                                    sampleItem = null;
+                                                    type = null;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        ArrayList<Object> result = new ArrayList<>();
+        result.add(type);
+        result.add(sampleItem);
+        return result;
     }
 }

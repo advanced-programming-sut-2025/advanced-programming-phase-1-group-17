@@ -63,7 +63,7 @@ public class Tree extends Plant implements Placeable {
     @Override
     public void harvest() {
         if(!hasFruit)
-            return;;
+            return;
         daysTillNextHarvest = type.getFruitHarvestCycle();
         this.hasFruit = false;
     }
