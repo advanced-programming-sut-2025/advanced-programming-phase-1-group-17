@@ -81,9 +81,7 @@ public class BackPack {
     public void useItem(BackPackableType type) {
 
         backPackItems.get(type).remove(0);
-        if(this.backPackItems.get(type).isEmpty()) {
-            this.backPackItems.remove(type);
-        }
+
     }
 
     public int getInventorySize(String item) {
@@ -96,7 +94,8 @@ public class BackPack {
     }
 
     public void addItemToInventory(BackPackable backPackable) {
-        for (BackPackableType backPackableType : backPackItems.keySet()) {
+        ArrayList<BackPackableType> keysToCheck = new ArrayList<>(backPackItems.keySet());
+        for (BackPackableType backPackableType : keysToCheck) {
             if (backPackItems.get(backPackableType).isEmpty())
                 backPackItems.remove(backPackableType);
         }
@@ -105,6 +104,7 @@ public class BackPack {
         backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
         backPackItems.get(backPackable.getType()).add(backPackable);
     }
+
 
     public Player getPlayer() {
         return player;

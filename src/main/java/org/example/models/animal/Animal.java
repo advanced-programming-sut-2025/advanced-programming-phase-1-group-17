@@ -200,7 +200,6 @@ public class Animal implements Placeable {
             }
             if(animal.isOutside){
                 animal.setFriendship(animal.getFriendship() - 20);
-                animal.setOutside(false);
             }
         }
     }

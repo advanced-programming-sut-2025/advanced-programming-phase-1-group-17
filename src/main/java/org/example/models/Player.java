@@ -2,17 +2,14 @@ package org.example.models;
 
 import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
-import org.example.models.crafting.CraftingItem;
 import org.example.models.cooking.Food;
+import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.BackPackType;
-import org.example.models.tools.ToolMaterial;
-import org.example.models.tools.ToolType;
+import org.example.models.tools.*;
 import org.example.models.map.PlayerMap;
-import org.example.models.tools.BackPack;
-import org.example.models.tools.Tool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,8 +49,8 @@ public class Player {
     private BackPack backPack = new BackPack(BackPackType.PrimaryBackpack, this);
 
     //For TrashCan & WaterStorage
-    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic);
-    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
+    private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic, null);
+    private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic, null);
     private Tool currentTool;
 
     private int vegetableFarmed = 0;
@@ -102,14 +99,17 @@ public class Player {
         this.user = user;
         this.isGuest = isGuest;
         this.energy = maxEnergy;
-        Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic);
+        Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic, null);
         backPack.addItemToInventory(wateringCan);
-        backPack.addItemToInventory(new Tool(ToolType.Scythe, null));
-        backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic));
-        backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic));
-        backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic));
+        backPack.addItemToInventory(new Tool(ToolType.Scythe, null, null));
+        backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic, null));
+        backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic, null));
+        backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic, null));
         this.currentTool = wateringCan;
         this.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MegaBomb));
+        backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));
+        this.getRecipes().add(new Recipe(FoodType.MakiRoll));
+        this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {

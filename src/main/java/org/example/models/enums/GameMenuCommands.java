@@ -69,6 +69,7 @@ public enum GameMenuCommands {
     Produces("\\s*produces\\s*"),
     CollectProduce("\\s*collect\\s+produce\\s+-n\\s+(?<animalName>\\S+)\\s*"),
     SellAnimal("\\s*sell\\s+animal\\s+(?<animalName>\\S+)\\s*"),
+
     //For Fishing
     Fishing("\\s*fishing\\s+-p\\s+(?<fishingPole>\\S+)\\s*"),
 

@@ -9,7 +9,7 @@ public enum RecipeType implements BackPackableType {
     FriedEgg(FoodType.FriedEgg, 0),
     BakedFish(FoodType.BakedFish, 0),
     Salad(FoodType.Salad, 0),
-    Olmelet(FoodType.Olmelet, 0),
+    Olmelet(FoodType.Omelet, 0),
     PumpkinPie(FoodType.PumpkinPie, 0),
     Spaghetti(FoodType.Spaghetti, 0),
     Pizza(FoodType.Pizza, 0),

@@ -2,6 +2,7 @@ package org.example.models.map;
 
 import org.example.models.*;
 import org.example.models.NPCS.NPC;
+import org.example.models.animal.Animal;
 import org.example.models.foraging.Mineral;
 import org.example.models.foraging.MineralType;
 import org.example.models.plant.Tree;
@@ -117,19 +118,20 @@ public class Tile {
         this.npcIsHere = npcIsHere;
     }
 
-    public static Placeable findAround(Placeable placeable){
+    public static boolean findAround(Animal animal){
         Player player=App.getCurrentGame().getCurrentPlayingPlayer();
         int x=player.getX();
         int y=player.getY();
         for(int i=-1;i<2;i++){
             for(int j=-1;j<2;j++){
                 Tile tile = Tile.getTile(x+i,y+j);
-                if(tile.getPlaceable().equals(placeable)){
-                    return tile.getPlaceable();
+
+                if(tile != null && tile.getPlaceable() != null && tile.getPlaceable().equals(animal)){
+                     return true;
                 }
             }
         }
-        return null;
+        return false;
     }
 
     public void lightningStrike() {

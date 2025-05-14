@@ -1,7 +1,6 @@
 package org.example.models.cooking;
 
 import org.example.models.BackPackableType;
-import org.example.models.enums.FishType;
 
 import java.util.Map;
 
@@ -16,7 +15,7 @@ public enum FoodType implements BackPackableType {
     FriedEgg(Map.of(Egg, 1), 50, 35),
     BakedFish(Map.of(Sardine, 1, Salmon, 1, Wheat, 1), 75, 100),
     Salad(Map.of(Leek, 1, Dandelion, 1), 113, 110),
-    Olmelet(Map.of(Egg, 1, Milk, 1), 100, 125),
+    Omelet(Map.of(Egg, 1, Milk, 1), 100, 125),
     PumpkinPie(Map.of(Pumpkin, 1, WheatFlour, 1, Milk, 1, Sugar, 1), 225, 385),
     Spaghetti(Map.of(WheatFlour, 1, Tomato, 1), 75, 120),
     Pizza(Map.of(WheatFlour, 1, Tomato, 1, Cheese, 1), 150, 300),
@@ -31,7 +30,7 @@ public enum FoodType implements BackPackableType {
     Bread(Map.of(WheatFlour, 1), 50, 60),
     SalmonDinner(Map.of(Salmon, 1, Amaranth, 1, Kale, 1), 125, 300),
     VegetableMedley(Map.of(Tomato, 1, Beet, 1), 165, 120),
-    FarmersLunch(Map.of(Olmelet, 1, Parsnip, 1), 200, 150),
+    FarmersLunch(Map.of(Omelet, 1, Parsnip, 1), 200, 150),
     SurvivalBurger(Map.of(Bread, 1, Carrot, 1, Eggplant, 1), 125, 180),
     DishOTheSea(Map.of(Sardine, 2, HashBrowns, 1), 150, 220),
     SeafoamPudding(Map.of(Flounder, 1, MidnightCarp, 1), 175, 300),

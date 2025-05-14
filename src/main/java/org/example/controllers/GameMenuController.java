@@ -16,18 +16,14 @@ import org.example.models.cooking.Recipe;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.*;
 import org.example.models.foraging.ForagingController;
-import org.example.models.foraging.ForagingCropType;
 import org.example.models.foraging.Mineral;
 import org.example.models.foraging.MineralType;
 import org.example.models.animal.AnimalPlace;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Tile;
 import org.example.models.plant.*;
-import org.example.models.tools.BackPack;
-import org.example.models.tools.FishingPoleType;
-import org.example.models.tools.Tool;
+import org.example.models.tools.*;
 import org.example.models.Trade;
-import org.example.models.tools.ToolType;
 import org.example.models.market.*;
 
 import java.util.*;
@@ -425,7 +421,6 @@ public class GameMenuController {
             }
         }
 
-        App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(null);
         return new Result(false, "Tool with name '" + toolName + "' doesn't exist in your backpack.");
     }
 
@@ -457,12 +452,22 @@ public class GameMenuController {
     }
 
     public Result toolUpgrade(String toolName) {
-        if (Tool.findToolByName(toolName) == null) {
+        Tool tool = Tool.findToolByName(toolName);
+        if (tool == null) {
             return new Result(false, "Tool with this name doesn't exist in your backpack.");
         }
-        Tool tool = Tool.findToolByName(toolName);
+        if(tool.getToolType().equals(ToolType.FishingPole)){
+//            if(tool.getLevel()==3){
+//                return new Result(true, "Your Fishing Pole is at max level");
+//            }
+//            tool.setLevel(tool.getLevel()+1);
+//            return new Result(true,"your fishing pole is now "
+//                    + FishingPoleType.values()[tool.getLevel()].name());
+            return new Result(false,"you should buy better fishing pole from shop");
+        }
+
         if (tool.getLevel() == 4) {
-            return new Result(false, toolName + " is alredy at max level");
+            return new Result(false, toolName + " is already at max level");
         }
 
         tool.setLevel(tool.getLevel() + 1);
@@ -510,7 +515,7 @@ public class GameMenuController {
                     energy--;
                     energy = Math.max(energy,0);
                     player.setEnergy(player.getEnergy() - energy*leverage);
-                    return new Result(false, "this type of pichaxe cannot break this mineral");
+                    return new Result(false, "this type of pickaxe cannot break this mineral");
                 }
                 player.getAbilities().increaseMiningAbility(10);
                 if (mineral.isForaging())
@@ -580,7 +585,7 @@ public class GameMenuController {
                     plant.wateringPlant();
                     tool.setWateringCanStorage(tool.getWateringCanStorage() - 1);
                     player.getAbilities().increaseForagingAbility(5);
-                    return new Result(true,"plant watered sucessfully");
+                    return new Result(true,"plant watered successfully");
                 }
             } else if (tile.isWater()) {
                 player.setEnergy(player.getEnergy() - energy*leverage);
@@ -658,6 +663,20 @@ public class GameMenuController {
                     return new Result(true,"you collected all" + toRemoved.size() + " wools of " + animal.getName());
                 }
             }
+        }
+        else if(tool.getToolType().equals(ToolType.FishingPole)) {
+            double energy=2;
+            switch (tool.getFishingPoleMaterial()){
+                case TrainingFishingPole -> energy = 8;
+                case BambooFishingPole -> energy = 6;
+                case FiberglassFishingPole -> energy = 4;
+                case IridiumFishingPole -> energy = 2;
+            }
+            if(player.getAbilities().getFishingLevel() == 4){
+                energy --;
+            }
+            player.setEnergy(player.getEnergy() - energy*leverage);
+            fishing(tool.getFishingPoleMaterial().name());
         }
         return new Result(true, "Tool used.");
     }
@@ -1096,6 +1115,7 @@ public class GameMenuController {
     }
 
     public Result addItem(String itemName, String countStr) {
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         int count;
         try {
             count = Integer.parseInt(countStr);
@@ -1152,7 +1172,34 @@ public class GameMenuController {
                                                     type = FishType.valueOf(itemName);
                                                     sampleItem=new Fish((FishType)type,ItemQuality.Regular);
                                                 }catch (Exception e11) {
-                                                    return new Result(false, "Invalid item name");
+                                                    try{
+                                                        type = ToolType.valueOf(itemName);
+                                                        sampleItem = new Tool((ToolType)type, ToolMaterial.Basic, null);
+                                                        if(type.equals(ToolType.FishingPole)){
+                                                            return new Result(false,"please specify which fishing pole you want");
+                                                        }
+                                                        if(player.getBackPack().getBackPackItems().containsKey(type)) {
+                                                            return new Result(false, "tool already exists.");
+                                                        }
+                                                        count =1;
+                                                    } catch (Exception e12) {
+                                                        try{
+                                                            type = FoodType.valueOf(itemName);
+                                                            Food food = new Food();
+                                                            food.setFoodtype((FoodType) type);
+                                                            sampleItem = food;
+
+                                                        }
+                                                        catch (Exception e13) {
+                                                            try{
+                                                                type = FishingPoleType.valueOf(itemName);
+                                                                sampleItem = new Tool(ToolType.FishingPole,null,(FishingPoleType) type);
+                                                            }
+                                                            catch (Exception e14) {
+                                                                return new Result(false, "Invalid item name");
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -1166,7 +1213,6 @@ public class GameMenuController {
             }
         }
 
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
 
         for (int i = 0; i < count; i++) {
 
@@ -1227,16 +1273,42 @@ public class GameMenuController {
         if(player.getBackPack().isBackPackFull()){
             return new Result(false, "Your back pack is full");
         }
+        if (recipe.getFoodToBeCooked().equals(FoodType.MakiRoll)) {
+            if (player.getBackPack().getBackPackItems().containsKey(NormalItemType.Fiber) &&
+                    player.getBackPack().getBackPackItems().containsKey(NormalItemType.Rice)) {
 
-        for(Map.Entry<BackPackableType,Integer> entry: recipe.getFoodToBeCooked().getIngredients().entrySet()) {
-            if(!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
-            && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
-                return new Result(false,"not enough ingredient");
+                FishType selectedFish = null;
+                for (FishType fish : FishType.values()) {
+                    if (player.getBackPack().getBackPackItems().containsKey(fish)) {
+                        selectedFish = fish;
+                        break;
+                    }
+                }
+
+                if (selectedFish != null) {
+                    BackPack backPack = player.getBackPack();
+                    backPack.useItem(NormalItemType.Fiber);
+                    backPack.useItem(NormalItemType.Rice);
+                    backPack.useItem(selectedFish);
+                } else {
+                    return new Result(false, "no fish found for MakiRoll");
+                }
+            } else {
+                return new Result(false, "not enough ingredients");
             }
         }
-        for(Map.Entry<BackPackableType,Integer> entry : recipe.getFoodToBeCooked().getIngredients().entrySet()){
-            for(int i=0;i<entry.getValue();i++) {
-                player.getBackPack().useItem(entry.getKey());
+
+        else{
+            for (Map.Entry<BackPackableType, Integer> entry : recipe.getFoodToBeCooked().getIngredients().entrySet()) {
+                if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
+                        && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
+                    return new Result(false, "not enough ingredient");
+                }
+            }
+            for (Map.Entry<BackPackableType, Integer> entry : recipe.getFoodToBeCooked().getIngredients().entrySet()) {
+                for (int i = 0; i < entry.getValue(); i++) {
+                    player.getBackPack().useItem(entry.getKey());
+                }
             }
         }
         Food newFood = new Food();
@@ -1251,6 +1323,15 @@ public class GameMenuController {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         try {
             FoodType food = FoodType.valueOf(foodName);
+            if(!player.getBackPack().getBackPackItems().containsKey(food)) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("you dont have ").append(foodName).append(" in your backpack ").append("\n")
+                        .append("you can cook it with : ").append("\n");
+                for(Map.Entry<BackPackableType,Integer> entry : food.getIngredients().entrySet()) {
+                    sb.append(" x").append(entry.getValue()).append(" ").append(entry.getKey()).append("\n");
+                }
+                return new Result(false,sb.toString());
+            }
             player.getBackPack().useItem(food);
             player.setEnergy(player.getEnergy() + food.getEnergy());
             return new Result(true, "you ate " + foodName + " successfully , " +
@@ -1268,6 +1349,12 @@ public class GameMenuController {
             return new Result(false, "Invalid place");
         }
         AnimalPlace animalPlace = new AnimalPlace(animalPlaceType);
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        double money = player.getBackPack().getCoin();
+        if(money < animalPlaceType.getPrice()){
+            return new Result(false, "you dont have enough money");
+        }
+        player.getBackPack().addcoin(-animalPlaceType.getPrice());
         int xint = Integer.parseInt(x);
         int yint = Integer.parseInt(y);
         for (int i = -2; i < 2; i++) {
@@ -1301,6 +1388,11 @@ public class GameMenuController {
 
         Animal newAnimal = new Animal(name, animalType);
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        double money = player.getBackPack().getCoin();
+        if(money < animalType.getPrice()){
+            return new Result(false, "you dont have enough money");
+        }
+        player.getBackPack().addcoin(-animalType.getPrice());
 
         List<AnimalPlace> animalPlaces = player.getPlayerMap().getFarm().getAnimalPlaces();
         for (int i = 0; i < animalPlaces.size(); i++) {
@@ -1322,7 +1414,7 @@ public class GameMenuController {
             newAnimal.setAnimalPlace(place); // اگر خواستی مکان رو هم ثبت کن
             player.getPlayerMap().getFarm().getAnimals().add(newAnimal);
 
-            return new Result(true, name + " added to your animal successfully");
+            return new Result(true, name + " added to your animals successfully");
         }
 
         return new Result(false, "No suitable AnimalPlace for " + name);
@@ -1336,10 +1428,20 @@ public class GameMenuController {
         }
 
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-//        Tile tile = Tile.getTile(player.getX(),player.getY());
-//        if(Tile.findAround(animal) ==null){
-//            return new Result(false,"you should stand next to " + name + " to pet it");
-//        }
+        Tile tile = Tile.getTile(player.getX(),player.getY());
+        if(animal.isPettedToday()){
+            return new Result(false,animal.getName() + " is a already petted today");
+        }
+
+
+        if(animal.isOutside() && !Tile.findAround(animal)){
+            return new Result(false,"you should stand next to " + name + " to pet it");
+        }
+        if(tile.getPlaceable() instanceof AnimalPlace animalPlace && animalPlace.getAnimals().contains(animal)){
+            animal.setFriendship(animal.getFriendship()+15);
+            animal.setPettedToday(true);
+            return new Result(true,name + " petted successfully :)");
+        }
         animal.setFriendship(animal.getFriendship()+15);
         animal.setPettedToday(true);
         return new Result(true,name + " petted successfully");
@@ -1353,7 +1455,7 @@ public class GameMenuController {
         }
 
         int amountInt = Integer.parseInt(amount);
-        animal.cheatSetFriendship(animal.getFriendship()+amountInt);
+        animal.cheatSetFriendship(amountInt);
         return new Result(true,"friendship is now " + animal.getFriendship());
     }
 
@@ -1364,6 +1466,9 @@ public class GameMenuController {
                 .append("friendship : ").append(animal.getFriendship()).append("\n")
                 .append(animal.isPettedToday()?"petted today" : "not petted today").append("\n")
                 .append(animal.isFedToday()?"feded today" : "not fed today").append("\n\n");
+        if(animal.getTile() != null){
+            sb.append(animal.getTile().getX()).append(", ").append(animal.getTile().getY()).append("\n");
+        }
     }
     return new Result(true,sb.toString());
     }
@@ -1492,6 +1597,9 @@ public class GameMenuController {
 
     public Result fishing(String fishingPole) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (player.getBackPack().isBackPackFull()) {
+            return new Result(false, "your backpack is full");
+        }
         FishingPoleType fishingPoleType;
         try {
             fishingPoleType = FishingPoleType.valueOf(fishingPole);
@@ -1510,27 +1618,57 @@ public class GameMenuController {
             case Sunny -> M = 1.5;
             case Rainy -> M = 1.2;
             case Storm -> M = 0.5;
-            default -> M = 0.1;
+            default -> M = 1;
         }
         int level = player.getAbilities().getFishingLevel();
         int count = (int) Math.ceil(R * M * (level + 2));
         count = Math.min(6, count);
         double pole = fishingPoleType.getPole();
+        double qualityInt = ((R  * (level + 2) * pole)/(7-M));
+        ItemQuality quality;
+        if(qualityInt < 0.5){
+            quality = ItemQuality.Regular;
+        }
+        else if(qualityInt < 0.7){
+            quality = ItemQuality.Silver;
+        }
+        else if(qualityInt < 0.9){
+            quality = ItemQuality.Gold;
+        }
+        else {
+            quality = ItemQuality.Iridium;
+        }
         Fish fish = new Fish(null,null);
         ArrayList<FishType> fishes = new ArrayList<>();
-        for (FishType fishType : FishType.values()) {
-            if (fishType.getSeason().equals(date.getSeason())) {
-                fishes.add(fishType);
+        if(fishingPoleType.equals(FishingPoleType.TrainingFishingPole)){
+            fishes.addAll(new ArrayList<>(Arrays.asList
+                    (FishType.Sardine,FishType.Perch,FishType.Herring,FishType.SunFish)));
+        }
+        else{
+            for (FishType fishType : FishType.values()) {
+                if (fishType.getSeason().equals(date.getSeason())) {
+                    fishes.add(fishType);
+                }
             }
+        }
+        if(player.getAbilities().getFishingLevel() != 4 ) {
+            ArrayList<FishType> fishesToRemove = new ArrayList<>();
+            for(FishType fishType : fishes){
+                if(fishType.isLegendary()){
+                    fishesToRemove.add(fishType);
+                }
+            }
+            fishes.removeAll(fishesToRemove);
         }
         Random rand = new Random();
         FishType randomElement = fishes.get(rand.nextInt(fishes.size()));
-        if (player.getBackPack().isBackPackFull()) {
-            return new Result(false, "your backpack is full");
-        }
         fish.setFishType(randomElement);
-        player.getBackPack().addItemToInventory(fish);
-        return new Result(true,"fish got caught successfully");
+        fish.setShippingBinType(quality);
+        for(int i=0;i<count;i++){
+            player.getBackPack().addItemToInventory(fish);
+        }
+        player.getAbilities().increaseFishingAbility(10);
+        return new Result(true,count + " " +fish.getFishType().getName()+ " got caught successfully");
     }
 
     public Result artisanUse(String artisanName, String itemNames) {

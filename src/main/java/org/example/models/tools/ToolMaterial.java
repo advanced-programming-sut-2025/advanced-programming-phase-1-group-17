@@ -6,4 +6,5 @@ public enum ToolMaterial {
     Iron,
     Gold,
     Iridium;
+
 }
