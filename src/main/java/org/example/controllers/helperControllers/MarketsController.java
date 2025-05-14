@@ -1,12 +1,14 @@
 package org.example.controllers.helperControllers;
 
 import org.example.models.*;
+import org.example.models.animal.AnimalProductType;
+import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
 import org.example.models.cooking.RecipeType;
 import org.example.models.crafting.CraftingItemType;
-import org.example.models.enums.AnimalProductType;
 import org.example.models.enums.BackPackType;
 import org.example.models.enums.FishType;
+import org.example.models.foraging.MineralType;
 import org.example.models.map.Tile;
 import org.example.models.market.ShippingBin;
 import org.example.models.market.ShopItem;
@@ -115,8 +117,10 @@ public class MarketsController {
         if (product.getType().equals(BackPackType.LargeBackPack) || product.getType().equals(BackPackType.DeluxeBackPack))
             return App.getCurrentGame().getStoreManager().purchaseBackpack(product);
 
-        if (product.getType().getClass().equals(RecipeType.class))
-            player.getRecipes().add(new Recipe((RecipeType) product.getType()));
+        if (product.getType().getClass().equals(RecipeType.class)) {
+            //TODO: Merge Conflict
+            //player.getRecipes().add(new Recipe(((RecipeType) product.getType()));
+        }
         else if (product.getType().equals(ToolType.TrashCan)) {
             //TODO
             //player.setTrashCan(new Tool(ToolType.TrashCan, product.getType()));
@@ -204,7 +208,9 @@ public class MarketsController {
                 CraftingItemType.class,
                 SeedType.class,
                 CropType.class,
-                NormalItemType.class
+                NormalItemType.class,
+                FoodType.class,
+                MineralType.class
                 //TODO: Add more if needed
         );
 

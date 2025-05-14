@@ -46,8 +46,7 @@ public class TimeAndDate {
         if (hour > 22) {
             for (Player player : App.getCurrentGame().getPlayers()) {
                 for (ArtisanProduct artisanItemsInProgress : player.getArtisanProductsInProgress()) {
-                    for (int i = 0; i < 11; i++)
-                        artisanItemsInProgress.goToNextHour();
+                    artisanItemsInProgress.goToNextDay();
                 }
             }
             hour = 9;
@@ -109,6 +108,7 @@ public class TimeAndDate {
         setTomorrowWeather(getRandomWeather());
 
         //Actions Needed to be done every day
+        weatherEffect();
         PlantGrowthController.growOneDay();
         ForagingController.setForagingForNextDay();
         ShippingBin.goToNextDay();
@@ -124,30 +124,28 @@ public class TimeAndDate {
             }
             day = 1;
         }
+    }
 
-        if(tomorrowWeather.equals(WeatherType.Rainy)){
-            for(Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()){
-                if(tile.getPlaceable() instanceof Plant){
-                    Plant plant = (Plant) tile.getPlaceable();
-                    plant.wateringPlant();
+    private void weatherEffect() {
+        if (todayWeather.equals(WeatherType.Rainy)) {
+            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
+                if (tile.getPlaceable() instanceof Plant plant) {
+                    if (!plant.isInsideGreenhouse())
+                        plant.wateringPlant();
                 }
             }
-        }
-        else if(tomorrowWeather.equals(WeatherType.Storm)){
-            for(Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()){
-                if(tile.getPlaceable() instanceof Plant){
-                    Plant plant = (Plant) tile.getPlaceable();
-                    plant.wateringPlant();
-                    double rand = Math.random();
-                    if(rand<=0.2 ) {
-                        if(plant instanceof Tree) {
-                            tile.setPlaceable(new Mineral(MineralType.Coal,true));
-                        }
-                        else if(plant instanceof Crop){
-                            Crop crop = (Crop) plant;
-                            tile.setPlaceable(new Seed(crop.getType().getSource()));
-                        }
+        } else if (todayWeather.equals(WeatherType.Storm)) {
+            int counter = 3;
+            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
+                double rand = Math.random();
+                if (rand <= 0.01) {
+                    if (counter > 0) {
+                        tile.lightningStrike();
+                        counter--;
                     }
+                }
+                if (tile.getPlaceable() instanceof Plant plant) {
+                    plant.wateringPlant();
                 }
             }
         }
@@ -176,7 +174,7 @@ public class TimeAndDate {
         }
 
         //removing all crops that are not compatible with this season
-        handleIncompatiblePlants();
+        //handleIncompatiblePlants();
     }
 
     private void handleIncompatiblePlants() {
@@ -253,7 +251,7 @@ public class TimeAndDate {
     }
 
     public int getMonth() {
-        return season.ordinal()+1;
+        return season.ordinal() + 1;
     }
 
     public void setMonth(int month) {

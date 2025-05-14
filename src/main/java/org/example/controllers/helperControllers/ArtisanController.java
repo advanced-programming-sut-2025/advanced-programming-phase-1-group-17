@@ -7,7 +7,9 @@ import org.example.models.Result;
 import org.example.models.artisan.ArtisanProduct;
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.artisan.IngredientGroup;
+import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
+import org.example.models.map.Tile;
 import org.example.models.tools.BackPack;
 
 import java.util.ArrayList;
@@ -46,14 +48,42 @@ public class ArtisanController {
             return new Result(false, "No artisan found with name '%s'".formatted(artisanName));
         }
 
-        // 2. Check ownership of artisan tool
-        BackPack playerBackPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-        if (!playerBackPack.getBackPackItems().containsKey(artisan)) {
-            return new Result(false, "You do not own the artisan tool '%s'.".formatted(artisan.getName()));
+
+        // 2. (alternative)
+        int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
+        int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+
+        Tile artisanTile = null;
+        for (int i = 0; i < 8; i++) {
+            Tile tile = Tile.getTile(player.getX() + dx[i], player.getY() + dy[i]);
+            if (tile == null)
+                continue;
+            if (tile.getPlaceable() == null)
+                continue;
+            if (tile.getPlaceable().getClass().equals(CraftingItem.class)) {
+                CraftingItem craftingItem = (CraftingItem) tile.getPlaceable();
+                if (craftingItem.getType().equals(artisan)) {
+                    artisanTile = tile;
+                    break;
+                }
+            }
         }
+        if (artisanTile == null)
+            return new Result(false, "You must be near the artisan machine of type %s.".formatted(artisan.getName()));
+
+//        // 2. Check ownership of artisan tool
+        BackPack playerBackPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+//        if (!playerBackPack.getBackPackItems().containsKey(artisan)) {
+//            return new Result(false, "You do not own the artisan tool '%s'.".formatted(artisan.getName()));
+//        }
 
         // 3. Parse input ingredient names into BackPackableTypes
-        String[] tokens = itemNames.trim().split("\\s+");
+        String[] tokens;
+        if (itemNames == null)
+            tokens = new String[0];
+        else
+            tokens = itemNames.trim().split("\\s+");
         Map<BackPackableType, Integer> provided = new HashMap<>();
         for (String token : tokens) {
             Optional<BackPackableType> maybeIngredient = marketsController.parseBackPackable(token);
@@ -90,6 +120,8 @@ public class ArtisanController {
                     break;
                 }
             }
+            if (tokens.length != product.getIngredients().size())
+                match = false;
 
             if (!match) continue;
 
@@ -126,7 +158,7 @@ public class ArtisanController {
 
             // 7. Start artisan production
             App.getCurrentGame().getCurrentPlayingPlayer()
-                    .getArtisanProductsInProgress().add(new ArtisanProduct(product));
+                    .getArtisanProductsInProgress().add(new ArtisanProduct(product, ArtisanProduct.getIngredient(product, itemNames)));
 
             return new Result(true, "'%s' is now being produced.".formatted(product.getName()));
         }

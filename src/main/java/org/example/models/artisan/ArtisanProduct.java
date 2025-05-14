@@ -1,15 +1,47 @@
 package org.example.models.artisan;
 
 import org.example.models.BackPackable;
+import org.example.models.BackPackableType;
 
 public class ArtisanProduct implements BackPackable {
     private ArtisanProductType type;
     private boolean isReady = false;
     private int hoursInProgress = 0;
     private int daysInProgress = 0;
+    private double price;
+    private double energy;
 
-    public ArtisanProduct(ArtisanProductType type) {
+    public ArtisanProduct(ArtisanProductType type, BackPackableType ingredientUsed) {
         this.type = type;
+        this.price = type.getPrice();
+        this.energy = type.getEnergy();
+        setPrice(ingredientUsed);
+        setEnergy(ingredientUsed);
+    }
+
+    public static BackPackableType getIngredient(ArtisanProductType product, String itemNames) {
+        return null;
+    }
+
+    private void setEnergy(BackPackableType ingredientUsed) {
+
+    }
+
+    private void setPrice(BackPackableType ingredientUsed) {
+        if (type.equals(ArtisanProductType.Juice))
+            price = ingredientUsed.getPrice() * 2.25;
+        else if (type.equals(ArtisanProductType.Wine))
+            price = ingredientUsed.getPrice() * 3;
+        else if (type.equals(ArtisanProductType.DriedMushrooms))
+            price = ingredientUsed.getPrice() * 7.5 + 25;
+        else if (type.equals(ArtisanProductType.DriedFruit))
+            price = ingredientUsed.getPrice() * 7.5 + 25;
+        else if (type.equals(ArtisanProductType.Pickles))
+            price = ingredientUsed.getPrice() * 2 + 50;
+        else if (type.equals(ArtisanProductType.Jelly))
+            price = ingredientUsed.getPrice() * 2 + 50;
+        else if (type.equals(ArtisanProductType.SmokedFish))
+            price = ingredientUsed.getPrice() * 2;
     }
 
     public ArtisanProductType getType() {
@@ -23,7 +55,7 @@ public class ArtisanProduct implements BackPackable {
 
     @Override
     public double getPrice() {
-        return type.getPrice();
+        return price;
     }
 
     public void goToNextHour(){
@@ -44,5 +76,19 @@ public class ArtisanProduct implements BackPackable {
 
     public boolean isReady() {
         return isReady;
+    }
+
+    public double getEnergy() {
+        return energy;
+    }
+
+    public void goToNextDay() {
+        if (type.equals(ArtisanProductType.DriedMushrooms) || type.equals(ArtisanProductType.DriedFruit)
+                || type.equals(ArtisanProductType.Raisins)) {
+            isReady = true;
+        } else {
+            for (int i = 0; i < 11; i++)
+                goToNextHour();
+        }
     }
 }

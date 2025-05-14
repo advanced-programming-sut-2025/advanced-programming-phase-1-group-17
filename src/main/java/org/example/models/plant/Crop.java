@@ -1,7 +1,9 @@
 package org.example.models.plant;
 
+import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.Placeable;
+import org.example.models.Player;
 import org.example.models.map.Tile;
 
 import java.util.ArrayList;
@@ -19,11 +21,9 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.isFullyGrown = isForaging;
         this.type = type;
         this.daysTillNextHarvest = 0;
-
-        checkCouldBeGiant();
     }
 
-    private void checkCouldBeGiant() {
+    public void checkCouldBeGiant() {
         if (isForaging || type == null || !type.isCanBecomeGiant() || isInsideGreenhouse)
             return;
 
@@ -168,6 +168,8 @@ public class Crop extends Plant implements BackPackable, Placeable {
     }
 
     void handleStages() {
+        if (isFullyGrown)
+            return;
         this.whichDayOfStage++;
         if (getDaysTillFullGrowth() == 0){
             this.isFullyGrown = true;
@@ -206,24 +208,49 @@ public class Crop extends Plant implements BackPackable, Placeable {
         isGiant = giant;
     }
 
+    public ArrayList<Crop> getNeighborGiantTiles() {
+        return neighborGiantTiles;
+    }
+
+    public void setNeighborGiantTiles(ArrayList<Crop> neighborGiantTiles) {
+        this.neighborGiantTiles = neighborGiantTiles;
+    }
+
     public void harvest() {
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+
         if (!hasFruit)
             return;
+        if (this.isForaging())
+            player.getAbilities().increaseForagingAbility();
+
         if (type.isOneTime()) {
             if (isGiant) {
+                for (int i = 0; i < 10; i++) {
+                    player.getBackPack().addItemToInventory(this);
+                }
                 for (Crop neighborGiantTile : neighborGiantTiles) {
                     neighborGiantTile.getTile().setPlaceable(null);
                 }
+            } else {
+                player.getBackPack().addItemToInventory(this);
             }
-            tile.setPlaceable(null);
+            if (this.isInsideGreenhouse)
+                tile.setPlaceable(Tile.getTile(tile.getX(), tile.getY()).getOwner().getPlayerMap().getGreenHouse());
+            else
+                tile.setPlaceable(null);
         }
         else {
             if (isGiant) {
+                for (int i = 0; i < 10; i++) {
+                    player.getBackPack().addItemToInventory(this);
+                }
                 for (Crop neighborGiantTile : neighborGiantTiles) {
                     neighborGiantTile.hasFruit = false;
                     neighborGiantTile.daysTillNextHarvest = type.getRegrowthTime();
                 }
-            }
+            } else
+                player.getBackPack().addItemToInventory(this);
             daysTillNextHarvest = type.getRegrowthTime();
             this.hasFruit = false;
         }
