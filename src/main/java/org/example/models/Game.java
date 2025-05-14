@@ -43,6 +43,9 @@ public class Game {
                 player.setGiftNPCToday(npc);
             }
         }
+        for (Player p : players) {
+            p.getUser().setNumOfPlay(p.getUser().getNumOfPlay() + 1);
+        }
         for (int i = 0; i < players.size(); i++) {
             if (i != 0) {
                 players.get(0).addGift(players.get(i));
