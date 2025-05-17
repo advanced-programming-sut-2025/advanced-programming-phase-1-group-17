@@ -1610,8 +1610,7 @@ public class GameMenuController {
                                     player.setEnergy(player.getEnergy() + 50);
                                     currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
                                 }
-                                message message = new message(player, "your gift was received by " + player.getUser().getUsername()
-                                        + "\n" + player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
+                                message message = new message(currentPlayer, player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
                                         + "\n" + "your gift : " + item + "\n" + "your gift amount : " + amount + "\n"
                                         + "please rate this gift between one and five Whenever you have time ");
                                 player.addMessage(message);
@@ -1670,6 +1669,9 @@ public class GameMenuController {
 
     public Result giftHistory(String username) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (username.equals(App.getCurrentGame().getCurrentPlayingPlayer().getUser().getUsername())) {
+            return new Result(true, "you can't gift to your self.");
+        }
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
                 String result = "";
@@ -1845,7 +1847,9 @@ public class GameMenuController {
         return new Result(false, "you are now in trade menu \nlist of players : \n"
                 + App.getCurrentGame().getPlayers().get(1).getUser().getUsername() + "\n"
                 + App.getCurrentGame().getPlayers().get(2).getUser().getUsername() + "\n"
-                + App.getCurrentGame().getPlayers().get(3).getUser().getUsername() + "\nnew trade request or offer : \n"
+                + App.getCurrentGame().getPlayers().get(3).getUser().getUsername() + "\n"
+                + App.getCurrentGame().getPlayers().get(0).getUser().getUsername() +
+                "\nnew trade request or offer : \n"
                 + result);
     }
 
@@ -2244,7 +2248,12 @@ public class GameMenuController {
                     do {
                         input = scanner.nextLine();
                         if (npc.getDialogue().get(input) != null) {
-                            System.out.println(npc.getDialogue().get(input));
+                            if (App.getCurrentGame().getDate().getSeason().equals(Season.Spring)
+                            || App.getCurrentGame().getDate().getSeason().equals(Season.Summer)) {
+                                System.out.println(npc.getDialogue().get(input));
+                            }else {
+                                System.out.println(npc.getDialogue2().get(input));
+                            }
                         } else {
                             System.out.println("Please enter a valid dialogue");
                         }

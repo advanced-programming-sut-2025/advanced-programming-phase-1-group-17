@@ -20,6 +20,8 @@ abstract public class NPC {
     private ArrayList<String> favorites;
 
     private HashMap<String, String> dialogue = new HashMap<>();
+    private HashMap<String, String> dialogue2 = new HashMap<>();
+
     private ArrayList<Quest> requests= new ArrayList<>();
     public ArrayList<Quest> getRequests(){
         return requests;
@@ -98,4 +100,7 @@ abstract public class NPC {
         return dialogue;
     }
 
+    public HashMap<String, String> getDialogue2() {
+        return dialogue2;
+    }
 }

@@ -60,12 +60,13 @@ public class BackPack {
     }
 
     public BackPackable useItem(String item) {
+        item = item.trim();
         BackPackableType backPackType = null;
         for (BackPackableType b : backPackItems.keySet()) {
             if (b == null) {
                 continue;
             }
-            if (b.getName().equals(item)) {
+            if (b.getName().trim().equals(item)) {
                 backPackType = b;
                 break;
             }
@@ -98,7 +99,7 @@ public class BackPack {
             if (b == null) {
                 continue;
             }
-            if (b.getName().equals(item)) {
+            if (b.getName().trim().equals(item)) {
                 return backPackItems.get(b).size();
             }
         }

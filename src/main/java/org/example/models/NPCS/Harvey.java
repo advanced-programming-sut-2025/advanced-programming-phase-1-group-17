@@ -14,15 +14,25 @@ public class Harvey extends NPC implements Placeable {
     private String name = "Harvey";
     private String job = "teacher";
     private final HashMap<String, String> dialogue = new HashMap<>();
+    private final HashMap<String, String> dialogue2 = new HashMap<>();
+
 
     {
         dialogue.put("what's your name?", "Harvey");
-        dialogue.put("hello", "hi how are you?");
-        dialogue.put("i'm fine how are you", "i'm fine");
+        dialogue.put("hello", "hi how are you?what do you do on vacation");
+        dialogue.put("i'm fine how are you", "i'm fine,");
         dialogue.put("where is this?", "this is a village in iran.");
-        dialogue.put("goodbye", "bye , take care of yourself.");
-        dialogue.put("how is the weather?", "excellent!");
+        dialogue.put("goodbye", "bye , be careful,the weather is very hot.go home quickly.");
+        dialogue.put("how is the weather?", "the weather is very hot!");
         dialogue.put("what is your job?", "I am a teacher");
+        dialogue2.put("what's your name?", "Harvey");
+        dialogue2.put("hello", "hi how are you?");
+        dialogue2.put("i'm fine how are you", "i'm fine");
+        dialogue2.put("where is this?", "this is a village in iran.");
+        dialogue2.put("goodbye", "bye , take care of yourself.");
+        dialogue2.put("how is the weather?", "the weather is very cold!");
+        dialogue2.put("what is your job?", "I am a teacher");
+
     }
 
     private ArrayList<String> favorites = new ArrayList<>();
@@ -46,7 +56,7 @@ public class Harvey extends NPC implements Placeable {
 
     {
         requests.add(new Quest("Delivery of 12 pieces of a desired CarrotSeed", 0, false, "CarrotSeeds", 12));
-        requests.add(new Quest("Delivery of a salmon fish", 1, false, "salmon", 1));
+        requests.add(new Quest("Delivery of a salmon fish", 1, false, "Salmon", 1));
         requests.add(new Quest("Delivery of a bottle of wine", 2, false, "Wine", 1));
     }
 
@@ -98,5 +108,10 @@ public class Harvey extends NPC implements Placeable {
 
     public HashMap<String, String> getDialogue() {
         return dialogue;
+    }
+
+    @Override
+    public HashMap<String, String> getDialogue2() {
+        return dialogue2;
     }
 }
