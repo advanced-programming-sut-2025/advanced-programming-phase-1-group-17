@@ -8,10 +8,14 @@ import org.example.models.*;
 import org.example.models.animal.*;
 import org.example.models.NPCS.NPC;
 import org.example.models.NPCS.Quest;
+import org.example.models.artisan.ArtisanProduct;
 import org.example.models.artisan.ArtisanProductType;
 import org.example.models.cooking.*;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
+import org.example.models.cooking.Food;
+import org.example.models.cooking.FoodType;
+import org.example.models.cooking.Recipe;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.*;
 import org.example.models.foraging.ForagingController;
@@ -19,6 +23,7 @@ import org.example.models.foraging.Mineral;
 import org.example.models.animal.AnimalPlace;
 import org.example.models.map.GreenHouse;
 import org.example.models.map.Hut;
+import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.*;
@@ -117,16 +122,72 @@ public class GameMenuController {
 
 
     public Result loadGame() {
-        return new Result(false, "t");
+        User user = App.getLoggedInUser();
+        Player currentPlayer = null;
+        if (user.getLastGame() == null) {
+            return new Result(false, "you have no game to load");
+        } else {
+            Game game = user.getLastGame();
+            for (Player player : game.getPlayers()) {
+                if (!(player.getUser().getLastGame() != null && player.getUser().getLastGame().equals(game)))
+                    return new Result(false, "your friends have another active game");
+                if (player.getUser().equals(user)) {
+                    currentPlayer = player;
+                }
+            }
+            App.setCurrentGame(game);
+            App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
+            App.getCurrentGame().setCreator(currentPlayer);
+            for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
+                for (Tile tile : pm.getTiles()) {
+                    Tile.getTiles().add(tile);
+                }
+            }
+            NPC.setFatherPlayer(game.getPlayers().get(4));
+            NPC.setFatherUser(game.getPlayers().get(4).getUser());
+            GreenHouse.setGreenHouse(App.getCurrentGame().getGreenHouses());
+            App.setCurrentMenu(Menu.GameMenu);
+            return new Result(false, "you are in GameMenu now");
+        }
     }
 
+    public Result deleteAndExitThisGame(Scanner scanner) {
+        System.out.println("enter your comment about deleting this game");
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer())) continue;
+            if (player.getUser().getUsername().equals("NPC") || player.isGuest()) continue;
+            System.out.println(player.getUser().getUsername() + " please enter your comment (y/n)");
+            String input = scanner.nextLine();
+            if (input.equals("n")) {
+                return new Result(false, "Not all players agree, so the game will not be deleted. You are in gameMenu now.");
+            }
+        }
+        App.setLoggedInUser(App.getCurrentGame().getCreator().getUser());
+
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            player.getUser().setLastGame(null);
+            player.getUser().setActiveGame(null);
+        }
+
+        App.getGames().remove(App.getCurrentGame());
+        App.setCurrentGame(null);
+        App.setCurrentMenu(Menu.MainMenu);
+        return new Result(true, "game deleted, you are in MainMenu now.");
+
+    }
 
     public Result exitGame() {
-        if (!App.getCurrentGame().getCurrentPlayingPlayer().equals(App.getCurrentGame()))
+        if (!App.getCurrentGame().getCurrentPlayingPlayer().equals(App.getCurrentGame().getCreator()))
             return new Result(false, "Only the game creator can exit the game.");
-        //TODO: saving the game
-        App.setCurrentMenu(null);
-        return new Result(true, "Game saved successfully.");
+        for (Player p : App.getCurrentGame().getPlayers()) {
+            p.getUser().setLastGame(App.getCurrentGame());
+            p.getUser().setActiveGame(null);
+            if (p.isGuest()) continue;
+            p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
+        }
+        App.setCurrentGame(null);
+        App.setCurrentMenu(Menu.MainMenu);
+        return new Result(true, "Game saved successfully.you are now in main menu");
     }
 
     public Result removeCurrentGame() {
@@ -176,6 +237,9 @@ public class GameMenuController {
         int amount = Integer.parseInt(day);
         for (int i = 0; i < amount; i++) {
             App.getCurrentGame().getDate().goToNextDay();
+            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
+                artisanItemsInProgress.goToNextDay(24);
+            }
         }
         return new Result(true, amount + " days added successfully");
     }
@@ -226,6 +290,30 @@ public class GameMenuController {
         return new Result(true, "GreenHouse created Successfully");
     }
 
+    public int countTurns(List<Tile> result) {
+        if (result.size() < 3) {
+            return 0;
+        }
+        int turns = 0;
+        for (int i = 1; i < result.size() - 1; i++) {
+            int dx1 = normalize(result.get(i).getX() - result.get(i - 1).getX());
+            int dy1 = normalize(result.get(i).getY() - result.get(i - 1).getX());
+            int dx2 = normalize(result.get(i + 1).getX() - result.get(i).getX());
+            int dy2 = normalize(result.get(i + 1).getY() - result.get(i).getX());
+
+            if (dx1 != dx2 || dy1 != dy2) {
+                turns++;
+            }
+        }
+        return turns;
+    }
+
+    private int normalize(int delta) {
+        if (delta > 0) return 1;
+        if (delta < 0) return -1;
+        return 0;
+    }
+
     public Result walk(int x, int y, Scanner scanner) {
         List<Tile> result;
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
@@ -239,20 +327,37 @@ public class GameMenuController {
         } else if ((result = aStar(player.getX(), player.getY(), x, y, player)) == null) {
             return new Result(false, "you can't walk to this tile because there is not path to this tile");
         } else {
-            float energy_needed = (float) (result.size() - 1) / 20;
+            float energy_needed = (float) (((result.size() - 1) + (10 * countTurns(result))) / 20);
             System.out.println("your energy : " + player.getEnergy());
             System.out.printf("energy needed : %.2f\n", energy_needed);
             System.out.println("do you want to go to the destination? press y or n and press enter");
             String input = scanner.nextLine();
             if (input.equals("y")) {
+                double energy = player.getEnergy();
                 player.setEnergy(player.getEnergy() - energy_needed);
                 if (player.getEnergy() <= 0) {
+                    int temp = 0;
+                    for (int i = 0; i < result.size(); i++) {
+                        if ((i + 1) * energy_needed / result.size() >= energy) {
+                            temp = i + 1;
+                            break;
+                        }
+                    }
                     player.passOut();
                     player.setEnergy(0);
+                    try {
+                        Tile tile = result.get(temp);
+                        Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
+                        tile.setWhoIsHere(player);
+                        player.setX(tile.getX());
+                        player.setY(tile.getY());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     return new Result(false, "you fainted");
                 } else {
 //                    for (Tile tile : result) {
-//                        System.out.println(tile.getX() + "__" + tile.getY());
+//                        System.out.println(tile.getX() + " " + tile.getY());
 //                    }
                     Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
                     Tile.getTile(x, y).setWhoIsHere(player);
@@ -374,8 +479,10 @@ public class GameMenuController {
     public Result inventoryShow() {
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
         StringBuilder result = new StringBuilder();
-
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
+            if (backPackableType == null) {
+                continue;
+            }
             result.append("%s: %d\n".formatted(backPackableType.getName(), backPack.getBackPackItems().get(backPackableType).size()));
         }
 
@@ -469,18 +576,24 @@ public class GameMenuController {
 
     public Result toolUpgrade(String toolName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (App.getCurrentGame().getTileByIndex(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
+            if (!store.getType().equals(StoreType.Blacksmith))
+                return new Result(false, "The Player is not in Blacksmith");
+        } else
+            return new Result(false, "The Player is not in a store");
+
+        if (toolName.equalsIgnoreCase("TrashCan")) {
+            if (player.getTrashCan().getMaterial().equals(ToolMaterial.Iridium)) {
+                return new Result(false, toolName + " is already at max level");
+            }
+            player.upgradeTrashCan();
+            Tool t = player.getTrashCan();
+            return new Result(true, toolName + " upgraded to " + player.getTrashCan().getMaterial().name());
+        }
+
         Tool tool = Tool.findToolByName(toolName);
         if (tool == null) {
             return new Result(false, "Tool with this name doesn't exist in your backpack.");
-        }
-        Tile tile = Tile.getTile(player.getX(), player.getY());
-        if(!(tile.getPlaceable() instanceof Store)){
-            return new Result(false, "You should go to blacksmith to upgrade tools");
-        }
-        if(tile.getPlaceable() instanceof Store store){
-            if(store.getType() != StoreType.Blacksmith){
-                return new Result(false,"you are in wrong store , go to blacksmith to upgrade tools");
-            }
         }
         if (tool.getToolType().equals(ToolType.FishingPole)) {
 //            if(tool.getLevel()==3){
@@ -670,15 +783,15 @@ public class GameMenuController {
             } else if (tile.getPlaceable() instanceof Plant plant) {
                 player.getAbilities().increaseFarmingAbility();
                 if (plant instanceof Tree tree) {
-                    tree.harvest();
+                    tree.harvest(player.getCurrentTool().getMaterial());
                     Fruit fruit = new Fruit(tree.getType().getFruitType());
-                    //fruit.setItemQuality();
+                    fruit.setItemQuality(player.getCurrentTool().getMaterial());
                     player.getBackPack().addItemToInventory(
                             fruit);
                     if (tree.isForaging())
                         player.getAbilities().increaseForagingAbility();
                 } else if (plant instanceof Crop crop) {
-                    crop.harvest();
+                    crop.harvest(player.getCurrentTool().getMaterial());
                 }
             }
         } else if (tool.getToolType().equals(ToolType.MilkPail)) {
@@ -1669,10 +1782,12 @@ public class GameMenuController {
                                     player.setEnergy(player.getEnergy() + 50);
                                     currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
                                 }
-                                return new Result(true, "your gift was received by " + player.getUser().getUsername()
+                                message message = new message(player, "your gift was received by " + player.getUser().getUsername()
                                         + "\n" + player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
                                         + "\n" + "your gift : " + item + "\n" + "your gift amount : " + amount + "\n"
                                         + "please rate this gift between one and five Whenever you have time ");
+                                player.addMessage(message);
+                                return new Result(true, "your gift was received by " + player.getUser().getUsername());
                             }
                         }
                     } else {
@@ -1691,7 +1806,7 @@ public class GameMenuController {
             result += player.getUser().getUsername() + "\n";
             for (Gift gift : currentPlayer.getGifts().get(player)) {
                 if (currentPlayer.equals(gift.getPlayerWhoGetGift())) {
-                    result += gift.getItem() + " : " + gift.getAmount() + " ---> " + gift.getGiftNumber() + "\n";
+                    result += gift.getItem() + " : (amount:)" + gift.getAmount() + " ---> (gift number:)" + gift.getGiftNumber() + "\n";
                 }
             }
         }
@@ -1732,7 +1847,7 @@ public class GameMenuController {
                 String result = "";
                 result += player.getUser().getUsername() + "\n";
                 for (Gift gift : currentPlayer.getGifts().get(player)) {
-                    result += "whoGetGift : " + gift.getPlayerWhoGetGift() + "\n" + gift.getItem() + " : " + gift.getAmount() + " ---> " + gift.getGiftNumber() + "\n";
+                    result += "whoGetGift : " + gift.getPlayerWhoGetGift().getUser().getUsername() + "\n" + gift.getItem() + " : (amount:)" + gift.getAmount() + " ---> (gift number:)" + gift.getGiftNumber() + "\n";
                 }
                 return new Result(true, result);
             }
@@ -2062,16 +2177,16 @@ public class GameMenuController {
         }
         if (trade == null) {
             return new Result(false, "invalid id");
-        } else if (accept.equals("accept")) {
+        } else if (accept.equals("-accept")) {
             if (trade.getTradeType().equals("byMoney")) {
-                tradeByMoney(trade.getMatcher(), trade.getMatcher().group("type"), 1);
+                tradeByMoney2(trade.getSender(), trade.getMatcher(), trade.getMatcher().group("type"));
                 trade.getSender().addTradeHistory(trade);
                 currentPlayer.addTradeHistory(trade);
                 trade.getSender().getTrades().remove(trade);
                 currentPlayer.getTrades().remove(trade);
                 return new Result(true, "the operation was successful");
             } else {
-                tradeByItem(trade.getMatcher(), trade.getMatcher().group("type"), 1);
+                tradeByItem2(trade.getSender(), trade.getMatcher(), trade.getMatcher().group("type"));
                 trade.getSender().addTradeHistory(trade);
                 currentPlayer.addTradeHistory(trade);
                 trade.getSender().getTrades().remove(trade);
@@ -2083,6 +2198,94 @@ public class GameMenuController {
             currentPlayer.getTrades().remove(trade);
             return new Result(false, "the operation was successful");
         }
+    }
+
+    public Result tradeByMoney2(Player player, Matcher matcher, String type) {
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (type.trim().equals("offer")) {
+            String item = matcher.group("item");
+            int amount = Integer.parseInt(matcher.group("amount"));
+            double price = Float.parseFloat(matcher.group("price"));
+            if (currentPlayer.getBackPack().getInventorySize(item) >= amount) {
+                player.getBackPack().addcoin(-1 * price);
+                currentPlayer.getBackPack().addcoin(price);
+                for (int i = 0; i < amount; i++) {
+                    BackPackable b = currentPlayer.getBackPack().useItem(item);
+                    player.getBackPack().addItemToInventory(b);
+                }
+            } else {
+                return new Result(false, "you have not enough items in your inventory");
+            }
+            return new Result(false, "this username does not exist in this game");
+        } else {
+            String item = matcher.group("item");
+            int amount = Integer.parseInt(matcher.group("amount"));
+            double price = Float.parseFloat(matcher.group("price"));
+            if (currentPlayer.getBackPack().getCoin() < price) {
+                return new Result(false, "you have not enough coins");
+            }
+            if (player.getBackPack().getInventorySize(item) >= amount) {
+                player.getBackPack().addcoin(price);
+                currentPlayer.getBackPack().addcoin(-1 * price);
+                for (int i = 0; i < amount; i++) {
+                    BackPackable b = player.getBackPack().useItem(item);
+                    currentPlayer.getBackPack().addItemToInventory(b);
+                }
+            } else {
+                return new Result(false, "this player have not enough items in her/his inventory");
+            }
+            return new Result(false, "this username does not exist in this game");
+        }
+
+    }
+
+    public Result tradeByItem2(Player player, Matcher matcher, String type) {
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (type.trim().equals("offer")) {
+            String item = matcher.group("item");
+            int amount = Integer.parseInt(matcher.group("amount"));
+            String targetItem = matcher.group("targetItem");
+            int targetAmount = Integer.parseInt(matcher.group("targetAmount"));
+            if (player.getBackPack().getInventorySize(targetItem) >= targetAmount) {
+                if (currentPlayer.getBackPack().getInventorySize(item) >= amount) {
+                    for (int i = 0; i < amount; i++) {
+                        BackPackable b = currentPlayer.getBackPack().useItem(item);
+                        player.getBackPack().addItemToInventory(b);
+                    }
+                    for (int i = 0; i < targetAmount; i++) {
+                        BackPackable b = player.getBackPack().useItem(targetItem);
+                        currentPlayer.getBackPack().addItemToInventory(b);
+                    }
+                } else {
+                    return new Result(false, "you have not enough item in your inventory");
+                }
+            } else {
+                return new Result(false, "this player have not enough targetItems in her/his inventory");
+            }
+
+        } else {
+            String item = matcher.group("item");
+            int amount = Integer.parseInt(matcher.group("amount"));
+            String targetItem = matcher.group("targetItem");
+            int targetAmount = Integer.parseInt(matcher.group("targetAmount"));
+            if (player.getBackPack().getInventorySize(item) >= amount) {
+                if (currentPlayer.getBackPack().getInventorySize(targetItem) >= targetAmount) {
+                    for (int i = 0; i < amount; i++) {
+                        BackPackable b = player.getBackPack().useItem(item);
+                        currentPlayer.getBackPack().addItemToInventory(b);
+                    }
+                    for (int i = 0; i < targetAmount; i++) {
+                        BackPackable b = currentPlayer.getBackPack().useItem(targetItem);
+                        player.getBackPack().addItemToInventory(b);
+                    }
+                } else {
+                    return new Result(false, "this player have not enough item in your inventory");
+                }
+            } else {
+                return new Result(false, "this player have not enough targetItems in her/his inventory");
+            }
+        }
+        return new Result(false, "this username does not exist in this game");
     }
 
     public Result tradeHistory() {
@@ -2110,7 +2313,7 @@ public class GameMenuController {
                         + "--------------------------------------------------\n");
             }
         }
-        result += "previous trades (accepted) \n";
+        result += "\nprevious trades (accepted): \n";
         for (Trade trade : currentPlayer.getTradeHistory()) {
             if (trade.getTradeType().equals("byMoney")) {
                 result += (trade.getType() + " : " + "\n"
@@ -2249,13 +2452,15 @@ public class GameMenuController {
                 if (!currentPlayer.getGiftNPCToday().get(npc)) {
                     if (npc.getFavorites().contains(item)) {
                         currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 200));
-                        return new Result(true, "your beautiful gift was received by + " + npc.getName());
+                        currentPlayer.getGiftNPCToday().put(npc, true);
+                        return new Result(true, "your beautiful gift was received by  " + npc.getName());
                     } else {
+                        currentPlayer.getGiftNPCToday().put(npc, true);
                         currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 50));
-                        return new Result(true, "your gift was received by + " + npc.getName());
+                        return new Result(true, "your gift was received by  " + npc.getName());
                     }
                 } else {
-                    return new Result(true, "your gift was received by + " + npc.getName());
+                    return new Result(true, "your gift was received by  " + npc.getName());
                 }
 
             }
@@ -2313,7 +2518,7 @@ public class GameMenuController {
         if (npc == null) {
             return new Result(false, "npc not found");
         } else {
-            Quest quest = npc.getRequests().get(i);
+            Quest quest = npc.getRequests().get(i - 1);
             if (quest.isCompleted()) {
                 return new Result(false, "quest already completed");
             } else {
@@ -2326,10 +2531,10 @@ public class GameMenuController {
                             currentPlayer.getBackPack().useItem(item);
                         }
                         if (2 < currentPlayer.getFriendShipsWithNPCs().get(npc) / 200) {
-                            npc.giveReward(currentPlayer, Integer.parseInt(index));
-                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                            npc.giveReward(currentPlayer, Integer.parseInt(index) - 1);
+                            npc.giveReward(currentPlayer, Integer.parseInt(index) - 1);
                         } else {
-                            npc.giveReward(currentPlayer, Integer.parseInt(index));
+                            npc.giveReward(currentPlayer, Integer.parseInt(index) - 1);
                         }
                         return new Result(true, "the mission was successfully completed." +
                                 "your reward has been added to your backpack");

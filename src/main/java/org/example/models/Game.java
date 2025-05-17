@@ -7,6 +7,7 @@ import org.example.models.cooking.Recipe;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.map.GameMap;
+import org.example.models.map.GreenHouse;
 import org.example.models.map.PlayerMap;
 import org.example.models.map.Tile;
 import org.example.models.market.StoreManager;
@@ -22,6 +23,7 @@ public class Game {
     private GameMap gameMap;
     private ArrayList<NPC> NPCs = new ArrayList<>();
     private StoreManager storeManager = new StoreManager();
+    private ArrayList<GreenHouse>GreenHouses = new ArrayList<>();
 
 
     public Game(User user1, User user2, User user3) {
@@ -44,6 +46,9 @@ public class Game {
                 player.setTalkedNPCToday(npc);
                 player.setGiftNPCToday(npc);
             }
+        }
+        for (Player p : players) {
+            p.getUser().setNumOfPlay(p.getUser().getNumOfPlay() + 1);
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 0) {
@@ -186,5 +191,13 @@ public class Game {
             }
         }
         return null;
+    }
+
+    public ArrayList<GreenHouse> getGreenHouses() {
+        return GreenHouses;
+    }
+
+    public void addGreenHouses(GreenHouse greenHouse) {
+        GreenHouses.add(greenHouse);
     }
 }

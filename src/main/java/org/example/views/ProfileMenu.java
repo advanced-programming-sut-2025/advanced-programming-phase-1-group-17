@@ -1,6 +1,8 @@
 package org.example.views;
 
 import org.example.controllers.ProfileMenuController;
+import org.example.models.App;
+import org.example.models.enums.Menu;
 import org.example.models.enums.ProfileMenuCommands;
 
 import java.util.Scanner;
@@ -19,7 +21,11 @@ public class ProfileMenu implements AppMenu {
             System.out.println(profileMenuController.changeEmail(command));
         } else if (ProfileMenuCommands.changePassword.getMatcher(command).matches()) {
             System.out.println(profileMenuController.changePassword(command));
-        } else {
+        }else if (command.trim().equals("menu exit")) {
+            App.setCurrentMenu(Menu.MainMenu);
+            System.out.println("you are in main menu");
+        }
+        else {
             System.out.println("invalid command");
         }
     }

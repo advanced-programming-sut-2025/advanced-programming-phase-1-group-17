@@ -1,7 +1,5 @@
 package org.example.models.plant;
 
-import com.sun.source.tree.UsesTree;
-import org.example.models.App;
 import org.example.models.BackPackable;
 import org.example.models.market.ItemQuality;
 import org.example.models.tools.ToolMaterial;
@@ -10,15 +8,17 @@ import java.util.Random;
 
 public class Fruit implements BackPackable {
     private FruitType type;
-    private ItemQuality quality;
+    private double price;
+    private ItemQuality quality = ItemQuality.Regular;
 
     public Fruit(FruitType type) {
         this.type = type;
+        this.price = type.getPrice();
     }
 
     @Override
     public double getPrice() {
-        return 0;
+        return price;
     }
 
     @Override
@@ -43,12 +43,11 @@ public class Fruit implements BackPackable {
         this.quality = quality;
     }
 
-    public void setItemQuality() {
+    public void setItemQuality(ToolMaterial scytheMaterial) {
         Random random = new Random();
         int randInt = random.nextInt(100);
 
-        ToolMaterial toolMaterial = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool().getMaterial();
-        if (toolMaterial.equals(ToolMaterial.Basic)) {
+        if (scytheMaterial.equals(ToolMaterial.Basic)) {
             if (randInt< 25)
                 quality = ItemQuality.Regular;
             else if (randInt < 50)
@@ -57,7 +56,7 @@ public class Fruit implements BackPackable {
                 quality = ItemQuality.Gold;
             else
                 quality = ItemQuality.Iridium;
-        } else if (toolMaterial.equals(ToolMaterial.Copper)) {
+        } else if (scytheMaterial.equals(ToolMaterial.Copper)) {
             if (randInt< 20)
                 quality = ItemQuality.Regular;
             else if (randInt < 40)
@@ -66,7 +65,7 @@ public class Fruit implements BackPackable {
                 quality = ItemQuality.Gold;
             else
                 quality = ItemQuality.Iridium;
-        } else if (toolMaterial.equals(ToolMaterial.Iron)) {
+        } else if (scytheMaterial.equals(ToolMaterial.Iron)) {
             if (randInt< 15)
                 quality = ItemQuality.Regular;
             else if (randInt < 30)
@@ -75,7 +74,7 @@ public class Fruit implements BackPackable {
                 quality = ItemQuality.Gold;
             else
                 quality = ItemQuality.Iridium;
-        } else if (toolMaterial.equals(ToolMaterial.Gold)) {
+        } else if (scytheMaterial.equals(ToolMaterial.Gold)) {
             if (randInt< 10)
                 quality = ItemQuality.Regular;
             else if (randInt < 20)
@@ -84,7 +83,7 @@ public class Fruit implements BackPackable {
                 quality = ItemQuality.Gold;
             else
                 quality = ItemQuality.Iridium;
-        } else if (toolMaterial.equals(ToolMaterial.Iridium)) {
+        } else if (scytheMaterial.equals(ToolMaterial.Iridium)) {
             if (randInt< 5)
                 quality = ItemQuality.Regular;
             else if (randInt < 10)
@@ -95,5 +94,4 @@ public class Fruit implements BackPackable {
                 quality = ItemQuality.Iridium;
         }
     }
-
 }

@@ -82,7 +82,7 @@ public enum GameMenuCommands {
     ShowAllAvailableProducts("\\s*show\\s+all\\s+available\\s+products\\s*"),
     Purchase("\\s*purchase\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
     CheatAddDollars("\\s*cheat\\s+add\\s+(?<count>\\S+)\\s+dollars\\s*"),
-    Sell("\\s*sell\\s+(?<productName>.+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
+    Sell("\\s*sell\\s+(?<productName>\\S+)(\\s+-n\\s+(?<count>\\d+))?\\s*"),
 
     //For friendships
     talk("\\s*talk\\s+-u\\s+(?<username>\\S+)\\s+-m\\s+(?<message>[\\S ]+)\\s*"),
@@ -92,7 +92,7 @@ public enum GameMenuCommands {
     giftRate("\\s*gift\\s+rate\\s+-i\\s+(?<giftNumber>\\S+)\\s+-r\\s+(?<rate>\\S+)\\s*"),
     giftHistory("\\s*gift\\s+history\\s+-u\\s+(?<username>\\S+)\\s*"),
     flower("flower\\s+-u\\s+(?<username>\\S+)\\s*"),
-    askMarriage("\\s*ask\\s+marriage\\s+-u\\s+(?<username>\\S+)\\s+-r\\s+(?<ring>\\d+)\\s*"),
+    askMarriage("\\s*ask\\s+marriage\\s+-u\\s+(?<username>\\S+)\\s+-r\\s+(?<ring>\\S+)\\s*"),
     respond("\\s*respond\\s+(?<accept>accept|reject)\\s+-u\\s+(?<username>\\S+)\\s*"),
     deleteMessage("\\s*delete\\s+message\\s+(?<index>\\d+)\\s*"),
     startTrade("\\s*start\\s+trade\\s*"),
