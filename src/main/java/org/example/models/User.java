@@ -14,11 +14,11 @@ public class User {
     private String securityQuestion;
     private String securityAnswer;
     private int numOfPlay;
-    private int theMostMoneyInGame;
+    private double theMostMoneyInGame;
     private transient Game activeGame;
-
-    public User() {
-        if (this.username == null) {
+    private transient Game lastGame;
+    public User(){
+        if (this.username == null){
             gender = Gender.Male;
         }
     }
@@ -43,11 +43,11 @@ public class User {
         this.numOfPlay = numOfPlay;
     }
 
-    public int getTheMostMoneyInGame() {
+    public double getTheMostMoneyInGame() {
         return theMostMoneyInGame;
     }
 
-    public void setTheMostMoneyInGame(int theMostMoneyInGame) {
+    public void setTheMostMoneyInGame(double theMostMoneyInGame) {
         this.theMostMoneyInGame = theMostMoneyInGame;
     }
 
@@ -128,5 +128,13 @@ public class User {
         if (obj == null || getClass() != obj.getClass()) return false;
         User other = (User) obj;
         return Objects.equals(username, other.username);
+    }
+
+    public Game getLastGame() {
+        return lastGame;
+    }
+
+    public void setLastGame(Game lastGame) {
+        this.lastGame = lastGame;
     }
 }

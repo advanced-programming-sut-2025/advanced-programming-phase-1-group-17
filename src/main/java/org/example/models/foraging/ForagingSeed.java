@@ -44,7 +44,7 @@ public abstract class ForagingSeed {
         seasonalSeedMap.get(Season.Winter).add(SeedType.PowdermelonSeeds);
 
         // Special seeds go in ALL seasons
-        List<SeedType> specialSeeds = Arrays.asList(SeedType.AncientSeeds, SeedType.Mixed);
+        List<SeedType> specialSeeds = Arrays.asList(SeedType.AncientSeeds, SeedType.MixedSeed);
         for (Season season : Arrays.asList(Season.Spring, Season.Summer, Season.Fall, Season.Winter)) {
             seasonalSeedMap.get(season).addAll(specialSeeds);
         }

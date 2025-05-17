@@ -78,7 +78,7 @@ public enum ArtisanProductType implements BackPackableType {
             mapOf(entry(IngredientGroup.Grapes, 1)), 600, CraftingItemType.Dehydrator),
 
     SmokedFish("Smoked Fish",0, 0, 1,
-            mapOf(entry(IngredientGroup.AnyFish, 1)), 0, CraftingItemType.FishSmoker), // dynamic price
+            mapOf(entry(IngredientGroup.AnyFish, 1), entry(MineralType.Coal, 1)), 0, CraftingItemType.FishSmoker), // dynamic price
 
     IridiumBar("Iridium Bar", -1, 0, 4,
             mapOf(entry(MineralType.IridiumOre, 5), entry(MineralType.Coal, 1)), 1000, CraftingItemType.Furnace),

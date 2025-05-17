@@ -375,4 +375,20 @@ public class Player {
             }
         }
     }
+
+    public boolean isGuest() {
+        return isGuest;
+    }
+
+    public void upgradeTrashCan() {
+        ToolMaterial material = trashCan.getMaterial();
+        if (material.equals(ToolMaterial.Basic))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Copper, null);
+        else if (material.equals(ToolMaterial.Copper))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Iron, null);
+        else if (material.equals(ToolMaterial.Iron))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Gold, null);
+        else if (material.equals(ToolMaterial.Gold))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Iridium, null);
+    }
 }

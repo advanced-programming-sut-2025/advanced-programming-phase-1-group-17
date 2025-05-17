@@ -289,9 +289,13 @@ public class GameMenu implements AppMenu {
         }
         else if (command.trim().equals("show current menu")) {
             System.out.println(App.getCurrentMenu().name());
-        } else if (command.trim().equals("menu exit")) {
-            App.setCurrentMenu(Menu.MainMenu);
-        } else {
+        }else if  (command.trim().equals("exit game")) {
+            System.out.println(controller.exitGame());
+        }
+        else if (command.trim().equals("delete and exit game")) {
+            System.out.println(controller.deleteAndExitThisGame(scanner));
+        }
+        else {
             System.out.println("invalid command");
         }
 

@@ -1,4 +1,5 @@
 package org.example.models.map;
+import org.example.models.App;
 import org.example.models.Placeable;
 import org.example.models.Player;
 
@@ -15,6 +16,7 @@ public class GreenHouse implements Placeable {
         this.fence = new GreenHouseFence();
         this.isActive = false;
         greenHouse.add(this);
+        App.getCurrentGame().addGreenHouses(this);
     }
 
     public static ArrayList<GreenHouse> getGreenHouse() {
