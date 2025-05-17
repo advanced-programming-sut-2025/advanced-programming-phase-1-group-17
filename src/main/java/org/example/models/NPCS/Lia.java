@@ -16,6 +16,8 @@ public class Lia extends NPC implements Placeable {
     private String name = "Lia";
     private String job = "waiter";
     private final HashMap<String, String> dialogue = new HashMap<>();
+    private final HashMap<String, String> dialogue2 = new HashMap<>();
+
     {
         dialogue.put("what's your name?", "Lia");
         dialogue.put("hello", "hi how are you?");
@@ -33,7 +35,7 @@ public class Lia extends NPC implements Placeable {
     }
     {
         favorites.add("Grape");
-        favorites.add("salad");
+        favorites.add("Salad");
         favorites.add("Wine");
     }
     private ArrayList<Quest> requests= new ArrayList<>();
@@ -92,5 +94,10 @@ public class Lia extends NPC implements Placeable {
     }
     public HashMap<String, String> getDialogue() {
         return dialogue;
+    }
+
+    @Override
+    public HashMap<String, String> getDialogue2() {
+        return dialogue2;
     }
 }
