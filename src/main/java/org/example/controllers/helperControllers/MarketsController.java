@@ -5,6 +5,7 @@ import org.example.models.animal.AnimalProduct;
 import org.example.models.animal.AnimalProductType;
 import org.example.models.artisan.ArtisanProduct;
 import org.example.models.artisan.ArtisanProductType;
+import org.example.models.cooking.Food;
 import org.example.models.cooking.FoodType;
 import org.example.models.cooking.Recipe;
 import org.example.models.cooking.RecipeType;
@@ -19,7 +20,9 @@ import org.example.models.foraging.MineralType;
 import org.example.models.map.Tile;
 import org.example.models.market.*;
 import org.example.models.plant.*;
+import org.example.models.tools.FishingPoleType;
 import org.example.models.tools.Tool;
+import org.example.models.tools.ToolMaterial;
 import org.example.models.tools.ToolType;
 
 import java.util.ArrayList;
@@ -204,7 +207,7 @@ public class MarketsController {
 
         bin.setTodayItemOwner(player);
         for (int i = 0; i < count1; i++) {
-            bin.addItem(player.getBackPack().getBackPackItems().get(productType.get()).get(0), player);
+            bin.addItem(player.getBackPack().getBackPackItems().get(productType.get()).get(0));
             player.getBackPack().useItem(productType.get());
         }
         return new Result(true, "sold successfully");
@@ -224,6 +227,8 @@ public class MarketsController {
                 MineralType.class,
                 RingType.class,
                 FlowerType.class
+                MineralType.class,
+                ArtisanProductType.class
                 //TODO: Add more if needed
         );
 
@@ -294,8 +299,35 @@ public class MarketsController {
                                                             type = ArtisanProductType.valueOf(itemName);
                                                             sampleItem = new ArtisanProduct((ArtisanProductType) type, null);
                                                         } catch (Exception e13) {
-                                                            sampleItem = null;
-                                                            type = null;
+                                                            try{
+                                                                if(!itemName.equals("FishingPole")) {
+                                                                    type = ToolType.valueOf(itemName);
+                                                                    sampleItem = new Tool((ToolType) type, ToolMaterial.Basic,null);
+
+
+                                                                }
+
+                                                            } catch (Exception e14){
+                                                                try{
+                                                                    type = FishingPoleType.valueOf(itemName);
+                                                                    sampleItem = new Tool(ToolType.FishingPole,ToolMaterial.Basic,(FishingPoleType) type);
+                                                                }
+                                                                catch(Exception e15){
+                                                                    try{
+                                                                        type = FoodType.valueOf(itemName);
+                                                                        sampleItem = new Food((FoodType) type);
+
+                                                                    } catch (Exception e16){
+                                                                        try{
+                                                                            type = ArtisanProductType.valueOf(itemName);
+                                                                            sampleItem = new ArtisanProduct((ArtisanProductType) type,null);
+                                                                        }catch (Exception e17) {
+                                                                            sampleItem = null;
+                                                                            type = null;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }

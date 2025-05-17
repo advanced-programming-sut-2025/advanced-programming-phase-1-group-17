@@ -2,6 +2,7 @@ package org.example.models.plant;
 
 import org.example.models.Placeable;
 import org.example.models.map.Tile;
+import org.example.models.tools.ToolMaterial;
 
 import java.util.Random;
 
@@ -136,7 +137,7 @@ public abstract class Plant implements Placeable {
         isWateredToday = true;
     }
 
-    public abstract void harvest();
+    public abstract void harvest(ToolMaterial scytheMaterial);
     //TODO: quality when harvesting
 
 }
