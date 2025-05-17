@@ -21,9 +21,9 @@ public class ArtisanProduct implements BackPackable {
         this.type = type;
         this.price = type.getPrice();
         this.energy = type.getEnergy();
-        setPrice(ingredientUsed);
-        setEnergy(ingredientUsed);
-        setProgressTime(ingredientUsed);
+        //setPrice(ingredientUsed);
+        //setEnergy(ingredientUsed);
+        //setProgressTime(ingredientUsed);
     }
 
     private void setProgressTime(BackPackableType ingredientUsed) {
