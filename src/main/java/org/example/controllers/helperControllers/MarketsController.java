@@ -306,7 +306,6 @@ public class MarketsController {
 
 
                                                                 }
-
                                                             } catch (Exception e14){
                                                                 try{
                                                                     type = FishingPoleType.valueOf(itemName);
@@ -322,8 +321,13 @@ public class MarketsController {
                                                                             type = ArtisanProductType.valueOf(itemName);
                                                                             sampleItem = new ArtisanProduct((ArtisanProductType) type,null);
                                                                         }catch (Exception e17) {
-                                                                            sampleItem = null;
-                                                                            type = null;
+                                                                            try {
+                                                                                type = RingType.valueOf(itemName);
+                                                                                sampleItem = new Ring();
+                                                                            } catch (Exception e18) {
+                                                                                sampleItem = null;
+                                                                                type = null;
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -346,4 +350,5 @@ public class MarketsController {
         result.add(sampleItem);
         return result;
     }
+
 }
