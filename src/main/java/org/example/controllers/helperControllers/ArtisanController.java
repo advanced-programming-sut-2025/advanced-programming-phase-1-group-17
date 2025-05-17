@@ -58,12 +58,21 @@ public class ArtisanController {
 
         if (artisanProduct.isReady()) {
             craftingItem.setArtisanProductInProgress(null);
-            //TODO
             player.getBackPack().addItemToInventory(artisanProduct);
             CraftingItem.getAllArtisanProductsInProgress().remove(artisanProduct);
             return new Result(true, "artisan product added to backpack");
         } else {
-            return new Result(false, "artisan product is not ready.");
+            int leftHours = artisanProduct.getType().getProcessingHours() - artisanProduct.getHoursInProgress();
+            int leftDays = artisanProduct.getType().getProcessingDays() - artisanProduct.getDaysInProgress();
+            if (leftHours < 0) {
+                leftHours += 24;
+                leftDays--;
+            }
+
+            return new Result(false, "artisan product is not ready. %d days and %d hours left.".formatted(
+                    leftDays,
+                    leftHours
+            ));
         }
     }
 
@@ -133,13 +142,13 @@ public class ArtisanController {
             for (Map.Entry<Object, Integer> entry : requiredIngredients.entrySet()) {
                 Object key = entry.getKey();
 
+                boolean isFound = false;
                 if (key instanceof BackPackableType type) {
                     if (!provided.contains(type))
                         match = false;
                 } else if (key instanceof IngredientGroup group) {
-                    boolean isFound = false;
                     for (BackPackableType type : group.getMembers()) {
-                        if (provided.contains(type)){
+                        if (provided.contains(type)) {
                             isFound = true;
                             break;
                         }
@@ -186,7 +195,7 @@ public class ArtisanController {
             // 7. Start artisan production
             ArtisanProduct artisanProduct = new ArtisanProduct(product, ArtisanProduct.getIngredient(product, provided));
             CraftingItem.getAllArtisanProductsInProgress().add(artisanProduct);
-            ((CraftingItem)artisanTile.getPlaceable()).setArtisanProductInProgress(artisanProduct);
+            ((CraftingItem) artisanTile.getPlaceable()).setArtisanProductInProgress(artisanProduct);
 
             return new Result(true, "'%s' is now being produced.".formatted(product.getName()));
         }

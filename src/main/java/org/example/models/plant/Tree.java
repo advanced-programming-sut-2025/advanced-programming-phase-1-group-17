@@ -2,6 +2,7 @@ package org.example.models.plant;
 
 import org.example.models.Placeable;
 import org.example.models.map.Tile;
+import org.example.models.tools.ToolMaterial;
 
 public class Tree extends Plant implements Placeable {
     private TreeType type;
@@ -61,7 +62,7 @@ public class Tree extends Plant implements Placeable {
     }
 
     @Override
-    public void harvest() {
+    public void harvest(ToolMaterial scytheMaterial) {
         if(!hasFruit)
             return;
         daysTillNextHarvest = type.getFruitHarvestCycle();

@@ -204,7 +204,7 @@ public class MarketsController {
 
         bin.setTodayItemOwner(player);
         for (int i = 0; i < count1; i++) {
-            bin.addItem(player.getBackPack().getBackPackItems().get(productType.get()).get(0), player);
+            bin.addItem(player.getBackPack().getBackPackItems().get(productType.get()).get(0));
             player.getBackPack().useItem(productType.get());
         }
         return new Result(true, "sold successfully");
@@ -221,7 +221,8 @@ public class MarketsController {
                 CropType.class,
                 NormalItemType.class,
                 FoodType.class,
-                MineralType.class
+                MineralType.class,
+                ArtisanProductType.class
                 //TODO: Add more if needed
         );
 
