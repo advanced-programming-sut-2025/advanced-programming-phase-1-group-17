@@ -5,6 +5,8 @@ import org.example.models.Game;
 import org.example.models.NPCS.*;
 import org.example.models.NormalItem;
 import org.example.models.NormalItemType;
+import org.example.models.animal.Animal;
+import org.example.models.animal.AnimalPlace;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.foraging.Mineral;
@@ -13,6 +15,8 @@ import org.example.models.market.*;
 import org.example.models.plant.Crop;
 import org.example.models.plant.Seed;
 import org.example.models.plant.Tree;
+
+import static org.example.models.animal.AnimalType.*;
 
 public class display {
     public static final String RESET = "\u001B[0m";
@@ -27,6 +31,8 @@ public class display {
     public static final String BG_RED = "\u001B[41m";
     public static final String BG_GREEN = "\u001B[42m";
     public static final String CHOCOLATE = "\u001B[38;2;123;63;0m";
+    public static final String ORANGE = "\u001B[38;2;255;165;0m";
+
 
     public static void run(int x, int y, int size) {
         Game game = App.getCurrentGame();
@@ -49,7 +55,38 @@ public class display {
                 Tile tile = game.getTileByIndex(i, j);
                 if (tile == null) {
                     System.out.print("null");
-                } else if (tile.getPlaceable() instanceof NPC) {
+                }
+                else if(tile.getPlaceable() instanceof Animal animal){
+                    if(animal.getAnimalType().equals(Chicken)){
+                        System.out.print(BOLD + YELLOW + "C" + RESET);
+                    }
+                    else if(animal.getAnimalType().equals(Duck)){
+                        System.out.print(BOLD + WHITE + "d" + RESET);
+                    }
+                    else if(animal.getAnimalType().equals(Rabbit)){
+                        System.out.print(BOLD + WHITE + "R" + RESET);
+                    }
+                    else if(animal.getAnimalType().equals(Dinosaur)){
+                        System.out.print(BOLD + RED + "D" + RESET);
+                    }
+                    else if(animal.getAnimalType().equals(Cow)){
+                        System.out.print(BOLD + CHOCOLATE + "C" + RESET);
+                    }
+                    else if(animal.getAnimalType().equals(Goat)){
+                        System.out.print(BOLD + WHITE + "G" + RESET);
+                    }
+                    else if(animal.getAnimalType().equals(Sheep)){
+                        System.out.print(BOLD + WHITE + "S" + RESET);
+                    }
+                    else if(animal.getAnimalType().equals(Pig)){
+                        System.out.print(BOLD + CHOCOLATE + "P" + RESET);
+                    }
+                }
+                else if(tile.getPlaceable() instanceof AnimalPlace){
+                    System.out.print(BOLD + ORANGE + "A" + RESET);
+                }
+
+                else if (tile.getPlaceable() instanceof NPC) {
                     if (tile.getNpcIsHere() == null) {
                         if (tile.getPlaceable() instanceof Abigail) {
                             System.out.print(BOLD + BLUE + "A" + RESET);

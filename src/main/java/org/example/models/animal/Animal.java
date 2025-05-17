@@ -23,9 +23,19 @@ public class Animal implements Placeable {
     private boolean isFedOutside = false;
     private boolean isOutside=false;
     private Tile tile=null;
+    private int dayTillProduce=0;
+    private int counter=0;
     public Animal(String name, AnimalType animalType){
         this.name=name;
         this.animalType=animalType;
+        switch (animalType) {
+            case Duck -> dayTillProduce =2;
+            case Rabbit -> dayTillProduce =4;
+            case Dinosaur -> dayTillProduce =7;
+            case Goat -> dayTillProduce =2;
+            case Sheep -> dayTillProduce =3;
+            default -> dayTillProduce =0;
+        }
     }
 
     public Tile getTile() {
@@ -143,6 +153,9 @@ public class Animal implements Placeable {
         if(!isFedToday){
             return;
         }
+        if(this.getAnimalType().equals(AnimalType.Pig) && !this.isOutside){
+            return ;
+        }
         double randomNumber = 0.5 + Math.random();
         double chance = (double)(friendship + 150*randomNumber)/1500;
         double r = Math.random();
@@ -187,19 +200,31 @@ public class Animal implements Placeable {
         player.getBackPack().addcoin(price);
     }
     public static void goToNextDay(){
+
         for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
-            if(animal.isFedToday){
+            animal.counter++;
+            if(animal.isFedToday && animal.counter >= animal.dayTillProduce){
+                animal.counter=0;
                 animal.produce();
                 animal.setFedToday(false);
+
             }
+
             else{
                 animal.setFriendship(animal.getFriendship()-20);
             }
             if(!animal.isPettedToday){
                 animal.setFriendship(animal.getFriendship() - 10);
             }
+            else{
+                animal.setFriendship(animal.getFriendship() + 15);
+            }
             if(animal.isOutside){
                 animal.setFriendship(animal.getFriendship() - 20);
+                animal.setFedOutside(true);
+            }
+            else{
+                animal.setFedOutside(false);
             }
         }
     }
@@ -214,5 +239,19 @@ public class Animal implements Placeable {
             }
         }
         return productIntegerMap;
+    }
+
+    public static boolean areWeNearWater(int x , int y){
+        for(int i=-3;i<4;i++){
+            for(int j=-3;j<4;j++){
+                Tile tile = Tile.getTile(x + i, y +j);
+                if(tile != null){
+                    if(tile.isWater()){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
