@@ -221,7 +221,9 @@ public class MarketsController {
                 CropType.class,
                 NormalItemType.class,
                 FoodType.class,
-                MineralType.class
+                MineralType.class,
+                RingType.class,
+                FlowerType.class
                 //TODO: Add more if needed
         );
 
