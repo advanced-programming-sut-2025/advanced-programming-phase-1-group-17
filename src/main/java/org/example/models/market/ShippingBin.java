@@ -24,8 +24,7 @@ public class ShippingBin implements Placeable {
         allShippingBins.add(this);
     }
 
-    public void addItem(BackPackable backPackable, Player owner) {
-        this.todayItemOwner = owner;
+    public void addItem(BackPackable backPackable) {
         items.add(backPackable);
     }
 

@@ -38,18 +38,16 @@ public class TimeAndDate {
 
     public void increaseHour() {
         hour++;
-        for (Player player : App.getCurrentGame().getPlayers()) {
-            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
-                artisanItemsInProgress.goToNextHour();
-            }
+        for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
+            artisanItemsInProgress.goToNextHour();
         }
 
+
         if (hour > 22) {
-            for (Player player : App.getCurrentGame().getPlayers()) {
-                for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
-                    artisanItemsInProgress.goToNextDay();
-                }
+            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
+                artisanItemsInProgress.goToNextDay(11);
             }
+
             hour = 9;
             minute = 0;
             goToNextDay();
@@ -102,7 +100,7 @@ public class TimeAndDate {
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
 
-        if (App.getCurrentGame().getPlayers() == null) { //Added for Unit Test
+        if (!App.getCurrentGame().getPlayers().isEmpty()) { //Added for Unit Test
             Animal.goToNextDay();
             normalizeMaxEnergies();
             //Actions Needed to be done every day

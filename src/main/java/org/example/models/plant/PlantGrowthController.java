@@ -59,8 +59,8 @@ public abstract class PlantGrowthController {
                 continue;
 
             canBreak = true;
-//            if (plant.getTile().isCrowImmunity())
-//                return;
+            if (plant.getTile().isCrowImmunity())
+                return;
 
             if (plant instanceof Tree tree) {
                 tree.getTile().setPlaceable(null);

@@ -8,6 +8,7 @@ import org.example.models.*;
 import org.example.models.animal.*;
 import org.example.models.NPCS.NPC;
 import org.example.models.NPCS.Quest;
+import org.example.models.artisan.ArtisanProduct;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.cooking.Food;
@@ -233,6 +234,9 @@ public class GameMenuController {
         int amount = Integer.parseInt(day);
         for (int i = 0; i < amount; i++) {
             App.getCurrentGame().getDate().goToNextDay();
+            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
+                artisanItemsInProgress.goToNextDay(24);
+            }
         }
         return new Result(true, amount + " days added successfully");
     }
@@ -554,6 +558,22 @@ public class GameMenuController {
     }
 
     public Result toolUpgrade(String toolName) {
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        if (App.getCurrentGame().getTileByIndex(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
+            if (!store.getType().equals(StoreType.Blacksmith))
+                return new Result(false, "The Player is not in Blacksmith");
+        } else
+            return new Result(false, "The Player is not in a store");
+
+        if (toolName.equalsIgnoreCase("TrashCan")) {
+            if (player.getTrashCan().getMaterial().equals(ToolMaterial.Iridium)) {
+                return new Result(false, toolName + " is already at max level");
+            }
+            player.upgradeTrashCan();
+            Tool t = player.getTrashCan();
+            return new Result(true, toolName + " upgraded to " + player.getTrashCan().getMaterial().name());
+        }
+
         Tool tool = Tool.findToolByName(toolName);
         if (tool == null) {
             return new Result(false, "Tool with this name doesn't exist in your backpack.");
@@ -703,15 +723,15 @@ public class GameMenuController {
             } else if (tile.getPlaceable() instanceof Plant plant) {
                 player.getAbilities().increaseFarmingAbility();
                 if (plant instanceof Tree tree) {
-                    tree.harvest();
+                    tree.harvest(player.getCurrentTool().getMaterial());
                     Fruit fruit = new Fruit(tree.getType().getFruitType());
-                    //fruit.setItemQuality();
+                    fruit.setItemQuality(player.getCurrentTool().getMaterial());
                     player.getBackPack().addItemToInventory(
                             fruit);
                     if (tree.isForaging())
                         player.getAbilities().increaseForagingAbility();
                 } else if (plant instanceof Crop crop) {
-                    crop.harvest();
+                    crop.harvest(player.getCurrentTool().getMaterial());
                 }
             }
         } else if (tool.getToolType().equals(ToolType.MilkPail)) {
