@@ -17,7 +17,7 @@ import java.util.Random;
 public class Crop extends Plant implements BackPackable, Placeable {
     private CropType type;
     private boolean isGiant = false;
-    private ItemQuality quality;
+    private ItemQuality quality = ItemQuality.Regular;
 
     ArrayList<Crop> neighborGiantTiles = new ArrayList<>();
 
@@ -195,7 +195,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
 
     @Override
     public double getPrice() {
-        return 0;
+        return type.getPrice();
     }
 
     public CropType getType() {

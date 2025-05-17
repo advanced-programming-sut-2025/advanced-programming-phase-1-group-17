@@ -8,15 +8,17 @@ import java.util.Random;
 
 public class Fruit implements BackPackable {
     private FruitType type;
-    private ItemQuality quality;
+    private double price;
+    private ItemQuality quality = ItemQuality.Regular;
 
     public Fruit(FruitType type) {
         this.type = type;
+        this.price = type.getPrice();
     }
 
     @Override
     public double getPrice() {
-        return 0;
+        return price;
     }
 
     @Override

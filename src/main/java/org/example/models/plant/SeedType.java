@@ -1,11 +1,6 @@
 package org.example.models.plant;
 
-import org.example.models.App;
 import org.example.models.BackPackableType;
-import org.example.models.Placeable;
-import org.example.models.enums.Season;
-
-import java.util.Random;
 
 public enum SeedType implements BackPackableType {
     JazzSeeds,
@@ -49,7 +44,7 @@ public enum SeedType implements BackPackableType {
     RareSeed,
     PowdermelonSeeds,
     AncientSeeds,
-    Mixed; // Special case: not tied to a single crop
+    MixedSeed; // Special case: not tied to a single crop
 
     public static SeedType getSeedTypeByName(String source) {
         for (SeedType seedType : SeedType.values()) {
