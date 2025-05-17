@@ -38,18 +38,20 @@ public class TimeAndDate {
 
     public void increaseHour() {
         hour++;
+        for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
+            artisanItemsInProgress.goToNextHour();
+        }
         for (Player player : App.getCurrentGame().getPlayers()) {
-            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
-                artisanItemsInProgress.goToNextHour();
-            }
+            player.updateTemporaryBoostTimer();
+            player.updateBuff();
         }
 
-        if (hour > 22) {
-            for (Player player : App.getCurrentGame().getPlayers()) {
-                for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
-                    artisanItemsInProgress.goToNextDay();
-                }
+
+            if (hour > 22) {
+            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
+                artisanItemsInProgress.goToNextDay(11);
             }
+
             hour = 9;
             minute = 0;
             goToNextDay();
@@ -99,19 +101,19 @@ public class TimeAndDate {
             }
         }
         //Animal
-        Animal.goToNextDay();
-
-        normalizeMaxEnergies();
-
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
 
-        //Actions Needed to be done every day
-        weatherEffect();
-        PlantGrowthController.growOneDay();
-        ForagingController.setForagingForNextDay();
-        ShippingBin.goToNextDay();
-        App.getCurrentGame().getStoreManager().resetDailyLimits();
+        if (!App.getCurrentGame().getPlayers().isEmpty()) { //Added for Unit Test
+            Animal.goToNextDay();
+            normalizeMaxEnergies();
+            //Actions Needed to be done every day
+            weatherEffect();
+            PlantGrowthController.growOneDay();
+            ForagingController.setForagingForNextDay();
+            ShippingBin.goToNextDay();
+            App.getCurrentGame().getStoreManager().resetDailyLimits();
+        }
 
         changeDayOfTheWeek();
         day++;

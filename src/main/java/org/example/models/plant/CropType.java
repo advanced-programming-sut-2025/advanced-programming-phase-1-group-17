@@ -102,7 +102,7 @@ public enum CropType implements BackPackableType {
     }
 
     public static CropType getCropTypeBySeedType(SeedType seedType) {
-        if (seedType.equals(SeedType.Mixed)) {
+        if (seedType.equals(SeedType.MixedSeed)) {
             Season season = App.getCurrentGame().getDate().getSeason();
             Random random = new Random();
             CropType type;

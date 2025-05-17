@@ -21,9 +21,9 @@ public class ArtisanProduct implements BackPackable {
         this.type = type;
         this.price = type.getPrice();
         this.energy = type.getEnergy();
-        setPrice(ingredientUsed);
-        setEnergy(ingredientUsed);
-        setProgressTime(ingredientUsed);
+        //setPrice(ingredientUsed);
+        //setEnergy(ingredientUsed);
+        //setProgressTime(ingredientUsed);
     }
 
     private void setProgressTime(BackPackableType ingredientUsed) {
@@ -129,12 +129,20 @@ public class ArtisanProduct implements BackPackable {
         return energy;
     }
 
-    public void goToNextDay() {
+    public int getHoursInProgress() {
+        return hoursInProgress;
+    }
+
+    public int getDaysInProgress() {
+        return daysInProgress;
+    }
+
+    public void goToNextDay(int hours) {
         if (type.equals(ArtisanProductType.DriedMushrooms) || type.equals(ArtisanProductType.DriedFruit)
                 || type.equals(ArtisanProductType.Raisins)) {
             isReady = true;
         } else {
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < hours; i++)
                 goToNextHour();
         }
     }

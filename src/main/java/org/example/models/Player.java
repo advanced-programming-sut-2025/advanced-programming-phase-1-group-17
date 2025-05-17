@@ -2,9 +2,7 @@ package org.example.models;
 
 import org.example.models.NPCS.NPC;
 import org.example.models.artisan.ArtisanProduct;
-import org.example.models.cooking.Food;
-import org.example.models.cooking.FoodType;
-import org.example.models.cooking.Recipe;
+import org.example.models.cooking.*;
 import org.example.models.crafting.CraftingItemType;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.BackPackType;
@@ -22,6 +20,7 @@ public class Player {
     private boolean isGuest = false;
     private int x;
     private int y;
+    private Buff buff;
 
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
@@ -113,6 +112,7 @@ public class Player {
         backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));
         this.getRecipes().add(new Recipe(FoodType.MakiRoll));
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
+        this.buff = new Buff(BuffType.None,0);
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -162,9 +162,28 @@ public class Player {
     }
 
     //For Energy
+    private int temporaryMaxEnergyBoost = 0;
+    private int temporaryBoostRemainingHours = 0;
+
     public double getMaxEnergy() {
-        return maxEnergy;
+        return maxEnergy + temporaryMaxEnergyBoost;
     }
+
+    public void applyTemporaryMaxEnergyBoost(int boostAmount, int hours) {
+        this.temporaryMaxEnergyBoost = boostAmount;
+        this.temporaryBoostRemainingHours = hours ;
+    }
+
+    public void updateTemporaryBoostTimer() {
+        if (temporaryBoostRemainingHours > 0) {
+            temporaryBoostRemainingHours--;
+            if (temporaryBoostRemainingHours == 0) {
+                temporaryMaxEnergyBoost = 0;
+
+            }
+        }
+    }
+
 
     public void setMaxEnergy(double maxEnergy) {
         this.maxEnergy = maxEnergy;
@@ -174,8 +193,15 @@ public class Player {
         return energy;
     }
 
-    public void setEnergy(double energy) {
-        this.energy = energy;
+    public void setEnergy(double amount) {
+        if(amount < this.energy) {
+            this.energy = amount;
+        }
+        if(amount > this.getMaxEnergy()){
+            return;
+        }
+        amount = Math.min(amount, this.getMaxEnergy());
+        this.energy = amount;
     }
 
     public boolean isHasPassedOutToday() {
@@ -334,7 +360,35 @@ public class Player {
         this.giftNPCToday.put(npc,false);
     }
 
+    public Buff getBuff() {
+        return buff;
+    }
+
+    public void setBuff(Buff buff) {
+        this.buff = buff;
+    }
+    public void updateBuff() {
+        if (buff != null && buff.getBuffType() != BuffType.None) {
+            if(buff.getDuration()>0) buff.setDuration(buff.getDuration() -1 );
+            if (buff.getDuration() <= 0) {
+                buff = new Buff(BuffType.None, 0);
+            }
+        }
+    }
+
     public boolean isGuest() {
         return isGuest;
+    }
+
+    public void upgradeTrashCan() {
+        ToolMaterial material = trashCan.getMaterial();
+        if (material.equals(ToolMaterial.Basic))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Copper, null);
+        else if (material.equals(ToolMaterial.Copper))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Iron, null);
+        else if (material.equals(ToolMaterial.Iron))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Gold, null);
+        else if (material.equals(ToolMaterial.Gold))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Iridium, null);
     }
 }

@@ -6,7 +6,7 @@ import org.example.models.enums.FishType;
 
 public class Fish implements BackPackable {
     private FishType fishType;
-    private ItemQuality quality;
+    private ItemQuality quality = ItemQuality.Regular;
     private int count=1;
 
     public Fish(FishType fishType, ItemQuality shippingBinType) {
@@ -40,12 +40,12 @@ public class Fish implements BackPackable {
 
     @Override
     public String getName() {
-        return "";
+        return fishType.getName();
     }
 
     @Override
     public double getPrice() {
-        return 0;
+        return fishType.getPrice();
     }
 
     @Override

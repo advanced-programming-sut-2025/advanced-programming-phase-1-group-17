@@ -8,7 +8,7 @@ public class AnimalProduct implements BackPackable {
     private Animal animal;
     private String name;
     private AnimalProductType animalProductType;
-    private ItemQuality quality;
+    private ItemQuality quality = ItemQuality.Regular;
 
 
     public Animal getAnimal() {
@@ -44,9 +44,10 @@ public class AnimalProduct implements BackPackable {
     public void setQuality(ItemQuality quality) {
         this.quality = quality;
     }
+
     @Override
     public double getPrice() {
-        return 0;
+        return animalProductType.getPrice();
     }
 
     @Override
