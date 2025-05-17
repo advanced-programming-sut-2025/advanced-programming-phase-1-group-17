@@ -8,17 +8,17 @@ import org.example.models.*;
 import org.example.models.animal.*;
 import org.example.models.NPCS.NPC;
 import org.example.models.NPCS.Quest;
+import org.example.models.artisan.ArtisanProductType;
+import org.example.models.cooking.*;
 import org.example.models.crafting.CraftingItem;
 import org.example.models.crafting.CraftingItemType;
-import org.example.models.cooking.Food;
-import org.example.models.cooking.FoodType;
-import org.example.models.cooking.Recipe;
 import org.example.models.crafting.CraftingRecipe;
 import org.example.models.enums.*;
 import org.example.models.foraging.ForagingController;
 import org.example.models.foraging.Mineral;
 import org.example.models.animal.AnimalPlace;
 import org.example.models.map.GreenHouse;
+import org.example.models.map.Hut;
 import org.example.models.map.Tile;
 import org.example.models.plant.*;
 import org.example.models.tools.*;
@@ -421,6 +421,13 @@ public class GameMenuController {
                     return new Result(true, "You are now using " + tool.getToolType().getName() + ".");
                 }
             }
+            if (item instanceof FishingPoleType toolType) {
+                Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
+                if (tool.getType().getName().equalsIgnoreCase(toolName)) {
+                    App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(tool);
+                    return new Result(true, "You are now using " + tool.getType().getName() + ".");
+                }
+            }
         }
 
         return new Result(false, "Tool with name '" + toolName + "' doesn't exist in your backpack.");
@@ -440,12 +447,19 @@ public class GameMenuController {
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
 
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
-            if (backPackableType instanceof ToolType toolType) {
+            if (backPackableType instanceof ToolType toolType ) {
                 Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
                 if (tool != null) {
-                    sb.append(tool.getToolType().name()).append("\n");
+                    sb.append(tool.getType().getName()).append("\n");
+
                 }
+
             }
+            if (backPackableType instanceof FishingPoleType toolType) {
+                Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
+                sb.append(tool.getType().getName()).append("\n");
+            }
+
         }
         if (sb.isEmpty()) {
             return new Result(false, "You dont have any tool");
@@ -454,9 +468,19 @@ public class GameMenuController {
     }
 
     public Result toolUpgrade(String toolName) {
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         Tool tool = Tool.findToolByName(toolName);
         if (tool == null) {
             return new Result(false, "Tool with this name doesn't exist in your backpack.");
+        }
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if(!(tile.getPlaceable() instanceof Store)){
+            return new Result(false, "You should go to blacksmith to upgrade tools");
+        }
+        if(tile.getPlaceable() instanceof Store store){
+            if(store.getType() != StoreType.Blacksmith){
+                return new Result(false,"you are in wrong store , go to blacksmith to upgrade tools");
+            }
         }
         if (tool.getToolType().equals(ToolType.FishingPole)) {
 //            if(tool.getLevel()==3){
@@ -471,9 +495,40 @@ public class GameMenuController {
         if (tool.getLevel() == 4) {
             return new Result(false, toolName + " is already at max level");
         }
+        ArtisanProductType type = ArtisanProductType.CopperBar;
+        double price=2000;
+        switch (tool.getLevel() +1){
+            case 1 : type = ArtisanProductType.CopperBar;
+            price = 2000;
+            break;
+            case 2 : type = ArtisanProductType.IronBar;
+            price = 5000;
+            break;
+            case 3 : type = ArtisanProductType.GoldBar;
+            price = 10000;
+            break;
+            case 4 : type = ArtisanProductType.IridiumBar;
+            price = 25000;
+            break;
+            default:type = ArtisanProductType.CopperBar;
+        }
+        if(toolName.equals("TrashCan")){
+            price = price/2;
+        }
+        if(player.getBackPack().getCoin()<price){
+            return new Result(false,"not enough coin");
+        }
+        if(player.getBackPack().getBackPackItems().containsKey(type)){
+            if(player.getBackPack().getBackPackItems().get(type).size()>=5){
+                for(int i=0;i<5;i++){
+                    player.getBackPack().useItem(type);
+                }
+                tool.setLevel(tool.getLevel() + 1);
+                return new Result(true, toolName + " upgraded to " + tool.getLevelMaterial());
+            }
+        }
 
-        tool.setLevel(tool.getLevel() + 1);
-        return new Result(true, toolName + " upgraded to " + tool.getLevelMaterial());
+        return new Result(false,"not enough " + type.name());
 
     }
 
@@ -495,6 +550,9 @@ public class GameMenuController {
             if (player.getAbilities().getFarmingLevel() == 4) {
                 energy--;
             }
+            if(player.getBuff().getBuffType().equals(BuffType.Farming)){
+                energy--;
+            }
             energy = Math.max(energy, 0);
             if (tile.getPlaceable() == null || tile.getPlaceable() instanceof GreenHouse) {
                 tile.setPlowed(true);
@@ -507,6 +565,9 @@ public class GameMenuController {
         } else if (tool.getToolType().equals(ToolType.Pickaxe)) {
             double energy = ToolType.Pickaxe.getEnergyCosts()[tool.getLevel()];
             if (player.getAbilities().getMiningLevel() == 4) {
+                energy--;
+            }
+            if(player.getBuff().getBuffType().equals(BuffType.Mining)){
                 energy--;
             }
             if (tile.getPlaceable() instanceof Mineral mineral) {
@@ -553,6 +614,9 @@ public class GameMenuController {
             if (player.getAbilities().getForagingLevel() == 4) {
                 energy--;
             }
+            if(player.getBuff().getBuffType().equals(BuffType.Foraging)){
+                energy--;
+            }
             if (tile.getPlaceable() instanceof Tree) {
                 player.getAbilities().increaseForagingAbility();
                 tile.setPlaceable(new NormalItem(NormalItemType.Wood));
@@ -574,6 +638,9 @@ public class GameMenuController {
         } else if (tool.getToolType().equals(ToolType.WateringCan)) {
             double energy = ToolType.WateringCan.getEnergyCosts()[tool.getLevel()];
             if (player.getAbilities().getForagingLevel() == 4) {
+                energy--;
+            }
+            if(player.getBuff().getBuffType().equals(BuffType.Farming)){
                 energy--;
             }
             if (tile.getPlaceable() instanceof Plant plant) {
@@ -647,6 +714,9 @@ public class GameMenuController {
             player.setEnergy(player.getEnergy() - 4 * leverage);
             if (tile.getPlaceable() instanceof Animal animal) {
                 if (animal.getAnimalType().equals(AnimalType.Sheep)) {
+                    if(animal.getAnimalProducts().isEmpty()){
+                        return new Result(false,"this sheep has no product");
+                    }
                     ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
                     for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
                         player.getBackPack().addItemToInventory(animalProduct);
@@ -658,13 +728,14 @@ public class GameMenuController {
                         }
                     }
                     animal.getAnimalProducts().removeAll(toRemoved);
-                    return new Result(true, "you collected all" + toRemoved.size() + " wools of " + animal.getName());
+                    return new Result(true, "you collected all " + toRemoved.size() + " wools of " + animal.getName());
                 }
             }
-        } else if (tool.getToolType().
-
-                equals(ToolType.FishingPole)) {
-            double energy = 2;
+        } else if (tool.getToolType().equals(ToolType.FishingPole)) {
+            if(!tile.isWater()){
+                return new Result(false,"you should catch fish near water and lakes , here is not water");
+            }
+            double energy =2;
             switch (tool.getFishingPoleMaterial()) {
                 case TrainingFishingPole -> energy = 8;
                 case BambooFishingPole -> energy = 6;
@@ -674,8 +745,12 @@ public class GameMenuController {
             if (player.getAbilities().getFishingLevel() == 4) {
                 energy--;
             }
+            if(player.getBuff().getBuffType().equals(BuffType.Fishing)){
+                energy--;
+            }
             player.setEnergy(player.getEnergy() - energy * leverage);
-            fishing(tool.getFishingPoleMaterial().name());
+            System.out.println(fishing(tool.getFishingPoleMaterial().name()));
+
         }
         return new Result(true, "Tool used.");
     }
@@ -702,6 +777,14 @@ public class GameMenuController {
     }
 
     public Result craftingShowRecipes() {
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile tile  = Tile.getTile(player.getX(), player.getY());
+        if(tile == null){
+            return new Result(false, "Tile not found");
+        }
+        if(!(tile.getPlaceable() instanceof Hut)){
+            return new Result(false,"you should be in Hut");
+        }
         if (App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes().isEmpty()) {
             return new Result(false, "No crafting recipes found");
         }
@@ -718,7 +801,20 @@ public class GameMenuController {
 
     public Result craftingCraft(String itemName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile tile  = Tile.getTile(player.getX(), player.getY());
+        if(tile == null){
+            return new Result(false, "Tile not found");
+        }
+        if(!(tile.getPlaceable() instanceof Hut)){
+            return new Result(false,"you should be in Hut");
+        }
         CraftingRecipe recipe = CraftingRecipe.findRecipe(itemName);
+        if(tile == null){
+            return new Result(false, "Tile not found");
+        }
+        if(!(tile.getPlaceable() instanceof Hut)){
+            return new Result(false,"for crafting item you should be in Hut");
+        }
         if (recipe == null) {
             return new Result(false, "No crafting recipe found");
         }
@@ -939,6 +1035,13 @@ public class GameMenuController {
 
     public Result cookingRefrigerator(String mode, String itemName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile tile  = Tile.getTile(player.getX(), player.getY());
+        if(tile == null){
+            return new Result(false, "Tile not found");
+        }
+        if(!(tile.getPlaceable() instanceof Hut)){
+            return new Result(false,"you should be in Hut");
+        }
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
         if (mode.equals("put")) {
 
@@ -959,10 +1062,18 @@ public class GameMenuController {
                 }
             }
         }
-        return new Result(false, "ttt");
+        return new Result(false, "just put or pick");
     }
 
     public Result cookingShowRecipes() {
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile tile  = Tile.getTile(player.getX(), player.getY());
+        if(tile == null){
+            return new Result(false, "Tile not found");
+        }
+        if(!(tile.getPlaceable() instanceof Hut)){
+            return new Result(false,"you should be in Hut");
+        }
         if (App.getCurrentGame().getCurrentPlayingPlayer().getRecipes().isEmpty()) {
             return new Result(false, "you dont have any recipes");
         }
@@ -979,6 +1090,13 @@ public class GameMenuController {
 
     public Result cookingPrepare(String recipeName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile tile  = Tile.getTile(player.getX(), player.getY());
+        if(tile == null){
+            return new Result(false, "Tile not found");
+        }
+        if(!(tile.getPlaceable() instanceof Hut)){
+            return new Result(false,"you should be in Hut");
+        }
         Recipe recipe = Recipe.findRecipe(recipeName);
         if (recipe == null) {
             return new Result(false, "Recipe not found");
@@ -1022,7 +1140,7 @@ public class GameMenuController {
                 }
             }
         }
-        Food newFood = new Food();
+        Food newFood = new Food(null);
         newFood.setFoodtype(recipe.getFoodToBeCooked());
         newFood.setRecipe(recipe);
         player.getBackPack().addItemToInventory(newFood);
@@ -1032,6 +1150,13 @@ public class GameMenuController {
 
     public Result eat(String foodName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile tile  = Tile.getTile(player.getX(), player.getY());
+        if(tile == null){
+            return new Result(false, "Tile not found");
+        }
+        if(!(tile.getPlaceable() instanceof Hut)){
+            return new Result(false,"you should be in Hut");
+        }
         try {
             FoodType food = FoodType.valueOf(foodName);
             if (!player.getBackPack().getBackPackItems().containsKey(food)) {
@@ -1045,6 +1170,34 @@ public class GameMenuController {
             }
             player.getBackPack().useItem(food);
             player.setEnergy(player.getEnergy() + food.getEnergy());
+            switch (food){
+                case TripleShotEspresso -> player.applyTemporaryMaxEnergyBoost(100,5);
+                case RedPlate -> player.applyTemporaryMaxEnergyBoost(50,3);
+                case HashBrowns, FarmersLunch -> {
+                    player.setBuff(new Buff(BuffType.Farming, 5));
+                    player.applyTemporaryMaxEnergyBoost(0,0);
+                }
+                case Pancakes -> {
+                    player.setBuff(new Buff(BuffType.Foraging, 11));
+                    player.applyTemporaryMaxEnergyBoost(0,0);
+                }
+                case SurvivalBurger -> {
+                    player.setBuff(new Buff(BuffType.Foraging, 5));
+                    player.applyTemporaryMaxEnergyBoost(0,0);
+                }
+                case DishOTheSea -> {
+                    player.setBuff(new Buff(BuffType.Fishing, 5));
+                    player.applyTemporaryMaxEnergyBoost(0,0);
+                }
+                case SeafoamPudding -> {
+                    player.setBuff(new Buff(BuffType.Fishing, 10));
+                    player.applyTemporaryMaxEnergyBoost(0,0);
+                }
+                case MinersTreat -> {
+                    player.setBuff(new Buff(BuffType.Mining, 5));
+                    player.applyTemporaryMaxEnergyBoost(0,0);
+                }
+            }
             return new Result(true, "you ate " + foodName + " successfully , " +
                     food.getEnergy() + " energy added");
         } catch (Exception e) {
@@ -1177,6 +1330,9 @@ public class GameMenuController {
                     .append("friendship : ").append(animal.getFriendship()).append("\n")
                     .append(animal.isPettedToday() ? "petted today" : "not petted today").append("\n")
                     .append(animal.isFedToday() ? "feded today" : "not fed today").append("\n\n");
+            if(animal.getTile() != null){
+                sb.append(animal.getTile().getX()).append(" ").append(animal.getTile().getY()).append("\n");
+            }
         }
         return new Result(true, sb.toString());
     }
@@ -1304,6 +1460,9 @@ public class GameMenuController {
 
     public Result fishing(String fishingPole) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        if(!Animal.areWeNearWater(player.getX(),player.getY())) {
+            return new Result(false,"first go near water");
+        }
         if (player.getBackPack().isBackPackFull()) {
             return new Result(false, "your backpack is full");
         }

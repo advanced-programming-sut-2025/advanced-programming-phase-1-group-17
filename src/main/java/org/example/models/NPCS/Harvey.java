@@ -57,7 +57,7 @@ public class Harvey extends NPC implements Placeable {
             player.getFriendShipsWithNPCs().put(this, Math.min(799, player.getFriendShipsWithNPCs().get(this) + 200));
         } else {
             for (int i = 0; i < 5; i++) {
-                Food f = new Food();
+                Food f = new Food(null);
                 f.setFoodtype(FoodType.Salad);
                 player.getBackPack().addItemToInventory(f);
             }

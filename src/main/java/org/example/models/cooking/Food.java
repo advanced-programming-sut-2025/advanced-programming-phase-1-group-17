@@ -9,6 +9,9 @@ public class Food implements BackPackable {
     private FoodType foodtype;
     private int count;
     private Recipe recipe;
+    public Food(FoodType foodtype){
+        this.foodtype = foodtype;
+    }
 
     public String getName() {
         return foodtype.name();
