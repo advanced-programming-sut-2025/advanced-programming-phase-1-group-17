@@ -99,19 +99,19 @@ public class TimeAndDate {
             }
         }
         //Animal
-        Animal.goToNextDay();
-
-        normalizeMaxEnergies();
-
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
 
-        //Actions Needed to be done every day
-        weatherEffect();
-        PlantGrowthController.growOneDay();
-        ForagingController.setForagingForNextDay();
-        ShippingBin.goToNextDay();
-        App.getCurrentGame().getStoreManager().resetDailyLimits();
+        if (App.getCurrentGame().getPlayers() == null) { //Added for Unit Test
+            Animal.goToNextDay();
+            normalizeMaxEnergies();
+            //Actions Needed to be done every day
+            weatherEffect();
+            PlantGrowthController.growOneDay();
+            ForagingController.setForagingForNextDay();
+            ShippingBin.goToNextDay();
+            App.getCurrentGame().getStoreManager().resetDailyLimits();
+        }
 
         changeDayOfTheWeek();
         day++;
