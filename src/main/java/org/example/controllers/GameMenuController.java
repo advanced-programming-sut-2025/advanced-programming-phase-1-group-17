@@ -554,7 +554,7 @@ public class GameMenuController {
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
 
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
-            if (backPackableType instanceof ToolType toolType ) {
+            if (backPackableType instanceof ToolType toolType) {
                 Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
                 if (tool != null) {
                     sb.append(tool.getType().getName()).append("\n");
@@ -609,31 +609,36 @@ public class GameMenuController {
             return new Result(false, toolName + " is already at max level");
         }
         ArtisanProductType type = ArtisanProductType.CopperBar;
-        double price=2000;
-        switch (tool.getLevel() +1){
-            case 1 : type = ArtisanProductType.CopperBar;
-            price = 2000;
-            break;
-            case 2 : type = ArtisanProductType.IronBar;
-            price = 5000;
-            break;
-            case 3 : type = ArtisanProductType.GoldBar;
-            price = 10000;
-            break;
-            case 4 : type = ArtisanProductType.IridiumBar;
-            price = 25000;
-            break;
-            default:type = ArtisanProductType.CopperBar;
+        double price = 2000;
+        switch (tool.getLevel() + 1) {
+            case 1:
+                type = ArtisanProductType.CopperBar;
+                price = 2000;
+                break;
+            case 2:
+                type = ArtisanProductType.IronBar;
+                price = 5000;
+                break;
+            case 3:
+                type = ArtisanProductType.GoldBar;
+                price = 10000;
+                break;
+            case 4:
+                type = ArtisanProductType.IridiumBar;
+                price = 25000;
+                break;
+            default:
+                type = ArtisanProductType.CopperBar;
         }
-        if(toolName.equals("TrashCan")){
-            price = price/2;
+        if (toolName.equals("TrashCan")) {
+            price = price / 2;
         }
-        if(player.getBackPack().getCoin()<price){
-            return new Result(false,"not enough coin");
+        if (player.getBackPack().getCoin() < price) {
+            return new Result(false, "not enough coin");
         }
-        if(player.getBackPack().getBackPackItems().containsKey(type)){
-            if(player.getBackPack().getBackPackItems().get(type).size()>=5){
-                for(int i=0;i<5;i++){
+        if (player.getBackPack().getBackPackItems().containsKey(type)) {
+            if (player.getBackPack().getBackPackItems().get(type).size() >= 5) {
+                for (int i = 0; i < 5; i++) {
                     player.getBackPack().useItem(type);
                 }
                 tool.setLevel(tool.getLevel() + 1);
@@ -641,7 +646,7 @@ public class GameMenuController {
             }
         }
 
-        return new Result(false,"not enough " + type.name());
+        return new Result(false, "not enough " + type.name());
 
     }
 
@@ -663,7 +668,7 @@ public class GameMenuController {
             if (player.getAbilities().getFarmingLevel() == 4) {
                 energy--;
             }
-            if(player.getBuff().getBuffType().equals(BuffType.Farming)){
+            if (player.getBuff().getBuffType().equals(BuffType.Farming)) {
                 energy--;
             }
             energy = Math.max(energy, 0);
@@ -680,7 +685,7 @@ public class GameMenuController {
             if (player.getAbilities().getMiningLevel() == 4) {
                 energy--;
             }
-            if(player.getBuff().getBuffType().equals(BuffType.Mining)){
+            if (player.getBuff().getBuffType().equals(BuffType.Mining)) {
                 energy--;
             }
             if (tile.getPlaceable() instanceof Mineral mineral) {
@@ -727,7 +732,7 @@ public class GameMenuController {
             if (player.getAbilities().getForagingLevel() == 4) {
                 energy--;
             }
-            if(player.getBuff().getBuffType().equals(BuffType.Foraging)){
+            if (player.getBuff().getBuffType().equals(BuffType.Foraging)) {
                 energy--;
             }
             if (tile.getPlaceable() instanceof Tree) {
@@ -753,7 +758,7 @@ public class GameMenuController {
             if (player.getAbilities().getForagingLevel() == 4) {
                 energy--;
             }
-            if(player.getBuff().getBuffType().equals(BuffType.Farming)){
+            if (player.getBuff().getBuffType().equals(BuffType.Farming)) {
                 energy--;
             }
             if (tile.getPlaceable() instanceof Plant plant) {
@@ -827,8 +832,8 @@ public class GameMenuController {
             player.setEnergy(player.getEnergy() - 4 * leverage);
             if (tile.getPlaceable() instanceof Animal animal) {
                 if (animal.getAnimalType().equals(AnimalType.Sheep)) {
-                    if(animal.getAnimalProducts().isEmpty()){
-                        return new Result(false,"this sheep has no product");
+                    if (animal.getAnimalProducts().isEmpty()) {
+                        return new Result(false, "this sheep has no product");
                     }
                     ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
                     for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
@@ -845,10 +850,10 @@ public class GameMenuController {
                 }
             }
         } else if (tool.getToolType().equals(ToolType.FishingPole)) {
-            if(!tile.isWater()){
-                return new Result(false,"you should catch fish near water and lakes , here is not water");
+            if (!tile.isWater()) {
+                return new Result(false, "you should catch fish near water and lakes , here is not water");
             }
-            double energy =2;
+            double energy = 2;
             switch (tool.getFishingPoleMaterial()) {
                 case TrainingFishingPole -> energy = 8;
                 case BambooFishingPole -> energy = 6;
@@ -858,7 +863,7 @@ public class GameMenuController {
             if (player.getAbilities().getFishingLevel() == 4) {
                 energy--;
             }
-            if(player.getBuff().getBuffType().equals(BuffType.Fishing)){
+            if (player.getBuff().getBuffType().equals(BuffType.Fishing)) {
                 energy--;
             }
             player.setEnergy(player.getEnergy() - energy * leverage);
@@ -891,12 +896,12 @@ public class GameMenuController {
 
     public Result craftingShowRecipes() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile  = Tile.getTile(player.getX(), player.getY());
-        if(tile == null){
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (tile == null) {
             return new Result(false, "Tile not found");
         }
-        if(!(tile.getPlaceable() instanceof Hut)){
-            return new Result(false,"you should be in Hut");
+        if (!(tile.getPlaceable() instanceof Hut)) {
+            return new Result(false, "you should be in Hut");
         }
         if (App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes().isEmpty()) {
             return new Result(false, "No crafting recipes found");
@@ -914,19 +919,19 @@ public class GameMenuController {
 
     public Result craftingCraft(String itemName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile  = Tile.getTile(player.getX(), player.getY());
-        if(tile == null){
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (tile == null) {
             return new Result(false, "Tile not found");
         }
-        if(!(tile.getPlaceable() instanceof Hut)){
-            return new Result(false,"you should be in Hut");
+        if (!(tile.getPlaceable() instanceof Hut)) {
+            return new Result(false, "you should be in Hut");
         }
         CraftingRecipe recipe = CraftingRecipe.findRecipe(itemName);
-        if(tile == null){
+        if (tile == null) {
             return new Result(false, "Tile not found");
         }
-        if(!(tile.getPlaceable() instanceof Hut)){
-            return new Result(false,"for crafting item you should be in Hut");
+        if (!(tile.getPlaceable() instanceof Hut)) {
+            return new Result(false, "for crafting item you should be in Hut");
         }
         if (recipe == null) {
             return new Result(false, "No crafting recipe found");
@@ -1148,16 +1153,15 @@ public class GameMenuController {
 
     public Result cookingRefrigerator(String mode, String itemName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile  = Tile.getTile(player.getX(), player.getY());
-        if(tile == null){
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (tile == null) {
             return new Result(false, "Tile not found");
         }
-        if(!(tile.getPlaceable() instanceof Hut)){
-            return new Result(false,"you should be in Hut");
+        if (!(tile.getPlaceable() instanceof Hut)) {
+            return new Result(false, "you should be in Hut");
         }
         BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
         if (mode.equals("put")) {
-
             for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
                 if (backPackableType instanceof FoodType foodType) {
                     Food food = (Food) backPack.getBackPackItems().get(foodType).get(0);
@@ -1169,7 +1173,7 @@ public class GameMenuController {
             }
         } else if (mode.equals("pick")) {
             for (Food food : player.getPlayerMap().getHut().getRefrigerator().getFoods()) {
-                if (food.getFoodtype().getName().equals(itemName)) {
+                if (food.getFoodtype().getName().trim().equals(itemName)) {
                     player.getPlayerMap().getHut().getRefrigerator().getFoods().remove(food);
                     player.getBackPack().addItemToInventory(food);
                 }
@@ -1180,12 +1184,12 @@ public class GameMenuController {
 
     public Result cookingShowRecipes() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile  = Tile.getTile(player.getX(), player.getY());
-        if(tile == null){
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (tile == null) {
             return new Result(false, "Tile not found");
         }
-        if(!(tile.getPlaceable() instanceof Hut)){
-            return new Result(false,"you should be in Hut");
+        if (!(tile.getPlaceable() instanceof Hut)) {
+            return new Result(false, "you should be in Hut");
         }
         if (App.getCurrentGame().getCurrentPlayingPlayer().getRecipes().isEmpty()) {
             return new Result(false, "you dont have any recipes");
@@ -1203,12 +1207,12 @@ public class GameMenuController {
 
     public Result cookingPrepare(String recipeName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile  = Tile.getTile(player.getX(), player.getY());
-        if(tile == null){
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (tile == null) {
             return new Result(false, "Tile not found");
         }
-        if(!(tile.getPlaceable() instanceof Hut)){
-            return new Result(false,"you should be in Hut");
+        if (!(tile.getPlaceable() instanceof Hut)) {
+            return new Result(false, "you should be in Hut");
         }
         Recipe recipe = Recipe.findRecipe(recipeName);
         if (recipe == null) {
@@ -1263,12 +1267,12 @@ public class GameMenuController {
 
     public Result eat(String foodName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile  = Tile.getTile(player.getX(), player.getY());
-        if(tile == null){
+        Tile tile = Tile.getTile(player.getX(), player.getY());
+        if (tile == null) {
             return new Result(false, "Tile not found");
         }
-        if(!(tile.getPlaceable() instanceof Hut)){
-            return new Result(false,"you should be in Hut");
+        if (!(tile.getPlaceable() instanceof Hut)) {
+            return new Result(false, "you should be in Hut");
         }
         try {
             FoodType food = FoodType.valueOf(foodName);
@@ -1283,32 +1287,32 @@ public class GameMenuController {
             }
             player.getBackPack().useItem(food);
             player.setEnergy(player.getEnergy() + food.getEnergy());
-            switch (food){
-                case TripleShotEspresso -> player.applyTemporaryMaxEnergyBoost(100,5);
-                case RedPlate -> player.applyTemporaryMaxEnergyBoost(50,3);
+            switch (food) {
+                case TripleShotEspresso -> player.applyTemporaryMaxEnergyBoost(100, 5);
+                case RedPlate -> player.applyTemporaryMaxEnergyBoost(50, 3);
                 case HashBrowns, FarmersLunch -> {
                     player.setBuff(new Buff(BuffType.Farming, 5));
-                    player.applyTemporaryMaxEnergyBoost(0,0);
+                    player.applyTemporaryMaxEnergyBoost(0, 0);
                 }
                 case Pancakes -> {
                     player.setBuff(new Buff(BuffType.Foraging, 11));
-                    player.applyTemporaryMaxEnergyBoost(0,0);
+                    player.applyTemporaryMaxEnergyBoost(0, 0);
                 }
                 case SurvivalBurger -> {
                     player.setBuff(new Buff(BuffType.Foraging, 5));
-                    player.applyTemporaryMaxEnergyBoost(0,0);
+                    player.applyTemporaryMaxEnergyBoost(0, 0);
                 }
                 case DishOTheSea -> {
                     player.setBuff(new Buff(BuffType.Fishing, 5));
-                    player.applyTemporaryMaxEnergyBoost(0,0);
+                    player.applyTemporaryMaxEnergyBoost(0, 0);
                 }
                 case SeafoamPudding -> {
                     player.setBuff(new Buff(BuffType.Fishing, 10));
-                    player.applyTemporaryMaxEnergyBoost(0,0);
+                    player.applyTemporaryMaxEnergyBoost(0, 0);
                 }
                 case MinersTreat -> {
                     player.setBuff(new Buff(BuffType.Mining, 5));
-                    player.applyTemporaryMaxEnergyBoost(0,0);
+                    player.applyTemporaryMaxEnergyBoost(0, 0);
                 }
             }
             return new Result(true, "you ate " + foodName + " successfully , " +
@@ -1443,7 +1447,7 @@ public class GameMenuController {
                     .append("friendship : ").append(animal.getFriendship()).append("\n")
                     .append(animal.isPettedToday() ? "petted today" : "not petted today").append("\n")
                     .append(animal.isFedToday() ? "feded today" : "not fed today").append("\n\n");
-            if(animal.getTile() != null){
+            if (animal.getTile() != null) {
                 sb.append(animal.getTile().getX()).append(" ").append(animal.getTile().getY()).append("\n");
             }
         }
@@ -1573,8 +1577,8 @@ public class GameMenuController {
 
     public Result fishing(String fishingPole) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if(!Animal.areWeNearWater(player.getX(),player.getY())) {
-            return new Result(false,"first go near water");
+        if (!Animal.areWeNearWater(player.getX(), player.getY())) {
+            return new Result(false, "first go near water");
         }
         if (player.getBackPack().isBackPackFull()) {
             return new Result(false, "your backpack is full");
@@ -1867,19 +1871,23 @@ public class GameMenuController {
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
-                if (sideBySide(player, App.getCurrentGame().getCurrentPlayingPlayer())) {
-                    App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().put(
-                            player, (App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player) + 60));
-                    player.getFriendShips().put(App.getCurrentGame().getCurrentPlayingPlayer(),
-                            App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player));
-                    if (player.getPartner().equals(App.getCurrentGame().getCurrentPlayingPlayer()) && !player.isInteractionWithPartner()) {
-                        player.setEnergy(player.getEnergy() + 50);
-                        App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(App.getCurrentGame()
-                                .getCurrentPlayingPlayer().getEnergy() + 50);
+                if (App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player) >= 200) {
+                    if (sideBySide(player, App.getCurrentGame().getCurrentPlayingPlayer())) {
+                        App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().put(
+                                player, (App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player) + 60));
+                        player.getFriendShips().put(App.getCurrentGame().getCurrentPlayingPlayer(),
+                                App.getCurrentGame().getCurrentPlayingPlayer().getFriendShips().get(player));
+                        if (player.getPartner().equals(App.getCurrentGame().getCurrentPlayingPlayer()) && !player.isInteractionWithPartner()) {
+                            player.setEnergy(player.getEnergy() + 50);
+                            App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(App.getCurrentGame()
+                                    .getCurrentPlayingPlayer().getEnergy() + 50);
+                        }
+                        return new Result(true, "you hug your friend ^^");
+                    } else {
+                        return new Result(false, "you can't hug your friend from this distance");
                     }
-                    return new Result(true, "you hug your friend ^^");
                 } else {
-                    return new Result(false, "you can't hug your friend from this distance");
+                    return new Result(false, "your level less than 2");
                 }
             }
         }
@@ -1939,6 +1947,7 @@ public class GameMenuController {
                                 return new Result(false, "you have not this Ring for ask marriage");
                             } else {
                                 message message = new message(currentPlayer, "ask for marriage with " + ring);
+                                player.getMessage().add(message);
                                 return new Result(true, "your marriage request has been sent");
                             }
                         }
@@ -2421,9 +2430,9 @@ public class GameMenuController {
                         input = scanner.nextLine();
                         if (npc.getDialogue().get(input) != null) {
                             if (App.getCurrentGame().getDate().getSeason().equals(Season.Spring)
-                            || App.getCurrentGame().getDate().getSeason().equals(Season.Summer)) {
+                                    || App.getCurrentGame().getDate().getSeason().equals(Season.Summer)) {
                                 System.out.println(npc.getDialogue().get(input));
-                            }else {
+                            } else {
                                 System.out.println(npc.getDialogue2().get(input));
                             }
                         } else {
