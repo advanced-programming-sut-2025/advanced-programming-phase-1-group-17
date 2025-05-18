@@ -33,6 +33,7 @@ public class TimeWeatherControllerTest {
         mockTimeAndDate = mock(TimeAndDate.class);
     }
 
+
     @Test
     void testGetTime() {
         when(mockTimeAndDate.getHour()).thenReturn(14);
