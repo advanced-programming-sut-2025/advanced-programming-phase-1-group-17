@@ -137,7 +137,7 @@ public abstract class Plant implements Placeable {
         isWateredToday = true;
     }
 
-    public abstract void harvest(ToolMaterial scytheMaterial);
+    public abstract void harvest();
     //TODO: quality when harvesting
 
 }
