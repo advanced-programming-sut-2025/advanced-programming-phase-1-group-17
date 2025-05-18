@@ -783,15 +783,15 @@ public class GameMenuController {
             } else if (tile.getPlaceable() instanceof Plant plant) {
                 player.getAbilities().increaseFarmingAbility();
                 if (plant instanceof Tree tree) {
-                    tree.harvest(player.getCurrentTool().getMaterial());
+                    tree.harvest();
                     Fruit fruit = new Fruit(tree.getType().getFruitType());
-                    fruit.setItemQuality(player.getCurrentTool().getMaterial());
+                    fruit.setItemQuality();
                     player.getBackPack().addItemToInventory(
                             fruit);
                     if (tree.isForaging())
                         player.getAbilities().increaseForagingAbility();
                 } else if (plant instanceof Crop crop) {
-                    crop.harvest(player.getCurrentTool().getMaterial());
+                    crop.harvest();
                 }
             }
         } else if (tool.getToolType().equals(ToolType.MilkPail)) {
