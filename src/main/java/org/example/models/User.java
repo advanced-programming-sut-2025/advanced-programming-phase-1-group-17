@@ -17,12 +17,12 @@ public class User {
     private double theMostMoneyInGame;
     private transient Game activeGame;
     private transient Game lastGame;
-    public User(){
-        if (this.username == null){
+
+    public User() {
+        if (this.username == null) {
             gender = Gender.Male;
         }
     }
-
 
 
     //for signup
