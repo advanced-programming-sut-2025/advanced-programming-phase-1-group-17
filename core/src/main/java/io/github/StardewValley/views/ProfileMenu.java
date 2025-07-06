@@ -1,0 +1,32 @@
+package io.github.StardewValley.views;
+
+import io.github.StardewValley.controllers.ProfileMenuController;
+import io.github.StardewValley.models.App;
+import io.github.StardewValley.models.enums.Menu;
+import io.github.StardewValley.models.enums.ProfileMenuCommands;
+
+import java.util.Scanner;
+
+public class ProfileMenu implements AppMenu {
+    public void run(Scanner scanner) {
+        ProfileMenuController profileMenuController = new ProfileMenuController();
+        String command = scanner.nextLine();
+        if (command.trim().equals("user info")) {
+            System.out.println(profileMenuController.showUserInfo());
+        } else if (ProfileMenuCommands.changeUsername.getMatcher(command).matches()) {
+            System.out.println(profileMenuController.changeUserName(command));
+        } else if (ProfileMenuCommands.changeNickName.getMatcher(command).matches()) {
+            System.out.println(profileMenuController.changeNickName(command));
+        } else if (ProfileMenuCommands.changeEmail.getMatcher(command).matches()) {
+            System.out.println(profileMenuController.changeEmail(command));
+        } else if (ProfileMenuCommands.changePassword.getMatcher(command).matches()) {
+            System.out.println(profileMenuController.changePassword(command));
+        }else if (command.trim().equals("menu exit")) {
+            App.setCurrentMenu(Menu.MainMenu);
+            System.out.println("you are in main menu");
+        }
+        else {
+            System.out.println("invalid command");
+        }
+    }
+}
