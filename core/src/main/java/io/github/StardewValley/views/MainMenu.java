@@ -1,14 +1,21 @@
 package io.github.StardewValley.views;
 
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.controllers.MainMenuController;
 import io.github.StardewValley.models.App;
+import io.github.StardewValley.models.User;
 import io.github.StardewValley.models.enums.MainMenuCommands;
 import io.github.StardewValley.models.enums.Menu;
 
 import java.util.Scanner;
 
-public class MainMenu implements AppMenu {
+public class MainMenu implements AppMenu , Screen {
     MainMenuController mainMenuController = new MainMenuController();
+
+    public MainMenu(MainMenuController mainMenuController, Skin skin) {
+
+    }
 
     public void run(Scanner scanner) {
         String command = scanner.nextLine();
@@ -29,6 +36,41 @@ public class MainMenu implements AppMenu {
         else {
             System.out.println("invalid command");
         }
+
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float v) {
+
+    }
+
+    @Override
+    public void resize(int i, int i1) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
 
     }
 }

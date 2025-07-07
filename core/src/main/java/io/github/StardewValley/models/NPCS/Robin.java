@@ -1,9 +1,9 @@
 package io.github.StardewValley.models.NPCS;
 
-import org.example.models.Placeable;
-import org.example.models.Player;
-import org.example.models.crafting.CraftingItem;
-import org.example.models.crafting.CraftingItemType;
+import io.github.StardewValley.models.Placeable;
+import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.crafting.CraftingItem;
+import io.github.StardewValley.models.crafting.CraftingItemType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,5 +1,6 @@
 package io.github.StardewValley;
 
+import com.google.gson.Gson;
 import io.github.StardewValley.models.User;
 
 import java.io.FileWriter;
