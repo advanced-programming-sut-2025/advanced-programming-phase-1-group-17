@@ -1,5 +1,9 @@
 package io.github.StardewValley.controllers;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.ArtisanController;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
@@ -29,13 +33,43 @@ import io.github.StardewValley.models.plant.*;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.Trade;
 import io.github.StardewValley.models.market.*;
+import io.github.StardewValley.views.GameMenu;
+import io.github.StardewValley.views.MainMenu;
 
 import java.util.*;
 import java.util.regex.Matcher;
 public class GameMenuController {
+    private GameMenu view;
+    public void setView(GameMenu view){
+        this.view = view;
+        setupButtonListener();
+    }
+    private void setupButtonListener() {
+        view.getBackButton().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                view.setError("Entering to MainMenu...");
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        Main.getMain().getScreen().dispose();
+                        Main.getMain().setScreen(
+                            new MainMenu(
+                                new MainMenuController(),
+                                GameAssetManager.getGameAssetManager().getSkin()
+                            )
+                        );
+                    }
+                }, 2);
+            }
+        });
+    }
+
+
     private final ArtisanController artisanController = new ArtisanController();
     private final FarmingController farmingController = new FarmingController();
     private final MarketsController marketsController = new MarketsController();
+
 
     public Result newGame(String username1, String username2, String username3, String rest, Scanner scanner) {
         if (rest != null && !rest.trim().isEmpty())

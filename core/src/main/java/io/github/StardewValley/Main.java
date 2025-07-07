@@ -3,10 +3,12 @@ package io.github.StardewValley;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import io.github.StardewValley.controllers.GameMenuController;
 import io.github.StardewValley.controllers.ProfileMenuController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.User;
 import io.github.StardewValley.models.enums.Menu;
+import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.ProfileMenu;
 
 import java.util.ArrayList;
@@ -37,7 +39,8 @@ public class Main extends Game {
             }
         }
 //        (new AppView()).run();
-        Main.getMain().setScreen(new ProfileMenu(new ProfileMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+        Main.getMain().setScreen(new GameMenu(new GameMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+//        Main.getMain().setScreen(new ProfileMenu(new ProfileMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
     }
 
     @Override
