@@ -1,6 +1,9 @@
 package io.github.StardewValley.models.enums;
 
 
+import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.controllers.MainMenuController;
+import io.github.StardewValley.controllers.ProfileMenuController;
 import io.github.StardewValley.views.*;
 
 import java.util.Scanner;
@@ -10,9 +13,9 @@ public enum Menu {
     SignUpMenu(new SignUpMenu()),
     ExitMenu(new ExitMenu()),
     GameMenu(new GameMenu()),
-    ProfileMenu(new ProfileMenu()),
+    ProfileMenu(new ProfileMenu(new ProfileMenuController(), GameAssetManager.getGameAssetManager().getSkin())),
     AvatarMenu(new AvatarMenu()),
-    MainMenu(new MainMenu()),
+    MainMenu(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin())),
     TradeMenu(new TradeMenu());
 
     private final AppMenu menu;

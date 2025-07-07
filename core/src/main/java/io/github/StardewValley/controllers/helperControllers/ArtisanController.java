@@ -5,6 +5,7 @@ import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.Result;
 import io.github.StardewValley.models.artisan.ArtisanProduct;
+import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.artisan.IngredientGroup;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.crafting.CraftingItemType;
