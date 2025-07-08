@@ -42,6 +42,7 @@ public class MainMenuController {
             new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
                     //TODO
+
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
                 }
