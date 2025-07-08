@@ -24,6 +24,7 @@ public class LoginMenu implements AppMenu, Screen {
     private  TextButton passwordButton;
     private  TextButton forgotPasswordButton;
     private  TextField userName;
+    private  TextButton loginButton;
     private  TextField password;
     private  TextButton MenuTitle;
     private  TextButton showUserInfo;
@@ -51,6 +52,8 @@ public class LoginMenu implements AppMenu, Screen {
         this.password.setMessageText("enter your password");
         this.forgotPasswordButton = new TextButton("forgot password", skin);
         this.forgotPasswordButton.setColor(0, 0, 1, 1);
+        this.loginButton = new TextButton("Login", skin);
+        this.loginButton.setColor(0, 0, 1, 1);
 
         this.backButton = new TextButton("Back", skin);
         this.error = new Label("", skin);
@@ -61,7 +64,7 @@ public class LoginMenu implements AppMenu, Screen {
         password.setVisible(false);
         userName.setVisible(false);
 
-        //controller.setView(this);
+        controller.setView(this);
     }
 
     @Override
@@ -82,6 +85,8 @@ public class LoginMenu implements AppMenu, Screen {
         buttons.add(password).width(500);
         buttons.row().pad(10, 0, 10, 0);
         buttons.add(forgotPasswordButton).width(500);
+        buttons.row().pad(10, 0, 10, 0);
+        buttons.add(loginButton).width(500);
         buttons.row().pad(10, 0, 10, 0);
         stage.addActor(table);
         stage.addActor(buttons);
@@ -137,5 +142,61 @@ public class LoginMenu implements AppMenu, Screen {
         else {
             System.out.println("invalid command");
         }
+    }
+
+    public TextButton getBackButton() {
+        return backButton;
+    }
+
+    public void setBackButton(TextButton backButton) {
+        this.backButton = backButton;
+    }
+
+    public TextButton getUserNameButton() {
+        return userNameButton;
+    }
+
+    public void setUserNameButton(TextButton userNameButton) {
+        this.userNameButton = userNameButton;
+    }
+
+    public TextButton getPasswordButton() {
+        return passwordButton;
+    }
+
+    public void setPasswordButton(TextButton passwordButton) {
+        this.passwordButton = passwordButton;
+    }
+
+    public TextField getUserName() {
+        return userName;
+    }
+
+    public void setUserName(TextField userName) {
+        this.userName = userName;
+    }
+
+    public TextField getPassword() {
+        return password;
+    }
+
+    public void setPassword(TextField password) {
+        this.password = password;
+    }
+
+    public TextButton getForgotPasswordButton() {
+        return forgotPasswordButton;
+    }
+
+    public void setForgotPasswordButton(TextButton forgotPasswordButton) {
+        this.forgotPasswordButton = forgotPasswordButton;
+    }
+
+    public TextButton getLoginButton() {
+        return loginButton;
+    }
+
+    public void setLoginButton(TextButton loginButton) {
+        this.loginButton = loginButton;
     }
 }
