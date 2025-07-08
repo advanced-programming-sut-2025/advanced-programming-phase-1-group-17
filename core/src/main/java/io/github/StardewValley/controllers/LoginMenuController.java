@@ -48,6 +48,7 @@ public class LoginMenuController {
                 String username = view.getUserName().getText();
                 String password = view.getPassword().getText();
                 //todo check these strings
+
                 Main.getMain().getScreen().dispose();
                 //todo going to mainmenu just for testing , rewrite it later
                 Main.getMain().setScreen(new MainMenu(new MainMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
