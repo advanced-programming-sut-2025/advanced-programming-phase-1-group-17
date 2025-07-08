@@ -1,5 +1,10 @@
 package io.github.StardewValley.controllers;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Timer;
+import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.enums.MainMenuCommands;
@@ -7,58 +12,43 @@ import io.github.StardewValley.models.enums.Menu;
 import io.github.StardewValley.models.map.GreenHouse;
 import io.github.StardewValley.models.map.PlayerMap;
 import io.github.StardewValley.models.map.Tile;
+import io.github.StardewValley.views.GameMenu;
+import io.github.StardewValley.views.LoginMenu;
+import io.github.StardewValley.views.MainMenu;
+import io.github.StardewValley.views.ProfileMenu;
 
 public class MainMenuController {
-    public Result exitMenu() {
-        //App.setCurrentMenu(Menu.LoginMenu);
-        App.setLoggedInUser(null);
-        return new Result(true, "you are logged out");
+
+    private MainMenu view;
+    public void setView(MainMenu view) {
+        this.view = view;
+        setupButtonListener();
     }
-    public Result changeMenu(String input) {
-        String menu = MainMenuCommands.changeMenu.getMatcher(input).group("menu").trim();
-        if (menu.equals("game menu")) {
-            //App.setCurrentMenu(Menu.GameMenu);
-            return new Result(true,"successfully changeMenu. you are now in gameMenu");
-        }
-        else if (menu.equals("profile menu")) {
-            //App.setCurrentMenu(Menu.ProfileMenu);
-            return new Result(true,"successfully changeMenu. you are now in profileMenu");
-        }
-        else if (menu.equals("avatar menu")) {
-            //App.setCurrentMenu(Menu.AvatarMenu);
-            return new Result(true,"successfully changeMenu. you are now in avatarMenu");
-        }
-        else{
-            return new Result(true,"invalid menu");
-        }
-    }
-    public Result loadGame() {
-        User user = App.getLoggedInUser();
-        Player currentPlayer = null;
-        if (user.getLastGame() == null) {
-            return new Result(false, "you have no game to load");
-        }else {
-            Game game = user.getLastGame();
-            for (Player player : game.getPlayers()) {
-                if (!(player.getUser().getLastGame() != null && player.getUser().getLastGame().equals(game)))
-                    return new Result(false, "your friends have another active game");
-                if(player.getUser().equals(user)) {
-                    currentPlayer = player;
+    public void setupButtonListener(){
+        view.getProfileMenuButton().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new ProfileMenu(new ProfileMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+            }
+        });
+        view.getGameMenuButton().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new GameMenu(new GameMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+            }
+        });
+        view.getLogoutAndGotoLoginMenuButton().addListener(
+            new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) {
+                    //TODO
+
+                    Main.getMain().getScreen().dispose();
+                    Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
                 }
             }
-            App.setCurrentGame(game);
-            App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
-            App.getCurrentGame().setCreator(currentPlayer);
-            for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
-                for (Tile tile : pm.getTiles()) {
-                    Tile.getTiles().add(tile);
-                }
-            }
-            NPC.setFatherPlayer(game.getPlayers().get(4));
-            NPC.setFatherUser(game.getPlayers().get(4).getUser());
-            GreenHouse.setGreenHouse(App.getCurrentGame().getGreenHouses());
-            //App.setCurrentMenu(Menu.GameMenu);
-            return new Result(false, "you are in GameMenu now");
-        }
+        );
+
     }
+
 }

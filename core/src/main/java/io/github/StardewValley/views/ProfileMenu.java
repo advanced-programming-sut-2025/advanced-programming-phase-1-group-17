@@ -264,6 +264,6 @@ public class ProfileMenu implements AppMenu, Screen {
 
     @Override
     public void run(Scanner scanner) {
-        
+
     }
 }

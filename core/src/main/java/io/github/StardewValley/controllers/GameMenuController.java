@@ -1,5 +1,9 @@
 package io.github.StardewValley.controllers;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.ArtisanController;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
@@ -29,13 +33,148 @@ import io.github.StardewValley.models.plant.*;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.Trade;
 import io.github.StardewValley.models.market.*;
+import io.github.StardewValley.views.GameMenu;
+import io.github.StardewValley.views.MainMenu;
 
 import java.util.*;
 import java.util.regex.Matcher;
+
 public class GameMenuController {
+    private GameMenu view;
+
+    public void setView(GameMenu view) {
+        this.view = view;
+        setupButtonListener();
+    }
+
+    private void setupButtonListener() {
+        view.getBackButton().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                view.setError("Entering to MainMenu...");
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        Main.getMain().getScreen().dispose();
+                        Main.getMain().setScreen(
+                            new MainMenu(
+                                new MainMenuController(),
+                                GameAssetManager.getGameAssetManager().getSkin()
+                            )
+                        );
+                    }
+                }, 2);
+            }
+        });
+        view.getAddUser().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String username = view.getUserName().getText().trim();
+                if (username.isEmpty()) return;
+                if (!(view.getUser1().getName().equals("-") || view.getUser2().getName().equals("-")
+                    || view.getUser3().getName().equals("-") || view.getUser4().getName().equals("-"))) {
+                    view.setError("you can only add a maximum of 4 players to the game!");
+                    return;
+                }
+                if (username.equals(view.getUser1().getName()) ||
+                    username.equals(view.getUser2().getName()) ||
+                    username.equals(view.getUser3().getName()) ||
+                    username.equals(view.getUser4().getName())) {
+                    view.setError("you cannot add repetitive player!");
+                    return;
+                }
+                if (App.getUserWithUsername(username) == null) {
+                    view.setError("no user exists with this username");
+                    return;
+                }
+                if (App.getUserWithUsername(username).getActiveGame() != null) {
+                    view.setError("user with this username has an active game");
+                    return;
+                }
+                if (view.getUser2().getName().equals("-")) {
+                    view.getUser2().setText(view.getUserName().getText().trim());
+                    return;
+                }
+                if (view.getUser3().getName().equals("-")) {
+                    view.getUser3().setText(view.getUserName().getText().trim());
+                    return;
+                }
+                if (view.getUser4().getName().equals("-")) {
+                    view.getUser4().setText(view.getUserName().getText().trim());
+                    return;
+                }
+
+            }
+        });
+        view.getAddUser().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                String username1 = view.getUser1().getName().trim();
+                String username2 = view.getUser2().getName().trim();
+                String username3 = view.getUser3().getName().trim();
+                String username4 = view.getUser4().getName().trim();
+                User user1 = App.getUserWithUsername(username1);
+                User user2 = App.getUserWithUsername(username2);
+                User user3 = App.getUserWithUsername(username3);
+                User user4 = App.getUserWithUsername(username4);
+
+                if (username1.equals("-")) {
+                    view.setError("you must give at least 1 username");
+                    return;
+                }
+                if (username2.equals("-")) {
+                    if (App.getUserWithUsername("guest1") != null) {
+                        App.getUsers().remove(App.getUserWithUsername("guest1"));
+                    }
+                    user2 = new User();
+                    user2.setUsername("guest1");
+                    App.getUsers().add(user2);
+                } else {
+                    user2 = App.getUserWithUsername(username2);
+                }
+                if (username3.equals("-")) {
+                    if (App.getUserWithUsername("guest2") != null) {
+                        App.getUsers().remove(App.getUserWithUsername("guest2"));
+                    }
+                    user3 = new User();
+                    user3.setUsername("guest2");
+                    App.getUsers().add(user3);
+                } else {
+                    user3 = App.getUserWithUsername(username3);
+                }
+                if (username4.equals("-")) {
+                    if (App.getUserWithUsername("guest3") != null) {
+                        App.getUsers().remove(App.getUserWithUsername("guest3"));
+                    }
+                    user4 = new User();
+                    user4.setUsername("guest3");
+                    App.getUsers().add(user3);
+                } else {
+                    user4 = App.getUserWithUsername(username3);
+                }
+                Tile.getTiles().clear();
+                NPC.setFatherPlayer(null);
+                NPC.setFatherUser(null);
+                GreenHouse.getGreenHouse().clear();
+                Game game = new Game(user2, user3, user4);
+                App.setCurrentGame(game);
+                App.getGames().add(game);
+                gameMap(view.getScanner());
+
+                view.setError("new game created Successfully");
+
+
+                //TODO
+
+            }
+        });
+
+    }
+
+
     private final ArtisanController artisanController = new ArtisanController();
     private final FarmingController farmingController = new FarmingController();
     private final MarketsController marketsController = new MarketsController();
+
 
     public Result newGame(String username1, String username2, String username3, String rest, Scanner scanner) {
         if (rest != null && !rest.trim().isEmpty())
