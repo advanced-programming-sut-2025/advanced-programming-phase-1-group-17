@@ -41,8 +41,8 @@ public class Main extends Game {
             }
         }
 //        (new AppView()).run();
-        Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
-        //Main.getMain().setScreen(new ProfileMenu(new ProfileMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+        Main.getMain().setScreen(new GameMenu(new GameMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+//        Main.getMain().setScreen(new ProfileMenu(new ProfileMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
     }
 
     @Override
