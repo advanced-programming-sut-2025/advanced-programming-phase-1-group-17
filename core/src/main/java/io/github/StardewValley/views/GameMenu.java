@@ -66,7 +66,7 @@ public class GameMenu implements AppMenu, Screen {
         User3.setColor(0,1,0,1);
         User4 = new TextButton("-", skin);
         User4.setColor(0,1,0,1);
-        deleteUser1 = new TextButton("><", skin);
+        deleteUser1 = new TextButton("><", skin );
         deleteUser1.setColor(1,0,0,1);
         deleteUser2 = new TextButton("><", skin);
         deleteUser2.setColor(1,0,0,1);
