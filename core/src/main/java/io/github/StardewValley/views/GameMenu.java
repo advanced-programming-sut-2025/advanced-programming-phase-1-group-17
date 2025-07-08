@@ -36,6 +36,7 @@ public class GameMenu implements AppMenu, Screen {
     private TextButton deleteUser2;
     private TextButton deleteUser3;
     private TextButton deleteUser4;
+    private Scanner scanner = new Scanner(System.in);
 
 
 
@@ -57,7 +58,7 @@ public class GameMenu implements AppMenu, Screen {
         addUser.setColor(0,0,1,1);
         UserName = new TextField("", skin);
         UserName.setMessageText("Enter Username of your friend");
-        User1 = new TextButton("-", skin);
+        User1 = new TextButton(App.getLoggedInUser().getUsername(), skin);
         User1.setColor(0,1,0,1);
         User2 = new TextButton("-", skin);
         User2.setColor(0,1,0,1);
@@ -561,5 +562,13 @@ public class GameMenu implements AppMenu, Screen {
     }
     public void setError(String error) {
         this.error.setText(error);
+    }
+
+    public Scanner getScanner() {
+        return scanner;
+    }
+
+    public void setScanner(Scanner scanner) {
+        this.scanner = scanner;
     }
 }

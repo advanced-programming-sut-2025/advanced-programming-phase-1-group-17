@@ -48,6 +48,7 @@ public class ProfileMenuController {
                 view.getOldPassword().setVisible(false);
                 view.getOldEmail().setVisible(false);
                 view.getNewEmail().setVisible(false);
+                view.getNickName().setVisible(false);
                 view.setError("please enter new username");
                 String newuserName = view.getNewUserName().getText();
                 if (newuserName.isEmpty()) {
@@ -70,6 +71,7 @@ public class ProfileMenuController {
                 view.getOldPassword().setVisible(false);
                 view.getOldEmail().setVisible(false);
                 view.getNewEmail().setVisible(false);
+                view.getNickName().setVisible(false);
                 SaveUser.saveUser(App.getUsers());
                 SaveUser.saveLoggedInUser(App.getLoggedInUser());
             }
@@ -85,6 +87,7 @@ public class ProfileMenuController {
                 view.getOldPassword().setVisible(false);
                 view.getOldEmail().setVisible(true);
                 view.getNewEmail().setVisible(true);
+                view.getNickName().setVisible(false);
                 view.setError("please enter old and new email");
                 String oldEmail = view.getOldEmail().getText().trim();
                 String newEmail = view.getNewEmail().getText().trim();
@@ -111,6 +114,7 @@ public class ProfileMenuController {
                 view.getOldPassword().setVisible(false);
                 view.getOldEmail().setVisible(false);
                 view.getNewEmail().setVisible(false);
+                view.getNickName().setVisible(false);
                 SaveUser.saveUser(App.getUsers());
                 SaveUser.saveLoggedInUser(App.getLoggedInUser());
             }
@@ -125,6 +129,7 @@ public class ProfileMenuController {
                 view.getOldPassword().setVisible(true);
                 view.getOldEmail().setVisible(false);
                 view.getNewEmail().setVisible(false);
+                view.getNickName().setVisible(false);
                 view.setError("please enter old and new password");
 
                 User user = App.getLoggedInUser();
@@ -154,6 +159,7 @@ public class ProfileMenuController {
                 view.getOldPassword().setVisible(false);
                 view.getOldEmail().setVisible(false);
                 view.getNewEmail().setVisible(false);
+                view.getNickName().setVisible(false);
             }
         });
         view.getShowUserInfo().addListener(new ClickListener() {
@@ -168,6 +174,11 @@ public class ProfileMenuController {
         view.getChangeNickName().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getNickName().setVisible(true);
+                view.getNewUserName().setVisible(false);
+                view.getNewPassword().setVisible(false);
+                view.getOldPassword().setVisible(false);
+                view.getOldEmail().setVisible(false);
+                view.getNewEmail().setVisible(false);
                 User user = App.getLoggedInUser();
                 String nickName = view.getNickName().getText().trim();
                 if (nickName.isEmpty()) {
@@ -181,6 +192,12 @@ public class ProfileMenuController {
                 user.setNickName(nickName);
                 SaveUser.saveUser(App.getUsers());
                 SaveUser.saveLoggedInUser(App.getLoggedInUser());
+
+                view.getNewUserName().setVisible(false);
+                view.getNewPassword().setVisible(false);
+                view.getOldPassword().setVisible(false);
+                view.getOldEmail().setVisible(false);
+                view.getNewEmail().setVisible(false);
                 view.getNickName().setVisible(false);
 
             }

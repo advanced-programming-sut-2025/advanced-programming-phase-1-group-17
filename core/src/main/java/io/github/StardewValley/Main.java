@@ -36,7 +36,6 @@ public class Main extends Game {
             for (User user : users) {
                 if (user.equals(user1)) {
                     App.setLoggedInUser(user);
-                    App.setCurrentMenu(Menu.MainMenu);
                 }
             }
         }
