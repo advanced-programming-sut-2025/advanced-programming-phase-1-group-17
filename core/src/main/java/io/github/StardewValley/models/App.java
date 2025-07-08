@@ -7,19 +7,9 @@ import java.util.ArrayList;
 
 public class App {
     private static User loggedInUser;
-    private static Menu currentMenu = Menu.SignUpMenu;
     private static Game currentGame;
     private static ArrayList<User> users = new ArrayList<>();
     private static ArrayList<Game> games = new ArrayList<Game>();
-
-
-    public static Menu getCurrentMenu() {
-        return currentMenu;
-    }
-
-    public static void setCurrentMenu(Menu currentMenu) {
-        App.currentMenu = currentMenu;
-    }
 
     public static ArrayList<User> getUsers() {
         return users;

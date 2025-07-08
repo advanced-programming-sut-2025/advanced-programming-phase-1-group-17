@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager;
-    private final Skin skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
+    private final Skin skin = new Skin(Gdx.files.internal("skin/star-soldier-ui.json"));
     private GameAssetManager() {
 
     }
