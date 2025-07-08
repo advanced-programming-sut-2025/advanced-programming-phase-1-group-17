@@ -273,7 +273,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.deleteMessage(Integer.parseInt(matcher.group("index"))));
         } else if ((matcher = GameMenuCommands.startTrade.getMatcher(command))!=null) {
             System.out.println(controller.startTrade());
-            App.setCurrentMenu(Menu.TradeMenu);
+            //App.setCurrentMenu(Menu.TradeMenu);
         }
         // for NPC
         else if ((matcher = GameMenuCommands.meetNPC.getMatcher(command)) != null) {
@@ -288,7 +288,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.questFinish(matcher.group("index")));
         }
         else if (command.trim().equals("show current menu")) {
-            System.out.println(App.getCurrentMenu().name());
+            //System.out.println(App.getCurrentMenu().name());
         }else if  (command.trim().equals("exit game")) {
             System.out.println(controller.exitGame());
         }

@@ -21,7 +21,7 @@ public class LoginMenu implements AppMenu {
         } else if ((matcher = LoginMenuCommands.Exit.getMatcher(command)) != null){
             loginMenuController.exit();
         } else if (command.trim().equals("show current menu")) {
-            System.out.println(App.getCurrentMenu().name());
+            //System.out.println(App.getCurrentMenu().name());
         }
         else {
             System.out.println("invalid command");

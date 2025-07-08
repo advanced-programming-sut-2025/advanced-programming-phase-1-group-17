@@ -23,7 +23,7 @@ public class LoginMenuController {
                 if (input.trim().endsWith("--stay-logged-in")) {
                     SaveUser.saveLoggedInUser(user);
                 }
-                App.setCurrentMenu(Menu.MainMenu);
+                //App.setCurrentMenu(Menu.MainMenu);
                 return new Result(true, "you are logged in successfully");
             } else {
                 return new Result(false, "Invalid password");
@@ -53,10 +53,10 @@ public class LoginMenuController {
 
 
     public void exit() {
-        App.setCurrentMenu(Menu.SignUpMenu);
+        //App.setCurrentMenu(Menu.SignUpMenu);
     }
 
     public void goToSignUpMenu() {
-        App.setCurrentMenu(Menu.SignUpMenu);
+        //App.setCurrentMenu(Menu.SignUpMenu);
     }
 }

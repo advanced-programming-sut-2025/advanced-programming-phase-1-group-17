@@ -145,7 +145,7 @@ public class GameMenuController {
             NPC.setFatherPlayer(game.getPlayers().get(4));
             NPC.setFatherUser(game.getPlayers().get(4).getUser());
             GreenHouse.setGreenHouse(App.getCurrentGame().getGreenHouses());
-            App.setCurrentMenu(Menu.GameMenu);
+            //App.setCurrentMenu(Menu.GameMenu);
             return new Result(false, "you are in GameMenu now");
         }
     }
@@ -170,7 +170,7 @@ public class GameMenuController {
 
         App.getGames().remove(App.getCurrentGame());
         App.setCurrentGame(null);
-        App.setCurrentMenu(Menu.MainMenu);
+        //App.setCurrentMenu(Menu.MainMenu);
         return new Result(true, "game deleted, you are in MainMenu now.");
 
     }
@@ -185,7 +185,7 @@ public class GameMenuController {
             p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
         }
         App.setCurrentGame(null);
-        App.setCurrentMenu(Menu.MainMenu);
+        //App.setCurrentMenu(Menu.MainMenu);
         return new Result(true, "Game saved successfully.you are now in main menu");
     }
 

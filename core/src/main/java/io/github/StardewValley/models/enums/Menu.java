@@ -4,13 +4,15 @@ package io.github.StardewValley.models.enums;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.controllers.MainMenuController;
 import io.github.StardewValley.controllers.ProfileMenuController;
+import io.github.StardewValley.controllers.SignUpMenuController;
 import io.github.StardewValley.views.*;
 
 import java.util.Scanner;
 
 public enum Menu {
+    //TODO: delete this class
+
     LoginMenu(new LoginMenu()),
-    SignUpMenu(new SignUpMenu()),
     ExitMenu(new ExitMenu()),
     GameMenu(new GameMenu()),
     ProfileMenu(new ProfileMenu(new ProfileMenuController(), GameAssetManager.getGameAssetManager().getSkin())),
