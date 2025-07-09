@@ -49,9 +49,9 @@ public class MainMenuController {
             App.setCurrentGame(game);
             App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
             App.getCurrentGame().setCreator(currentPlayer);
-            for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
-                for (Tile tile : pm.getTiles()) {
-                    Tile.getTiles().add(tile);
+            for (PlayerMap playerMap : game.getGameMap().getPlayerMaps()) {
+                for (int i = 0; i < playerMap.getTiles().length; i++) {
+                    Tile.getTiles()[i] = playerMap.getTiles()[i];
                 }
             }
             NPC.setFatherPlayer(game.getPlayers().get(4));

@@ -80,7 +80,7 @@ public class GameMenuController {
             if (user3.getActiveGame() != null)
                 return new Result(false, "user with username %s has an active game".formatted(username3));
         }
-        Tile.getTiles().clear();
+        Tile.resetTiles();
         NPC.setFatherPlayer(null);
         NPC.setFatherUser(null);
         GreenHouse.getGreenHouse().clear();
@@ -137,9 +137,9 @@ public class GameMenuController {
             App.setCurrentGame(game);
             App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
             App.getCurrentGame().setCreator(currentPlayer);
-            for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
-                for (Tile tile : pm.getTiles()) {
-                    Tile.getTiles().add(tile);
+            for (PlayerMap playerMap : game.getGameMap().getPlayerMaps()) {
+                for (int i = 0; i < playerMap.getTiles().length; i++) {
+                    Tile.getTiles()[i] = playerMap.getTiles()[i];
                 }
             }
             NPC.setFatherPlayer(game.getPlayers().get(4));
@@ -244,7 +244,7 @@ public class GameMenuController {
     }
 
     public Result cheatThor(int x, int y) {
-        Tile tile = App.getCurrentGame().getTileByIndex(x, y);
+        Tile tile = Tile.getTile(x, y);
         if (tile == null)
             return new Result(false, "tile not found");
         tile.lightningStrike();
@@ -575,7 +575,7 @@ public class GameMenuController {
 
     public Result toolUpgrade(String toolName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (App.getCurrentGame().getTileByIndex(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
+        if (Tile.getTile(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
             if (!store.getType().equals(StoreType.Blacksmith))
                 return new Result(false, "The Player is not in Blacksmith");
         } else
@@ -968,7 +968,7 @@ public class GameMenuController {
             return new Result(false, " you dont have " + craftingItemType.name());
         }
         int[] direction1 = App.handleDirection(Integer.parseInt(direction));
-        Tile tile = App.getCurrentGame().getTileByIndex(player.getX() + direction1[0],
+        Tile tile = Tile.getTile(player.getX() + direction1[0],
             player.getY() + direction1[1]);
         if (tile.getPlaceable() != null) {
             return new Result(false, "tile is full");

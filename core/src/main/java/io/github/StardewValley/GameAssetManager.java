@@ -20,4 +20,8 @@ public class GameAssetManager {
     public Skin getSkin() {
         return skin;
     }
+
+    public String getBackgroundTexture() {
+        return "Flooring/Flooring_28.png";
+    }
 }

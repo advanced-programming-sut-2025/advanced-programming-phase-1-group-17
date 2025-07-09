@@ -19,8 +19,8 @@ public class PlayerMap {
     private static int length = 50;
     private int row;
     private int col;
-    private ArrayList<Tile> Tiles = new ArrayList<>();
-    private Farm farm=new Farm();
+    private Tile[][] tiles;
+    private Farm farm = new Farm();
     private Player player;
     private int type;
     private GreenHouse greenHouse;
@@ -41,12 +41,8 @@ public class PlayerMap {
         return player;
     }
 
-    public ArrayList<Tile> getTiles() {
-        return Tiles;
-    }
-
-    public void setTiles(ArrayList<Tile> tiles) {
-        Tiles = tiles;
+    public Tile[][] getTiles() {
+        return tiles;
     }
 
     public void setPlayer(Player player) {
@@ -62,6 +58,9 @@ public class PlayerMap {
     }
 
     public PlayerMap(int index, Player owner) {
+        for (Tile[] tile : tiles) {
+            tile = new Tile[col];
+        }
         if (index == 0) {
             this.row = 0;
             this.col = 0;
@@ -69,8 +68,7 @@ public class PlayerMap {
             owner.setY(1 + col);
             for (int i = 0; i < 50; i++) {
                 for (int i1 = 0; i1 < 100; i1++) {
-                    Tile tile = new Tile(i + 1, i1 + 1, owner);
-                    Tiles.add(tile);
+                    tiles[i + 1][i1 + 1] = new Tile(i + 1, i1 + 1, owner);
                     //App.getCurrentGame().addTile(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
@@ -84,8 +82,7 @@ public class PlayerMap {
             owner.setY(1 + col);
             for (int i = row; i < 50 + row; i++) {
                 for (int i1 = col; i1 < 100 + col; i1++) {
-                    Tile tile = new Tile(i + 1, i1 + 1, owner);
-                    Tiles.add(tile);
+                    tiles[i + 1][i1 + 1] = new Tile(i + 1, i1 + 1, owner);
                     //App.getCurrentGame().addTile(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
@@ -99,8 +96,7 @@ public class PlayerMap {
             owner.setY(1 + col);
             for (int i = row; i < 50 + row; i++) {
                 for (int i1 = col; i1 < 100 + col; i1++) {
-                    Tile tile = new Tile(i + 1, i1 + 1, owner);
-                    Tiles.add(tile);
+                    tiles[i + 1][i1 + 1] = new Tile(i + 1, i1 + 1, owner);
                     //App.getCurrentGame().addTile(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
@@ -114,8 +110,7 @@ public class PlayerMap {
             owner.setY(1 + col);
             for (int i = row; i < 50 + row; i++) {
                 for (int i1 = col; i1 < 100 + col; i1++) {
-                    Tile tile = new Tile(i + 1, i1 + 1, owner);
-                    Tiles.add(tile);
+                    tiles[i + 1][i1 + 1] = new Tile(i + 1, i1 + 1, owner);
                     //App.getCurrentGame().addTile(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
@@ -126,8 +121,7 @@ public class PlayerMap {
             // NPC FORM
             for (int i = 51; i <= 150; i++) {
                 for (int j = 1; j <= 200; j++) {
-                    Tile tile = new Tile(i, j, NPC.getFatherPlayer());
-                    Tiles.add(tile);
+                    tiles[i][j] = new Tile(i, j, NPC.getFatherPlayer());
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }

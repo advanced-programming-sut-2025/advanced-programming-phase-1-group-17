@@ -14,20 +14,22 @@ public abstract class PlantGrowthController {
         for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
             ArrayList<Plant> plants = new ArrayList<>();
 
-            for (Tile tile : playerMap.getTiles()) {
-                if (tile.getPlaceable() instanceof Tree tree) {
-                    tree.goToNextDay();
-                    if (!tree.isForaging)
-                        plants.add(tree);
-                } else if (tile.getPlaceable() instanceof Crop crop) {
-                    crop.goToNextDay();
-                    handleCropAdding(plants, crop);
-                }
-                double probability = Math.floor(plants.size() / 16.0) * 25;
+            for (Tile[] tileColumn : playerMap.getTiles()) {
+                for (Tile tile : tileColumn) {
+                    if (tile.getPlaceable() instanceof Tree tree) {
+                        tree.goToNextDay();
+                        if (!tree.isForaging)
+                            plants.add(tree);
+                    } else if (tile.getPlaceable() instanceof Crop crop) {
+                        crop.goToNextDay();
+                        handleCropAdding(plants, crop);
+                    }
+                    double probability = Math.floor(plants.size() / 16.0) * 25;
 
-                int randInt = random.nextInt(100);
-                if (randInt < probability)
-                    crowAttack(plants);
+                    int randInt = random.nextInt(100);
+                    if (randInt < probability)
+                        crowAttack(plants);
+                }
             }
         }
     }

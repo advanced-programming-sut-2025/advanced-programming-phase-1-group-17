@@ -18,34 +18,35 @@ public abstract class ForagingController {
     public static void setForagingForNextDay() {
         Random random = new Random();
         for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
-            for (Tile tile : playerMap.getTiles()) {
-
-                if (tile.getPlaceable() instanceof Quarry) {
-                    if (random.nextInt(100) == 1)
-                        setMineralForaging(tile);
-                    continue;
-                }
-
-                if (tile.getPlaceable() != null)
-                    continue;
-                int randInt = random.nextInt(100) + 1;
-
-                if (randInt == 1) {
-                    if (tile.isPlowed()) {
-                        setSeedForaging(tile);
+            for (Tile[] tileColumn : playerMap.getTiles()) {
+                for (Tile tile : tileColumn) {
+                    if (tile.getPlaceable() instanceof Quarry) {
+                        if (random.nextInt(100) == 1)
+                            setMineralForaging(tile);
                         continue;
                     }
-                    randInt = random.nextInt(5) + 1;
+
+                    if (tile.getPlaceable() != null)
+                        continue;
+                    int randInt = random.nextInt(100) + 1;
+
                     if (randInt == 1) {
-                        setCropForaging(tile);
-                    } else if (randInt == 2){
-                        setTreeForaging(tile);
-                    } else if (randInt == 3) {
-                        setStoneForaging(tile);
-                    } else if (randInt == 4) {
-                        setWoodForaging(tile);
-                    } else
-                        setGrassForaging(tile);
+                        if (tile.isPlowed()) {
+                            setSeedForaging(tile);
+                            continue;
+                        }
+                        randInt = random.nextInt(5) + 1;
+                        if (randInt == 1) {
+                            setCropForaging(tile);
+                        } else if (randInt == 2) {
+                            setTreeForaging(tile);
+                        } else if (randInt == 3) {
+                            setStoneForaging(tile);
+                        } else if (randInt == 4) {
+                            setWoodForaging(tile);
+                        } else
+                            setGrassForaging(tile);
+                    }
                 }
             }
         }
