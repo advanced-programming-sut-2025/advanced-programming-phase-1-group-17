@@ -47,11 +47,21 @@ public class LoginMenuController {
             public void clicked(InputEvent event, float x, float y) {
                 String username = view.getUserName().getText();
                 String password = view.getPassword().getText();
-                //todo check these strings
+                if (App.getUserWithUsername(username) != null) {
+                    User user = App.getUserWithUsername(username);
+                    String hashedInput = PasswordUtil.hashPassword(password);
+                    if (user.getPasswordHash().equals(hashedInput)) {
+                        App.setLoggedInUser(user);
+                        Main.getMain().getScreen().dispose();
+                        //todo going to mainmenu just for testing , rewrite it later
+                        Main.getMain().setScreen(new MainMenu(new MainMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+                    } else {
+                        view.setError("invalid password");
+                    }
+                } else {
+                    view.setError("username not found");
+                }
 
-                Main.getMain().getScreen().dispose();
-                //todo going to mainmenu just for testing , rewrite it later
-                Main.getMain().setScreen(new MainMenu(new MainMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
             }
         });
     }

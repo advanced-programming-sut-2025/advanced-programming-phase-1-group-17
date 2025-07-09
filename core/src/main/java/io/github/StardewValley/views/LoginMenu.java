@@ -65,6 +65,7 @@ public class LoginMenu implements AppMenu, Screen {
         userName.setVisible(false);
 
         controller.setView(this);
+        backButton.setVisible(false);
     }
 
     @Override
@@ -182,5 +183,8 @@ public class LoginMenu implements AppMenu, Screen {
 
     public void setLoginButton(TextButton loginButton) {
         this.loginButton = loginButton;
+    }
+    public void setError(String error) {
+        this.error.setText(error);
     }
 }
