@@ -127,13 +127,14 @@ public class GameMenu implements AppMenu, Screen {
     public void run(Scanner scanner) {
         String command = scanner.nextLine();
         Matcher matcher;
-        if ((matcher = GameMenuCommands.StartNewGame.getMatcher(command)) != null) {
-            System.out.println(controller.newGame(matcher.group("username1"),
-                matcher.group("username2"),
-                matcher.group("username3"),
-                matcher.group("rest"),
-                scanner));
-        } else if ((matcher = GameMenuCommands.ExitGame.getMatcher(command)) != null) {
+//        if ((matcher = GameMenuCommands.StartNewGame.getMatcher(command)) != null) {
+//            System.out.println(controller.newGame(matcher.group("username1"),
+//                matcher.group("username2"),
+//                matcher.group("username3"),
+//                matcher.group("rest"),
+//                scanner));
+//        } else
+        if ((matcher = GameMenuCommands.ExitGame.getMatcher(command)) != null) {
             System.out.println(controller.exitGame());
         } else if ((matcher = GameMenuCommands.LoadGame.getMatcher(command)) != null) {
             System.out.println(controller.loadGame());

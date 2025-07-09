@@ -8,11 +8,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.LoginMenuController;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.enums.LoginMenuCommands;
+
 
 import java.util.Scanner;
-import java.util.regex.Matcher;
+
 
 public class LoginMenu implements AppMenu, Screen {
     LoginMenuController controller ;

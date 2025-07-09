@@ -2,20 +2,17 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Timer;
+
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+
 import io.github.StardewValley.PasswordUtil;
-import io.github.StardewValley.SaveUser;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Result;
 import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.enums.LoginMenuCommands;
-import io.github.StardewValley.models.enums.Menu;
 import io.github.StardewValley.views.LoginMenu;
 import io.github.StardewValley.views.MainMenu;
 
-import java.util.Scanner;
+
 
 
 public class LoginMenuController {
