@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.SaveUser;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.enums.MainMenuCommands;
@@ -41,8 +42,8 @@ public class MainMenuController {
         view.getLogoutAndGotoLoginMenuButton().addListener(
             new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
-                    //TODO
-
+                    App.setLoggedInUser(null);
+                    SaveUser.clearStayLoggedInFile();
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
                 }

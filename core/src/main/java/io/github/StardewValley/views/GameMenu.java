@@ -36,6 +36,7 @@ public class GameMenu implements AppMenu, Screen {
     private TextButton deleteUser2;
     private TextButton deleteUser3;
     private TextButton deleteUser4;
+    private TextButton loadGame;
     private Scanner scanner = new Scanner(System.in);
 
 
@@ -58,6 +59,8 @@ public class GameMenu implements AppMenu, Screen {
         addUser.setColor(0,0,1,1);
         UserName = new TextField("", skin);
         UserName.setMessageText("Enter Username of your friend");
+        loadGame = new TextButton("Load last Game", skin);
+        loadGame.setColor(0,0,1,1);
         User1 = new TextButton(App.getLoggedInUser().getUsername(), skin);
         User1.setColor(0,1,0,1);
         User2 = new TextButton("-", skin);
@@ -101,12 +104,13 @@ public class GameMenu implements AppMenu, Screen {
         Users.add(deleteUser3).width(100);
         Users.add(deleteUser4).width(100);
         buttons.center();
-        error.setPosition(800, 650);
+        error.setPosition(750, 650);
         buttons.row().pad(10, 0, 10, 0);
         buttons.add(startGame).width(300);
         buttons.add(addUser).width(300);
         buttons.add(UserName).width(300);
         buttons.row().pad(10, 0, 10, 0);
+        buttons.add(loadGame).width(300);
         stage.addActor(error);
         stage.addActor(backButton);
         stage.addActor(Users);
@@ -136,9 +140,7 @@ public class GameMenu implements AppMenu, Screen {
 //        } else
         if ((matcher = GameMenuCommands.ExitGame.getMatcher(command)) != null) {
             System.out.println(controller.exitGame());
-        } else if ((matcher = GameMenuCommands.LoadGame.getMatcher(command)) != null) {
-            System.out.println(controller.loadGame());
-        } else if ((matcher = GameMenuCommands.NextTurn.getMatcher(command)) != null) {
+        }  else if ((matcher = GameMenuCommands.NextTurn.getMatcher(command)) != null) {
             System.out.println(controller.nextTurn());
         } else if ((matcher = GameMenuCommands.Time.getMatcher(command)) != null) {
             System.out.println(controller.getTime());
@@ -571,5 +573,9 @@ public class GameMenu implements AppMenu, Screen {
 
     public void setScanner(Scanner scanner) {
         this.scanner = scanner;
+    }
+
+    public TextButton getLoadGame() {
+        return loadGame;
     }
 }

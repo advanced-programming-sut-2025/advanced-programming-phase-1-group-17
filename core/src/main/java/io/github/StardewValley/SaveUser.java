@@ -24,6 +24,13 @@ public class SaveUser {
             e.printStackTrace();
         }
     }
+    public static void clearStayLoggedInFile() {
+        try (FileWriter writer = new FileWriter("stayLoggedIn.json", false)) {
+            writer.write("");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }
 

@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.MainMenuController;
 import io.github.StardewValley.controllers.SecurityQuestionMenuController;
 import io.github.StardewValley.controllers.SignUpMenuController;
 import io.github.StardewValley.models.App;
@@ -28,6 +29,7 @@ public class SignUpMenu implements Screen {
     private final TextField passwordConfirmField;
     private final TextField nickNameField;
     private final TextField emailField;
+
 
     private final Table genderTable;
     private final ScrollPane genderPane;
@@ -64,6 +66,9 @@ public class SignUpMenu implements Screen {
         this.emailField = new TextField("", skin);
         this.emailField.setMessageText("Email");
 
+
+
+
         this.genderTable = new Table();
         for (Gender gender : Gender.values()) {
             TextButton genderButton = new TextButton(gender.name(), skin);
@@ -81,6 +86,7 @@ public class SignUpMenu implements Screen {
         this.errorLabel.setAlignment(Align.center);
 
         this.randomPasswordGenerationButton = new TextButton("Random Password", skin);
+        randomPasswordGenerationButton.setColor(0,0,1,1);
         this.randomPasswordGenerationButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -93,6 +99,7 @@ public class SignUpMenu implements Screen {
         });
 
         this.registerButton = new TextButton("Register", skin);
+        registerButton.setColor(0,0,1,1);
         this.registerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -106,7 +113,6 @@ public class SignUpMenu implements Screen {
                 );
                 if (result.isSuccessful()) {
                     Main.getMain().getScreen().dispose();
-
                     SecurityQuestionMenuController securityQuestionMenuController = new SecurityQuestionMenuController();
                     securityQuestionMenuController.setUser(App.getUserWithUsername(usernameField.getText()));
                     Main.getMain().setScreen(new SecurityQuestionMenu(
@@ -117,11 +123,12 @@ public class SignUpMenu implements Screen {
             }
         });
 
-        this.mainMenuButton = new TextButton("Main Menu", skin);
+        this.mainMenuButton = new TextButton("Login Menu", skin);
+        mainMenuButton.setColor(0,0,1,1);
         this.mainMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.enterMainMenu();
+                controller.enterLoginMenu();
             }
         });
 
@@ -147,6 +154,7 @@ public class SignUpMenu implements Screen {
         mainTable.add(emailField).row();
         mainTable.add(passwordField).row();
         mainTable.add(passwordConfirmField).row();
+
 
         // Gender section as horizontal row
         Table genderRow = new Table();

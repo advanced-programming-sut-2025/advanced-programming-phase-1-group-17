@@ -23,13 +23,16 @@ public class LoginMenu implements AppMenu, Screen {
     private  TextButton passwordButton;
     private  TextButton forgotPasswordButton;
     private  TextField userName;
+    private TextField answer;
     private  TextButton loginButton;
     private  TextField password;
     private  TextButton MenuTitle;
     private  TextButton showUserInfo;
     private Label error;
-    public Table table;
-    public Table buttons;
+    private Table table;
+    private Table buttons;
+    private CheckBox checkBox;
+
 
 
 
@@ -53,8 +56,13 @@ public class LoginMenu implements AppMenu, Screen {
         this.forgotPasswordButton.setColor(0, 0, 1, 1);
         this.loginButton = new TextButton("Login", skin);
         this.loginButton.setColor(0, 0, 1, 1);
-
+        this.checkBox = new CheckBox("stay loggedIn", skin);
+        this.checkBox.setChecked(false);
+        checkBox.setColor(0, 0, 1, 1);
+        this.answer = new TextField("", skin);
+        this.answer.setMessageText("enter your answer");
         this.backButton = new TextButton("Back", skin);
+        backButton.setColor(0, 1, 0, 1);
         this.error = new Label("", skin);
         error.setColor(1, 0, 0, 1);
         this.table = new Table();
@@ -62,9 +70,10 @@ public class LoginMenu implements AppMenu, Screen {
         buttons = new Table().center();
         password.setVisible(false);
         userName.setVisible(false);
+        answer.setVisible(false);
+
 
         controller.setView(this);
-        backButton.setVisible(false);
     }
 
     @Override
@@ -74,7 +83,7 @@ public class LoginMenu implements AppMenu, Screen {
         table.setFillParent(true);
         table.top().left();
         table.add(MenuTitle).left();
-        table.add(backButton).right().padLeft(1430);
+        table.add(backButton).right().padLeft(1550);
         buttons.add(error);
         buttons.row().pad(10, 0, 10, 0);
         buttons.setFillParent(true);
@@ -85,9 +94,13 @@ public class LoginMenu implements AppMenu, Screen {
         buttons.add(password).width(500);
         buttons.row().pad(10, 0, 10, 0);
         buttons.add(forgotPasswordButton).width(500);
+        buttons.add(answer).width(500);
         buttons.row().pad(10, 0, 10, 0);
         buttons.add(loginButton).width(500);
         buttons.row().pad(10, 0, 10, 0);
+        buttons.add(checkBox).width(500);
+        buttons.row().pad(10, 0, 10, 0);
+
         stage.addActor(table);
         stage.addActor(buttons);
     }
@@ -185,5 +198,25 @@ public class LoginMenu implements AppMenu, Screen {
     }
     public void setError(String error) {
         this.error.setText(error);
+    }
+
+    public CheckBox getCheckBox() {
+        return checkBox;
+    }
+
+    public void setCheckBox(CheckBox checkBox) {
+        this.checkBox = checkBox;
+    }
+
+    public TextField getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(TextField answer) {
+        this.answer = answer;
+    }
+
+    public Label getError() {
+        return error;
     }
 }

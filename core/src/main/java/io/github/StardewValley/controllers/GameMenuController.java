@@ -35,6 +35,7 @@ import io.github.StardewValley.models.Trade;
 import io.github.StardewValley.models.market.*;
 import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.MainMenu;
+import io.github.StardewValley.views.chooseMap;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -166,14 +167,17 @@ public class GameMenuController {
                 App.getGames().add(game);
                 view.setError("new game created Successfully");
 
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        Main.getMain().getScreen().dispose();
+                        Main.getMain().setScreen(new chooseMap(new ChooseMapController(),GameAssetManager.getGameAssetManager().getSkin()));
+                    }
+                }, 2);
 
-                gameMap(view.getScanner());
 
 
 
-
-
-                //TODO
 
             }
         });
@@ -209,9 +213,54 @@ public class GameMenuController {
                 return;
             }
         });
+        view.getLoadGame().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                User user = App.getLoggedInUser();
+                Player currentPlayer = null;
+                if (user.getLastGame() == null) {
+                    view.setError("you have no game to load");
+                } else {
+                    Game game = user.getLastGame();
+                    for (Player player : game.getPlayers()) {
+                        if (!(player.getUser().getLastGame() != null && player.getUser().getLastGame().equals(game))) {
+                            view.setError("your friends have another active game");
+                            return;
+                        }
+                        if (player.getUser().equals(user)) {
+                            currentPlayer = player;
+                        }
+                    }
+                    App.setCurrentGame(game);
+                    App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
+                    App.getCurrentGame().setCreator(currentPlayer);
+                    for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
+                        for (Tile tile : pm.getTiles()) {
+                            Tile.getTiles().add(tile);
+                        }
+                    }
+                    NPC.setFatherPlayer(game.getPlayers().get(4));
+                    NPC.setFatherUser(game.getPlayers().get(4).getUser());
+                    GreenHouse.setGreenHouse(App.getCurrentGame().getGreenHouses());
+
+                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                        @Override
+                        public void run() {
+                            view.setError("you are in Game now");
+//                            Main.getMain().getScreen().dispose();
+//                            Main.getMain().setScreen(
+//                                new MainMenu(
+//                                    new MainMenuController(),
+//                                    GameAssetManager.getGameAssetManager().getSkin()
+//                                )
+//                            );
+                        }
+                    }, 2);
+
+                }
+            }
+        });
 
     }
-
 
 
     private final ArtisanController artisanController = new ArtisanController();
@@ -219,119 +268,36 @@ public class GameMenuController {
     private final MarketsController marketsController = new MarketsController();
 
 
-//    public Result newGame(String username1, String username2, String username3, String rest, Scanner scanner) {
-//        if (rest != null && !rest.trim().isEmpty())
-//            return new Result(false, "you can't give more than 3 names");
-//
-//
-//        User user1, user2, user3;
-//        if (username1 == null) {
-//            return new Result(false, "you must give at least 1 username");
-//        }
-//        user1 = App.getUserWithUsername(username1);
-//        if (user1 == null)
-//            return new Result(false, "no user exists with username %s".formatted(username1));
-//        if (user1.getActiveGame() != null)
-//            return new Result(false, "user with username %s has an active game".formatted(username1));
-//
-//        if (username2 == null) {
-//            if (App.getUserWithUsername("guest1") != null) {
-//                App.getUsers().remove(App.getUserWithUsername("guest1"));
+
+//    public void gameMap(Scanner scanner) {
+//        boolean done = false;
+//        int playerChoice = 0;
+//        System.out.println("Enter the number of the gameMapType you would like to play (1 or 2)");
+//        while (!done) {
+//            String input = scanner.nextLine();
+//            if (GameMenuCommands.ChooseGameMap.getMatcher(input) == null) {
+//                System.out.println("Invalid input");
+//            } else if (GameMenuCommands.Int.getMatcher
+//                (GameMenuCommands.ChooseGameMap.getMatcher(input).
+//                    group("mapNumber")) == null) {
+//                System.out.println("Invalid number");
+//            } else if (Integer.parseInt(GameMenuCommands.ChooseGameMap.getMatcher(input).group("mapNumber")) != 1
+//                && Integer.parseInt(GameMenuCommands.ChooseGameMap.getMatcher(input).group("mapNumber")) != 2) {
+//                System.out.println("Invalid number");
+//            } else {
+//                App.getCurrentGame().getPlayers().get(playerChoice).getPlayerMap().setMapType
+//                    (Integer.parseInt(GameMenuCommands.ChooseGameMap.getMatcher(input).group("mapNumber")));
+//                playerChoice++;
+//                if (playerChoice == 4) {
+//                    done = true;
+//                    System.out.println("Let's go");
+//                }
 //            }
-//            user2 = new User();
-//            user2.setUsername("guest1");
-//            App.getUsers().add(user2);
-//        } else {
-//            user2 = App.getUserWithUsername(username2);
-//            if (user2 == null)
-//                return new Result(false, "no user exists with username %s".formatted(username2));
-//            if (user2.getActiveGame() != null)
-//                return new Result(false, "user with username %s has an active game".formatted(username2));
 //        }
-//        if (username3 == null) {
-//            if (App.getUserWithUsername("guest2") != null) {
-//                App.getUsers().remove(App.getUserWithUsername("guest2"));
-//            }
-//            user3 = new User();
-//            user3.setUsername("guest2");
-//            App.getUsers().add(user3);
-//        } else {
-//            user3 = App.getUserWithUsername(username3);
-//            if (user3 == null)
-//                return new Result(false, "no user exists with username %s".formatted(username3));
-//            if (user3.getActiveGame() != null)
-//                return new Result(false, "user with username %s has an active game".formatted(username3));
-//        }
-//
-//        Tile.getTiles().clear();
-//        NPC.setFatherPlayer(null);
-//        NPC.setFatherUser(null);
-//        GreenHouse.getGreenHouse().clear();
-//        Game game = new Game(user1, user2, user3);
-//        App.setCurrentGame(game);
-//        App.getGames().add(game);
-//        gameMap(scanner);
-//
-//        return new Result(true, "new game created Successfully");
 //    }
 
-    public void gameMap(Scanner scanner) {
-        boolean done = false;
-        int playerChoice = 0;
-        System.out.println("Enter the number of the gameMapType you would like to play (1 or 2)");
-        while (!done) {
-            String input = scanner.nextLine();
-            if (GameMenuCommands.ChooseGameMap.getMatcher(input) == null) {
-                System.out.println("Invalid input");
-            } else if (GameMenuCommands.Int.getMatcher
-                (GameMenuCommands.ChooseGameMap.getMatcher(input).
-                    group("mapNumber")) == null) {
-                System.out.println("Invalid number");
-            } else if (Integer.parseInt(GameMenuCommands.ChooseGameMap.getMatcher(input).group("mapNumber")) != 1
-                && Integer.parseInt(GameMenuCommands.ChooseGameMap.getMatcher(input).group("mapNumber")) != 2) {
-                System.out.println("Invalid number");
-            } else {
-                App.getCurrentGame().getPlayers().get(playerChoice).getPlayerMap().setMapType
-                    (Integer.parseInt(GameMenuCommands.ChooseGameMap.getMatcher(input).group("mapNumber")));
-                playerChoice++;
-                if (playerChoice == 4) {
-                    done = true;
-                    System.out.println("Let's go");
-                }
-            }
-        }
-    }
 
 
-    public Result loadGame() {
-        User user = App.getLoggedInUser();
-        Player currentPlayer = null;
-        if (user.getLastGame() == null) {
-            return new Result(false, "you have no game to load");
-        } else {
-            Game game = user.getLastGame();
-            for (Player player : game.getPlayers()) {
-                if (!(player.getUser().getLastGame() != null && player.getUser().getLastGame().equals(game)))
-                    return new Result(false, "your friends have another active game");
-                if (player.getUser().equals(user)) {
-                    currentPlayer = player;
-                }
-            }
-            App.setCurrentGame(game);
-            App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
-            App.getCurrentGame().setCreator(currentPlayer);
-            for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
-                for (Tile tile : pm.getTiles()) {
-                    Tile.getTiles().add(tile);
-                }
-            }
-            NPC.setFatherPlayer(game.getPlayers().get(4));
-            NPC.setFatherUser(game.getPlayers().get(4).getUser());
-            GreenHouse.setGreenHouse(App.getCurrentGame().getGreenHouses());
-            //App.setCurrentMenu(Menu.GameMenu);
-            return new Result(false, "you are in GameMenu now");
-        }
-    }
 
     public Result deleteAndExitThisGame(Scanner scanner) {
         System.out.println("enter your comment about deleting this game");

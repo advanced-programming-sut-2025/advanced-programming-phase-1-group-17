@@ -29,6 +29,10 @@ public class SecurityQuestionMenu implements Screen {
     private final TextButton submitAnswer;
 
     private final List<String> securityQuestions = List.of(
+        "What is your pet's name?",
+        "What is your favorite color?",
+        "What city were you born in?",
+        "What is your mother’s maiden name?",
         "What is the name of your first pet?",
         "What is your mother's maiden name?",
         "What was the name of your elementary school?",
@@ -40,6 +44,7 @@ public class SecurityQuestionMenu implements Screen {
         "In what city did your parents meet?",
         "What was the name of your childhood best friend?"
     );
+
 
     public SecurityQuestionMenu(SecurityQuestionMenuController controller, Skin skin) {
         this.controller = controller;

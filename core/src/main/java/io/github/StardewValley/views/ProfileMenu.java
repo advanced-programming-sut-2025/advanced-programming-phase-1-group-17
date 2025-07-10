@@ -248,6 +248,7 @@ public class ProfileMenu implements AppMenu, Screen {
 
     public void setError(String error) {
         this.error.setText(error);
+
     }
 
     public TextButton getShowUserInfo() {

@@ -10,6 +10,7 @@ import io.github.StardewValley.models.User;
 import io.github.StardewValley.models.enums.Gender;
 import io.github.StardewValley.models.enums.Menu;
 import io.github.StardewValley.models.enums.SignUpMenuCommands;
+import io.github.StardewValley.views.LoginMenu;
 import io.github.StardewValley.views.MainMenu;
 
 import java.security.SecureRandom;
@@ -26,9 +27,9 @@ public class SignUpMenuController {
 //    }
 
 
-    public void enterMainMenu() {
+    public void enterLoginMenu() {
         Main.getMain().getScreen().dispose();
-        Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+        Main.getMain().setScreen(new LoginMenu(new LoginMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
     }
 
 
@@ -82,6 +83,7 @@ public class SignUpMenuController {
 
         String hashedPassword = PasswordUtil.hashPassword(password);
         User newUser = new User(username, password, hashedPassword, email, nickname, gender);
+
 
         //chooseSecurityQuestion(newUser, scanner);
         App.getUsers().add(newUser);
