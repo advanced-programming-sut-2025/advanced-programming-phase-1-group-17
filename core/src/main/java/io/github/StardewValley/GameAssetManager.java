@@ -24,4 +24,7 @@ public class GameAssetManager {
     public String getBackgroundTexture() {
         return "Flooring/Flooring_28.png";
     }
+    public String getTreeTexture() {
+        return "tree.png";
+    }
 }

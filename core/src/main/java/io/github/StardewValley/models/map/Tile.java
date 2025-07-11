@@ -20,24 +20,24 @@ public class Tile {
     private Player whoIsHere;
     private NPC npcIsHere;
     private boolean crowImmunity = false;
-    private static Tile[][] tiles;
+    private static ArrayList<Tile> tiles = new ArrayList<Tile>();
 
     public Tile(int x, int y, Player owner) {
         this.x = x;
         this.y = y;
         this.owner = owner;
-        tiles[x][y] = this;
+        tiles.add(this);
     }
 
-    public static Tile[][] getTiles() {
+    public static ArrayList<Tile> getTiles() {
         return tiles;
     }
 
-    public static void resetTiles() {
-        for (Tile[] tileColumn : tiles) {
-            tileColumn = new Tile[PlayerMap.getLength()];
-        }
-    }
+//    public static void resetTiles() {
+//        for (Tile[] tileColumn : tiles) {
+//            tileColumn = new Tile[PlayerMap.getLength()];
+//        }
+//    }
 
     public void plant(String plantName) {
         isPlowed = false;
@@ -101,7 +101,12 @@ public class Tile {
     }
 
     public static Tile getTile(int x, int y) {
-        return tiles[x][y];
+        for (Tile tile : tiles) {
+            if (tile.getX() == x && tile.getY() == y) {
+                return tile;
+            }
+        }
+        return null;
     }
 
     public Player getWhoIsHere() {

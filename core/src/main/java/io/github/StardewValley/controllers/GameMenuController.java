@@ -114,66 +114,66 @@ public class GameMenuController {
         });
         view.getStartGame().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                view.setError("");
-                String username1 = view.getUser1().getLabel().getText().toString().trim();
-                String username2 = view.getUser2().getLabel().getText().toString().trim();
-                String username3 = view.getUser3().getLabel().getText().toString().trim();
-                String username4 = view.getUser4().getLabel().getText().toString().trim();
-                User user1 = App.getUserWithUsername(username1);
-                User user2 = App.getUserWithUsername(username2);
-                User user3 = App.getUserWithUsername(username3);
-                User user4 = App.getUserWithUsername(username4);
+                    view.setError("");
+                    String username1 = view.getUser1().getLabel().getText().toString().trim();
+                    String username2 = view.getUser2().getLabel().getText().toString().trim();
+                    String username3 = view.getUser3().getLabel().getText().toString().trim();
+                    String username4 = view.getUser4().getLabel().getText().toString().trim();
+                    User user1 = App.getUserWithUsername(username1);
+                    User user2 = App.getUserWithUsername(username2);
+                    User user3 = App.getUserWithUsername(username3);
+                    User user4 = App.getUserWithUsername(username4);
 
-                if (username1.equals("-")) {
-                    view.setError("you must give at least 1 username");
-                    return;
-                }
-                if (username2.equals("-")) {
-                    if (App.getUserWithUsername("guest1") != null) {
-                        App.getUsers().remove(App.getUserWithUsername("guest1"));
+                    if (username1.equals("-")) {
+                        view.setError("you must give at least 1 username");
+                        return;
                     }
-                    user2 = new User();
-                    user2.setUsername("guest1");
-                    App.getUsers().add(user2);
-                } else {
-                    user2 = App.getUserWithUsername(username2);
-                }
-                if (username3.equals("-")) {
-                    if (App.getUserWithUsername("guest2") != null) {
-                        App.getUsers().remove(App.getUserWithUsername("guest2"));
+                    if (username2.equals("-")) {
+                        if (App.getUserWithUsername("guest1") != null) {
+                            App.getUsers().remove(App.getUserWithUsername("guest1"));
+                        }
+                        user2 = new User();
+                        user2.setUsername("guest1");
+                        App.getUsers().add(user2);
+                    } else {
+                        user2 = App.getUserWithUsername(username2);
                     }
-                    user3 = new User();
-                    user3.setUsername("guest2");
-                    App.getUsers().add(user3);
-                } else {
-                    user3 = App.getUserWithUsername(username3);
-                }
-                if (username4.equals("-")) {
-                    if (App.getUserWithUsername("guest3") != null) {
-                        App.getUsers().remove(App.getUserWithUsername("guest3"));
+                    if (username3.equals("-")) {
+                        if (App.getUserWithUsername("guest2") != null) {
+                            App.getUsers().remove(App.getUserWithUsername("guest2"));
+                        }
+                        user3 = new User();
+                        user3.setUsername("guest2");
+                        App.getUsers().add(user3);
+                    } else {
+                        user3 = App.getUserWithUsername(username3);
                     }
-                    user4 = new User();
-                    user4.setUsername("guest3");
-                    App.getUsers().add(user3);
-                } else {
-                    user4 = App.getUserWithUsername(username3);
-                }
+                    if (username4.equals("-")) {
+                        if (App.getUserWithUsername("guest3") != null) {
+                            App.getUsers().remove(App.getUserWithUsername("guest3"));
+                        }
+                        user4 = new User();
+                        user4.setUsername("guest3");
+                    App.getUsers().add(user4);
+                    } else {
+                    user4 = App.getUserWithUsername(username4);
+                    }
                 Tile.getTiles().clear();
-                NPC.setFatherPlayer(null);
-                NPC.setFatherUser(null);
-                GreenHouse.getGreenHouse().clear();
-                Game game = new Game(user2, user3, user4);
-                App.setCurrentGame(game);
-                App.getGames().add(game);
-                view.setError("new game created Successfully");
+                    NPC.setFatherPlayer(null);
+                    NPC.setFatherUser(null);
+                    GreenHouse.getGreenHouse().clear();
+                    Game game = new Game(user2, user3, user4);
+                    App.setCurrentGame(game);
+                    App.getGames().add(game);
+                    view.setError("new game created Successfully");
 
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        Main.getMain().getScreen().dispose();
+                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                        @Override
+                        public void run() {
+                            Main.getMain().getScreen().dispose();
                         Main.getMain().setScreen(new chooseMap(new ChooseMapController(),GameAssetManager.getGameAssetManager().getSkin()));
-                    }
-                }, 2);
+                        }
+                    }, 2);
 
 
 

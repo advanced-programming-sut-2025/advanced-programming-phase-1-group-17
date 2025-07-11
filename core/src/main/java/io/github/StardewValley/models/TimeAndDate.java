@@ -129,28 +129,24 @@ public class TimeAndDate {
 
     private void weatherEffect() {
         if (todayWeather.equals(WeatherType.Rainy)) {
-            for (Tile[] tileColumn : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
-                for (Tile tile : tileColumn) {
-                    if (tile.getPlaceable() instanceof Plant plant) {
-                        if (!plant.isInsideGreenhouse())
-                            plant.wateringPlant();
-                    }
+            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
+                if (tile.getPlaceable() instanceof Plant plant) {
+                    if (!plant.isInsideGreenhouse())
+                        plant.wateringPlant();
                 }
             }
         } else if (todayWeather.equals(WeatherType.Storm)) {
             int counter = 3;
-            for (Tile[] tileColumn : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
-                for (Tile tile : tileColumn) {
-                    double rand = Math.random();
-                    if (rand <= 0.01) {
-                        if (counter > 0) {
-                            tile.lightningStrike();
-                            counter--;
-                        }
+            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
+                double rand = Math.random();
+                if (rand <= 0.01) {
+                    if (counter > 0) {
+                        tile.lightningStrike();
+                        counter--;
                     }
-                    if (tile.getPlaceable() instanceof Plant plant) {
-                        plant.wateringPlant();
-                    }
+                }
+                if (tile.getPlaceable() instanceof Plant plant) {
+                    plant.wateringPlant();
                 }
             }
         }
@@ -184,19 +180,17 @@ public class TimeAndDate {
 
     private void handleIncompatiblePlants() {
         for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
-            for (Tile[] tileColumn : playerMap.getTiles()) {
-                for (Tile tile : tileColumn) {
-                    if (tile.getPlaceable() instanceof Tree tree) {
-                        if (tree.isInsideGreenhouse())
-                            continue;
-                        if (!tree.getType().getSeasons().contains(season))
-                            tree.getTile().setPlaceable(null);
-                    } else if (tile.getPlaceable() instanceof Crop crop) {
-                        if (crop.isInsideGreenhouse())
-                            continue;
-                        if (!crop.getType().getSeasons().contains(season))
-                            crop.getTile().setPlaceable(null);
-                    }
+            for (Tile tile : playerMap.getTiles()) {
+                if (tile.getPlaceable() instanceof Tree tree) {
+                    if (tree.isInsideGreenhouse())
+                        continue;
+                    if (!tree.getType().getSeasons().contains(season))
+                        tree.getTile().setPlaceable(null);
+                } else if (tile.getPlaceable() instanceof Crop crop) {
+                    if (crop.isInsideGreenhouse())
+                        continue;
+                    if (!crop.getType().getSeasons().contains(season))
+                        crop.getTile().setPlaceable(null);
                 }
             }
         }

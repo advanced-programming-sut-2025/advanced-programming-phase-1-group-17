@@ -29,8 +29,10 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public void render(float v) {
         ScreenUtils.clear(0, 0, 0, 1);
-
+        controller.getCamera().update();
+        Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
+
         controller.updateGame(v);
 
         Main.getBatch().end();
@@ -65,15 +67,6 @@ public class GameView implements Screen, InputProcessor {
 
     }
 
-    @Override
-    public boolean keyDown(int i) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int i) {
-        return false;
-    }
 
     @Override
     public boolean keyTyped(char c) {
@@ -108,6 +101,18 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public boolean scrolled(float v, float v1) {
         return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        controller.setKey(keycode, true);
+        return true;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        controller.setKey(keycode, false);
+        return true;
     }
 
 

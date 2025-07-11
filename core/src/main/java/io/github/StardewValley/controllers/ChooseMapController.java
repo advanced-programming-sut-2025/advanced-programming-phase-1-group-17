@@ -2,7 +2,9 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
+import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.chooseMap;
 
 
@@ -42,7 +44,8 @@ public class ChooseMapController {
                         view.setPlayerUserName("Let's go");
                     }
                 }else {
-                    //TODO enter the game
+                    Main.getMain().getScreen().dispose();
+                    Main.getMain().setScreen(new GameView(new GameController(App.getCurrentGame().getCurrentPlayingPlayer())));
                 }
             }
         });
