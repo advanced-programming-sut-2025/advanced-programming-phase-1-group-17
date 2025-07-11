@@ -66,8 +66,10 @@ public class WorldController {
             if (tile.getPlaceable() instanceof Tree) {
                 Main.getBatch().draw(treeTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
             }
+            //TODO
+
         }
-        //TODO
+
 
 
 //        for (Tile tile : tiles) {
