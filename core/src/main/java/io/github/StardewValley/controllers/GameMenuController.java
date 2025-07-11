@@ -393,7 +393,7 @@ public class GameMenuController {
     }
 
     public Result cheatThor(int x, int y) {
-        Tile tile = App.getCurrentGame().getTileByIndex(x, y);
+        Tile tile = Tile.getTile(x, y);
         if (tile == null)
             return new Result(false, "tile not found");
         tile.lightningStrike();
@@ -724,7 +724,7 @@ public class GameMenuController {
 
     public Result toolUpgrade(String toolName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (App.getCurrentGame().getTileByIndex(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
+        if (Tile.getTile(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
             if (!store.getType().equals(StoreType.Blacksmith))
                 return new Result(false, "The Player is not in Blacksmith");
         } else
@@ -1117,7 +1117,7 @@ public class GameMenuController {
             return new Result(false, " you dont have " + craftingItemType.name());
         }
         int[] direction1 = App.handleDirection(Integer.parseInt(direction));
-        Tile tile = App.getCurrentGame().getTileByIndex(player.getX() + direction1[0],
+        Tile tile = Tile.getTile(player.getX() + direction1[0],
             player.getY() + direction1[1]);
         if (tile.getPlaceable() != null) {
             return new Result(false, "tile is full");

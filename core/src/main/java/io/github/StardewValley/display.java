@@ -51,7 +51,7 @@ public class display {
                 if (j == 101) {
                     System.out.print("|");
                 }
-                Tile tile = game.getTileByIndex(i, j);
+                Tile tile = Tile.getTile(i, j);
                 if (tile == null) {
                     System.out.print("null");
                 } else if (tile.getPlaceable() instanceof Animal animal) {
