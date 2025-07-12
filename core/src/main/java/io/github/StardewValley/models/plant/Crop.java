@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.Placeable;
@@ -292,5 +293,11 @@ public class Crop extends Plant implements BackPackable, Placeable {
 
     public void setQuality(ItemQuality quality) {
         this.quality = quality;
+    }
+
+    public Texture getTexture() {
+        if (isForaging)
+            return type.getHarvestedCropTexture();
+        return type.getStageTextures()[this.currentStageIndex];
     }
 }

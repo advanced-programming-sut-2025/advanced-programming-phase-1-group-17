@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.Placeable;
 
@@ -27,5 +28,8 @@ public class Seed implements BackPackable, Placeable {
         return type.getPrice();
     }
 
-
+    @Override
+    public Texture getTexture() {
+        return new Texture(type.getTexturePath());
+    }
 }

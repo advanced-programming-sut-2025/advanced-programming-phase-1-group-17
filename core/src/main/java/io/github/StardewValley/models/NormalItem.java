@@ -1,5 +1,7 @@
 package io.github.StardewValley.models;
 
+import com.badlogic.gdx.graphics.Texture;
+
 public class NormalItem implements BackPackable, Placeable{
     private NormalItemType type;
 
@@ -20,5 +22,10 @@ public class NormalItem implements BackPackable, Placeable{
     @Override
     public NormalItemType getType() {
         return type;
+    }
+
+    @Override
+    public Texture getTexture() {
+        return null;
     }
 }

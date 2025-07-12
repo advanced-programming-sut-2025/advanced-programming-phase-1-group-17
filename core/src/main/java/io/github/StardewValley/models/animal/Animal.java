@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.animal;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.Player;
@@ -252,5 +253,11 @@ public class Animal implements Placeable {
             }
         }
         return false;
+    }
+
+    @Override
+    public Texture getTexture() {
+        //TODO
+        return null;
     }
 }
