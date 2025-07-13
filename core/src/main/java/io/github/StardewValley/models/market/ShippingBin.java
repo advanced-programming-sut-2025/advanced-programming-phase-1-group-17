@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.market;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.Placeable;
@@ -63,5 +64,11 @@ public class ShippingBin implements Placeable {
 
     public void setTodayItemOwner(Player todayItemOwner) {
         this.todayItemOwner = todayItemOwner;
+    }
+
+    @Override
+    public Texture getTexture() {
+        //TODO
+        return null;
     }
 }

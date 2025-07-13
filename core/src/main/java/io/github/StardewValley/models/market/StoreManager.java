@@ -6,7 +6,6 @@ import io.github.StardewValley.models.cooking.FoodType;
 import io.github.StardewValley.models.cooking.RecipeType;
 import io.github.StardewValley.models.animal.AnimalPlaceType;
 import io.github.StardewValley.models.animal.AnimalType;
-import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipeType;
 import io.github.StardewValley.models.enums.BackPackType;
 import io.github.StardewValley.models.enums.Season;
@@ -111,7 +110,7 @@ public class StoreManager {
         pierre.addItem(new ShopItem(SeedType.PotatoSeeds, 50, 5, ""));
         pierre.addItem(new ShopItem(SeedType.TulipBulb, 20, 5, ""));
         pierre.addItem(new ShopItem(SeedType.KaleSeeds, 70, 5, ""));
-        pierre.addItem(new ShopItem(SeedType.JazzSeeds, 30, 5, ""));
+        pierre.addItem(new ShopItem(SeedType.BlueJazzSeeds, 30, 5, ""));
         pierre.addItem(new ShopItem(SeedType.GarlicSeeds, 40, 5, ""));
         pierre.addItem(new ShopItem(SeedType.RiceShoot, 40, 5, ""));
 
@@ -164,7 +163,7 @@ public class StoreManager {
         jojaInventory.addItem(new ShopItem(SeedType.CoffeeBean, 200, 1, "Plant in summer or spring. Takes 10 days to grow, then produces coffee beans every other day.", List.of(Season.Spring, Season.Summer)));
         jojaInventory.addItem(new ShopItem(SeedType.CarrotSeeds, 5, 10, "Plant in the spring. Takes 3 days to grow.", List.of(Season.Spring)));
         jojaInventory.addItem(new ShopItem(SeedType.RhubarbSeeds, 100, 5, "Plant these in the spring. Takes 13 days to mature.", List.of(Season.Spring)));
-        jojaInventory.addItem(new ShopItem(SeedType.JazzSeeds, 37, 5, "Plant in spring. Takes 7 days to produce a blue puffball flower.", List.of(Season.Spring)));
+        jojaInventory.addItem(new ShopItem(SeedType.BlueJazzSeeds, 37, 5, "Plant in spring. Takes 7 days to produce a blue puffball flower.", List.of(Season.Spring)));
 
         // Summer Stock
         jojaInventory.addItem(new ShopItem(SeedType.TomatoSeeds, 62, 5, "Plant these in the summer. Takes 11 days to mature, and continues to produce after first harvest.", List.of(Season.Summer)));
@@ -502,7 +501,7 @@ public class StoreManager {
         if (type.equals(SeedType.PotatoSeeds)) return season == Season.Spring ? 50 : 75;
         if (type.equals(SeedType.TulipBulb)) return season == Season.Spring ? 20 : 30;
         if (type.equals(SeedType.KaleSeeds)) return season == Season.Spring ? 70 : 105;
-        if (type.equals(SeedType.JazzSeeds)) return season == Season.Spring ? 30 : 45;
+        if (type.equals(SeedType.BlueJazzSeeds)) return season == Season.Spring ? 30 : 45;
         if (type.equals(SeedType.GarlicSeeds)) return season == Season.Spring ? 40 : 60;
         if (type.equals(SeedType.RiceShoot)) return season == Season.Spring ? 40 : 60;
 

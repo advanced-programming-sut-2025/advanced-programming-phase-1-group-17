@@ -16,7 +16,7 @@ public abstract class ForagingSeed {
 
         // Spring seeds
         Collections.addAll(seasonalSeedMap.get(Season.Spring),
-            SeedType.JazzSeeds, SeedType.CarrotSeeds, SeedType.CauliflowerSeeds,
+            SeedType.BlueJazzSeeds, SeedType.CarrotSeeds, SeedType.CauliflowerSeeds,
             SeedType.CoffeeBean, SeedType.GarlicSeeds, SeedType.BeanStarter,
             SeedType.KaleSeeds, SeedType.ParsnipSeeds, SeedType.PotatoSeeds,
             SeedType.RhubarbSeeds, SeedType.StrawberrySeeds, SeedType.TulipBulb,

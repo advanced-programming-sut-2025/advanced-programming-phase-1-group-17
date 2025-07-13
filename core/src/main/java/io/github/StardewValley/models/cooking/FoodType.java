@@ -10,6 +10,7 @@ import static io.github.StardewValley.models.artisan.ArtisanProductType.*;
 import static io.github.StardewValley.models.enums.FishType.*;
 import static io.github.StardewValley.models.plant.CropType.*;
 import static io.github.StardewValley.models.plant.FruitType.*;
+import io.github.StardewValley.models.plant.CropType;
 
 public enum FoodType implements BackPackableType {
     FriedEgg(Map.of(Egg, 1), 50, 35),
@@ -31,7 +32,7 @@ public enum FoodType implements BackPackableType {
     SalmonDinner(Map.of(Salmon, 1, Amaranth, 1, Kale, 1), 125, 300),
     VegetableMedley(Map.of(Tomato, 1, Beet, 1), 165, 120),
     FarmersLunch(Map.of(Omelet, 1, Parsnip, 1), 200, 150),
-    SurvivalBurger(Map.of(Bread, 1, Carrot, 1, Eggplant, 1), 125, 180),
+    SurvivalBurger(Map.of(Bread, 1, CropType.Carrot, 1, Eggplant, 1), 125, 180),
     DishOTheSea(Map.of(Sardine, 2, HashBrowns, 1), 150, 220),
     SeafoamPudding(Map.of(Flounder, 1, MidnightCarp, 1), 175, 300),
     MinersTreat(Map.of(Carrot, 2, Sugar, 1, Milk, 1), 125, 200);

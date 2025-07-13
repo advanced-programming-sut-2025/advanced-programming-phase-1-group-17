@@ -53,7 +53,7 @@ public class FarmingController {
 
         int newX = player.getX() + directions[0];
         int newY = player.getY() + directions[1];
-        Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
+        Tile tile = Tile.getTile(newX, newY);
 
         if (tile == null) {
             return new Result(false, "Tile out of map.");
@@ -89,7 +89,7 @@ public class FarmingController {
         int newX = player.getX() + directions[0];
         int newY = player.getY() + directions[1];
 
-        Tile tile = App.getCurrentGame().getTileByIndex(newX, newY);
+        Tile tile = Tile.getTile(newX, newY);
         if (tile == null) {
             return new Result(false, "TIle out of map");
         }

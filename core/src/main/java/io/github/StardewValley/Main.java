@@ -3,13 +3,17 @@ package io.github.StardewValley;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import io.github.StardewValley.controllers.GameController;
 import io.github.StardewValley.controllers.ProfileMenuController;
 import io.github.StardewValley.controllers.SignUpMenuController;
+import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.User;
 import io.github.StardewValley.models.enums.Menu;
+import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.ProfileMenu;
 import io.github.StardewValley.views.SignUpMenu;
+import io.github.StardewValley.views.*;
 
 import java.util.ArrayList;
 
@@ -18,6 +22,7 @@ public class Main extends Game {
     private static Main main;
     private static SpriteBatch batch;
     private static ShapeRenderer shapeRenderer;
+    private static boolean isLoggedInUser = false;
 
     @Override
     public void create() {
@@ -34,12 +39,14 @@ public class Main extends Game {
             for (User user : users) {
                 if (user.equals(user1)) {
                     App.setLoggedInUser(user);
+                    isLoggedInUser = true;
+                    Main.getMain().setScreen(new WelcomeMenu(this,true));
                 }
             }
         }
-//        (new AppView()).run();
-        Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
-        //Main.getMain().setScreen(new ProfileMenu(new ProfileMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+        if (!isLoggedInUser) {
+            Main.getMain().setScreen(new WelcomeMenu(this,false));
+        }
     }
 
     @Override

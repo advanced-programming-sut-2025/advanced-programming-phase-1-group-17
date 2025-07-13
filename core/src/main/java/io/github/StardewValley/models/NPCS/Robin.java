@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.NPCS;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.crafting.CraftingItem;
@@ -111,5 +112,11 @@ public class Robin extends NPC implements Placeable {
     @Override
     public HashMap<String, String> getDialogue2() {
         return dialogue2;
+    }
+
+    @Override
+    public Texture getTexture() {
+        //TODO
+        return null;
     }
 }

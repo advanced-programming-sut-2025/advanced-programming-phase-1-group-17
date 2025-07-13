@@ -1,8 +1,14 @@
 package io.github.StardewValley.views;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.MainMenuController;
+import io.github.StardewValley.controllers.ProfileMenuController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.User;
 import io.github.StardewValley.models.enums.MainMenuCommands;
@@ -11,42 +17,73 @@ import io.github.StardewValley.models.enums.Menu;
 import java.util.Scanner;
 
 public class MainMenu implements AppMenu , Screen {
-    MainMenuController mainMenuController = new MainMenuController();
+    private  TextButton backButton;
+    private Table buttonsTable;
+    private Stage stage;
+    private Skin skin;
+    private MainMenuController controller;
+    private  TextButton profileMenuButton;
+    private  TextButton gameMenuButton;
+    private  TextButton logoutAndGotoLoginMenuButton;
+    private  TextField newUserName;
+    private  TextField newPassword;
+    private  TextField oldPassword;
+    private  TextButton menuTitle;
+    private  TextButton showUserInfo;
+    private  TextField oldEmail;
+    private  TextField newEmail;
+    private  TextButton changeNickName;
+    private  TextField NickName;
+    private Label error;
+    public Table table;
+    public Table buttons;
 
     public MainMenu(MainMenuController mainMenuController, Skin skin) {
 
-    }
+        this.controller = mainMenuController;
+        this.gameMenuButton = new TextButton("Game menu", skin);
+        this.profileMenuButton = new TextButton("Profile menu", skin);
+        this.menuTitle = new TextButton("Main menu", skin);
+        menuTitle.setColor(0,0,1,1);
+        this.logoutAndGotoLoginMenuButton = new TextButton("log out",skin);
+        this.table = new Table().top().left();
+        this.skin = skin;
+        this.buttons = new Table().center();
+        controller.setView(this);
 
-    public void run(Scanner scanner) {
-        String command = scanner.nextLine();
-        if (command.trim().equals("user logout")) {
-            System.out.println(mainMenuController.exitMenu());
-        } else if (MainMenuCommands.changeMenu.getMatcher(command).matches()) {
-            System.out.println(mainMenuController.changeMenu(command));
-        } else if (command.trim().equals("show current menu")) {
-            //System.out.println(App.getCurrentMenu().name());
-        }
-        else if (command.trim().equals("load game")) {
-            System.out.println(mainMenuController.loadGame());
-        }else if (command.trim().equals("menu exit")) {
-            App.setLoggedInUser(null);
-            //App.setCurrentMenu(Menu.LoginMenu);
-            System.out.println("You are in Login menu now");
-        }
-        else {
-            System.out.println("invalid command");
-        }
 
     }
+
+
 
     @Override
     public void show() {
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        table.setFillParent(true);
+        buttons.setFillParent(true);
+        table.add(menuTitle).left();
+        buttons.row().pad(10, 0, 10, 0);
+        buttons.setFillParent(true);
+        buttons.add(gameMenuButton).width(500);
+        buttons.row().pad(10, 0, 10, 0);
+        buttons.add(profileMenuButton).width(500);
+        buttons.row().pad(10, 0, 10, 0);
+        buttons.add(logoutAndGotoLoginMenuButton).width(500);
+        buttons.row().pad(10, 0, 10, 0);
+        buttons.row().pad(10, 0, 10, 0);
+        stage.addActor(table);
+        stage.addActor(buttons);
 
     }
 
     @Override
     public void render(float v) {
-
+        ScreenUtils.clear(0, 0, 0, 1);
+        Main.getBatch().begin();
+        Main.getBatch().end();
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
     }
 
     @Override
@@ -72,5 +109,40 @@ public class MainMenu implements AppMenu , Screen {
     @Override
     public void dispose() {
 
+    }
+    public void run(Scanner scanner) {
+
+    }
+
+    public TextButton getBackButton() {
+        return backButton;
+    }
+
+    public void setBackButton(TextButton backButton) {
+        this.backButton = backButton;
+    }
+
+    public TextButton getProfileMenuButton() {
+        return profileMenuButton;
+    }
+
+    public void setProfileMenuButton(TextButton profileMenuButton) {
+        this.profileMenuButton = profileMenuButton;
+    }
+
+    public TextButton getGameMenuButton() {
+        return gameMenuButton;
+    }
+
+    public void setGameMenuButton(TextButton gameMenuButton) {
+        this.gameMenuButton = gameMenuButton;
+    }
+
+    public TextButton getLogoutAndGotoLoginMenuButton() {
+        return logoutAndGotoLoginMenuButton;
+    }
+
+    public void setLogoutAndGotoLoginMenuButton(TextButton logoutAndGotoLoginMenuButton) {
+        this.logoutAndGotoLoginMenuButton = logoutAndGotoLoginMenuButton;
     }
 }

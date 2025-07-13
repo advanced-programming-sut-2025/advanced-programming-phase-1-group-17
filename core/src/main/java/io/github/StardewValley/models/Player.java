@@ -1,11 +1,14 @@
 package io.github.StardewValley.models;
 
+import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
 import io.github.StardewValley.models.enums.BackPackType;
+import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.map.PlayerMap;
 
@@ -21,6 +24,9 @@ public class Player {
     private int x;
     private int y;
     private Buff buff;
+    private float speed = 200f;
+    private transient Texture texture;
+    private transient Texture backgroundTexture;
 
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
@@ -62,7 +68,6 @@ public class Player {
 
     private double balance;
     private int daysSinceBrakUp = 0;
-
 
 
     public int getVegetableFarmed() {
@@ -112,7 +117,9 @@ public class Player {
         backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));
         this.getRecipes().add(new Recipe(FoodType.MakiRoll));
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
-        this.buff = new Buff(BuffType.None,0);
+        this.buff = new Buff(BuffType.None, 0);
+        this.texture = new Texture("player.png");
+        this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -171,7 +178,7 @@ public class Player {
 
     public void applyTemporaryMaxEnergyBoost(int boostAmount, int hours) {
         this.temporaryMaxEnergyBoost = boostAmount;
-        this.temporaryBoostRemainingHours = hours ;
+        this.temporaryBoostRemainingHours = hours;
     }
 
     public void updateTemporaryBoostTimer() {
@@ -194,10 +201,10 @@ public class Player {
     }
 
     public void setEnergy(double amount) {
-        if(amount < this.energy) {
+        if (amount < this.energy) {
             this.energy = amount;
         }
-        if(amount > this.getMaxEnergy()){
+        if (amount > this.getMaxEnergy()) {
             return;
         }
         amount = Math.min(amount, this.getMaxEnergy());
@@ -297,8 +304,7 @@ public class Player {
             if (messages.get(i).getSender() != null) {
                 message += (i + "- " + "SENDER" + " : " + messages.get(i).getSender().getUser().getUsername()
                     + "\n" + "message : " + messages.get(i).getMessage() + "\n");
-            }
-            else {
+            } else {
                 message += (i + "- " + "SENDER(NPC)" + " : " + messages.get(i).getSenderNPC().getName()
                     + "\n" + "message : " + messages.get(i).getMessage() + "\n");
             }
@@ -341,6 +347,7 @@ public class Player {
     public HashMap<NPC, Integer> getFriendShipsWithNPCs() {
         return friendShipsWithNPCs;
     }
+
     public void setFriendShipsWithNPCs(NPC npc) {
         this.friendShipsWithNPCs.put(npc, 0);
     }
@@ -348,6 +355,7 @@ public class Player {
     public HashMap<NPC, Boolean> getTalkedNPCToday() {
         return talkedNPCToday;
     }
+
     public void setTalkedNPCToday(NPC npc) {
         this.talkedNPCToday.put(npc, false);
     }
@@ -357,7 +365,7 @@ public class Player {
     }
 
     public void setGiftNPCToday(NPC npc) {
-        this.giftNPCToday.put(npc,false);
+        this.giftNPCToday.put(npc, false);
     }
 
     public Buff getBuff() {
@@ -367,9 +375,10 @@ public class Player {
     public void setBuff(Buff buff) {
         this.buff = buff;
     }
+
     public void updateBuff() {
         if (buff != null && buff.getBuffType() != BuffType.None) {
-            if(buff.getDuration()>0) buff.setDuration(buff.getDuration() -1 );
+            if (buff.getDuration() > 0) buff.setDuration(buff.getDuration() - 1);
             if (buff.getDuration() <= 0) {
                 buff = new Buff(BuffType.None, 0);
             }
@@ -390,5 +399,50 @@ public class Player {
             trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Gold, null);
         else if (material.equals(ToolMaterial.Gold))
             trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Iridium, null);
+    }
+
+    public void update(float delta, boolean up, boolean down, boolean left, boolean right) {
+        float newX = x;
+        float newY = y;
+
+
+        if (up) newY += speed * delta;
+        if (down) newY -= speed * delta;
+        if (left) newX -= speed * delta;
+        if (right) newX += speed * delta;
+
+
+        //TODO  Create movement restrictions
+        boolean isOky = true;
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Tile destination = Tile.getTile((int) newX / backgroundTexture.getWidth() == 0 ? 1 : (int) newX / backgroundTexture.getWidth()
+            , (int) newY / backgroundTexture.getHeight()==0 ? 1:  (int) newY / backgroundTexture.getHeight());
+
+        if (destination != null) {
+            if (!(destination.getOwner().equals(player.getPartner())
+                || destination.getOwner().equals(player)
+                || destination.getOwner().equals(NPC.getFatherPlayer()))) {
+                isOky = false;
+//            return new Result(false, "you can't walk to this tile because this tile is not for you.");
+            } else if (!destination.isWalkAble()) {
+                isOky = false;
+//            return new Result(false, "you can't walk to this tile because this tile is not walkable.");
+            }
+            if (isOky) {
+                int mapWidth = backgroundTexture.getWidth() * 300;
+                int mapHeight = backgroundTexture.getHeight() * 300;
+
+                int playerWidth = backgroundTexture.getWidth();
+                int playerHeight = backgroundTexture.getHeight();
+
+                x = (int) Math.max(1, Math.min(newX, mapWidth - playerWidth));
+                y = (int) Math.max(1, Math.min(newY, mapHeight - playerHeight));
+            }
+        }
+    }
+
+
+    public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
+        batch.draw(texture, x, y);
     }
 }
