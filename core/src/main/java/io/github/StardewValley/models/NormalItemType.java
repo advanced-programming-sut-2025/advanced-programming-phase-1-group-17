@@ -1,5 +1,7 @@
 package io.github.StardewValley.models;
 
+import com.badlogic.gdx.graphics.Texture;
+
 public enum NormalItemType implements BackPackableType,Placeable{
     //    CopperBar(50),
 //    IronBar(100),
@@ -35,5 +37,11 @@ public enum NormalItemType implements BackPackableType,Placeable{
     @Override
     public String getName() {
         return name();
+    }
+
+    @Override
+    public Texture getTexture() {
+        //TODO
+        return null;
     }
 }

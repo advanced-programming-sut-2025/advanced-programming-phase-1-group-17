@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.crafting;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.BackPackableType;
@@ -61,5 +62,11 @@ public class CraftingItem implements BackPackable, Placeable {
 
     public static ArrayList<ArtisanProduct> getAllArtisanProductsInProgress() {
         return allArtisanProductsInProgress;
+    }
+
+    @Override
+    public Texture getTexture() {
+        //TODO
+        return null;
     }
 }

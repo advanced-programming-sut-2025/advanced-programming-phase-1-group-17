@@ -34,7 +34,7 @@ public class MarketsController {
     public Result showAllProducts() {
         //check is the player in store
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = App.getCurrentGame().getTileByIndex(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getX(), player.getY());
         if (tile.getPlaceable() instanceof Store store) {
             if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
                 return new Result(false, "Store is open from %d to %d".formatted(
@@ -49,7 +49,7 @@ public class MarketsController {
     public Result showAllAvailableProducts() {
         //check is the player in store
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = App.getCurrentGame().getTileByIndex(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getX(), player.getY());
         if (tile.getPlaceable() instanceof Store store) {
             if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
                 return new Result(false, "Store is open from %d to %d".formatted(
@@ -64,7 +64,7 @@ public class MarketsController {
     public Result purchase(String productName, String count) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         StoreType storeType;
-        if (App.getCurrentGame().getTileByIndex(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
+        if (Tile.getTile(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
             storeType = store.getType();
         } else
             return new Result(false, "The Player is not in a store");
@@ -171,7 +171,7 @@ public class MarketsController {
 
         ShippingBin bin = null;
         for (int i = 0; i < 8; i++) {
-            if (App.getCurrentGame().getTileByIndex((player.getX() + dx[i]), (player.getY() + dy[i])).getPlaceable()
+            if (Tile.getTile((player.getX() + dx[i]), (player.getY() + dy[i])).getPlaceable()
                 instanceof ShippingBin shippingBin) {
                 if (shippingBin.getTodayItemOwner() != null) {
                     if (!shippingBin.getTodayItemOwner().equals(player))

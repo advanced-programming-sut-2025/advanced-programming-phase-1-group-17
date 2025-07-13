@@ -20,7 +20,7 @@ public class Tile {
     private Player whoIsHere;
     private NPC npcIsHere;
     private boolean crowImmunity = false;
-    private static ArrayList<Tile> tiles = new ArrayList<Tile>() ;
+    private static ArrayList<Tile> tiles = new ArrayList<Tile>();
 
     public Tile(int x, int y, Player owner) {
         this.x = x;
@@ -32,6 +32,12 @@ public class Tile {
     public static ArrayList<Tile> getTiles() {
         return tiles;
     }
+
+//    public static void resetTiles() {
+//        for (Tile[] tileColumn : tiles) {
+//            tileColumn = new Tile[PlayerMap.getLength()];
+//        }
+//    }
 
     public void plant(String plantName) {
         isPlowed = false;

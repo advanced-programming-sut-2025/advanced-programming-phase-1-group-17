@@ -19,8 +19,8 @@ public class PlayerMap {
     private static int length = 50;
     private int row;
     private int col;
-    private ArrayList<Tile> Tiles = new ArrayList<>();
-    private Farm farm=new Farm();
+    private ArrayList<Tile> tiles = new ArrayList<>();
+    private Farm farm = new Farm();
     private Player player;
     private int type;
     private GreenHouse greenHouse;
@@ -42,11 +42,7 @@ public class PlayerMap {
     }
 
     public ArrayList<Tile> getTiles() {
-        return Tiles;
-    }
-
-    public void setTiles(ArrayList<Tile> tiles) {
-        Tiles = tiles;
+        return tiles;
     }
 
     public void setPlayer(Player player) {
@@ -67,11 +63,10 @@ public class PlayerMap {
             this.col = 0;
             owner.setX(1 + row);
             owner.setY(1 + col);
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 100; i++) {
                 for (int i1 = 0; i1 < 100; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
-                    Tiles.add(tile);
-                    //App.getCurrentGame().addTile(tile);
+                    this.tiles.add(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
@@ -79,44 +74,41 @@ public class PlayerMap {
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 1) {
             this.row = 0;
-            this.col = 100;
+            this.col = 200;
             owner.setX(1 + row);
             owner.setY(1 + col);
-            for (int i = row; i < 50 + row; i++) {
+            for (int i = row; i < 100 + row; i++) {
                 for (int i1 = col; i1 < 100 + col; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
-                    Tiles.add(tile);
-                    //App.getCurrentGame().addTile(tile);
+                    this.tiles.add(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
             }
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 2) {
-            this.row = 150;
+            this.row = 200;
             this.col = 0;
             owner.setX(1 + row);
             owner.setY(1 + col);
-            for (int i = row; i < 50 + row; i++) {
+            for (int i = row; i < 100 + row; i++) {
                 for (int i1 = col; i1 < 100 + col; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
-                    Tiles.add(tile);
-                    //App.getCurrentGame().addTile(tile);
+                    this.tiles.add(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
             }
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 3) {
-            this.row = 150;
-            this.col = 100;
+            this.row = 200;
+            this.col = 200;
             owner.setX(1 + row);
             owner.setY(1 + col);
-            for (int i = row; i < 50 + row; i++) {
+            for (int i = row; i < 100 + row; i++) {
                 for (int i1 = col; i1 < 100 + col; i1++) {
                     Tile tile = new Tile(i + 1, i1 + 1, owner);
-                    Tiles.add(tile);
-                    //App.getCurrentGame().addTile(tile);
+                    this.tiles.add(tile);
                     this.player = owner;
                     owner.setPlayerMap(this);
                 }
@@ -124,29 +116,49 @@ public class PlayerMap {
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 4) {
             // NPC FORM
-            for (int i = 51; i <= 150; i++) {
-                for (int j = 1; j <= 200; j++) {
-                    Tile tile = new Tile(i, j, NPC.getFatherPlayer());
-                    Tiles.add(tile);
-                    this.player = owner;
-                    owner.setPlayerMap(this);
+            for (int i = 101; i <= 200; i++) {
+                for (int j = 101; j <= 200; j++) {
+                    this.tiles.add(new Tile(i, j, NPC.getFatherPlayer()));
                 }
             }
+            for (int i = 101; i < 201; i++) {
+                for (int j = 1; j < 101; j++) {
+                    this.tiles.add(new Tile(i, j, NPC.getFatherPlayer()));
+                }
+            }
+            for (int i = 101; i < 201; i++) {
+                for (int j = 201; j < 301; j++) {
+                    this.tiles.add(new Tile(i, j, NPC.getFatherPlayer()));
+                }
+            }
+            for (int i = 1; i < 101; i++) {
+                for (int j = 101; j < 201; j++) {
+                    this.tiles.add(new Tile(i, j, NPC.getFatherPlayer()));
+                }
+            }
+            for (int i = 201; i < 301; i++) {
+                for (int j = 101; j < 201; j++) {
+                    this.tiles.add(new Tile(i, j, NPC.getFatherPlayer()));
+                }
+            }
+            this.player = owner;
+            owner.setPlayerMap(this);
+
             Abigail abigail = (Abigail) App.getCurrentGame().getNPCs().get(0);
             Harvey harvey = (Harvey) App.getCurrentGame().getNPCs().get(1);
             Lia lia = (Lia) App.getCurrentGame().getNPCs().get(2);
             Robin robin = (Robin) App.getCurrentGame().getNPCs().get(3);
             Sebastian sebastian = (Sebastian) App.getCurrentGame().getNPCs().get(4);
-            for (int k = 0; k < 121; k += 30) {
-                for (int i = 91; i <= 100; i++) {
-                    for (int j = 31 + k; j <= 40 + k; j++) {
+            for (int k = 0; k < 81; k += 20) {
+                for (int i = 145; i <= 155; i++) {
+                    for (int j = 101 + k; j <= 110 + k; j++) {
                         if (k == 0) {
                             Tile.getTile(i, j).setPlaceable(abigail);
-                        } else if (k == 30) {
+                        } else if (k == 20) {
                             Tile.getTile(i, j).setPlaceable(harvey);
-                        } else if (k == 60) {
+                        } else if (k == 40) {
                             Tile.getTile(i, j).setPlaceable(lia);
-                        } else if (k == 90) {
+                        } else if (k == 60) {
                             Tile.getTile(i, j).setPlaceable(robin);
                         } else {
                             Tile.getTile(i, j).setPlaceable(sebastian);
@@ -155,9 +167,9 @@ public class PlayerMap {
                 }
             }
             out:
-            for (int k = 0; k < 121; k += 30) {
-                for (int i = 88; i < 103; i++) {
-                    for (int j = 28 + k; j < 42 + k; j++) {
+            for (int k = 0; k < 81; k += 20) {
+                for (int i = 140; i < 145; i++) {
+                    for (int j = 101 + k; j < 110 + k; j++) {
                         if (Tile.getTile(i, j).getPlaceable() == null && Tile.getTile(i, j).getWhoIsHere() == null
                             && Tile.getTile(i, j).isWalkAble()) {
                             if (k == 0) {
@@ -166,19 +178,19 @@ public class PlayerMap {
                                 Tile.getTile(i, j).setPlaceable(abigail);
                                 Tile.getTile(i, j).setNpcIsHere(abigail);
                                 continue out;
-                            } else if (k == 30) {
+                            } else if (k == 20) {
                                 harvey.setX(i);
                                 harvey.setY(j);
                                 Tile.getTile(i, j).setPlaceable(harvey);
                                 Tile.getTile(i, j).setNpcIsHere(harvey);
                                 continue out;
-                            } else if (k == 60) {
+                            } else if (k == 40) {
                                 lia.setX(i);
                                 lia.setY(j);
                                 Tile.getTile(i, j).setPlaceable(lia);
                                 Tile.getTile(i, j).setNpcIsHere(lia);
                                 continue out;
-                            } else if (k == 90) {
+                            } else if (k == 60) {
                                 robin.setX(i);
                                 robin.setY(j);
                                 Tile.getTile(i, j).setPlaceable(robin);
@@ -195,6 +207,18 @@ public class PlayerMap {
                     }
                 }
             }
+            for (int i = -1; i <= 302; i++) {
+                this.tiles.add(new Tile(i, -1, NPC.getFatherPlayer()));
+                this.tiles.add(new Tile(i, 0, NPC.getFatherPlayer()));
+                this.tiles.add(new Tile(i, 301, NPC.getFatherPlayer()));
+                this.tiles.add(new Tile(i, 302, NPC.getFatherPlayer()));
+            }
+            for (int j = 1; j <= 300; j++) {
+                this.tiles.add(new Tile(-1, j, NPC.getFatherPlayer()));
+                this.tiles.add(new Tile(0, j, NPC.getFatherPlayer()));
+                this.tiles.add(new Tile(301, j, NPC.getFatherPlayer()));
+                this.tiles.add(new Tile(302, j, NPC.getFatherPlayer()));
+            }
 
             //Creating Stores
             createStores();
@@ -204,8 +228,8 @@ public class PlayerMap {
             int numOfTrees = randomInt(15, 25);
             int numOfForagings = randomInt(10, 20);
             while (numOfTrees != 0) {
-                int randomIndex_x = randomInt(51, 151);
-                int randomIndex_y = randomInt(1, 200);
+                int randomIndex_x = randomInt(101, 200);
+                int randomIndex_y = randomInt(101, 200);
                 Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
                 if (tile.getPlaceable() == null) {
                     Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
@@ -216,8 +240,8 @@ public class PlayerMap {
             }
             int counter = 0;
             while (numOfForagings != 0) {
-                int randomIndex_x = randomInt(51, 151);
-                int randomIndex_y = randomInt(1, 200);
+                int randomIndex_x = randomInt(101, 200);
+                int randomIndex_y = randomInt(101, 200);
                 Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
                 if (tile.getPlaceable() == null) {
                     if (counter < 2)
@@ -233,53 +257,123 @@ public class PlayerMap {
                     counter++;
                 }
             }
+            //forest
+            int numOfTrees2 = randomInt(30, 40);
+            while (numOfTrees2 != 0) {
+                int randomIndex_x = randomInt(101, 200);
+                int randomIndex_y = randomInt(1, 100);
+                Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+                if (tile.getPlaceable() == null) {
+                    Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
+                    tile.setPlaceable(tree);
+                    tile.setWalkAble(false);
+                    numOfTrees2--;
+                }
+            }
+            int numOfTrees3 = randomInt(30, 40);
+            while (numOfTrees3 != 0) {
+                int randomIndex_x = randomInt(101, 200);
+                int randomIndex_y = randomInt(201, 300);
+                Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+                if (tile.getPlaceable() == null) {
+                    Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
+                    tile.setPlaceable(tree);
+                    tile.setWalkAble(false);
+                    numOfTrees3--;
+                }
+            }
+
+            int numOfTrees4 = randomInt(30, 40);
+            while (numOfTrees4 != 0) {
+                int randomIndex_x = randomInt(1, 100);
+                int randomIndex_y = randomInt(101, 200);
+                Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+                if (tile.getPlaceable() == null) {
+                    Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
+                    tile.setPlaceable(tree);
+                    tile.setWalkAble(false);
+                    numOfTrees4--;
+                }
+            }
+
+            int numOfTrees5 = randomInt(30, 40);
+            while (numOfTrees5 != 0) {
+                int randomIndex_x = randomInt(201, 300);
+                int randomIndex_y = randomInt(101, 200);
+                Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+                if (tile.getPlaceable() == null) {
+                    Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
+                    tile.setPlaceable(tree);
+                    tile.setWalkAble(false);
+                    numOfTrees5--;
+                }
+            }
+
+
         }
     }
 
     private void createShippingBins() {
-        Tile.getTile(30, 30).setPlaceable(new ShippingBin());
-        Tile.getTile(30, 130).setPlaceable(new ShippingBin());
-        Tile.getTile(180, 30).setPlaceable(new ShippingBin());
-        Tile.getTile(180, 130).setPlaceable(new ShippingBin());
+        if (Tile.getTile(30, 30).getPlaceable() == null) {
+            Tile.getTile(30, 30).setPlaceable(new ShippingBin());
+        }
+        if (Tile.getTile(30, 130).getPlaceable() == null) {
+            Tile.getTile(30, 130).setPlaceable(new ShippingBin());
+        }
+        if (Tile.getTile(180, 30).getPlaceable() == null) {
+            Tile.getTile(180, 30).setPlaceable(new ShippingBin());
+        }
+        if (Tile.getTile(180, 130).getPlaceable() == null) {
+            Tile.getTile(180, 130).setPlaceable(new ShippingBin());
+        }
+        if (Tile.getTile(70, 50).getPlaceable() == null) {
+            Tile.getTile(70, 50).setPlaceable(new ShippingBin());
 
-        Tile.getTile(70, 50).setPlaceable(new ShippingBin());
-        Tile.getTile(70, 150).setPlaceable(new ShippingBin());
-        Tile.getTile(100, 105).setPlaceable(new ShippingBin());
-        Tile.getTile(120, 50).setPlaceable(new ShippingBin());
-        Tile.getTile(120, 150).setPlaceable(new ShippingBin());
+        }
+        if (Tile.getTile(70, 50).getPlaceable() == null) {
+            Tile.getTile(70, 50).setPlaceable(new ShippingBin());
+        }
+        if (Tile.getTile(100, 105).getPlaceable() == null) {
+            Tile.getTile(100, 105).setPlaceable(new ShippingBin());
+        }
+        if (Tile.getTile(120, 50).getPlaceable() == null) {
+            Tile.getTile(120, 50).setPlaceable(new ShippingBin());
+        }
+        if (Tile.getTile(120, 150).getPlaceable() == null) {
+            Tile.getTile(120, 150).setPlaceable(new ShippingBin());
+        }
     }
 
     private void createStores() {
-        for (int i = 60; i < 78; i++) {
-            for (int j = 30; j < 45; j++)
+        for (int i = 60; i < 80; i++) {
+            for (int j = 130; j < 145; j++)
                 Tile.getTile(i, j).setPlaceable(new Store(StoreType.Blacksmith));
         }
-        for (int i = 80; i < 88; i++) {
-            for (int j = 80; j < 98; j++)
+        for (int i = 80; i < 90; i++) {
+            for (int j = 180; j < 198; j++)
                 Tile.getTile(i, j).setPlaceable(new Store(StoreType.Ranch));
         }
-        for (int i = 60; i < 78; i++) {
-            for (int j = 130; j < 145; j++)
+        for (int i = 160; i < 180; i++) {
+            for (int j = 30; j < 45; j++)
                 Tile.getTile(i, j).setPlaceable(new Store(StoreType.StardropSaloon));
         }
-        for (int i = 80; i < 88; i++) {
-            for (int j = 180; j < 198; j++)
+        for (int i = 180; i < 190; i++) {
+            for (int j = 80; j < 98; j++)
                 Tile.getTile(i, j).setPlaceable(new Store(StoreType.CarpentersShop));
         }
-        for (int i = 130; i < 148; i++) {
+        for (int i = 230; i < 250; i++) {
             for (int j = 180; j < 195; j++)
                 Tile.getTile(i, j).setPlaceable(new Store(StoreType.JojaMart));
         }
-        for (int i = 110; i < 128; i++) {
-            for (int j = 130; j < 145; j++)
+        for (int i = 110; i < 130; i++) {
+            for (int j = 230; j < 245; j++)
                 Tile.getTile(i, j).setPlaceable(new Store(StoreType.PierresGeneralStore));
         }
         for (int i = 130; i < 148; i++) {
-            for (int j = 80; j < 95; j++)
+            for (int j = 280; j < 295; j++)
                 Tile.getTile(i, j).setPlaceable(new Store(StoreType.FishShop));
         }
     }
-
 
     public void setMapType(int type) {
         if (type == 1) {
@@ -371,8 +465,8 @@ public class PlayerMap {
     }
 
     private void randomFillMap() {
-        int numOfTrees = randomInt(8, 11);
-        int numOfForagings = randomInt(4, 10);
+        int numOfTrees = randomInt(14, 20);
+        int numOfForagings = randomInt(14, 20);
         generateTrees(numOfTrees);
         generateForagings(numOfForagings);
     }
@@ -380,7 +474,7 @@ public class PlayerMap {
     private void generateForagings(int numOfForagings) {
         int counter = 0;
         while (numOfForagings != 0) {
-            int randomIndex_x = randomInt(1 + row, 50 + row);
+            int randomIndex_x = randomInt(1 + row, 100 + row);
             int randomIndex_y = randomInt(1 + col, 100 + col);
             Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
             if (tile.getPlaceable() == null) {

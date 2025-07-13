@@ -19,7 +19,6 @@ public abstract class ForagingController {
         Random random = new Random();
         for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
             for (Tile tile : playerMap.getTiles()) {
-
                 if (tile.getPlaceable() instanceof Quarry) {
                     if (random.nextInt(100) == 1)
                         setMineralForaging(tile);
@@ -38,7 +37,7 @@ public abstract class ForagingController {
                     randInt = random.nextInt(5) + 1;
                     if (randInt == 1) {
                         setCropForaging(tile);
-                    } else if (randInt == 2){
+                    } else if (randInt == 2) {
                         setTreeForaging(tile);
                     } else if (randInt == 3) {
                         setStoneForaging(tile);
@@ -120,6 +119,8 @@ public abstract class ForagingController {
         Random random = new Random();
         SeedType chosenSeed = validSeeds.get(random.nextInt(validSeeds.size()));
 
+        if (CropType.getCropTypeBySeedType(chosenSeed) == null)
+            return;
         Crop crop = new Crop(false, Objects.requireNonNull(CropType.getCropTypeBySeedType(chosenSeed)), tile, false);
         tile.setPlowed(false);
         tile.setPlaceable(crop);

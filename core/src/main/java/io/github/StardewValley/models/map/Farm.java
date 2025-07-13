@@ -1,4 +1,6 @@
 package io.github.StardewValley.models.map;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.models.animal.Animal;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.animal.AnimalPlace;
@@ -60,5 +62,11 @@ public class Farm implements Placeable {
 
     public void setAnimals(ArrayList<Animal> animals) {
         this.animals = animals;
+    }
+
+    @Override
+    public Texture getTexture() {
+        String farmTexture = GameAssetManager.getGameAssetManager().getFarmTexture();
+        return new Texture(farmTexture);
     }
 }

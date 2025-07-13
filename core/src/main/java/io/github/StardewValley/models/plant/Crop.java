@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.Placeable;
@@ -16,6 +17,9 @@ public class Crop extends Plant implements BackPackable, Placeable {
     private boolean isGiant = false;
     private ItemQuality quality = ItemQuality.Regular;
 
+    private final transient Texture[] stageTextures;
+    private final transient Texture harvestedCropTexture;
+
     ArrayList<Crop> neighborGiantTiles = new ArrayList<>();
 
 
@@ -24,6 +28,11 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.isFullyGrown = isForaging;
         this.type = type;
         this.daysTillNextHarvest = 0;
+        this.stageTextures = new Texture[this.type.getStageTextureAddresses().length];
+        for (int i = 0; i < this.type.getStageTextureAddresses().length; i++) {
+            this.stageTextures[i] = new Texture(this.type.getStageTextureAddresses()[i]);
+        }
+        this.harvestedCropTexture = new Texture(this.type.getHarvestedCropTextureAddress());
     }
 
     public void checkCouldBeGiant() {
@@ -292,5 +301,11 @@ public class Crop extends Plant implements BackPackable, Placeable {
 
     public void setQuality(ItemQuality quality) {
         this.quality = quality;
+    }
+
+    public Texture getTexture() {
+        if (isForaging)
+            return this.harvestedCropTexture;
+        return this.stageTextures[this.currentStageIndex];
     }
 }

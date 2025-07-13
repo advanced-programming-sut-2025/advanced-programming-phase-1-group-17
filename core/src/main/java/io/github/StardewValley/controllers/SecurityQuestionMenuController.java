@@ -2,6 +2,8 @@ package io.github.StardewValley.controllers;
 
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.SaveUser;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.User;
 import io.github.StardewValley.views.SecurityQuestionMenu;
 import io.github.StardewValley.views.SignUpMenu;
@@ -27,11 +29,12 @@ public class SecurityQuestionMenuController {
 
             user.setSecurityQuestion(question);
             user.setSecurityAnswer(view.getSecurityAnswer().getText());
+            SaveUser.saveUser(App.getUsers());
 
             Main.getMain().getScreen().dispose();
             SignUpMenu signupMenu = new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin());
-            signupMenu.getErrorLabel().setText("User %s registered successfully.".formatted(user.getUsername()));
             Main.getMain().setScreen(signupMenu);
+            signupMenu.getErrorLabel().setText("User %s registered successfully.".formatted(user.getUsername()));
         } else {
             view.getErrorLabel().setText("Answer and Answer Confirm are not the same.");
         }

@@ -1,6 +1,5 @@
 package io.github.StardewValley.lwjgl3;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import io.github.StardewValley.Main;

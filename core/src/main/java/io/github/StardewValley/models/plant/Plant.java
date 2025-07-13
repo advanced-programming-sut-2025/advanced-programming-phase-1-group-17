@@ -1,8 +1,8 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.models.tools.ToolMaterial;
 
 import java.util.Random;
 
@@ -139,5 +139,7 @@ public abstract class Plant implements Placeable {
 
     public abstract void harvest();
     //TODO: quality when harvesting
+
+    public abstract Texture getTexture();
 
 }
