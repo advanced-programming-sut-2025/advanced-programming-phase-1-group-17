@@ -32,6 +32,7 @@ public class WorldController {
 
     private transient Texture backgroundTexture;
     private Texture treeTexture;
+    private Texture tree2Texture;
     private ArrayList<Tile> tiles = new ArrayList<>();
     private int tileWidth;
     private int tileHeight;
@@ -45,6 +46,8 @@ public class WorldController {
     public void initTransients() {
         this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
         this.treeTexture = new Texture(GameAssetManager.getGameAssetManager().getTreeTexture());
+        this.tree2Texture = new Texture(GameAssetManager.getGameAssetManager().getTree2Texture());
+
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
     }
@@ -56,14 +59,17 @@ public class WorldController {
         float camTop = camera.position.y + camera.viewportHeight / 2 * camera.zoom;
 
         int minTileX = Math.max((int) (camLeft / tileWidth), 0);
-        int maxTileX = Math.min((int) (camRight / tileWidth) + 1, 200);
+        int maxTileX = Math.min((int) (camRight / tileWidth) + 1, 300);
         int minTileY = Math.max((int) (camBottom / tileHeight), 0);
-        int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 200);
+        int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 300);
         for (Tile tile : tiles) {
             Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
         }
         for (Tile tile : tiles) {
-            if (tile.getPlaceable() instanceof Tree) {
+            if (tile.getX() <= 0 || tile.getY() <=0) {
+                Main.getBatch().draw(tree2Texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+            }
+            else if (tile.getPlaceable() instanceof Tree) {
                 Main.getBatch().draw(treeTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
             }
             //TODO

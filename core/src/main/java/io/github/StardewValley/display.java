@@ -48,7 +48,7 @@ public class display {
         for (int i = x; i < x + size; i++) {
             System.out.printf("%3d|", i);
             for (int j = y; j < y + size; j++) {
-                if (j == 101) {
+                if (j == 101 || j == 201) {
                     System.out.print("|");
                 }
                 Tile tile = Tile.getTile(i, j);
@@ -190,22 +190,16 @@ public class display {
             }
             System.out.print("|");
 
-            if (i == 50) {
+            if (i == 100 || i == 200 ) {
                 System.out.println();
                 for (int t = 0; t < size + 6; t++) {
                     System.out.print("-");
                 }
             }
 
-            if (i == 150) {
-                System.out.println();
-                for (int t = 0; t < size + 6; t++) {
-                    System.out.print("-");
-                }
-            }
             System.out.println();
         }
-        if ((x + size == 201)) {
+        if ((x + size == 301)) {
             System.out.print("   ");
             for (int i = 0; i < size + 3; i++) {
                 System.out.print("-");

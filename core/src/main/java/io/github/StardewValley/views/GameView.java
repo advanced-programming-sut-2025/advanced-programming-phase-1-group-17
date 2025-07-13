@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.GameController;
+import io.github.StardewValley.display;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -16,6 +17,7 @@ public class GameView implements Screen, InputProcessor {
 
     public GameView(GameController controller) {
         this.controller = controller;
+//        display.run(1,1,200);
 
         this.controller.setView(this);
     }

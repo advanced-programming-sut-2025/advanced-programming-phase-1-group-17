@@ -56,9 +56,9 @@ public class GameController {
         float camHalfHeight = camera.viewportHeight * 0.5f * camera.zoom;
 
         float minX = camHalfWidth;
-        float maxX = mapWidthInPixels * 200 - camHalfWidth;
+        float maxX = mapWidthInPixels * 300 - camHalfWidth;
         float minY = camHalfHeight;
-        float maxY = mapHeightInPixels * 200 - camHalfHeight;
+        float maxY = mapHeightInPixels * 300 - camHalfHeight;
 
         float targetX = player.getX();
         float targetY = player.getY();

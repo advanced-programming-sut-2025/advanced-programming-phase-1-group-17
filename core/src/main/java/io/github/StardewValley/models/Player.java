@@ -429,14 +429,14 @@ public class Player {
 //            return new Result(false, "you can't walk to this tile because this tile is not walkable.");
             }
             if (isOky) {
-                int mapWidth = backgroundTexture.getWidth() * 200;
-                int mapHeight = backgroundTexture.getHeight() * 200;
+                int mapWidth = backgroundTexture.getWidth() * 300;
+                int mapHeight = backgroundTexture.getHeight() * 300;
 
                 int playerWidth = backgroundTexture.getWidth();
                 int playerHeight = backgroundTexture.getHeight();
 
-                x = (int) Math.max(0, Math.min(newX, mapWidth - playerWidth));
-                y = (int) Math.max(0, Math.min(newY, mapHeight - playerHeight));
+                x = (int) Math.max(1, Math.min(newX, mapWidth - playerWidth));
+                y = (int) Math.max(1, Math.min(newY, mapHeight - playerHeight));
             }
         }
     }

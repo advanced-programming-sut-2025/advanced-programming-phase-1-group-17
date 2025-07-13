@@ -27,4 +27,7 @@ public class GameAssetManager {
     public String getTreeTexture() {
         return "tree.png";
     }
+    public String getTree2Texture() {
+        return "tree2.png";
+    }
 }
