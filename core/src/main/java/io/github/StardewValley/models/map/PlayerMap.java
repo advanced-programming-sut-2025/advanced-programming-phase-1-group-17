@@ -328,6 +328,7 @@ public class PlayerMap {
         }
         if (Tile.getTile(70, 50).getPlaceable() == null) {
             Tile.getTile(70, 50).setPlaceable(new ShippingBin());
+
         }
         if (Tile.getTile(70, 50).getPlaceable() == null) {
             Tile.getTile(70, 50).setPlaceable(new ShippingBin());
