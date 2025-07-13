@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.MainMenuController;
 import io.github.StardewValley.controllers.SignUpMenuController;
 
 public class WelcomeMenu implements Screen {
@@ -16,9 +17,11 @@ public class WelcomeMenu implements Screen {
     private Texture welcomeImage;
     private SpriteBatch batch;
     private float timePassed = 0;
+    private boolean isLoggedInUser = false;
 
-    public WelcomeMenu(Game game) {
+    public WelcomeMenu(Game game,boolean isLoggedIn) {
         this.game = game;
+        this.isLoggedInUser = isLoggedIn;
         welcomeImage = new Texture("Logo.png");
         batch = new SpriteBatch();
     }
@@ -36,7 +39,11 @@ public class WelcomeMenu implements Screen {
         batch.end();
 
         if (timePassed > 3f) {
-            Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+            if (!isLoggedInUser) {
+                Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+            }else {
+                Main.getMain().setScreen(new MainMenu(new MainMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+            }
 
         }
     }

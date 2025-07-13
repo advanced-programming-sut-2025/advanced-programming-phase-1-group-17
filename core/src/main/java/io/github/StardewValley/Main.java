@@ -22,7 +22,7 @@ public class Main extends Game {
     private static Main main;
     private static SpriteBatch batch;
     private static ShapeRenderer shapeRenderer;
-    private boolean isLoggedInUser = false;
+    private static boolean isLoggedInUser = false;
 
     @Override
     public void create() {
@@ -40,12 +40,12 @@ public class Main extends Game {
                 if (user.equals(user1)) {
                     App.setLoggedInUser(user);
                     isLoggedInUser = true;
-                    Main.getMain().setScreen(new MainMenu(new MainMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+                    Main.getMain().setScreen(new WelcomeMenu(this,true));
                 }
             }
         }
         if (!isLoggedInUser) {
-            Main.getMain().setScreen(new WelcomeMenu(this));
+            Main.getMain().setScreen(new WelcomeMenu(this,false));
         }
     }
 
