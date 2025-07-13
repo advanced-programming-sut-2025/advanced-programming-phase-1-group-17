@@ -54,42 +54,54 @@ public enum TreeType {
             "assets/Trees/Pomegranate_Stage_4.png", "assets/Trees/Pomegranate_Stage_5.png"
         },
         "assets/Trees/Pomegranate_Stage_5_Fruit.png"),
+
+    //Doesn't have its own hasFruit image
     OakTree(SaplingType.Acorns, List.of(7, 7, 7, 7), 28, FruitType.OakResin, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Oak_Stage_1.png", "assets/Trees/Oak_Stage_2.png", "assets/Trees/Oak_Stage_3.png",
             "assets/Trees/Oak_Stage_4.png", "assets/Trees/Oak_Stage_5.png"
         },
-        "assets/Trees/Oak_Stage_5_Resin.png"),
+        "assets/Trees/Apricot_Stage_5_Fruit.png"),
+
+    //Doesn't have its own hasFruit image
     MapleTree(SaplingType.MapleSeeds, List.of(7, 7, 7, 7), 28, FruitType.MapleSyrup, 9, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Maple_Stage_1.png", "assets/Trees/Maple_Stage_2.png", "assets/Trees/Maple_Stage_3.png",
             "assets/Trees/Maple_Stage_4.png", "assets/Trees/Maple_Stage_5.png"
         },
-        "assets/Trees/Maple_Stage_5_Syrup.png"),
+        "assets/Trees/Apricot_Stage_5_Fruit.png"),
+
+    //Doesn't have its own hasFruit image
     PineTree(SaplingType.PineCones, List.of(7, 7, 7, 7), 28, FruitType.PineTar, 5, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Pine_Stage_1.png", "assets/Trees/Pine_Stage_2.png", "assets/Trees/Pine_Stage_3.png",
             "assets/Trees/Pine_Stage_4.png", "assets/Trees/Pine_Stage_5.png"
         },
-        "assets/Trees/Pine_Stage_5_Tar.png"),
+        "assets/Trees/Apricot_Stage_5_Fruit.png"),
+
+    //Doesn't have its own hasFruit image
     MahoganyTree(SaplingType.MahoganySeeds, List.of(7, 7, 7, 7), 28, FruitType.Sap, 1, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Mahogany_Stage_1.png", "assets/Trees/Mahogany_Stage_2.png", "assets/Trees/Mahogany_Stage_3.png",
             "assets/Trees/Mahogany_Stage_4.png", "assets/Trees/Mahogany_Stage_5.png"
         },
-        "assets/Trees/Mahogany_Stage_5_Sap.png"),
+        "assets/Trees/Apricot_Stage_5_Fruit.png"),
+
+    //Doesn't have its own hasFruit image
     MushroomTree(SaplingType.MushroomTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.CommonMushroom, 1, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
-            "assets/Trees/Mushroom_Stage_1.png", "assets/Trees/Mushroom_Stage_2.png", "assets/Trees/Mushroom_Stage_3.png",
-            "assets/Trees/Mushroom_Stage_4.png", "assets/Trees/Mushroom_Stage_5.png"
+            "assets/Trees/MushroomTree_Stage_1.png", "assets/Trees/MushroomTree_Stage_2.png", "assets/Trees/MushroomTree_Stage_3.png",
+            "assets/Trees/MushroomTree_Stage_4.png", "assets/Trees/MushroomTree_Stage_5.png"
         },
-        "assets/Trees/Mushroom_Stage_5_Fruit.png"),
+        "assets/Trees/Apricot_Stage_5_Fruit.png"),
+
+    //Doesn't have its own hasFruit image
     MysticTree(SaplingType.MysticTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.MysticSyrup, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Mystic_Stage_1.png", "assets/Trees/Mystic_Stage_2.png", "assets/Trees/Mystic_Stage_3.png",
             "assets/Trees/Mystic_Stage_4.png", "assets/Trees/Mystic_Stage_5.png"
         },
-        "assets/Trees/Mystic_Stage_5_Syrup.png");
+        "assets/Trees/Apricot_Stage_5_Fruit.png");
 
     private final SaplingType sapling;
     private final List<Integer> stages;
@@ -98,9 +110,7 @@ public enum TreeType {
     private final int fruitHarvestCycle;
     private final List<Season> seasons;
     private final String[] imageAddresses;
-    private final transient Texture[] textures;
     private final String hasFruitImageAddress;
-    private final transient Texture hasFruitTexture;
 
     TreeType(SaplingType sapling, List<Integer> stages, int totalGrowthTime,
              FruitType fruitType, int fruitHarvestCycle, List<Season> seasons,
@@ -112,12 +122,7 @@ public enum TreeType {
         this.fruitHarvestCycle = fruitHarvestCycle;
         this.seasons = seasons;
         this.imageAddresses = imageAddresses;
-        this.textures = new Texture[imageAddresses.length];
-        for (int i = 0; i < imageAddresses.length; i++) {
-            this.textures[i] = new Texture(imageAddresses[i]);
-        }
         this.hasFruitImageAddress = hasFruitImageAddress;
-        this.hasFruitTexture = new Texture(hasFruitImageAddress);
     }
 
     // Constructor overload for TreeTypes missing imageAddresses and fruitImage (e.g. in your original code)
@@ -175,11 +180,11 @@ public enum TreeType {
         return null;
     }
 
-    public Texture[] getTextures() {
-        return textures;
+    public String[] getImageAddresses() {
+        return imageAddresses;
     }
 
-    public Texture getHasFruitTexture() {
-        return hasFruitTexture;
+    public String getHasFruitImageAddress() {
+        return hasFruitImageAddress;
     }
 }

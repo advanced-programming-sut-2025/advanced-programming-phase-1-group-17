@@ -1,6 +1,5 @@
 package io.github.StardewValley.models.plant;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.enums.Season;
@@ -13,11 +12,11 @@ public enum CropType implements BackPackableType {
         new String[] {"Crops/Blue_Jazz_Stage_1.png", "Crops/Blue_Jazz_Stage_2.png", "Crops/Blue_Jazz_Stage_3.png",
             "Crops/Blue_Jazz_Stage_4.png", "Crops/Blue_Jazz_Stage_5.png"}, "Crops/Blue_Jazz.png"),
     Carrot(SeedType.CarrotSeeds, List.of(1, 1, 1), 3, true, -1, 35, true, 75, List.of(Season.Spring), false,
-        new String[] {"Crops/Carrot_Stage_1.png", "Crops/Carrot_Stage_2.png", "Crops/Carrot_Stage_3.png", "Crops/Carrot_Stage_4.png", "Crops/Carrot_Stage_5.png"}, "Crops/Carrot.png"),
+        new String[] {"Crops/Carrot_Stage_1.png", "Crops/Carrot_Stage_2.png", "Crops/Carrot_Stage_3.png", "Crops/Carrot_Stage_4.png"}, "Crops/Carrot.png"),
     Cauliflower(SeedType.CauliflowerSeeds, List.of(1, 2, 4, 4, 1), 12, true, -1, 175, true, 75, List.of(Season.Spring), true,
         new String[] {"Crops/Cauliflower_Stage_1.png", "Crops/Cauliflower_Stage_2.png", "Crops/Cauliflower_Stage_3.png", "Crops/Cauliflower_Stage_4.png", "Crops/Cauliflower_Stage_5.png"}, "Crops/Cauliflower.png"),
     CoffeeBean(SeedType.CoffeeBean, List.of(1, 2, 2, 3, 2), 10, false, 2, 15, false, -1, List.of(Season.Spring, Season.Summer), false,
-        new String[] {"Crops/CoffeeBean_Stage_1.png", "Crops/CoffeeBean_Stage_2.png", "Crops/CoffeeBean_Stage_3.png", "Crops/CoffeeBean_Stage_4.png", "Crops/CoffeeBean_Stage_5.png"}, "Crops/CoffeeBean.png"),
+        new String[] {"Crops/Coffee_Stage_1.png", "Crops/Coffee_Stage_2.png", "Crops/Coffee_Stage_3.png", "Crops/Coffee_Stage_4.png", "Crops/Coffee_Stage_5.png"}, "Crops/Coffee_Bean.png"),
     Garlic(SeedType.GarlicSeeds, List.of(1, 1, 1, 1), 4, true, -1, 60, true, 20, List.of(Season.Spring), false,
         new String[] {"Crops/Garlic_Stage_1.png", "Crops/Garlic_Stage_2.png", "Crops/Garlic_Stage_3.png", "Crops/Garlic_Stage_4.png", "Crops/Garlic_Stage_5.png"}, "Crops/Garlic.png"),
     Kale(SeedType.KaleSeeds, List.of(1, 2, 2, 1), 6, true, -1, 110, true, 50, List.of(Season.Spring), false,
@@ -33,7 +32,7 @@ public enum CropType implements BackPackableType {
     Tulip(SeedType.TulipBulb, List.of(1, 1, 2, 2), 6, true, -1, 30, true, 45, List.of(Season.Spring), false,
         new String[] {"Crops/Tulip_Stage_1.png", "Crops/Tulip_Stage_2.png", "Crops/Tulip_Stage_3.png", "Crops/Tulip_Stage_4.png"}, "Crops/Tulip.png"),
     UnmilledRice(SeedType.RiceShoot, List.of(1, 2, 2, 3), 8, true, -1, 30, true, 3, List.of(Season.Spring), false,
-        new String[] {"Crops/UnmilledRice_Stage_1.png", "Crops/UnmilledRice_Stage_2.png", "Crops/UnmilledRice_Stage_3.png", "Crops/UnmilledRice_Stage_4.png"}, "Crops/UnmilledRice.png"),
+        new String[] {"Crops/Unmilled_Rice_Stage_1.png", "Crops/Unmilled_Rice_Stage_2.png", "Crops/Unmilled_Rice_Stage_3.png", "Crops/Unmilled_Rice_Stage_4.png"}, "Crops/Unmilled_Rice.png"),
     Blueberry(SeedType.BlueberrySeeds, List.of(1, 3, 3, 4, 2), 13, false, 4, 50, true, 25, List.of(Season.Summer), false,
         new String[] {"Crops/Blueberry_Stage_1.png", "Crops/Blueberry_Stage_2.png", "Crops/Blueberry_Stage_3.png", "Crops/Blueberry_Stage_4.png", "Crops/Blueberry_Stage_5.png"}, "Crops/Blueberry.png"),
     Corn(SeedType.CornSeeds, List.of(2, 3, 3, 3, 3), 14, false, 4, 50, true, 25, List.of(Season.Summer), false,
@@ -89,7 +88,7 @@ public enum CropType implements BackPackableType {
     Powdermelon(SeedType.PowdermelonSeeds, List.of(1, 2, 1, 2, 1), 7, true, -1, 60, true, 63, List.of(Season.Winter), true,
         new String[] {"Crops/Powdermelon_Stage_1.png", "Crops/Powdermelon_Stage_2.png", "Crops/Powdermelon_Stage_3.png", "Crops/Powdermelon_Stage_4.png", "Crops/Powdermelon_Stage_5.png"}, "Crops/Powdermelon.png"),
     AncientFruit(SeedType.AncientSeeds, List.of(2, 7, 7, 7, 5), 28, false, 7, 550, false, -1, List.of(Season.Spring, Season.Summer, Season.Fall), false,
-        new String[] {"Crops/AncientFruit_Stage_1.png", "Crops/AncientFruit_Stage_2.png", "Crops/AncientFruit_Stage_3.png", "Crops/AncientFruit_Stage_4.png", "Crops/AncientFruit_Stage_5.png"}, "Crops/AncientFruit.png"),
+        new String[] {"Crops/Ancient_Fruit_Stage_1.png", "Crops/Ancient_Fruit_Stage_2.png", "Crops/Ancient_Fruit_Stage_3.png", "Crops/Ancient_Fruit_Stage_4.png", "Crops/Ancient_Fruit_Stage_5.png"}, "Crops/Ancient_Fruit.png"),
 
 
     // Foraging crops
@@ -197,9 +196,7 @@ public enum CropType implements BackPackableType {
     private final List<Season> seasons;
     private final boolean canBecomeGiant;
     private final String[] stageTextureAddresses;
-    private final Texture[] stageTextures;
     private final String harvestedCropAddress;
-    private final Texture harvestedCropTexture;
 
     CropType(SeedType Source, List<Integer> stages, int totalHarvestTime, boolean oneTime, int regrowthTime,
              double baseSellPrice, boolean isEdible, int energy, List<Season> season, boolean canBecomeGiant,
@@ -215,12 +212,7 @@ public enum CropType implements BackPackableType {
         this.seasons = season;
         this.canBecomeGiant = canBecomeGiant;
         this.stageTextureAddresses = stageTextureAddresses;
-        this.stageTextures = new Texture[this.stageTextureAddresses.length];
-        for (int i = 0; i < this.stageTextureAddresses.length; i++) {
-            this.stageTextures[i] = new Texture(this.stageTextureAddresses[i]);
-        }
         this.harvestedCropAddress = harvestedCropAddress;
-        this.harvestedCropTexture = new Texture(this.harvestedCropAddress);
     }
 
     public static CropType getCropTypeBySeedType(SeedType seedType) {
@@ -236,6 +228,8 @@ public enum CropType implements BackPackableType {
             return type;
         }
         for (CropType cropType : CropType.values()) {
+            if (cropType.getSource() == null)
+                continue;
             if (cropType.getSource().equals(seedType))
                 return cropType;
         }
@@ -300,11 +294,12 @@ public enum CropType implements BackPackableType {
         return null;
     }
 
-    public Texture[] getStageTextures() {
-        return stageTextures;
+    public String[] getStageTextureAddresses() {
+        return stageTextureAddresses;
     }
 
-    public Texture getHarvestedCropTexture() {
-        return harvestedCropTexture;
+
+    public String getHarvestedCropTextureAddress() {
+        return harvestedCropAddress;
     }
 }

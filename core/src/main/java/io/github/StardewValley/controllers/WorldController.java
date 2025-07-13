@@ -31,8 +31,6 @@ public class WorldController {
     private final OrthographicCamera camera;
 
     private transient Texture backgroundTexture;
-    private Texture treeTexture;
-    private Texture tree2Texture;
     private ArrayList<Tile> tiles = new ArrayList<>();
     private int tileWidth;
     private int tileHeight;
@@ -46,8 +44,6 @@ public class WorldController {
     public void initTransients() {
         this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
         this.treeTexture = new Texture(GameAssetManager.getGameAssetManager().getTreeTexture());
-        this.tree2Texture = new Texture(GameAssetManager.getGameAssetManager().getTree2Texture());
-
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
     }
@@ -62,20 +58,24 @@ public class WorldController {
         int maxTileX = Math.min((int) (camRight / tileWidth) + 1, 300);
         int minTileY = Math.max((int) (camBottom / tileHeight), 0);
         int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 300);
-        for (Tile tile : tiles) {
-            Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-            Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
-        }
-        for (Tile tile : tiles) {
-            if (tile.getX() <= 0 || tile.getY() <=0) {
-                Main.getBatch().draw(tree2Texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-            }
-            else if (tile.getPlaceable() instanceof Tree) {
-                Main.getBatch().draw(treeTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-            }
-            //TODO
 
+        for (int y = minTileY - 1 ; y < maxTileY; y++) {
+            for (int x = minTileX - 1; x < maxTileX; x++) {
+                if (x < 0 || y < 0)
+                    continue;
+                Tile tile = Tile.getTile(x+1, y+1);
+                Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+
+                if (tile.getPlaceable() == null)
+                    continue;
+                //TODO: will be deleted
+                if (tile.getPlaceable().getTexture() == null)
+                    continue;
+
+                Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
+            }
         }
+
 
 
 

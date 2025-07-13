@@ -119,6 +119,8 @@ public abstract class ForagingController {
         Random random = new Random();
         SeedType chosenSeed = validSeeds.get(random.nextInt(validSeeds.size()));
 
+        if (CropType.getCropTypeBySeedType(chosenSeed) == null)
+            return;
         Crop crop = new Crop(false, Objects.requireNonNull(CropType.getCropTypeBySeedType(chosenSeed)), tile, false);
         tile.setPlowed(false);
         tile.setPlaceable(crop);
