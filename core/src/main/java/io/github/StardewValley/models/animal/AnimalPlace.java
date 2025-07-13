@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.animal;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.map.Tile;
 
@@ -52,5 +53,11 @@ public class AnimalPlace implements Placeable {
     }
     public void addAnimal(Animal animal){
         animals.add(animal);
+    }
+
+    @Override
+    public Texture getTexture() {
+        //TODO
+        return null;
     }
 }

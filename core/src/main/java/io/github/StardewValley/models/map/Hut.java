@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.map;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.cooking.Refrigerator;
 
@@ -14,5 +15,11 @@ public class Hut implements Placeable {
 
     public void setRefrigerator(Refrigerator refrigerator) {
         this.refrigerator = refrigerator;
+    }
+
+    @Override
+    public Texture getTexture() {
+        //TODO
+        return null;
     }
 }

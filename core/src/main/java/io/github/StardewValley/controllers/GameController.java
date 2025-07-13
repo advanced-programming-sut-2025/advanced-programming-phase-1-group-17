@@ -11,11 +11,10 @@ import io.github.StardewValley.views.GameView;
 
 public class GameController {
     public GameView view;
-    private Player player;
     private OrthographicCamera camera;
     int mapWidthInPixels;
     int mapHeightInPixels;
-    //private final Game game;
+    private final Game game;
 
     private final WorldController worldController;
 
@@ -23,17 +22,16 @@ public class GameController {
         create();
     }
 
-    //public GameController(Game game) {
-    public GameController(Player player) {
-        this.player = player;
-        //this.game = game;
 
-//        for (Player player : game.getPlayers()) {
-//            PlayerController playerController = new PlayerController(player);
-//            this.game.getPlayerControllers().add(playerController);
-//        }
-        //Player player = game.getCurrentPlayingPlayer();
-        //this.camera.position.set(player.getX(), player.getY(), 0);
+    public GameController(Game game) {
+        this.game = game;
+
+        for (Player player : game.getPlayers()) {
+            PlayerController playerController = new PlayerController(player);
+            this.game.getPlayerControllers().add(playerController);
+        }
+        Player player = game.getCurrentPlayingPlayer();
+        this.camera.position.set(player.getX(), player.getY(), 0);
 
         this.worldController = new WorldController(this.camera);
         this.worldController.initTransients();
@@ -73,10 +71,10 @@ public class GameController {
 
     public void updateGame(float delta) {
         if (view != null) {
-            player.update(delta, upPressed, downPressed, leftPressed, rightPressed);
-            updateCamera(player);
+            game.getCurrentPlayingPlayer().update(delta, upPressed, downPressed, leftPressed, rightPressed);
+            updateCamera(game.getCurrentPlayingPlayer());
             worldController.update();
-            player.draw(Main.getBatch());
+            game.getCurrentPlayingPlayer().draw(Main.getBatch());
         }
     }
 

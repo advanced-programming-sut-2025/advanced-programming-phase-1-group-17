@@ -64,6 +64,7 @@ public class WorldController {
         int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 300);
         for (Tile tile : tiles) {
             Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+            Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
         }
         for (Tile tile : tiles) {
             if (tile.getX() <= 0 || tile.getY() <=0) {

@@ -1,4 +1,6 @@
 package io.github.StardewValley.models.map;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.Player;
@@ -41,5 +43,11 @@ public class GreenHouse implements Placeable {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    @Override
+    public Texture getTexture() {
+        String greenHouseImage = GameAssetManager.getGameAssetManager().getGreenHouseTexture();
+        return new Texture(greenHouseImage);
     }
 }

@@ -27,6 +27,18 @@ public class GameAssetManager {
     public String getTreeTexture() {
         return "tree.png";
     }
+
+    public String getGreenHouseTexture() {
+        return "Greenhouse/greenhouse.png";
+    }
+
+    public String getFarmTexture() {
+        return "Flooring/Flooring_14.png";
+    }
+
+    public String getGreenHouseFenceTexture() {
+        return "Fence/Hardwood_Fence.png";
+    }
     public String getTree2Texture() {
         return "tree2.png";
     }

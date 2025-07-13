@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.tools.ToolMaterial;
@@ -67,5 +68,13 @@ public class Tree extends Plant implements Placeable {
             return;
         daysTillNextHarvest = type.getFruitHarvestCycle();
         this.hasFruit = false;
+    }
+
+    public Texture getTexture() {
+
+        if (hasFruit)
+            return type.getHasFruitTexture();
+        return type.getTextures()[currentStageIndex];
+
     }
 }
