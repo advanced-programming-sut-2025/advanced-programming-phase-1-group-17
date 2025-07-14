@@ -43,7 +43,6 @@ public class WorldController {
 
     public void initTransients() {
         this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
-        this.treeTexture = new Texture(GameAssetManager.getGameAssetManager().getTreeTexture());
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
     }
@@ -61,7 +60,7 @@ public class WorldController {
 
         for (int y = minTileY - 1 ; y < maxTileY; y++) {
             for (int x = minTileX - 1; x < maxTileX; x++) {
-                if (x < 0 || y < 0)
+                if (x < 0 || y < 0 || x >= 300 || y >= 300)
                     continue;
                 Tile tile = Tile.getTile(x+1, y+1);
                 Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);

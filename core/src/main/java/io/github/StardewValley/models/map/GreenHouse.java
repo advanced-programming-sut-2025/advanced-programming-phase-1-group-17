@@ -12,6 +12,7 @@ public class GreenHouse implements Placeable {
     private static ArrayList<GreenHouse> greenHouse = new ArrayList<GreenHouse>();
     private boolean isActive;
     private GreenHouseFence fence;
+    private static Texture GreenHouseTexture =new Texture(GameAssetManager.getGameAssetManager().getGreenHouseTexture());
 
 
     public GreenHouse(Player player) {
@@ -47,7 +48,6 @@ public class GreenHouse implements Placeable {
 
     @Override
     public Texture getTexture() {
-        String greenHouseImage = GameAssetManager.getGameAssetManager().getGreenHouseTexture();
-        return new Texture(greenHouseImage);
+        return GreenHouseTexture;
     }
 }

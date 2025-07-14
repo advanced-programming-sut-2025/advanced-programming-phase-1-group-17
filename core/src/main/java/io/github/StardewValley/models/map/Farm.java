@@ -15,6 +15,7 @@ public class Farm implements Placeable {
     public void randomFill(){}
     private ArrayList<AnimalPlace> animalPlaces = new ArrayList<>();
     private ArrayList<Animal> animals=new ArrayList<>();
+    private static Texture farmTexture = new Texture(GameAssetManager.getGameAssetManager().getFarmTexture());
 
     public GreenHouse getGreenHouse() {
         return greenHouse;
@@ -66,7 +67,6 @@ public class Farm implements Placeable {
 
     @Override
     public Texture getTexture() {
-        String farmTexture = GameAssetManager.getGameAssetManager().getFarmTexture();
-        return new Texture(farmTexture);
+        return farmTexture;
     }
 }

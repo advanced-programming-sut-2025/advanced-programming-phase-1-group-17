@@ -308,38 +308,45 @@ public class PlayerMap {
                     numOfTrees5--;
                 }
             }
+            Farm farm = new Farm();
+            for (Tile tile : tiles) {
+                if (tile.getPlaceable() == null) {
+                    tile.setPlaceable(farm);
+                }
+            }
 
 
         }
+
     }
 
     private void createShippingBins() {
-        if (Tile.getTile(30, 30).getPlaceable() == null) {
+        if (Tile.getTile(30, 30).getPlaceable() instanceof Farm) {
             Tile.getTile(30, 30).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(30, 130).getPlaceable() == null) {
+        if (Tile.getTile(30, 130).getPlaceable() instanceof Farm) {
             Tile.getTile(30, 130).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(180, 30).getPlaceable() == null) {
+        if (Tile.getTile(180, 30).getPlaceable() instanceof Farm) {
             Tile.getTile(180, 30).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(180, 130).getPlaceable() == null) {
+        if (Tile.getTile(180, 130).getPlaceable() instanceof Farm) {
             Tile.getTile(180, 130).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(70, 50).getPlaceable() == null) {
+        if (Tile.getTile(70, 50).getPlaceable() instanceof Farm) {
             Tile.getTile(70, 50).setPlaceable(new ShippingBin());
 
         }
-        if (Tile.getTile(70, 50).getPlaceable() == null) {
+        if (Tile.getTile(70, 50).getPlaceable() instanceof Farm) {
             Tile.getTile(70, 50).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(100, 105).getPlaceable() == null) {
+        if (Tile.getTile(100, 105).getPlaceable() instanceof Farm) {
             Tile.getTile(100, 105).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(120, 50).getPlaceable() == null) {
+        if (Tile.getTile(120, 50).getPlaceable() instanceof Farm) {
             Tile.getTile(120, 50).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(120, 150).getPlaceable() == null) {
+        if (Tile.getTile(120, 150).getPlaceable() instanceof Farm) {
             Tile.getTile(120, 150).setPlaceable(new ShippingBin());
         }
     }
