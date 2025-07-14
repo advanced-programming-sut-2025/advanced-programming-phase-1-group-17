@@ -1,7 +1,10 @@
 package io.github.StardewValley.models;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.cooking.*;
@@ -24,9 +27,20 @@ public class Player {
     private int x;
     private int y;
     private Buff buff;
-    private float speed = 200f;
+    private float speed = 500f;
     private transient Texture texture;
     private transient Texture backgroundTexture;
+    private Animation<TextureRegion> walkUpAnimation;
+    private Animation<TextureRegion> walkDownAnimation;
+    private Animation<TextureRegion> walkLeftAnimation;
+    private Animation<TextureRegion> walkRightAnimation;
+    private TextureRegion currentFrame;
+    private float animationTimer = 0f;
+    enum Direction {
+        UP, DOWN, LEFT, RIGHT, IDLE
+    }
+    private Direction currentDirection = Direction.IDLE;
+
 
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
@@ -118,7 +132,37 @@ public class Player {
         this.getRecipes().add(new Recipe(FoodType.MakiRoll));
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
         this.buff = new Buff(BuffType.None, 0);
-        this.texture = new Texture("player.png");
+
+
+
+        walkDownAnimation = new Animation<>(0.1f, new TextureRegion[]{
+                new TextureRegion(new Texture("Alex/Alex11.png")),
+                new TextureRegion(new Texture("Alex/Alex12.png")),
+                new TextureRegion(new Texture("Alex/Alex13.png")),
+                new TextureRegion(new Texture("Alex/Alex14.png"))
+        });
+        walkDownAnimation.setPlayMode(Animation.PlayMode.LOOP);
+        walkLeftAnimation = new Animation<>(0.1f, new TextureRegion[]{
+                new TextureRegion(new Texture("Alex/Alex41.png")),
+                new TextureRegion(new Texture("Alex/Alex42.png")),
+                new TextureRegion(new Texture("Alex/Alex43.png")),
+                new TextureRegion(new Texture("Alex/Alex44.png"))
+        });
+        walkLeftAnimation.setPlayMode(Animation.PlayMode.LOOP);
+        walkRightAnimation = new Animation<>(0.1f, new TextureRegion[]{
+                new TextureRegion(new Texture("Alex/Alex21.png")),
+                new TextureRegion(new Texture("Alex/Alex22.png")),
+                new TextureRegion(new Texture("Alex/Alex23.png")),
+                new TextureRegion(new Texture("Alex/Alex24.png"))
+        });
+        walkRightAnimation.setPlayMode(Animation.PlayMode.LOOP);
+        walkUpAnimation = new Animation<>(0.1f, new TextureRegion[]{
+                new TextureRegion(new Texture("Alex/Alex31.png")),
+                new TextureRegion(new Texture("Alex/Alex32.png")),
+                new TextureRegion(new Texture("Alex/Alex33.png")),
+                new TextureRegion(new Texture("Alex/Alex34.png"))
+        });
+        walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
         this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
     }
 
@@ -406,43 +450,92 @@ public class Player {
         float newY = y;
 
 
-        if (up) newY += speed * delta;
-        if (down) newY -= speed * delta;
-        if (left) newX -= speed * delta;
-        if (right) newX += speed * delta;
+        if (up) {
+            newY += speed * delta;
+            currentDirection = Direction.UP;
+        }
+        else if (down){
+            newY -= speed * delta;
+            currentDirection = Direction.DOWN;
+        }
+        else if (left) {
+            newX -= speed * delta;
+            currentDirection = Direction.LEFT;
+        }
+        else if (right) {
+            newX += speed * delta;
+            currentDirection = Direction.RIGHT;
+        } else {
+            currentDirection = Direction.IDLE;
+        }
+
+
+        if (currentDirection != Direction.IDLE) {
+            animationTimer += delta;
+        } else {
+            animationTimer = 0f;
+        }
 
 
         //TODO  Create movement restrictions
         boolean isOky = true;
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile destination = Tile.getTile((int) newX / backgroundTexture.getWidth() == 0 ? 1 : (int) newX / backgroundTexture.getWidth()
-            , (int) newY / backgroundTexture.getHeight()==0 ? 1:  (int) newY / backgroundTexture.getHeight());
+        int playerWidth = backgroundTexture.getWidth();
+        int playerHeight = backgroundTexture.getHeight();
+        try {
+            float centerX = newX + playerWidth / 2f;
+            float centerY = newY + playerHeight / 2f;
 
-        if (destination != null) {
-            if (!(destination.getOwner().equals(player.getPartner())
-                || destination.getOwner().equals(player)
-                || destination.getOwner().equals(NPC.getFatherPlayer()))) {
-                isOky = false;
-//            return new Result(false, "you can't walk to this tile because this tile is not for you.");
-            } else if (!destination.isWalkAble()) {
-                isOky = false;
-//            return new Result(false, "you can't walk to this tile because this tile is not walkable.");
+            int tileX = (int) (centerX / backgroundTexture.getWidth());
+            int tileY = (int) (centerY / backgroundTexture.getHeight());
+
+            if (tileX == 0) tileX = 1;
+            if (tileY == 0) tileY = 1;
+
+            Tile destination = Tile.getTile(tileX, tileY);
+            if (destination != null) {
+                if (!(destination.getOwner().equals(player.getPartner())
+                    || destination.getOwner().equals(player)
+                    || destination.getOwner().equals(NPC.getFatherPlayer()))) {
+                    isOky = false;
+                } else if (!destination.isWalkAble()) {
+                    isOky = false;
+                }
+                if (isOky) {
+                    int mapWidth = backgroundTexture.getWidth() * 300;
+                    int mapHeight = backgroundTexture.getHeight() * 300;
+
+
+                    x = (int) Math.max(1, Math.min(newX, mapWidth - playerWidth));
+                    y = (int) Math.max(1, Math.min(newY, mapHeight - playerHeight));
+                }
             }
-            if (isOky) {
-                int mapWidth = backgroundTexture.getWidth() * 300;
-                int mapHeight = backgroundTexture.getHeight() * 300;
-
-                int playerWidth = backgroundTexture.getWidth();
-                int playerHeight = backgroundTexture.getHeight();
-
-                x = (int) Math.max(1, Math.min(newX, mapWidth - playerWidth));
-                y = (int) Math.max(1, Math.min(newY, mapHeight - playerHeight));
-            }
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
+
     }
 
 
     public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
-        batch.draw(texture, x, y);
+        switch (currentDirection) {
+            case UP:
+                currentFrame = walkUpAnimation.getKeyFrame(animationTimer);
+                break;
+            case DOWN:
+                currentFrame = walkDownAnimation.getKeyFrame(animationTimer);
+                break;
+            case LEFT:
+                currentFrame = walkLeftAnimation.getKeyFrame(animationTimer);
+                break;
+            case RIGHT:
+                currentFrame = walkRightAnimation.getKeyFrame(animationTimer);
+                break;
+            case IDLE:
+                currentFrame = walkDownAnimation.getKeyFrame(0);
+                break;
+        }
+        Main.getBatch().draw(currentFrame, x , y, backgroundTexture.getWidth(),backgroundTexture.getHeight() );
     }
 }
