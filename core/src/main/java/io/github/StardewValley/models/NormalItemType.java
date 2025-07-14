@@ -44,4 +44,10 @@ public enum NormalItemType implements BackPackableType,Placeable{
         //TODO
         return null;
     }
+
+    @Override
+    public Texture getInventoryTexture() {
+        //TODO
+        return null;
+    }
 }

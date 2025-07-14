@@ -2,12 +2,10 @@ package io.github.StardewValley.models.market;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
-import io.github.StardewValley.models.Product;
 
 import java.util.ArrayList;
 public class Store implements Placeable {
     private StoreType type;
-    private ArrayList<Product> products;
 
     public Store(StoreType type) {
         this.type = type;

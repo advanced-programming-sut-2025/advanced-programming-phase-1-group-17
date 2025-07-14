@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum FertilizerType implements BackPackableType {
@@ -22,5 +23,10 @@ public enum FertilizerType implements BackPackableType {
             }
         }
         return null;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return CropAssetManager.getCropAssetManager().getFertilizerTexture(this);
     }
 }

@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.foraging;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum MineralType implements BackPackableType  {
@@ -39,6 +40,11 @@ public enum MineralType implements BackPackableType  {
     @Override
     public double getPrice() {
         return price;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return MineralAssetManager.getMineralAssetManager().getTexture(this);
     }
 
     @Override

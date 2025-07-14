@@ -1,10 +1,7 @@
 package io.github.StardewValley.models.NPCS;
 
-import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.Product;
 import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.map.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,19 +48,8 @@ abstract public class NPC {
     }
     public void giveReward(Player player, int index){};
 
-
-    public ArrayList<Product> getRewards() {
-        return rewards;
-    }
-
-    public void setRewards(ArrayList<Product> rewards) {
-        this.rewards = rewards;
-    }
-
     public void sendGift() {
     }
-
-    private ArrayList<Product> rewards = new ArrayList<>();
 
     public static User getFatherUser() {
         return fatherUser;

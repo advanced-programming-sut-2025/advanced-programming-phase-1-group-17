@@ -1,6 +1,6 @@
 package io.github.StardewValley.models.plant;
 
-import io.github.StardewValley.models.BackPackable;
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum FruitType implements BackPackableType {
@@ -12,12 +12,12 @@ public enum FruitType implements BackPackableType {
     Peach(true, 38, 140),
     Apple(true, 38, 100),
     Pomegranate(true, 38, 140),
-    OakResin(false, 0, 150),
-    MapleSyrup(false, 0, 200),
-    PineTar(false, 0, 100),
+    Oak_Resin(false, 0, 150),
+    Maple_Syrup(false, 0, 200),
+    Pine_Tar(false, 0, 100),
     Sap(true, -2, 2),
-    CommonMushroom(true, 38, 40),
-    MysticSyrup(true, 500, 1000);
+    Common_Mushroom(true, 38, 40),
+    Mystic_Syrup(true, 500, 1000);
 
     private final boolean isEdible;
     private final int energy;
@@ -57,5 +57,10 @@ public enum FruitType implements BackPackableType {
     @Override
     public double getPrice() {
         return 0;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return TreeAssetManager.getTreeAssetManager().getFruitTexture(this);
     }
 }

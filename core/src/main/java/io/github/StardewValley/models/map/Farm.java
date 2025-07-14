@@ -66,7 +66,6 @@ public class Farm implements Placeable {
 
     @Override
     public Texture getTexture() {
-        String farmTexture = GameAssetManager.getGameAssetManager().getFarmTexture();
-        return new Texture(farmTexture);
+        return GameAssetManager.getGameAssetManager().getFarmTexture();
     }
 }

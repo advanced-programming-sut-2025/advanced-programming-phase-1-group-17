@@ -2,53 +2,35 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.NPCS.*;
-import io.github.StardewValley.models.NormalItem;
-import io.github.StardewValley.models.NormalItemType;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.animal.AnimalPlace;
-import io.github.StardewValley.models.animal.AnimalType;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.crafting.CraftingItemType;
-import io.github.StardewValley.models.foraging.Mineral;
+import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.map.*;
-import io.github.StardewValley.models.market.ShippingBin;
-import io.github.StardewValley.models.market.ShopItem;
-import io.github.StardewValley.models.market.Store;
-import io.github.StardewValley.models.market.StoreType;
-import io.github.StardewValley.models.plant.Crop;
-import io.github.StardewValley.models.plant.Seed;
-import io.github.StardewValley.models.plant.Tree;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WorldController {
     private final OrthographicCamera camera;
 
     private transient Texture backgroundTexture;
-    private ArrayList<Tile> tiles = new ArrayList<>();
     private int tileWidth;
     private int tileHeight;
-    private int TILE_SIZE = 32;
+    Tile greenHouseLeftCorner = null;
+    Tile firstGreenHouseTile = null;
 
     public WorldController(OrthographicCamera camera) {
         this.camera = camera;
-        this.tiles = Tile.getTiles();
     }
 
     public void initTransients() {
-        this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
-        this.treeTexture = new Texture(GameAssetManager.getGameAssetManager().getTreeTexture());
+        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
     }
 
     public void update() {
+        greenHouseLeftCorner = null;
+        firstGreenHouseTile = null;
+
         float camLeft = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
         float camRight = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
         float camBottom = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
@@ -59,11 +41,11 @@ public class WorldController {
         int minTileY = Math.max((int) (camBottom / tileHeight), 0);
         int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 300);
 
-        for (int y = minTileY - 1 ; y < maxTileY; y++) {
+        for (int y = minTileY - 1; y < maxTileY; y++) {
             for (int x = minTileX - 1; x < maxTileX; x++) {
                 if (x < 0 || y < 0)
                     continue;
-                Tile tile = Tile.getTile(x+1, y+1);
+                Tile tile = Tile.getTile(x + 1, y + 1);
                 Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
 
                 if (tile.getPlaceable() == null)
@@ -72,10 +54,10 @@ public class WorldController {
                 if (tile.getPlaceable().getTexture() == null)
                     continue;
 
-                Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
+                printTileTexture(tile);
             }
         }
-
+    }
 
 
 
@@ -219,22 +201,26 @@ public class WorldController {
 //        }
 
 
+    public void printTileTexture(Tile tile) {
+        Placeable placeable = tile.getPlaceable();
 
+        if (placeable instanceof GreenHouseFence) {
+            if (greenHouseLeftCorner == null)
+                greenHouseLeftCorner = tile;
+            return;
+        } else if (placeable instanceof Lake)
+            return;
+        else if (placeable instanceof GreenHouse) {
+            if (firstGreenHouseTile == null) {
+                firstGreenHouseTile = tile;
+                TextureRegion textureRegion = new TextureRegion(tile.getPlaceable().getTexture());
+                Main.getBatch().draw(textureRegion, tile.getX() * tileWidth, tile.getY() * tileHeight,
+                        ((GreenHouse) placeable).getWidth() * tileWidth, ((GreenHouse) placeable).getHeight() * tileHeight);
+            }
+            return;
+        }
 
-
-
-
-
-//        for (int y = minTileY; y < maxTileY; y++) {
-//            for (int x = minTileX; x < maxTileX; x++) {
-//                Tile tile = Tile.getTile(x,y);
-//                //TODO
-//                //Texture tileTexture = getTileTexture(tile);
-////                if (tileTexture != null) {
-////                    Main.getBatch().draw(tileTexture, x * TILE_SIZE, y * TILE_SIZE);
-////                }
-//            }
-//        }
+        Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
     }
 
     public int getTileWidth() {
