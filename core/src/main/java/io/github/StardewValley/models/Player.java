@@ -36,9 +36,11 @@ public class Player {
     private Animation<TextureRegion> walkRightAnimation;
     private TextureRegion currentFrame;
     private float animationTimer = 0f;
+
     enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
     }
+
     private Direction currentDirection = Direction.IDLE;
 
 
@@ -134,33 +136,32 @@ public class Player {
         this.buff = new Buff(BuffType.None, 0);
 
 
-
         walkDownAnimation = new Animation<>(0.1f, new TextureRegion[]{
-                new TextureRegion(new Texture("Alex/Alex11.png")),
-                new TextureRegion(new Texture("Alex/Alex12.png")),
-                new TextureRegion(new Texture("Alex/Alex13.png")),
-                new TextureRegion(new Texture("Alex/Alex14.png"))
+            new TextureRegion(new Texture("Alex/Alex11.png")),
+            new TextureRegion(new Texture("Alex/Alex12.png")),
+            new TextureRegion(new Texture("Alex/Alex13.png")),
+            new TextureRegion(new Texture("Alex/Alex14.png"))
         });
         walkDownAnimation.setPlayMode(Animation.PlayMode.LOOP);
         walkLeftAnimation = new Animation<>(0.1f, new TextureRegion[]{
-                new TextureRegion(new Texture("Alex/Alex41.png")),
-                new TextureRegion(new Texture("Alex/Alex42.png")),
-                new TextureRegion(new Texture("Alex/Alex43.png")),
-                new TextureRegion(new Texture("Alex/Alex44.png"))
+            new TextureRegion(new Texture("Alex/Alex41.png")),
+            new TextureRegion(new Texture("Alex/Alex42.png")),
+            new TextureRegion(new Texture("Alex/Alex43.png")),
+            new TextureRegion(new Texture("Alex/Alex44.png"))
         });
         walkLeftAnimation.setPlayMode(Animation.PlayMode.LOOP);
         walkRightAnimation = new Animation<>(0.1f, new TextureRegion[]{
-                new TextureRegion(new Texture("Alex/Alex21.png")),
-                new TextureRegion(new Texture("Alex/Alex22.png")),
-                new TextureRegion(new Texture("Alex/Alex23.png")),
-                new TextureRegion(new Texture("Alex/Alex24.png"))
+            new TextureRegion(new Texture("Alex/Alex21.png")),
+            new TextureRegion(new Texture("Alex/Alex22.png")),
+            new TextureRegion(new Texture("Alex/Alex23.png")),
+            new TextureRegion(new Texture("Alex/Alex24.png"))
         });
         walkRightAnimation.setPlayMode(Animation.PlayMode.LOOP);
         walkUpAnimation = new Animation<>(0.1f, new TextureRegion[]{
-                new TextureRegion(new Texture("Alex/Alex31.png")),
-                new TextureRegion(new Texture("Alex/Alex32.png")),
-                new TextureRegion(new Texture("Alex/Alex33.png")),
-                new TextureRegion(new Texture("Alex/Alex34.png"))
+            new TextureRegion(new Texture("Alex/Alex31.png")),
+            new TextureRegion(new Texture("Alex/Alex32.png")),
+            new TextureRegion(new Texture("Alex/Alex33.png")),
+            new TextureRegion(new Texture("Alex/Alex34.png"))
         });
         walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
         this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
@@ -453,16 +454,13 @@ public class Player {
         if (up) {
             newY += speed * delta;
             currentDirection = Direction.UP;
-        }
-        else if (down){
+        } else if (down) {
             newY -= speed * delta;
             currentDirection = Direction.DOWN;
-        }
-        else if (left) {
+        } else if (left) {
             newX -= speed * delta;
             currentDirection = Direction.LEFT;
-        }
-        else if (right) {
+        } else if (right) {
             newX += speed * delta;
             currentDirection = Direction.RIGHT;
         } else {
@@ -508,9 +506,15 @@ public class Player {
 
                     x = (int) Math.max(1, Math.min(newX, mapWidth - playerWidth));
                     y = (int) Math.max(1, Math.min(newY, mapHeight - playerHeight));
+                    energy -= energy * 0.0005;
+                    if (energy < 0) {
+                        energy = 0;
+                        hasPassedOutToday = true;
+                    }
+
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
@@ -536,6 +540,6 @@ public class Player {
                 currentFrame = walkDownAnimation.getKeyFrame(0);
                 break;
         }
-        Main.getBatch().draw(currentFrame, x , y, backgroundTexture.getWidth(),backgroundTexture.getHeight() );
+        Main.getBatch().draw(currentFrame, x, y, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
     }
 }

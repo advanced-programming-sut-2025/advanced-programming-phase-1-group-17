@@ -1,5 +1,7 @@
 package io.github.StardewValley.models.map;
 
+import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.models.Fence;
 import io.github.StardewValley.models.foraging.ForagingController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NPCS.*;
@@ -207,17 +209,28 @@ public class PlayerMap {
                     }
                 }
             }
+            Fence fence = new Fence(true);
             for (int i = -1; i <= 302; i++) {
-                this.tiles.add(new Tile(i, -1, NPC.getFatherPlayer()));
-                this.tiles.add(new Tile(i, 0, NPC.getFatherPlayer()));
-                this.tiles.add(new Tile(i, 301, NPC.getFatherPlayer()));
-                this.tiles.add(new Tile(i, 302, NPC.getFatherPlayer()));
+                Tile tile1 = new Tile(i, 0, NPC.getFatherPlayer());
+                tile1.setPlaceable(fence);
+                tile1.setWalkAble(false);
+                this.tiles.add(tile1);
+                Tile tile2 = new Tile(i, 301, NPC.getFatherPlayer());
+                tile2.setPlaceable(fence);
+                tile2.setWalkAble(false);
+                this.tiles.add(tile2);
             }
+            Fence fence2 = new Fence(false);
             for (int j = 1; j <= 300; j++) {
-                this.tiles.add(new Tile(-1, j, NPC.getFatherPlayer()));
-                this.tiles.add(new Tile(0, j, NPC.getFatherPlayer()));
-                this.tiles.add(new Tile(301, j, NPC.getFatherPlayer()));
-                this.tiles.add(new Tile(302, j, NPC.getFatherPlayer()));
+                Tile tile1 = new Tile(0, j, NPC.getFatherPlayer());
+                tile1.setPlaceable(fence2);
+                tile1.setWalkAble(false);
+                this.tiles.add(tile1);
+                Tile tile2 = new Tile(301, j, NPC.getFatherPlayer());
+                tile2.setPlaceable(fence2);
+                tile2.setWalkAble(false);
+                this.tiles.add(tile2);
+
             }
 
             //Creating Stores
@@ -384,31 +397,31 @@ public class PlayerMap {
 
     public void setMapType(int type) {
         if (type == 1) {
-            this.hut = new Hut();
+            this.hut = new Hut(new Texture("Huts/Hut3.png"));
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
             this.greenHouse = new GreenHouse(this.player);
             this.x_start = 4 + row;
             this.y_start = 4 + col;
+            Tile.getTile(4 + row, 4 + col).setPlaceable(hut);
+            Tile.getTile(4 + row, 4 + col).setWalkAble(false);
 
-            for (int i = 4 + row; i < 8 + row; i++) {
-                for (int j = 4 + col; j < 8 + col; j++) {
-                    Tile.getTile(i, j).setPlaceable(hut);
-                }
-            }
             for (int i = 1 + row; i < 12 + row; i++) {
                 for (int j = 20 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(quarry);
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 40 + row; i < 46 + row; i++) {
                 for (int j = 30 + col; j < 36 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
                 for (int j = 2 + col; j < 10 + col; j++) {
                     Tile.getTile(34 + row, j).setPlaceable(lakes.get(0));
+                    Tile.getTile(i, j).setWalkAble(false);
                     if (i == 40 + row) {
                         if (j == 6 + col)
                             continue;
@@ -421,26 +434,25 @@ public class PlayerMap {
                 }
             }
         } else if (type == 2) {
-            this.hut = new Hut();
+            this.hut = new Hut(new Texture("Huts/Hut4.png"));
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
             this.greenHouse = new GreenHouse(this.player);
             this.quarry = new Quarry();
             this.x_start = 40 + row;
             this.y_start = 40 + col;
-            for (int i = 40 + row; i < 44 + row; i++) {
-                for (int j = 40 + col; j < 44 + col; j++) {
-                    Tile.getTile(i, j).setPlaceable(hut);
-                }
-            }
+            Tile.getTile(40 + row, 40 + col).setPlaceable(hut);
+            Tile.getTile(40 + row, 40 + col).setWalkAble(false);
             for (int i = 25 + row; i < 31 + row; i++) {
                 for (int j = 35 + col; j < 41 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(quarry);
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 30 + row; i < 36 + row; i++) {
                 for (int j = 15 + col; j < 21 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(0));
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = row + 1; i < 7 + row; i++) {
@@ -459,10 +471,11 @@ public class PlayerMap {
                         Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
                     else
                         Tile.getTile(i, j).setPlaceable(greenHouse);
+                    //TODO
+                    //Tile.getTile(i, j).setWalkAble(false);
                     Tile.getTile(i, j).setWalkAble(true);
                 }
             }
-
         }
         randomFillMap();
     }

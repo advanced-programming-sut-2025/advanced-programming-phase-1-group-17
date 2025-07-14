@@ -42,4 +42,10 @@ public class GameAssetManager {
     public String getTree2Texture() {
         return "tree2.png";
     }
+    public String getFenceTexture() {
+        return "Fence/Gate.png";
+    }
+    public String getFenceTexture2() {
+        return "Fence/Hardwood_Fence.png";
+    }
 }
