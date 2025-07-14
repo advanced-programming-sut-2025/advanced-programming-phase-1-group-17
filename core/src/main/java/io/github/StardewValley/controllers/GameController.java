@@ -94,6 +94,7 @@ public class GameController {
             case com.badlogic.gdx.Input.Keys.D:
                 rightPressed = pressed;
                 break;
+
         }
     }
 

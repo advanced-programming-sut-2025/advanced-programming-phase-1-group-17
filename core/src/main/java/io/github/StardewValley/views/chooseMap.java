@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -20,8 +21,8 @@ public class chooseMap implements Screen {
     private Table table;
     private TextButton Next;
     private Label playerUserName;
-
-    //TODO   put picture of maps
+    private Image imageMap1;
+    private Image imageMap2;
 
 
 
@@ -37,6 +38,8 @@ public class chooseMap implements Screen {
         checkBox2 = new CheckBox("Map2", skin);
         playerUserName = new Label("", skin);
         playerUserName.setColor(0,1,0,1);
+        this.imageMap1 = new Image(new Texture("map1.png"));
+        this.imageMap2 = new Image(new Texture("map2.png"));
 
         checkBox1.setChecked(true);
         checkBox2.setChecked(false);
@@ -52,7 +55,11 @@ public class chooseMap implements Screen {
         table.add(playerUserName).center();
         table.row().pad(10,0,10,0);
         table.row().pad(10,0,10,0);
+        table.add(imageMap1).center();
+        table.row().pad(10,0,10,0);
         table.add(checkBox1).center();
+        table.row().pad(10,0,10,0);
+        table.add(imageMap2).center();
         table.row().pad(10,0,10,0);
         table.add(checkBox2).center();
         table.row().pad(10,0,10,0);

@@ -1496,7 +1496,7 @@ public class GameMenuController {
                 return new Result(true, animalName + " went to " + animalPlace1.getAnimalPlaceType().name());
 
             }
-            if (tile.getPlaceable() == null) {
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm ) {
                 return new Result(false, animalName + " is already outside");
             }
             if (tile.getPlaceable() != null) {

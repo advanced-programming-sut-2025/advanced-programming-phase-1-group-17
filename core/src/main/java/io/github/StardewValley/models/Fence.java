@@ -13,7 +13,7 @@ public class Fence implements Placeable{
     }
     @Override
     public Texture getTexture() {
-        if (isHorizontal)
+        if (!isHorizontal)
             return fenceTexture;
         else
             return fenceTexture2;

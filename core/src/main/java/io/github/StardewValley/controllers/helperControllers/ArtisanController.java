@@ -9,6 +9,7 @@ import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.artisan.IngredientGroup;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.crafting.CraftingItemType;
+import io.github.StardewValley.models.map.Farm;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.tools.BackPack;
 
@@ -33,7 +34,7 @@ public class ArtisanController {
             Tile tile = Tile.getTile(player.getX() + dx[i], player.getY() + dy[i]);
             if (tile == null)
                 continue;
-            if (tile.getPlaceable() == null)
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm)
                 continue;
             if (tile.getPlaceable().getClass().equals(CraftingItem.class)) {
                 CraftingItem craftingItem = (CraftingItem) tile.getPlaceable();
@@ -94,7 +95,7 @@ public class ArtisanController {
             Tile tile = Tile.getTile(player.getX() + dx[i], player.getY() + dy[i]);
             if (tile == null)
                 continue;
-            if (tile.getPlaceable() == null)
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm)
                 continue;
             if (tile.getPlaceable().getClass().equals(CraftingItem.class)) {
                 CraftingItem craftingItem = (CraftingItem) tile.getPlaceable();

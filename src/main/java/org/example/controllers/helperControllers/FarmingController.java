@@ -113,7 +113,7 @@ public class FarmingController {
                 if (!greenHouse.isActive())
                     return new Result(false, "You need to Build the Greenhouse first");
                 tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, true));
-            } else if (tile.getPlaceable() == null) {
+            } else if (tile.getPlaceable() instanceof Farm) {
                 CropType cropType = CropType.getCropTypeBySeedType(seedType);
                 if (!cropType.getSeasons().contains(App.getCurrentGame().getDate().getSeason()))
                     return new Result(false, "Can not plant crop of type %s in season %s outside the greenhouse.".formatted(
@@ -139,7 +139,7 @@ public class FarmingController {
             if (!greenHouse.isActive())
                 return new Result(false, "You need to Build the Greenhouse first");
             tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, true));
-        } else if (tile.getPlaceable() == null) {
+        } else if (tile.getPlaceable() instanceof Farm) {
             TreeType treeType = TreeType.getTreeTypeBySaplingType(saplingType);
             if (!treeType.getSeasons().contains(App.getCurrentGame().getDate().getSeason()))
                 return new Result(false, "Can not plant tree of type %s in season %s outside the greenhouse.".formatted(

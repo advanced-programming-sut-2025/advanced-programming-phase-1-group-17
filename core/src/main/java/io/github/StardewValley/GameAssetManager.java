@@ -33,7 +33,7 @@ public class GameAssetManager {
     }
 
     public String getFarmTexture() {
-        return "Flooring/Flooring_14.png";
+        return "Flooring/Flooring_44.png";
     }
 
     public String getGreenHouseFenceTexture() {
