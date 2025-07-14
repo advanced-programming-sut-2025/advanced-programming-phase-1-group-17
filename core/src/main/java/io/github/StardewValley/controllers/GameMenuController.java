@@ -25,10 +25,7 @@ import io.github.StardewValley.models.enums.*;
 import io.github.StardewValley.models.foraging.ForagingController;
 import io.github.StardewValley.models.foraging.Mineral;
 import io.github.StardewValley.models.animal.AnimalPlace;
-import io.github.StardewValley.models.map.GreenHouse;
-import io.github.StardewValley.models.map.Hut;
-import io.github.StardewValley.models.map.PlayerMap;
-import io.github.StardewValley.models.map.Tile;
+import io.github.StardewValley.models.map.*;
 import io.github.StardewValley.models.plant.*;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.Trade;
@@ -1616,7 +1613,7 @@ public class GameMenuController {
             if (tile.getPlaceable() instanceof AnimalPlace) {
                 return new Result(false, "animal is already in a animalPlace");
             }
-            if (tile.getPlaceable() == null) {
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm)  {
                 animalPlace.getAnimals().remove(animal);
                 tile.setPlaceable(animal);
                 animal.setTile(tile);
@@ -1640,7 +1637,7 @@ public class GameMenuController {
                 return new Result(true, animalName + " went to " + animalPlace1.getAnimalPlaceType().name());
 
             }
-            if (tile.getPlaceable() == null) {
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm) {
                 return new Result(false, animalName + " is already outside");
             }
             if (tile.getPlaceable() != null) {

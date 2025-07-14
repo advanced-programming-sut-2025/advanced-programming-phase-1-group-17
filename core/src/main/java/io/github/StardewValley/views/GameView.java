@@ -1,6 +1,7 @@
 package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.GameController;
+import io.github.StardewValley.controllers.MapViewController;
 import io.github.StardewValley.display;
 
 public class GameView implements Screen, InputProcessor {
@@ -36,6 +38,11 @@ public class GameView implements Screen, InputProcessor {
         Main.getBatch().begin();
 
         controller.updateGame(v);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            Main.getMain().getScreen().dispose();
+            ScreenUtils.clear(0, 0, 0, 1);
+            Main.getMain().setScreen(new MapView(new MapViewController() , this));
+        }
 
         Main.getBatch().end();
 
@@ -117,5 +124,7 @@ public class GameView implements Screen, InputProcessor {
         return true;
     }
 
-
+    public GameController getController() {
+        return controller;
+    }
 }
