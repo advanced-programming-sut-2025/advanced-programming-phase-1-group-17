@@ -479,7 +479,8 @@ public class PlayerMap {
                         Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
                     else
                         Tile.getTile(i, j).setPlaceable(greenHouse);
-                    Tile.getTile(i, j).setWalkAble(true);
+                    if (! (Tile.getTile(i, j).getPlaceable() instanceof Lake))
+                        Tile.getTile(i, j).setWalkAble(true);
                 }
             }
         } else if (type == 2) {
@@ -507,11 +508,13 @@ public class PlayerMap {
             for (int i = row + 1; i < 7 + row; i++) {
                 for (int j = 25 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(lakes.get(1));
+                    Tile.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 35 + row; i < 41 + row; i++) {
                 for (int j = 2 + col; j < 10 + col; j++) {
                     Tile.getTile(34 + row, j).setPlaceable(lakes.get(0));
+                    Tile.getTile(i, j).setWalkAble(false);
                     if (i == 40 + row) {
                         if (j == 6 + col)
                             continue;
@@ -520,9 +523,8 @@ public class PlayerMap {
                         Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
                     else
                         Tile.getTile(i, j).setPlaceable(greenHouse);
-                    //TODO
-                    //Tile.getTile(i, j).setWalkAble(false);
-                    Tile.getTile(i, j).setWalkAble(true);
+                    if (! (Tile.getTile(i, j).getPlaceable() instanceof Lake))
+                        Tile.getTile(i, j).setWalkAble(true);
                 }
             }
         }
