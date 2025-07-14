@@ -380,7 +380,7 @@ public class PlayerMap {
             this.hut = new Hut();
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
-            this.greenHouse = new GreenHouse(this.player);
+            this.greenHouse = new GreenHouse(this.player, 5, 8);
             this.x_start = 4 + row;
             this.y_start = 4 + col;
 
@@ -417,7 +417,7 @@ public class PlayerMap {
             this.hut = new Hut();
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
-            this.greenHouse = new GreenHouse(this.player);
+            this.greenHouse = new GreenHouse(this.player, 5, 8);
             this.quarry = new Quarry();
             this.x_start = 40 + row;
             this.y_start = 40 + col;
@@ -589,4 +589,6 @@ public class PlayerMap {
     public void setY_start(int y_start) {
         this.y_start = y_start;
     }
+
+
 }

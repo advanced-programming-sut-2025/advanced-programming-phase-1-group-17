@@ -24,7 +24,7 @@ public class Player {
     private int x;
     private int y;
     private Buff buff;
-    private float speed = 200f;
+    private float speed = 1200f;
     private transient Texture texture;
     private transient Texture backgroundTexture;
 
@@ -58,11 +58,11 @@ public class Player {
     private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic, null);
     private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic, null);
     private Tool currentTool;
+    private BackPackableType equippedItem;
 
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
     private HashSet<Recipe> recipes = new HashSet<>();
-    private ArrayList<Friends> friends = new ArrayList<>();
     private Ability abilities = new Ability(this);
     private HashSet<CraftingRecipe> craftingRecipes = new HashSet<>();
 
@@ -119,7 +119,7 @@ public class Player {
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
         this.buff = new Buff(BuffType.None, 0);
         this.texture = new Texture("player.png");
-        this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
+        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -418,6 +418,8 @@ public class Player {
         Tile destination = Tile.getTile((int) newX / backgroundTexture.getWidth() == 0 ? 1 : (int) newX / backgroundTexture.getWidth()
             , (int) newY / backgroundTexture.getHeight()==0 ? 1:  (int) newY / backgroundTexture.getHeight());
 
+        if (!destination.isWalkAble())
+            isOky = false;
         if (destination != null) {
             if (!(destination.getOwner().equals(player.getPartner())
                 || destination.getOwner().equals(player)
@@ -444,5 +446,13 @@ public class Player {
 
     public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
         batch.draw(texture, x, y);
+    }
+
+    public BackPackableType getEquippedItem() {
+        return equippedItem;
+    }
+
+    public void setEquippedItem(BackPackableType equippedItem) {
+        this.equippedItem = equippedItem;
     }
 }

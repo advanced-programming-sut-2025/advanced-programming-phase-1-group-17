@@ -7,7 +7,6 @@ import io.github.StardewValley.models.Placeable;
 public class GreenHouseFence implements Placeable {
     @Override
     public Texture getTexture() {
-        String greenHouseFenceImage = GameAssetManager.getGameAssetManager().getGreenHouseFenceTexture();
-        return new Texture(greenHouseFenceImage);
+        return GameAssetManager.getGameAssetManager().getGreenHouseFenceTexture();
     }
 }

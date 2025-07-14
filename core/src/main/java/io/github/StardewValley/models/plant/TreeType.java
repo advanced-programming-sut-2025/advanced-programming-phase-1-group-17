@@ -1,6 +1,5 @@
 package io.github.StardewValley.models.plant;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.enums.Season;
 
 import java.util.List;
@@ -56,7 +55,7 @@ public enum TreeType {
         "assets/Trees/Pomegranate_Stage_5_Fruit.png"),
 
     //Doesn't have its own hasFruit image
-    OakTree(SaplingType.Acorns, List.of(7, 7, 7, 7), 28, FruitType.OakResin, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
+    OakTree(SaplingType.Acorns, List.of(7, 7, 7, 7), 28, FruitType.Oak_Resin, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Oak_Stage_1.png", "assets/Trees/Oak_Stage_2.png", "assets/Trees/Oak_Stage_3.png",
             "assets/Trees/Oak_Stage_4.png", "assets/Trees/Oak_Stage_5.png"
@@ -64,7 +63,7 @@ public enum TreeType {
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
 
     //Doesn't have its own hasFruit image
-    MapleTree(SaplingType.MapleSeeds, List.of(7, 7, 7, 7), 28, FruitType.MapleSyrup, 9, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
+    MapleTree(SaplingType.MapleSeeds, List.of(7, 7, 7, 7), 28, FruitType.Maple_Syrup, 9, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Maple_Stage_1.png", "assets/Trees/Maple_Stage_2.png", "assets/Trees/Maple_Stage_3.png",
             "assets/Trees/Maple_Stage_4.png", "assets/Trees/Maple_Stage_5.png"
@@ -72,7 +71,7 @@ public enum TreeType {
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
 
     //Doesn't have its own hasFruit image
-    PineTree(SaplingType.PineCones, List.of(7, 7, 7, 7), 28, FruitType.PineTar, 5, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
+    PineTree(SaplingType.PineCones, List.of(7, 7, 7, 7), 28, FruitType.Pine_Tar, 5, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Pine_Stage_1.png", "assets/Trees/Pine_Stage_2.png", "assets/Trees/Pine_Stage_3.png",
             "assets/Trees/Pine_Stage_4.png", "assets/Trees/Pine_Stage_5.png"
@@ -88,7 +87,7 @@ public enum TreeType {
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
 
     //Doesn't have its own hasFruit image
-    MushroomTree(SaplingType.MushroomTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.CommonMushroom, 1, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
+    MushroomTree(SaplingType.MushroomTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.Common_Mushroom, 1, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/MushroomTree_Stage_1.png", "assets/Trees/MushroomTree_Stage_2.png", "assets/Trees/MushroomTree_Stage_3.png",
             "assets/Trees/MushroomTree_Stage_4.png", "assets/Trees/MushroomTree_Stage_5.png"
@@ -96,7 +95,7 @@ public enum TreeType {
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
 
     //Doesn't have its own hasFruit image
-    MysticTree(SaplingType.MysticTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.MysticSyrup, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
+    MysticTree(SaplingType.MysticTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.Mystic_Syrup, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             "assets/Trees/Mystic_Stage_1.png", "assets/Trees/Mystic_Stage_2.png", "assets/Trees/Mystic_Stage_3.png",
             "assets/Trees/Mystic_Stage_4.png", "assets/Trees/Mystic_Stage_5.png"

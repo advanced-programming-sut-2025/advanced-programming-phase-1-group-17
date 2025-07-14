@@ -12,12 +12,16 @@ public class GreenHouse implements Placeable {
     private static ArrayList<GreenHouse> greenHouse = new ArrayList<GreenHouse>();
     private boolean isActive;
     private GreenHouseFence fence;
+    private int width;
+    private int height;
 
 
-    public GreenHouse(Player player) {
+    public GreenHouse(Player player, int width, int height) {
         this.fence = new GreenHouseFence();
         this.isActive = false;
         greenHouse.add(this);
+        this.width = width;
+        this.height = height;
         App.getCurrentGame().addGreenHouses(this);
     }
 
@@ -47,7 +51,14 @@ public class GreenHouse implements Placeable {
 
     @Override
     public Texture getTexture() {
-        String greenHouseImage = GameAssetManager.getGameAssetManager().getGreenHouseTexture();
-        return new Texture(greenHouseImage);
+        return GameAssetManager.getGameAssetManager().getGreenHouseTexture();
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

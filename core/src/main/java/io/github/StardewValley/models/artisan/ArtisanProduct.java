@@ -5,7 +5,6 @@ import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.enums.FishType;
 import io.github.StardewValley.models.plant.CropType;
 import io.github.StardewValley.models.plant.FruitType;
-import io.github.StardewValley.models.plant.SeedType;
 
 import java.util.ArrayList;
 
@@ -43,9 +42,9 @@ public class ArtisanProduct implements BackPackable {
             return provided.get(0);
         } else if (product.equals(ArtisanProductType.Wine)) {
             return provided.get(0);
-        } else if (product.equals(ArtisanProductType.DriedMushrooms)) {
+        } else if (product.equals(ArtisanProductType.Dried_Mushrooms)) {
             return provided.get(0);
-        } else if (product.equals(ArtisanProductType.DriedFruit)) {
+        } else if (product.equals(ArtisanProductType.Dried_Fruit)) {
             return provided.get(0);
         } else if (product.equals(ArtisanProductType.Pickles)) {
             return provided.get(0);
@@ -79,9 +78,9 @@ public class ArtisanProduct implements BackPackable {
             price = ingredientUsed.getPrice() * 2.25;
         else if (type.equals(ArtisanProductType.Wine))
             price = ingredientUsed.getPrice() * 3;
-        else if (type.equals(ArtisanProductType.DriedMushrooms))
+        else if (type.equals(ArtisanProductType.Dried_Mushrooms))
             price = ingredientUsed.getPrice() * 7.5 + 25;
-        else if (type.equals(ArtisanProductType.DriedFruit))
+        else if (type.equals(ArtisanProductType.Dried_Fruit))
             price = ingredientUsed.getPrice() * 7.5 + 25;
         else if (type.equals(ArtisanProductType.Pickles))
             price = ingredientUsed.getPrice() * 2 + 50;
@@ -138,7 +137,7 @@ public class ArtisanProduct implements BackPackable {
     }
 
     public void goToNextDay(int hours) {
-        if (type.equals(ArtisanProductType.DriedMushrooms) || type.equals(ArtisanProductType.DriedFruit)
+        if (type.equals(ArtisanProductType.Dried_Mushrooms) || type.equals(ArtisanProductType.Dried_Fruit)
             || type.equals(ArtisanProductType.Raisins)) {
             isReady = true;
         } else {

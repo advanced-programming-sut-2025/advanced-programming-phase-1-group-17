@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.cooking;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum RecipeType implements BackPackableType {
@@ -50,5 +51,11 @@ public enum RecipeType implements BackPackableType {
     public double getPrice() {
         //TODO
         return price;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        //TODO
+        return null;
     }
 }

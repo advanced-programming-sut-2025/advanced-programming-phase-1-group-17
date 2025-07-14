@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.animal;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 import java.util.ArrayList;
@@ -44,5 +45,11 @@ public enum AnimalType implements BackPackableType {
     @Override
     public String getName() {
         return name();
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        //TODO
+        return null;
     }
 }
