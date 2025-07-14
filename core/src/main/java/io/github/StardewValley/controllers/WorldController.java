@@ -4,11 +4,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.NPCS.*;
-import io.github.StardewValley.models.NormalItem;
-import io.github.StardewValley.models.NormalItemType;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.User;
 import io.github.StardewValley.models.animal.Animal;
 import io.github.StardewValley.models.animal.AnimalPlace;
 import io.github.StardewValley.models.animal.AnimalType;
@@ -60,7 +57,7 @@ public class WorldController {
 
         for (int y = minTileY - 1 ; y < maxTileY; y++) {
             for (int x = minTileX - 1; x < maxTileX; x++) {
-                if (x < 0 || y < 0 || x >= 300 || y >= 300)
+                if (x < -2 || y < -2 || x > 300 || y > 300)
                     continue;
                 Tile tile = Tile.getTile(x+1, y+1);
                 Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
@@ -68,10 +65,14 @@ public class WorldController {
                 if (tile.getPlaceable() == null)
                     continue;
                 //TODO: will be deleted
-                if (tile.getPlaceable().getTexture() == null)
+                else if (tile.getPlaceable().getTexture() == null)
                     continue;
-
-                Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
+                else if (tile.getPlaceable() instanceof Fence)
+                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight,80,80);
+                else if (tile.getPlaceable() instanceof Hut)
+                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight,120,120);
+                else
+                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
             }
         }
 

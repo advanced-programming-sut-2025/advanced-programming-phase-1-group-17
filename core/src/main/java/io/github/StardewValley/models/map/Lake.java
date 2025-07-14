@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
 
 public class Lake implements Placeable {
+    private Texture texture = new Texture("lake.png");
     @Override
     public Texture getTexture() {
-        //TODO
-        return null;
+        return texture;
     }
 }
