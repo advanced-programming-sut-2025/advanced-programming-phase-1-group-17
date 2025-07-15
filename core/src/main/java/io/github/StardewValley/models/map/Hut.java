@@ -9,8 +9,12 @@ import java.util.ArrayList;
 public class Hut implements Placeable {
     private Refrigerator refrigerator = new Refrigerator();
     private Texture texture;
-    public Hut(Texture texture) {
+    private int x;
+    private int y;
+    public Hut(Texture texture, int x, int y) {
         this.texture = texture;
+        this.x = x;
+        this.y = y;
     }
 
     public Refrigerator getRefrigerator() {
@@ -24,5 +28,13 @@ public class Hut implements Placeable {
     @Override
     public Texture getTexture() {
         return texture;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }

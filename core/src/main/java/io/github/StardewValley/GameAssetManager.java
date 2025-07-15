@@ -12,11 +12,11 @@ public class GameAssetManager {
     private static GameAssetManager gameAssetManager;
     private final Skin skin = new Skin(Gdx.files.internal("skin/star-soldier-ui.json"));
 
-    private final Texture backgroundTexture = new Texture("Flooring/Flooring_28.png");
+    private final Texture backgroundTexture = new Texture("Flooring/Flooring_44.png");
     private final Texture farmTexture = new Texture("Flooring/Flooring_14.png");
 
     //For GreenHouse
-    private final Texture lakeTexture = new Texture("Flooring/Flooring_37.png");
+    private final Texture lakeTexture = new Texture("lake.png");
     private final Texture greenHouseFenceTexture = new Texture("Fence/Hardwood_Fence.png");
     private final Texture greenHouseTexture = new Texture("Greenhouse/greenhouse.png");
 

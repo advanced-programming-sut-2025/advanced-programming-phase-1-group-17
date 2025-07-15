@@ -18,6 +18,19 @@ public class Lia extends NPC implements Placeable {
     private String job = "waiter";
     private final HashMap<String, String> dialogue = new HashMap<>();
     private final HashMap<String, String> dialogue2 = new HashMap<>();
+    private Texture texture1 = new Texture("Leo.png");
+    private Texture texture2 =  new Texture("hut2.png");
+    //TODO
+
+
+    public Lia(boolean isLia){
+        isNPC = isLia;
+    }
+    public Lia(boolean isHarvey, int x, int y){
+        isNPC = isHarvey;
+        x_start = x;
+        y_start = y;
+    }
 
     {
         dialogue.put("what's your name?", "Lia");
@@ -104,7 +117,10 @@ public class Lia extends NPC implements Placeable {
 
     @Override
     public Texture getTexture() {
-        //TODO
-        return null;
+        if (isNPC)
+            return texture1;
+        else
+            return texture2;
     }
+
 }

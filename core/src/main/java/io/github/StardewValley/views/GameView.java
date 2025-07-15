@@ -19,8 +19,7 @@ public class GameView implements Screen, InputProcessor {
 
     public GameView(GameController controller) {
         this.controller = controller;
-//        display.run(1,1,200);
-
+//        display.run(1,1,300);
         this.controller.setView(this);
     }
 
