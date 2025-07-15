@@ -41,8 +41,9 @@ public class GameView implements Screen, InputProcessor {
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
-            Main.getMain().setScreen(new MapView(new MapViewController() , this));
+            Main.getMain().setScreen(new MapView(new MapViewController(), this));
         }
+        //TODO handle input key
 
         Main.getBatch().end();
 
