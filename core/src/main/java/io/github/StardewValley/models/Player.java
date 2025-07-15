@@ -164,7 +164,7 @@ public class Player {
             new TextureRegion(new Texture("Alex/Alex34.png"))
         });
         walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture());
+        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {

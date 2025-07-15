@@ -46,12 +46,10 @@ public class GameAssetManager {
         return greenHouseTexture;
     }
 
-    public Texture getFarmTexture() {
-        return farmTexture;
-    }
 
     public Texture getGreenHouseFenceTexture() {
         return greenHouseFenceTexture;
+    }
     public String getFarmTexture() {
         return "Flooring/Flooring_44.png";
     }
