@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
@@ -18,7 +17,6 @@ import io.github.StardewValley.models.map.PlayerMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 public class Player {
     private PlayerMap playerMap;
@@ -74,7 +72,7 @@ public class Player {
     private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic, null);
     private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic, null);
     private Tool currentTool;
-    private BackPackableType equippedItem;
+    private BackPackable equippedItem;
 
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
@@ -439,8 +437,8 @@ public class Player {
         if (material.equals(ToolMaterial.Basic))
             trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Copper, null);
         else if (material.equals(ToolMaterial.Copper))
-            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Iron, null);
-        else if (material.equals(ToolMaterial.Iron))
+            trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Steel, null);
+        else if (material.equals(ToolMaterial.Steel))
             trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Gold, null);
         else if (material.equals(ToolMaterial.Gold))
             trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Iridium, null);
@@ -543,11 +541,11 @@ public class Player {
         Main.getBatch().draw(currentFrame, x, y, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
     }
 
-    public BackPackableType getEquippedItem() {
+    public BackPackable getEquippedItem() {
         return equippedItem;
     }
 
-    public void setEquippedItem(BackPackableType equippedItem) {
+    public void setEquippedItem(BackPackable equippedItem) {
         this.equippedItem = equippedItem;
     }
 }

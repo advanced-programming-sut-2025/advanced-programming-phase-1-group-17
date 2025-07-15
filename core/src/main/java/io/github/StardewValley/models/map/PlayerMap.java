@@ -475,8 +475,11 @@ public class PlayerMap {
                         if (j == 6 + col)
                             continue;
                         Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
-                    } else if (j == 9 + col || j == 2 + col)
+                        Tile.getTile(i, j).setWalkAble(false);
+                    } else if (j == 9 + col || j == 2 + col) {
                         Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
+                        Tile.getTile(i, j).setWalkAble(false);
+                    }
                     else
                         Tile.getTile(i, j).setPlaceable(greenHouse);
                     if (! (Tile.getTile(i, j).getPlaceable() instanceof Lake))
@@ -519,8 +522,11 @@ public class PlayerMap {
                         if (j == 6 + col)
                             continue;
                         Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
-                    } else if (j == 9 + col || j == 2 + col)
+                        Tile.getTile(i, j).setWalkAble(false);
+                    } else if (j == 9 + col || j == 2 + col) {
                         Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
+                        Tile.getTile(i, j).setWalkAble(false);
+                    }
                     else
                         Tile.getTile(i, j).setPlaceable(greenHouse);
                     if (! (Tile.getTile(i, j).getPlaceable() instanceof Lake))
@@ -548,15 +554,13 @@ public class PlayerMap {
             int randomIndex_x = randomInt(1 + row, 100 + row);
             int randomIndex_y = randomInt(1 + col, 100 + col);
             Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
-            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm) {
+            if (tile.getPlaceable() instanceof Farm) {
                 if (counter < 2)
                     ForagingController.setTreeForaging(tile);
                 else if (counter < 4)
                     ForagingController.setCropForaging(tile);
                 else if (counter < 6)
                     ForagingController.setSeedForaging(tile);
-                else
-                    ForagingController.setMineralForaging(tile);
                 tile.setWalkAble(false);
                 numOfForagings--;
                 counter++;

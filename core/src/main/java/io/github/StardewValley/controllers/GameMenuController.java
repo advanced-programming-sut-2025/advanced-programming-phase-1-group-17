@@ -160,7 +160,6 @@ public class GameMenuController {
 
                 NPC.setFatherPlayer(null);
                 NPC.setFatherUser(null);
-                GreenHouse.getGreenHouse().clear();
                 Game game = new Game(user2, user3, user4);
                 App.setCurrentGame(game);
                 App.getGames().add(game);
@@ -236,7 +235,6 @@ public class GameMenuController {
                     }
                     NPC.setFatherPlayer(game.getPlayers().get(4));
                     NPC.setFatherUser(game.getPlayers().get(4).getUser());
-                    GreenHouse.setGreenHouse(App.getCurrentGame().getGreenHouses());
 
                     com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                         @Override

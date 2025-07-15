@@ -7,12 +7,6 @@ import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.NPCS.*;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.animal.AnimalPlace;
-import io.github.StardewValley.models.animal.AnimalType;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.crafting.CraftingItemType;
-import io.github.StardewValley.models.foraging.Mineral;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.map.*;
 

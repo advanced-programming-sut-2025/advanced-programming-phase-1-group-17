@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.models.enums.BackPackType;
+import io.github.StardewValley.models.tools.ToolType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class GameAssetManager {
     private final Texture greenHouseFenceTexture = new Texture("Fence/Hardwood_Fence.png");
     private final Texture greenHouseTexture = new Texture("Greenhouse/greenhouse.png");
 
-    //For backpack
+    //For backpack and Tools
     private final Texture backPackTexture = new Texture("Tools/36_Backpack.png");
 
     private GameAssetManager() {
