@@ -7,18 +7,23 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.GameController;
+import io.github.StardewValley.controllers.GameMenuController;
 import io.github.StardewValley.controllers.MapViewController;
+import io.github.StardewValley.controllers.TalkController;
 import io.github.StardewValley.display;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
     private final GameController controller;
+    private final GameMenuController menuController;
 
 
-    public GameView(GameController controller) {
+    public GameView(GameController controller, GameMenuController menuController) {
         this.controller = controller;
+        this.menuController = menuController;
 //        display.run(1,1,300);
         this.controller.setView(this);
     }
@@ -41,6 +46,11 @@ public class GameView implements Screen, InputProcessor {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
             Main.getMain().setScreen(new MapView(new MapViewController(), this));
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+            Main.getMain().getScreen().dispose();
+            ScreenUtils.clear(0, 0, 0, 1);
+            Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManager.getGameAssetManager().getSkin(), this));
         }
         //TODO handle input key
 
@@ -126,5 +136,9 @@ public class GameView implements Screen, InputProcessor {
 
     public GameController getController() {
         return controller;
+    }
+
+    public GameMenuController getMenuController() {
+        return menuController;
     }
 }
