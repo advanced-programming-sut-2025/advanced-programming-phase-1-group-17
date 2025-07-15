@@ -1884,19 +1884,15 @@ public class GameMenuController {
         return new Result(false, "there isn't player in this game with this username");
     }
 
-    public Result talkHistory(String username) {
-        if (App.getUserWithUsername(username) == null) {
-            return new Result(false, "there isn't player in this game with this username");
-        }
+    public String talkHistory(String username) {
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
                 if (App.getCurrentGame().getCurrentPlayingPlayer().getTalk().get(player) != null) {
-                    return new Result(true,
-                        App.getCurrentGame().getCurrentPlayingPlayer().getTalk().get(player).getTalk());
+                    return App.getCurrentGame().getCurrentPlayingPlayer().getTalk().get(player).getTalk();
                 }
             }
         }
-        return new Result(false, "there isn't player in this game with this username");
+        return  "";
     }
 
     public Result gift(String username, String item, String amount) {
