@@ -74,11 +74,11 @@ public class Player {
     private Tool trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Basic, null);
     private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic, null);
     private Tool currentTool;
+    private BackPackableType equippedItem;
 
     private int vegetableFarmed = 0;
     private ArrayList<Food> foods = new ArrayList<>();
     private HashSet<Recipe> recipes = new HashSet<>();
-    private ArrayList<Friends> friends = new ArrayList<>();
     private Ability abilities = new Ability(this);
     private HashSet<CraftingRecipe> craftingRecipes = new HashSet<>();
 
@@ -541,5 +541,13 @@ public class Player {
                 break;
         }
         Main.getBatch().draw(currentFrame, x, y, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+    }
+
+    public BackPackableType getEquippedItem() {
+        return equippedItem;
+    }
+
+    public void setEquippedItem(BackPackableType equippedItem) {
+        this.equippedItem = equippedItem;
     }
 }

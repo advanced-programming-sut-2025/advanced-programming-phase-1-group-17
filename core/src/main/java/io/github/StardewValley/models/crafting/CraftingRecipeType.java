@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.crafting;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum CraftingRecipeType implements BackPackableType {
@@ -28,5 +29,11 @@ public enum CraftingRecipeType implements BackPackableType {
     @Override
     public String getName() {
         return name();
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        //TODO
+        return null;
     }
 }

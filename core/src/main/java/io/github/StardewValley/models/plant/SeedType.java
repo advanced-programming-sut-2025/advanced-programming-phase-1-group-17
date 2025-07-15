@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum SeedType implements BackPackableType {
@@ -74,5 +75,10 @@ public enum SeedType implements BackPackableType {
 
     public String getTexturePath() {
         return texturePath;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return CropAssetManager.getCropAssetManager().getSeedTexture(this);
     }
 }

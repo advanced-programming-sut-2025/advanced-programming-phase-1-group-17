@@ -1,5 +1,7 @@
 package io.github.StardewValley.models.enums;
 
+import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum BackPackType implements BackPackableType {
@@ -9,6 +11,7 @@ public enum BackPackType implements BackPackableType {
 
     private final int capacity;
     private final double price;
+
 
     BackPackType(int capacity, double price) {
         this.capacity = capacity;
@@ -26,5 +29,10 @@ public enum BackPackType implements BackPackableType {
     @Override
     public String getName() {
         return name();
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return GameAssetManager.getGameAssetManager().getBackPackTexture();
     }
 }

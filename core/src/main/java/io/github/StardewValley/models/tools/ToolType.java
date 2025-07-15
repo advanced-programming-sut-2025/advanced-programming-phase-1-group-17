@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.tools;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum ToolType implements BackPackableType  {
@@ -43,5 +44,11 @@ public enum ToolType implements BackPackableType  {
 
     public int[] getEnergyCosts() {
         return energyCosts;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        //TODO
+        return null;
     }
 }

@@ -1,8 +1,9 @@
 package io.github.StardewValley.models.foraging;
 
-import io.github.StardewValley.models.BackPackable;
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.enums.Season;
+import io.github.StardewValley.models.plant.CropAssetManager;
 import io.github.StardewValley.models.plant.CropType;
 
 import java.util.ArrayList;
@@ -74,5 +75,10 @@ public enum ForagingCropType implements BackPackableType {
     @Override
     public String getName() {
         return name();
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return CropAssetManager.getCropAssetManager().getInventoryTexture(cropType);
     }
 }

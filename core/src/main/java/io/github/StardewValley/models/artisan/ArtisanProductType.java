@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.artisan;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.NormalItemType;
 import io.github.StardewValley.models.crafting.CraftingItemType;
@@ -20,16 +21,16 @@ public enum ArtisanProductType implements BackPackableType {
     Cloth("Cloth", -1, 0, 4, mapOf(entry(AnimalProductType.Wool, 1)),
         470, CraftingItemType.Loom),
 
-    GoatCheese("Goat Cheese",  100, 0, 3,
+    Goat_Cheese("Goat Cheese",  100, 0, 3,
         mapOf(entry(IngredientGroup.GoatMilkOrLargeGoatMilk, 1)), 400, CraftingItemType.CheesePress),
 
     Mayonnaise("Mayonnaise", 50, 0, 3,
         mapOf(entry(IngredientGroup.EggOrLargeEgg, 1)), 190, CraftingItemType.MayonnaiseMachine),
 
-    DyckMayonnaise("Duck Mayonnaise", 75, 0, 3,
+    Duck_Mayonnaise("Duck Mayonnaise", 75, 0, 3,
         mapOf(entry(AnimalProductType.DuckEgg, 1)), 375, CraftingItemType.MayonnaiseMachine),
 
-    DinosaurMayonnaise("Dinosaur Mayonnaise", 125, 0, 3,
+    Dinosaur_Mayonnaise("Dinosaur Mayonnaise", 125, 0, 3,
         mapOf(entry(AnimalProductType.DinosaurEgg, 1)), 800, CraftingItemType.MayonnaiseMachine),
 
     Beer("Beer", 50, 1, 0,
@@ -44,7 +45,7 @@ public enum ArtisanProductType implements BackPackableType {
     Mead("Mead", 100, 0, 10,
         mapOf(entry(Honey, 1)), 300, CraftingItemType.Keg),
 
-    PaleAle("Pale Ale", 50, 3, 0,
+    Pale_Ale("Pale Ale", 50, 3, 0,
         mapOf(entry(io.github.StardewValley.models.plant.CropType.Hops, 1)), 300, CraftingItemType.Keg),
 
     Wine("Wine", 0, 7, 0,
@@ -56,7 +57,7 @@ public enum ArtisanProductType implements BackPackableType {
     Oil("Oil", 13, 2, 0,
         mapOf(entry(io.github.StardewValley.models.plant.CropType.Corn, 1)), 100, CraftingItemType.OilMaker),
 
-    TruffleOil("Truffle Oil", 38, 0, 6,
+    Truffle_Oil("Truffle Oil", 38, 0, 6,
         mapOf(entry(AnimalProductType.Truffle, 1)), 1065, CraftingItemType.OilMaker),
 
     Juice("Juice",0, 4, 0,
@@ -68,10 +69,10 @@ public enum ArtisanProductType implements BackPackableType {
     Jelly("Jelly",0, 3, 0,
         mapOf(entry(IngredientGroup.AnyFruit, 1)), 0, CraftingItemType.PreservesJar), // dynamic price
 
-    DriedFruit("Dried Fruit",75, 0, 0,
+    Dried_Fruit("Dried Fruit",75, 0, 0,
         mapOf(entry(IngredientGroup.AnyFruit, 1)), 0, CraftingItemType.Dehydrator), // dynamic price
 
-    DriedMushrooms("Dried Mushrooms",50, 0, 0,
+    Dried_Mushrooms("Dried Mushrooms",50, 0, 0,
         mapOf(entry(IngredientGroup.AnyMushroom, 1)), 0, CraftingItemType.Dehydrator), // dynamic price
 
     Raisins("Raisins",125, 0, 0,
@@ -162,5 +163,10 @@ public enum ArtisanProductType implements BackPackableType {
 
     private static Map<Object, Integer> mapOf() {
         return Collections.emptyMap();
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return ArtisanAssetManager.getArtisanAssetManager().getTexture(this);
     }
 }
