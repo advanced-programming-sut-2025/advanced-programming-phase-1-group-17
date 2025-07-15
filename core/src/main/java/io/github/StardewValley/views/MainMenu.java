@@ -37,7 +37,6 @@ public class MainMenu implements AppMenu , Screen {
     private Label error;
     public Table table;
     public Table buttons;
-
     public MainMenu(MainMenuController mainMenuController, Skin skin) {
 
         this.controller = mainMenuController;
@@ -74,6 +73,8 @@ public class MainMenu implements AppMenu , Screen {
         buttons.row().pad(10, 0, 10, 0);
         stage.addActor(table);
         stage.addActor(buttons);
+
+
 
     }
 

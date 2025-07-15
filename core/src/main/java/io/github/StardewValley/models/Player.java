@@ -27,6 +27,7 @@ public class Player {
     private float speed = 200f;
     private transient Texture texture;
     private transient Texture backgroundTexture;
+    private int coin = 550;
 
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
@@ -444,5 +445,13 @@ public class Player {
 
     public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
         batch.draw(texture, x, y);
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
     }
 }
