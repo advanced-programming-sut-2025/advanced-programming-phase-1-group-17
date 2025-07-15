@@ -82,8 +82,8 @@ public class InventoryController {
     }
 
     public void handleMap() {
-        Main.getMain().getScreen().dispose();
-        Main.getMain().setScreen(new MapView(new MapController(),
-            GameAssetManager.getGameAssetManager().getSkin(), view.getPlayer(), view.getGameView()));
+//        Main.getMain().getScreen().dispose();
+//        Main.getMain().setScreen(new MapView(new MapController(),
+//            GameAssetManager.getGameAssetManager().getSkin(), view.getPlayer(), view.getGameView()));
     }
 }

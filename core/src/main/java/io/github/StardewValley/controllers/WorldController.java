@@ -55,22 +55,21 @@ public class WorldController {
                     continue;
                 Tile tile = Tile.getTile(x + 1, y + 1);
                 Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-
                 if (tile.getPlaceable() == null)
                     continue;
-                //TODO: will be deleted
+                    //TODO: will be deleted
                 else if (tile.getPlaceable().getTexture() == null)
                     continue;
                 else if (tile.getPlaceable() instanceof Fence)
-                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight,80,80);
+                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, 80, 80);
                 else if (tile.getPlaceable() instanceof Hut)
-                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight,120,120);
+                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, 120, 120);
                 else
                     printTileTexture(tile);
+
             }
         }
-
-
+    }
 
 
 //        for (Tile tile : tiles) {
@@ -205,14 +204,13 @@ public class WorldController {
 ////                    System.out.print(BOLD + YELLOW + "F" + RESET);
 //            } else {
 //                if (tile.getPlaceable() instanceof Seed) {
-////                    System.out.print(BOLD + GREEN + "S" + RESET);
+
+    /// /                    System.out.print(BOLD + GREEN + "S" + RESET);
 //                } else {
 //                    System.out.print(" ");
 //                }
 //            }
 //        }
-
-
     public void printTileTexture(Tile tile) {
         Placeable placeable = tile.getPlaceable();
 
@@ -227,7 +225,7 @@ public class WorldController {
                 firstGreenHouseTile = tile;
                 TextureRegion textureRegion = new TextureRegion(tile.getPlaceable().getTexture());
                 Main.getBatch().draw(textureRegion, tile.getX() * tileWidth, tile.getY() * tileHeight,
-                        ((GreenHouse) placeable).getWidth() * tileWidth, ((GreenHouse) placeable).getHeight() * tileHeight);
+                    ((GreenHouse) placeable).getWidth() * tileWidth, ((GreenHouse) placeable).getHeight() * tileHeight);
             }
             return;
         }
