@@ -1,9 +1,10 @@
 package io.github.StardewValley.models.enums;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum FishType implements BackPackableType {
-    // Regular Fish
+    // Regular Fishreturn null;
     Salmon(75, Season.Fall, false),
     Sardine(40, Season.Fall, false),
     Shad(60, Season.Fall, false),
@@ -57,5 +58,11 @@ public enum FishType implements BackPackableType {
 
     public double getEnergy() {
         return 0;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        //TODO
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.enums.Season;
@@ -196,7 +197,7 @@ public enum CropType implements BackPackableType {
     private final List<Season> seasons;
     private final boolean canBecomeGiant;
     private final String[] stageTextureAddresses;
-    private final String harvestedCropAddress;
+    private final String inventoryTexturePath;
 
     CropType(SeedType Source, List<Integer> stages, int totalHarvestTime, boolean oneTime, int regrowthTime,
              double baseSellPrice, boolean isEdible, int energy, List<Season> season, boolean canBecomeGiant,
@@ -212,7 +213,7 @@ public enum CropType implements BackPackableType {
         this.seasons = season;
         this.canBecomeGiant = canBecomeGiant;
         this.stageTextureAddresses = stageTextureAddresses;
-        this.harvestedCropAddress = harvestedCropAddress;
+        this.inventoryTexturePath = harvestedCropAddress;
     }
 
     public static CropType getCropTypeBySeedType(SeedType seedType) {
@@ -294,12 +295,17 @@ public enum CropType implements BackPackableType {
         return null;
     }
 
-    public String[] getStageTextureAddresses() {
+    public String[] getStageTexturePaths() {
         return stageTextureAddresses;
     }
 
 
-    public String getHarvestedCropTextureAddress() {
-        return harvestedCropAddress;
+    @Override
+    public Texture getInventoryTexture() {
+        return CropAssetManager.getCropAssetManager().getInventoryTexture(this);
+    }
+
+    public String getInventoryTexturePath() {
+        return inventoryTexturePath;
     }
 }

@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.plant;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum SaplingType implements BackPackableType {
@@ -34,5 +35,10 @@ public enum SaplingType implements BackPackableType {
     @Override
     public String getName() {
         return name();
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return TreeAssetManager.getTreeAssetManager().getInventoryTexture(this);
     }
 }

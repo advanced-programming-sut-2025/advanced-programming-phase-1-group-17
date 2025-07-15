@@ -34,6 +34,6 @@ public class Mineral implements BackPackable, Placeable {
 
     @Override
     public Texture getTexture() {
-        return null;
+        return MineralAssetManager.getMineralAssetManager().getTexture(type);
     }
 }

@@ -1,13 +1,16 @@
 package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.Game;
-import io.github.StardewValley.models.GameSave;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.PlayerController;
 import io.github.StardewValley.views.GameView;
+import io.github.StardewValley.views.InventoryView;
+import io.github.StardewValley.views.MapView;
 
 public class GameController {
     public GameView view;
@@ -94,7 +97,13 @@ public class GameController {
             case com.badlogic.gdx.Input.Keys.D:
                 rightPressed = pressed;
                 break;
-
+            case Input.Keys.ESCAPE:
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new InventoryView(new InventoryController(),
+                    GameAssetManager.getGameAssetManager().getSkin(),
+                    game.getCurrentPlayingPlayer(),
+                    view));
+                break;
         }
     }
 

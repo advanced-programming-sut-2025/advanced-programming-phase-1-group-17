@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.crafting;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.artisan.ArtisanProductType;
 
@@ -67,5 +68,11 @@ public enum CraftingItemType implements BackPackableType {
                 e -> e.getKey().get(),
                 Map.Entry::getValue
             ));
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        //TODO
+        return null;
     }
 }
