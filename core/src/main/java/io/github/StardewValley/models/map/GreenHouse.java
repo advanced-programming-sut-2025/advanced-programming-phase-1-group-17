@@ -13,13 +13,17 @@ public class GreenHouse implements Placeable {
     private GreenHouseFence fence;
     private int width;
     private int height;
+    private int starting_x;
+    private int starting_y;
 
 
-    public GreenHouse(Player player, int width, int height) {
+    public GreenHouse(Player player, int width, int height, int starting_x, int starting_y) {
         this.fence = new GreenHouseFence();
         this.isActive = false;
         this.width = width;
         this.height = height;
+        this.starting_x = starting_x;
+        this.starting_y = starting_y;
         App.getCurrentGame().addGreenHouses(this);
     }
 
@@ -50,5 +54,13 @@ public class GreenHouse implements Placeable {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getStarting_x() {
+        return starting_x;
+    }
+
+    public int getStarting_y() {
+        return starting_y;
     }
 }
