@@ -4,6 +4,7 @@ import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NormalItem;
 import io.github.StardewValley.models.NormalItemType;
 import io.github.StardewValley.models.enums.Season;
+import io.github.StardewValley.models.map.Farm;
 import io.github.StardewValley.models.tools.ToolMaterial;
 import io.github.StardewValley.models.map.PlayerMap;
 import io.github.StardewValley.models.map.Quarry;
@@ -25,7 +26,7 @@ public abstract class ForagingController {
                     continue;
                 }
 
-                if (tile.getPlaceable() != null)
+                if (!(tile.getPlaceable() instanceof Farm))
                     continue;
                 int randInt = random.nextInt(100) + 1;
 
@@ -78,7 +79,7 @@ public abstract class ForagingController {
             return mineralType.equals(MineralType.CopperOre);
         } else if (toolMaterial.equals(ToolMaterial.Copper)) {
             return mineralType.equals(MineralType.IronOre) || mineralType.equals(MineralType.CopperOre);
-        } else if (toolMaterial.equals(ToolMaterial.Iron)) {
+        } else if (toolMaterial.equals(ToolMaterial.Steel)) {
             return !mineralType.equals(MineralType.IridiumOre);
         }
         return true;

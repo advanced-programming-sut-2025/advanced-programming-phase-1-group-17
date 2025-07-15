@@ -27,7 +27,7 @@ public class Tool implements BackPackable {
                 wateringCanStorage = 40;
             else if (material.equals(ToolMaterial.Copper))
                 wateringCanStorage = 55;
-            else if (material.equals(ToolMaterial.Iron))
+            else if (material.equals(ToolMaterial.Steel))
                 wateringCanStorage = 70;
             else if (material.equals(ToolMaterial.Gold))
                 wateringCanStorage = 85;
@@ -85,7 +85,7 @@ public class Tool implements BackPackable {
                 return 0;
             else if (material.equals(ToolMaterial.Copper))
                 return 15;
-            else if (material.equals(ToolMaterial.Iron))
+            else if (material.equals(ToolMaterial.Steel))
                 return 30;
             else if (material.equals(ToolMaterial.Gold))
                 return 45;

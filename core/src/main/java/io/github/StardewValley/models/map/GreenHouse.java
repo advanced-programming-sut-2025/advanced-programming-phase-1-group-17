@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class GreenHouse implements Placeable {
     //TODO: handle sprinkler
-    private static ArrayList<GreenHouse> greenHouse = new ArrayList<GreenHouse>();
     private boolean isActive;
     private GreenHouseFence fence;
     private int width;
@@ -19,18 +18,9 @@ public class GreenHouse implements Placeable {
     public GreenHouse(Player player, int width, int height) {
         this.fence = new GreenHouseFence();
         this.isActive = false;
-        greenHouse.add(this);
         this.width = width;
         this.height = height;
         App.getCurrentGame().addGreenHouses(this);
-    }
-
-    public static ArrayList<GreenHouse> getGreenHouse() {
-        return greenHouse;
-    }
-
-    public static void setGreenHouse(ArrayList<GreenHouse> greenHouse) {
-        GreenHouse.greenHouse = greenHouse;
     }
 
     public GreenHouseFence getFence() {
