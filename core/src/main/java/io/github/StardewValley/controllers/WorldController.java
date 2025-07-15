@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.NPCS.*;
-import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.map.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class WorldController {
     private final OrthographicCamera camera;
@@ -18,6 +19,10 @@ public class WorldController {
     private int tileHeight;
     Tile greenHouseLeftCorner = null;
     Tile firstGreenHouseTile = null;
+
+    private final Set<Texture> bigTextures = new HashSet<>() {{
+        GameAssetManager.getGameAssetManager().getGreenHouseTexture();
+    }};
 
     public WorldController(OrthographicCamera camera) {
         this.camera = camera;
@@ -49,6 +54,17 @@ public class WorldController {
                     continue;
                 Tile tile = Tile.getTile(x + 1, y + 1);
                 Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+            }
+        }
+
+        drawBigTextures();
+
+        for (int y = minTileY - 1; y < maxTileY; y++) {
+            for (int x = minTileX - 1; x < maxTileX; x++) {
+                if (x < -2 || y < -2 || x > 300 || y > 300)
+                    continue;
+                Tile tile = Tile.getTile(x + 1, y + 1);
+
                 if (tile.getPlaceable() == null)
                     continue;
                     //TODO: will be deleted
@@ -63,6 +79,16 @@ public class WorldController {
 
             }
         }
+    }
+
+    private void drawBigTextures() {
+        for (GreenHouse greenHouse : App.getCurrentGame().getGreenHouses()) {
+            Main.getBatch().draw(
+                GameAssetManager.getGameAssetManager().getGreenHouseTexture(),
+                greenHouse.getStarting_x() * tileWidth, greenHouse.getStarting_y() * tileHeight,
+                greenHouse.getWidth() * tileWidth, greenHouse.getHeight() * tileHeight);
+        }
+
     }
 
 

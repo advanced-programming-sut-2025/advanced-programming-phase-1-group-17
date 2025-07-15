@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.models.enums.BackPackType;
 import io.github.StardewValley.models.tools.ToolType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +25,10 @@ public class GameAssetManager {
     //For backpack and Tools
     private final Texture backPackTexture = new Texture("Tools/36_Backpack.png");
 
-    private GameAssetManager() {
+    private final ArrayList<Texture> storeTextures = new ArrayList<>();
 
+    private GameAssetManager() {
+        loadStoreTextures();
     }
 
     public static GameAssetManager getGameAssetManager() {
@@ -67,5 +70,11 @@ public class GameAssetManager {
     }
     public String getFenceTexture2() {
         return "Fence/Hardwood_Fence.png";
+    }
+
+    private void loadStoreTextures() {
+        storeTextures.add(new Texture("sprites/Pierres General Store.png"));
+        storeTextures.add(new Texture("sprites/JojaMart.png"));
+        storeTextures.add(new Texture("sprites/The Stardrop Saloon.png"));
     }
 }
