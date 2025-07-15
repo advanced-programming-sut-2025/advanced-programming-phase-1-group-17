@@ -91,6 +91,7 @@ public class Game {
             player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.Furnace));
             player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.Scarecrow));
             player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MayonnaiseMachine));
+
         }
     }
 
