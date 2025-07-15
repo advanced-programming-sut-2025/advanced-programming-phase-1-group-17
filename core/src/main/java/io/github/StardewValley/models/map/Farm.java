@@ -11,7 +11,6 @@ public class Farm implements Placeable {
     private GreenHouse greenHouse;
     private ArrayList<Lake> lakes = new ArrayList<>();
     private Quarry quarries = new Quarry();
-    private Hut hut = new Hut(new Texture("Huts/Hut1.png"));
     public void randomFill(){}
     private ArrayList<AnimalPlace> animalPlaces = new ArrayList<>();
     private ArrayList<Animal> animals=new ArrayList<>();
@@ -41,13 +40,6 @@ public class Farm implements Placeable {
         this.quarries = quarrie;
     }
 
-    public Hut getHut() {
-        return hut;
-    }
-
-    public void setHut(Hut hut) {
-        this.hut = hut;
-    }
 
     public ArrayList<AnimalPlace> getAnimalPlaces() {
         return animalPlaces;

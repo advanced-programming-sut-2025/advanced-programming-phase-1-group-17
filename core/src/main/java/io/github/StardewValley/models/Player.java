@@ -27,7 +27,7 @@ public class Player {
     private int x;
     private int y;
     private Buff buff;
-    private float speed = 500f;
+    private float speed = 2000f;
     private transient Texture texture;
     private transient Texture backgroundTexture;
     private Animation<TextureRegion> walkUpAnimation;

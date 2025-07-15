@@ -16,6 +16,19 @@ public class Abigail extends NPC implements Placeable {
     private String job = "Miner";
     private final HashMap<String, String> dialogue = new HashMap<>();
     private final HashMap<String, String> dialogue2 = new HashMap<>();
+    private Texture texture1 = new Texture("Abigail.png");
+    private Texture texture2 = new Texture("hut2.png");
+    //TODO
+
+    public Abigail(boolean isAbigail){
+        isNPC = isAbigail;
+    }
+    public Abigail(boolean isAbigail, int x, int y){
+        x_start = x;
+        y_start = y;
+        isNPC = isAbigail;
+    }
+
 
     {
         dialogue.put("what's your name?", "Abigail");
@@ -114,7 +127,10 @@ public class Abigail extends NPC implements Placeable {
 
     @Override
     public Texture getTexture() {
-        //TODO
-        return null;
+        if (isNPC)
+            return texture1;
+        else
+            return texture2;
     }
+
 }

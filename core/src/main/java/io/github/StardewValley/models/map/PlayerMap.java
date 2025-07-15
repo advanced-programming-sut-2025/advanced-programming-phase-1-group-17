@@ -168,24 +168,39 @@ public class PlayerMap {
             this.player = owner;
             owner.setPlayerMap(this);
 
-            Abigail abigail = (Abigail) App.getCurrentGame().getNPCs().get(0);
-            Harvey harvey = (Harvey) App.getCurrentGame().getNPCs().get(1);
-            Lia lia = (Lia) App.getCurrentGame().getNPCs().get(2);
-            Robin robin = (Robin) App.getCurrentGame().getNPCs().get(3);
-            Sebastian sebastian = (Sebastian) App.getCurrentGame().getNPCs().get(4);
+            Abigail abigail2 = (Abigail) App.getCurrentGame().getNPCs().get(0);
+            Harvey harvey2 = (Harvey) App.getCurrentGame().getNPCs().get(1);
+            Lia lia2 = (Lia) App.getCurrentGame().getNPCs().get(2);
+            Robin robin2 = (Robin) App.getCurrentGame().getNPCs().get(3);
+            Sebastian sebastian2 = (Sebastian) App.getCurrentGame().getNPCs().get(4);
+            Abigail abigail = new Abigail(false,145,102);
+            Harvey harvey = new Harvey(false,145,122);
+            Lia lia = new Lia(false,145,142);
+            Robin robin = new Robin(false,145,162);
+            Sebastian sebastian = new Sebastian(false,145,182);
+            App.getCurrentGame().getNPCHuts().add(abigail);
+            App.getCurrentGame().getNPCHuts().add(harvey);
+            App.getCurrentGame().getNPCHuts().add(lia);
+            App.getCurrentGame().getNPCHuts().add(robin);
+            App.getCurrentGame().getNPCHuts().add(sebastian);
             for (int k = 0; k < 81; k += 20) {
-                for (int i = 145; i <= 155; i++) {
-                    for (int j = 102 + k; j <= 111 + k; j++) {
+                for (int i = 145; i <= 149; i++) {
+                    for (int j = 102 + k; j <= 106 + k; j++) {
                         if (k == 0) {
                             Tile.getTile(i, j).setPlaceable(abigail);
+                            Tile.getTile(i,j).setWalkAble(false);
                         } else if (k == 20) {
                             Tile.getTile(i, j).setPlaceable(harvey);
+                            Tile.getTile(i,j).setWalkAble(false);
                         } else if (k == 40) {
                             Tile.getTile(i, j).setPlaceable(lia);
+                            Tile.getTile(i,j).setWalkAble(false);
                         } else if (k == 60) {
                             Tile.getTile(i, j).setPlaceable(robin);
+                            Tile.getTile(i,j).setWalkAble(false);
                         } else {
                             Tile.getTile(i, j).setPlaceable(sebastian);
+                            Tile.getTile(i,j).setWalkAble(false);
                         }
                     }
                 }
@@ -197,34 +212,39 @@ public class PlayerMap {
                         if (Tile.getTile(i, j).getPlaceable() == null && Tile.getTile(i, j).getWhoIsHere() == null
                             && Tile.getTile(i, j).isWalkAble()) {
                             if (k == 0) {
-                                abigail.setX(i);
-                                abigail.setY(j);
-                                Tile.getTile(i, j).setPlaceable(abigail);
-                                Tile.getTile(i, j).setNpcIsHere(abigail);
+                                abigail2.setX(i);
+                                abigail2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(abigail2);
+                                Tile.getTile(i, j).setNpcIsHere(abigail2);
                                 continue out;
                             } else if (k == 20) {
-                                harvey.setX(i);
-                                harvey.setY(j);
-                                Tile.getTile(i, j).setPlaceable(harvey);
-                                Tile.getTile(i, j).setNpcIsHere(harvey);
+                                harvey2.setX(i);
+                                harvey2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(harvey2);
+                                Tile.getTile(i, j).setNpcIsHere(harvey2);
                                 continue out;
                             } else if (k == 40) {
-                                lia.setX(i);
-                                lia.setY(j);
-                                Tile.getTile(i, j).setPlaceable(lia);
-                                Tile.getTile(i, j).setNpcIsHere(lia);
+                                lia2.setX(i);
+                                lia2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(lia2);
+                                Tile.getTile(i, j).setNpcIsHere(lia2);
                                 continue out;
                             } else if (k == 60) {
-                                robin.setX(i);
-                                robin.setY(j);
-                                Tile.getTile(i, j).setPlaceable(robin);
-                                Tile.getTile(i, j).setNpcIsHere(robin);
+                                robin2.setX(i);
+                                robin2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(robin2);
+                                Tile.getTile(i, j).setNpcIsHere(robin2);
                                 continue out;
                             } else {
-                                sebastian.setX(i);
-                                sebastian.setY(j);
-                                Tile.getTile(i, j).setPlaceable(sebastian);
-                                Tile.getTile(i, j).setNpcIsHere(sebastian);
+                                sebastian2.setX(i);
+                                sebastian2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(sebastian2);
+                                Tile.getTile(i, j).setNpcIsHere(sebastian2);
                                 continue out;
                             }
                         }
@@ -446,15 +466,18 @@ public class PlayerMap {
 
     public void setMapType(int type) {
         if (type == 1) {
-            this.hut = new Hut(new Texture("Huts/Hut3.png"));
+            this.hut = new Hut(new Texture("hut.png"),4 + row , 4 + col);
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
             this.greenHouse = new GreenHouse(this.player, 5, 8);
             this.x_start = 4 + row;
             this.y_start = 4 + col;
-            Tile.getTile(4 + row, 4 + col).setPlaceable(hut);
-            Tile.getTile(4 + row, 4 + col).setWalkAble(false);
-
+            for (int x = 0; x < 4; x++) {
+                for (int y = 0; y < 4; y++) {
+                    Tile.getTile(4 + row + x, 4 + col + y).setPlaceable(hut);
+                    Tile.getTile(4 + row + x, 4 + col + y).setWalkAble(false);
+                }
+            }
             for (int i = 1 + row; i < 12 + row; i++) {
                 for (int j = 20 + col; j < 31 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(quarry);
@@ -484,15 +507,19 @@ public class PlayerMap {
                 }
             }
         } else if (type == 2) {
-            this.hut = new Hut(new Texture("Huts/Hut4.png"));
+            this.hut = new Hut(new Texture("hut.png"),40 + row , 40 + col);
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
             this.greenHouse = new GreenHouse(this.player, 5, 8);
             this.quarry = new Quarry();
             this.x_start = 40 + row;
             this.y_start = 40 + col;
-            Tile.getTile(40 + row, 40 + col).setPlaceable(hut);
-            Tile.getTile(40 + row, 40 + col).setWalkAble(false);
+            for (int x = 0; x < 4; x++) {
+                for (int y = 0; y < 4; y++) {
+                    Tile.getTile(40 + row + x, 40 + col + y).setPlaceable(hut);
+                    Tile.getTile(40 + row + x, 40 + col + y).setWalkAble(false);
+                }
+            }
             for (int i = 25 + row; i < 31 + row; i++) {
                 for (int j = 35 + col; j < 41 + col; j++) {
                     Tile.getTile(i, j).setPlaceable(quarry);

@@ -24,6 +24,7 @@ public class Game {
     private ArrayList<NPC> NPCs = new ArrayList<>();
     private StoreManager storeManager = new StoreManager();
     private ArrayList<GreenHouse>GreenHouses = new ArrayList<>();
+    private ArrayList<NPC> NPCHuts = new ArrayList<>();
 
 
     public Game(User user1, User user2, User user3) {
@@ -35,11 +36,11 @@ public class Game {
         players.add(new Player(user1, user1.getUsername().startsWith("guest")));
         players.add(new Player(user2, user2.getUsername().startsWith("guest")));
         players.add(new Player(user3, user3.getUsername().startsWith("guest")));
-        addNPCs(new Abigail());
-        addNPCs(new Harvey());
-        addNPCs(new Lia());
-        addNPCs(new Robin());
-        addNPCs(new Sebastian());
+        addNPCs(new Abigail(true));
+        addNPCs(new Harvey(true));
+        addNPCs(new Lia(true));
+        addNPCs(new Robin(true));
+        addNPCs(new Sebastian(true));
         for (Player player : players) {
             for (NPC npc : NPCs) {
                 player.setFriendShipsWithNPCs(npc);
@@ -169,6 +170,12 @@ public class Game {
     public ArrayList<NPC> getNPCs() {
         return NPCs;
     }
+    public ArrayList<NPC> getNPCHuts(){
+        return NPCHuts;
+    }
+    public void setNPCs(ArrayList<NPC> npcs) {
+        NPCHuts = npcs;
+    }
 
     public void addNPCs(NPC npc) {
         this.NPCs.add(npc);
@@ -193,6 +200,7 @@ public class Game {
     public ArrayList<PlayerController> getPlayerControllers() {
         return playerControllers;
     }
+
 
 
 }

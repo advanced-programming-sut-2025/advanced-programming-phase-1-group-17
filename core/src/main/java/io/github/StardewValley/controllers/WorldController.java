@@ -48,26 +48,42 @@ public class WorldController {
         int maxTileX = Math.min((int) (camRight / tileWidth) + 1, 300);
         int minTileY = Math.max((int) (camBottom / tileHeight), 0);
         int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 300);
-
-        for (int y = minTileY - 1; y < maxTileY; y++) {
-            for (int x = minTileX - 1; x < maxTileX; x++) {
-                if (x < -2 || y < -2 || x > 300 || y > 300)
-                    continue;
-                Tile tile = Tile.getTile(x + 1, y + 1);
-                Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-                if (tile.getPlaceable() == null)
-                    continue;
-                    //TODO: will be deleted
-                else if (tile.getPlaceable().getTexture() == null)
-                    continue;
-                else if (tile.getPlaceable() instanceof Fence)
-                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, 80, 80);
-                else if (tile.getPlaceable() instanceof Hut)
-                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, 120, 120);
-                else
-                    printTileTexture(tile);
+        for (int x = minTileX - 1; x < maxTileX; x++) {
+            for (int y = minTileY - 1; y < maxTileY; y++) {
+                try {
+                    if (x < -2 || y < -2 || x > 300 || y > 300)
+                        continue;
+                    Tile tile = Tile.getTile(x + 1, y + 1);
+                    Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+                    if (tile.getPlaceable() == null)
+                        continue;
+                        //TODO: will be deleted
+                    else if (tile.getPlaceable().getTexture() == null)
+                        continue;
+                    else if (tile.getPlaceable() instanceof Fence)
+                        Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, 80, 80);
+                    else if (tile.getPlaceable() instanceof Hut)
+                        continue;
+                    else if (tile.getPlaceable() instanceof NPC && !((NPC) tile.getPlaceable()).isNPC())
+                        continue;
+                    else if (tile.getPlaceable() instanceof NPC  && ((NPC) tile.getPlaceable()).isNPC())
+                        Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+                    else
+                        printTileTexture(tile);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
+        }
+        for (int i = 0 ; i < 4 ; i++) {
+            Main.getBatch().draw(App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getTexture()
+                ,App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getX() * tileWidth,
+                App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getY() * tileHeight, 400 , 400);
+        }
+        for (int i = 0 ; i < 5 ; i++) {
+            Main.getBatch().draw(App.getCurrentGame().getNPCHuts().get(i).getTexture(),
+                App.getCurrentGame().getNPCHuts().get(i).x_start * tileWidth, App.getCurrentGame().getNPCHuts().get(i).y_start * tileHeight, 500 , 500);
         }
     }
 
@@ -218,8 +234,9 @@ public class WorldController {
             if (greenHouseLeftCorner == null)
                 greenHouseLeftCorner = tile;
             return;
-        } else if (placeable instanceof Lake)
-            return;
+        }
+//        } else if (placeable instanceof Lake)
+//            return;
         else if (placeable instanceof GreenHouse) {
             if (firstGreenHouseTile == null) {
                 firstGreenHouseTile = tile;
