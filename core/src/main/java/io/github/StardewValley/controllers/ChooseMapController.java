@@ -45,7 +45,7 @@ public class ChooseMapController {
                     }
                 }else {
                     Main.getMain().getScreen().dispose();
-                    Main.getMain().setScreen(new GameView(new GameController(App.getCurrentGame())));
+                    Main.getMain().setScreen(new GameView(new GameController(App.getCurrentGame()),new GameMenuController()));
                 }
             }
         });
