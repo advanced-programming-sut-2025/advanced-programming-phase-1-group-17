@@ -76,7 +76,7 @@ public class GameView implements Screen, InputProcessor {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             try {
-                App.getCurrentGame().switchPlayer();
+                App.getCurrentGame().getDate().goToNextDay();
             }catch (Exception e){
                 e.printStackTrace();
             }

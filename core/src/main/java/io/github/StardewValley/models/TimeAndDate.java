@@ -61,8 +61,8 @@ public class TimeAndDate {
     public void goToNextDay() {
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals("NPC")) continue;
-            player.setX(player.getPlayerMap().getX_start());
-            player.setY(player.getPlayerMap().getY_start());
+            player.setX(player.getPlayerMap().getX_start() - 1);
+            player.setY(player.getPlayerMap().getY_start() - 1);
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
             player.setEnergy(player.getMaxEnergy());
