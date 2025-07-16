@@ -17,6 +17,7 @@ public class User {
     private double theMostMoneyInGame;
     private transient Game activeGame;
     private transient Game lastGame;
+    private String avatar = "avatar/avatar7.jpg";
 
     public User() {
         if (this.username == null) {
@@ -136,5 +137,12 @@ public class User {
 
     public void setLastGame(Game lastGame) {
         this.lastGame = lastGame;
+    }
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

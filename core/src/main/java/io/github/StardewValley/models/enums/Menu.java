@@ -10,8 +10,8 @@ import java.util.Scanner;
 public enum Menu {
     //TODO: delete this class
 
-    LoginMenu(new LoginMenu(new LoginMenuController(),GameAssetManager.getGameAssetManager().getSkin())),    ExitMenu(new ExitMenu()),
-    GameMenu(new GameMenu(new GameMenuController(),GameAssetManager.getGameAssetManager().getSkin())),
+    LoginMenu(new LoginMenu(new LoginMenuController(), GameAssetManager.getGameAssetManager().getSkin())), ExitMenu(new ExitMenu()),
+    GameMenu(new GameMenu(new GameMenuController(), GameAssetManager.getGameAssetManager().getSkin())),
     ProfileMenu(new ProfileMenu(new ProfileMenuController(), GameAssetManager.getGameAssetManager().getSkin())),
     AvatarMenu(new AvatarMenu()),
     MainMenu(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin())),
