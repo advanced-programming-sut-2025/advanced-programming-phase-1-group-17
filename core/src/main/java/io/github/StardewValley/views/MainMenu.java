@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -37,7 +38,6 @@ public class MainMenu implements AppMenu , Screen {
     private Label error;
     public Table table;
     public Table buttons;
-
     public MainMenu(MainMenuController mainMenuController, Skin skin) {
 
         this.controller = mainMenuController;
@@ -50,6 +50,7 @@ public class MainMenu implements AppMenu , Screen {
         this.skin = skin;
         this.buttons = new Table().center();
         controller.setView(this);
+
 
 
     }
@@ -74,6 +75,8 @@ public class MainMenu implements AppMenu , Screen {
         buttons.row().pad(10, 0, 10, 0);
         stage.addActor(table);
         stage.addActor(buttons);
+
+
 
     }
 
