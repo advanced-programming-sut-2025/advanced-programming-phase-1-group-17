@@ -3,7 +3,7 @@ package io.github.StardewValley.models.tools;
 public enum ToolMaterial {
     Basic,
     Copper,
-    Iron,
+    Steel,
     Gold,
     Iridium;
 

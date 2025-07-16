@@ -31,121 +31,121 @@ import java.util.Optional;
 
 public class MarketsController {
 
-    public Result showAllProducts() {
-        //check is the player in store
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
-        if (tile.getPlaceable() instanceof Store store) {
-            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-                return new Result(false, "Store is open from %d to %d".formatted(
-                    store.getType().getOpeningHour(), store.getType().getClosingHour()
-                ));
-            return new Result(true, App.getCurrentGame().getStoreManager().showAllProducts(store));
-        }
-        return new Result(false, "You are not in a store");
-    }
+//    public Result showAllProducts() {
+//        //check is the player in store
+//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+//        Tile tile = Tile.getTile(player.getX(), player.getY());
+//        if (tile.getPlaceable() instanceof Store store) {
+//            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
+//                return new Result(false, "Store is open from %d to %d".formatted(
+//                    store.getType().getOpeningHour(), store.getType().getClosingHour()
+//                ));
+//            return new Result(true, App.getCurrentGame().getStoreManager().showAllProducts(store));
+//        }
+//        return new Result(false, "You are not in a store");
+//    }
+//
+//
+//    public Result showAllAvailableProducts() {
+//        //check is the player in store
+//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+//        Tile tile = Tile.getTile(player.getX(), player.getY());
+//        if (tile.getPlaceable() instanceof Store store) {
+//            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
+//                return new Result(false, "Store is open from %d to %d".formatted(
+//                    store.getType().getOpeningHour(), store.getType().getClosingHour()
+//                ));
+//            return new Result(true, App.getCurrentGame().getStoreManager().showAllAvailableProducts(store));
+//        }
+//        return new Result(false, "You are not in a store");
+//    }
 
 
-    public Result showAllAvailableProducts() {
-        //check is the player in store
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
-        if (tile.getPlaceable() instanceof Store store) {
-            if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-                return new Result(false, "Store is open from %d to %d".formatted(
-                    store.getType().getOpeningHour(), store.getType().getClosingHour()
-                ));
-            return new Result(true, App.getCurrentGame().getStoreManager().showAllAvailableProducts(store));
-        }
-        return new Result(false, "You are not in a store");
-    }
-
-
-    public Result purchase(String productName, String count) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        StoreType storeType;
-        if (Tile.getTile(player.getTileX(), player.getTileY()).getPlaceable() instanceof Store store) {
-            storeType = store.getType();
-        } else
-            return new Result(false, "The Player is not in a store");
-
-        if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
-            return new Result(false, "Store is open from %d to %d".formatted(
-                store.getType().getOpeningHour(), store.getType().getClosingHour()
-            ));
-
-        ShopItem product = null;
-        for (ShopItem shopItem : App.getCurrentGame().getStoreManager().getInventory(storeType).getItems()) {
-            if (shopItem.getName().equalsIgnoreCase(productName)) {
-                product = shopItem;
-            }
-        }
-        if (product == null)
-            return new Result(false, "no product with name %s in store %s".formatted(
-                productName, storeType.name()
-            ));
-
-        if (storeType.equals(StoreType.FishShop))
-            if (!App.getCurrentGame().getStoreManager().checkFishingSkill(product))
-                return new Result(false, "You do not have enough fishing skill to buy this item.");
-
-        int count1;
-
-        if (count == null)
-            count1 = 1;
-        else
-            count1 = Integer.parseInt(count);
-
-        int availableCount = product.getDailyLimit() - product.getSoldToday();
-        if (availableCount < count1)
-            return new Result(false, "only %d left today".formatted(availableCount));
-
-        if (!App.getCurrentGame().getStoreManager().hasIngredients(product))
-            return new Result(false, "You do not have enough ingredients to buy this item");
-
-        App.getCurrentGame().getStoreManager().useIngredients(product);
-
-        double price;
-        if (storeType.equals(StoreType.PierresGeneralStore))
-            price = App.getCurrentGame().getStoreManager().getSeasonalPrice(product);
-        else
-            price = product.getPrice();
-
-        price *= count1;
-        if (player.getBackPack().getCoin() < price)
-            return new Result(false, "you have only %.2f dollars left(not enough money)".formatted(
-                player.getBackPack().getCoin()
-            ));
-
-        //purchasing
-        product.setSoldToday(product.getSoldToday() + count1);
-        player.getBackPack().addcoin(-price);
-        if (product.getType().equals(BackPackType.LargeBackPack) || product.getType().equals(BackPackType.DeluxeBackPack))
-            return App.getCurrentGame().getStoreManager().purchaseBackpack(product);
-
-        if (product.getType().getClass().equals(RecipeType.class)) {
-            player.getRecipes().add(new Recipe((FoodType) ((RecipeType) product.getType()).getFoodType()));
-        }else if (product.getType().getClass().equals(CraftingRecipeType.class)) {
-            CraftingRecipeType craftingRecipeType = ((CraftingRecipeType) product.getType());
-            if (craftingRecipeType.equals(CraftingRecipeType.DehydratorRecipe)) {
-                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.Dehydrator));
-            } else if (craftingRecipeType.equals(CraftingRecipeType.FishSmokerRecipe)) {
-                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.FishSmoker));
-            } else if (craftingRecipeType.equals(CraftingRecipeType.GrassStarterRecipe)) {
-                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.GrassStarter));
-            }
-        }else if (product.getType().getClass().equals(ToolType.class)) {
-            //milkpail and shear in marine's ranch
-            player.getBackPack().addItemToInventory(new Tool((ToolType) product.getType(), null,null));
-        } else {
-            for (int i = 0; i < count1; i++) {
-                //player.getBackPack().addItemToInventory(product);
-                player.getBackPack().addItemToInventory((BackPackable) addItem(product.getName()).get(1));
-            }
-        }
-
-        return new Result(false, "purhcased successfully");
-    }
+//    public Result purchase(String productName, String count) {
+//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+//        StoreType storeType;
+//        if (Tile.getTile(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
+//            storeType = store.getType();
+//        } else
+//            return new Result(false, "The Player is not in a store");
+//
+//        if (!App.getCurrentGame().getStoreManager().isStoreOpen(store.getType()))
+//            return new Result(false, "Store is open from %d to %d".formatted(
+//                store.getType().getOpeningHour(), store.getType().getClosingHour()
+//            ));
+//
+//        ShopItem product = null;
+//        for (ShopItem shopItem : App.getCurrentGame().getStoreManager().getInventory(storeType).getItems()) {
+//            if (shopItem.getName().equalsIgnoreCase(productName)) {
+//                product = shopItem;
+//            }
+//        }
+//        if (product == null)
+//            return new Result(false, "no product with name %s in store %s".formatted(
+//                productName, storeType.name()
+//            ));
+//
+//        if (storeType.equals(StoreType.FishShop))
+//            if (!App.getCurrentGame().getStoreManager().checkFishingSkill(product))
+//                return new Result(false, "You do not have enough fishing skill to buy this item.");
+//
+//        int count1;
+//
+//        if (count == null)
+//            count1 = 1;
+//        else
+//            count1 = Integer.parseInt(count);
+//
+//        int availableCount = product.getDailyLimit() - product.getSoldToday();
+//        if (availableCount < count1)
+//            return new Result(false, "only %d left today".formatted(availableCount));
+//
+//        if (!App.getCurrentGame().getStoreManager().hasIngredients(product))
+//            return new Result(false, "You do not have enough ingredients to buy this item");
+//
+//        App.getCurrentGame().getStoreManager().useIngredients(product);
+//
+//        double price;
+//        if (storeType.equals(StoreType.PierresGeneralStore))
+//            price = App.getCurrentGame().getStoreManager().getSeasonalPrice(product);
+//        else
+//            price = product.getPrice();
+//
+//        price *= count1;
+//        if (player.getBackPack().getCoin() < price)
+//            return new Result(false, "you have only %.2f dollars left(not enough money)".formatted(
+//                player.getBackPack().getCoin()
+//            ));
+//
+//        //purchasing
+//        product.setSoldToday(product.getSoldToday() + count1);
+//        player.getBackPack().addcoin(-price);
+//        if (product.getType().equals(BackPackType.LargeBackPack) || product.getType().equals(BackPackType.DeluxeBackPack))
+//            return App.getCurrentGame().getStoreManager().purchaseBackpack(product);
+//
+//        if (product.getType().getClass().equals(RecipeType.class)) {
+//            player.getRecipes().add(new Recipe((FoodType) ((RecipeType) product.getType()).getFoodType()));
+//        }else if (product.getType().getClass().equals(CraftingRecipeType.class)) {
+//            CraftingRecipeType craftingRecipeType = ((CraftingRecipeType) product.getType());
+//            if (craftingRecipeType.equals(CraftingRecipeType.DehydratorRecipe)) {
+//                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.Dehydrator));
+//            } else if (craftingRecipeType.equals(CraftingRecipeType.FishSmokerRecipe)) {
+//                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.FishSmoker));
+//            } else if (craftingRecipeType.equals(CraftingRecipeType.GrassStarterRecipe)) {
+//                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.GrassStarter));
+//            }
+//        }else if (product.getType().getClass().equals(ToolType.class)) {
+//            //milkpail and shear in marine's ranch
+//            player.getBackPack().addItemToInventory(new Tool((ToolType) product.getType(), null,null));
+//        } else {
+//            for (int i = 0; i < count1; i++) {
+//                //player.getBackPack().addItemToInventory(product);
+//                player.getBackPack().addItemToInventory((BackPackable) addItem(product.getName()).get(1));
+//            }
+//        }
+//
+//        return new Result(false, "purhcased successfully");
+//    }
 
 
     public Result cheatAddDollars(String count) {

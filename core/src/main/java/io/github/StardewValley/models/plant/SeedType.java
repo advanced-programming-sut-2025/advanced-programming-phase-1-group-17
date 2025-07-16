@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackableType;
 
 public enum SeedType implements BackPackableType {
-    BlueJazzSeeds("Crops/Blue_Jazz_Seeds.png"),
+    BlueJazzSeeds("Crops/Blueberry_Seeds.png"),
     CarrotSeeds("Crops/Carrot_Seeds.png"),
     CauliflowerSeeds("Crops/Cauliflower_Seeds.png"),
-    CoffeeBean("Crops/CoffeeBean.png"),
+    CoffeeBean("Crops/Coffee_Bean.png"),
     GarlicSeeds("Crops/Garlic_Seeds.png"),
     BeanStarter("Crops/Bean_Starter.png"),
     KaleSeeds("Crops/Kale_Seeds.png"),

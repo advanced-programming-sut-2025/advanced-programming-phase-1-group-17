@@ -78,7 +78,7 @@ public abstract class ForagingController {
             return mineralType.equals(MineralType.CopperOre);
         } else if (toolMaterial.equals(ToolMaterial.Copper)) {
             return mineralType.equals(MineralType.IronOre) || mineralType.equals(MineralType.CopperOre);
-        } else if (toolMaterial.equals(ToolMaterial.Iron)) {
+        } else if (toolMaterial.equals(ToolMaterial.Steel)) {
             return !mineralType.equals(MineralType.IridiumOre);
         }
         return true;

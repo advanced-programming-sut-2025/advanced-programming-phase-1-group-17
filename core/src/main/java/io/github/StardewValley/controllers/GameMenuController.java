@@ -160,7 +160,6 @@ public class GameMenuController {
 
                 NPC.setFatherPlayer(null);
                 NPC.setFatherUser(null);
-                GreenHouse.getGreenHouse().clear();
                 Game game = new Game(user2, user3, user4);
                 App.setCurrentGame(game);
                 App.getGames().add(game);
@@ -236,7 +235,6 @@ public class GameMenuController {
                     }
                     NPC.setFatherPlayer(game.getPlayers().get(4));
                     NPC.setFatherUser(game.getPlayers().get(4).getUser());
-                    GreenHouse.setGreenHouse(App.getCurrentGame().getGreenHouses());
 
                     com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                         @Override
@@ -1496,7 +1494,7 @@ public class GameMenuController {
                 tile.setPlaceable(animalPlace);
             }
         }
-        App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimalPlaces().add(animalPlace);
+        App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace);
         return new Result(true, "build successfully");
     }
 
@@ -1516,7 +1514,7 @@ public class GameMenuController {
         }
         player.getBackPack().addcoin(-animalType.getPrice());
 
-        List<AnimalPlace> animalPlaces = player.getPlayerMap().getFarm().getAnimalPlaces();
+        List<AnimalPlace> animalPlaces = player.getPlayerMap().getAnimalPlaces();
         for (int i = 0; i < animalPlaces.size(); i++) {
             AnimalPlace place = animalPlaces.get(i);
 
@@ -1534,7 +1532,7 @@ public class GameMenuController {
             // افزودن حیوان
             place.addAnimal(newAnimal);
             newAnimal.setAnimalPlace(place); // اگر خواستی مکان رو هم ثبت کن
-            player.getPlayerMap().getFarm().getAnimals().add(newAnimal);
+            player.getPlayerMap().getAnimals().add(newAnimal);
 
             return new Result(true, name + " added to your animals successfully");
         }
@@ -1583,7 +1581,7 @@ public class GameMenuController {
 
     public Result animals() {
         StringBuilder sb = new StringBuilder();
-        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
+        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimals()) {
             sb.append(animal.getName()).append(" (").append(animal.getAnimalType()).append(") ").append("\n")
                 .append("friendship : ").append(animal.getFriendship()).append("\n")
                 .append(animal.isPettedToday() ? "petted today" : "not petted today").append("\n")
@@ -1613,7 +1611,7 @@ public class GameMenuController {
             if (tile.getPlaceable() instanceof AnimalPlace) {
                 return new Result(false, "animal is already in a animalPlace");
             }
-            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm) {
+            if (tile.getPlaceable() == null)  {
                 animalPlace.getAnimals().remove(animal);
                 tile.setPlaceable(animal);
                 animal.setTile(tile);
@@ -1637,7 +1635,7 @@ public class GameMenuController {
                 return new Result(true, animalName + " went to " + animalPlace1.getAnimalPlaceType().name());
 
             }
-            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm) {
+            if (tile.getPlaceable() == null) {
                 return new Result(false, animalName + " is already outside");
             }
             if (tile.getPlaceable() != null) {
@@ -1667,7 +1665,7 @@ public class GameMenuController {
     public Result produces() {
         StringBuilder sb = new StringBuilder();
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for (Animal animal : player.getPlayerMap().getFarm().getAnimals()) {
+        for (Animal animal : player.getPlayerMap().getAnimals()) {
             if (!animal.getAnimalProducts().isEmpty()) {
                 sb.append(animal.getName()).append("\n");
                 for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
@@ -1791,37 +1789,8 @@ public class GameMenuController {
         return new Result(true, count + " " + fish.getFishType().getName() + " got caught successfully");
     }
 
-    public Result artisanUse(String artisanName, String itemNames) {
-        return artisanController.artisanUse(artisanName, itemNames, marketsController);
-    }
-
-
-    public Result artisanGet(String artisanName) {
-        return artisanController.artisanGet(artisanName);
-    }
-
-
-    public Result showAllProducts() {
-        return marketsController.showAllProducts();
-    }
-
-
-    public Result showAllAvailableProducts() {
-        return marketsController.showAllAvailableProducts();
-    }
-
-
-    public Result purchase(String productName, String count) {
-        return marketsController.purchase(productName, count);
-    }
-
-
     public Result cheatAddDollars(String count) {
         return marketsController.cheatAddDollars(count);
-    }
-
-    public Result sellProduct(String productName, String count) {
-        return marketsController.sellProduct(productName, count);
     }
 
 

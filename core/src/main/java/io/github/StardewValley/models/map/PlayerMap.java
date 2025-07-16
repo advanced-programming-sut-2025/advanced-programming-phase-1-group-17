@@ -2,6 +2,9 @@ package io.github.StardewValley.models.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Fence;
+import io.github.StardewValley.models.GreenHouseLake;
+import io.github.StardewValley.models.animal.Animal;
+import io.github.StardewValley.models.animal.AnimalPlace;
 import io.github.StardewValley.models.foraging.ForagingController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NPCS.*;
@@ -20,9 +23,10 @@ public class PlayerMap {
     private int row;
     private int col;
     private ArrayList<Tile> tiles = new ArrayList<>();
-    private Farm farm = new Farm();
     private Player player;
     private int type;
+    private ArrayList<Animal> animals;
+    private ArrayList<AnimalPlace> animalPlaces;
     private GreenHouse greenHouse;
     private Hut hut;
     private ArrayList<Lake> lakes = new ArrayList<>();
@@ -49,14 +53,6 @@ public class PlayerMap {
         this.player = player;
     }
 
-    public Farm getFarm() {
-        return farm;
-    }
-
-    public void setFarm(Farm farm) {
-        this.farm = farm;
-    }
-
     public PlayerMap(int index, Player owner) {
         if (index == 0) {
             this.row = 0;
@@ -72,12 +68,6 @@ public class PlayerMap {
                 }
             }
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
-            Farm farm = new Farm();
-            for (Tile tile : tiles) {
-                if (tile.getPlaceable() == null) {
-                    tile.setPlaceable(farm);
-                }
-            }
         } else if (index == 1) {
             this.row = 0;
             this.col = 200;
@@ -92,12 +82,6 @@ public class PlayerMap {
                 }
             }
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
-            Farm farm = new Farm();
-            for (Tile tile : tiles) {
-                if (tile.getPlaceable() == null) {
-                    tile.setPlaceable(farm);
-                }
-            }
         } else if (index == 2) {
             this.row = 200;
             this.col = 0;
@@ -112,12 +96,6 @@ public class PlayerMap {
                 }
             }
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
-            Farm farm = new Farm();
-            for (Tile tile : tiles) {
-                if (tile.getPlaceable() == null) {
-                    tile.setPlaceable(farm);
-                }
-            }
         } else if (index == 3) {
             this.row = 200;
             this.col = 200;
@@ -132,12 +110,6 @@ public class PlayerMap {
                 }
             }
             Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
-            Farm farm = new Farm();
-            for (Tile tile : tiles) {
-                if (tile.getPlaceable() == null) {
-                    tile.setPlaceable(farm);
-                }
-            }
         } else if (index == 4) {
             // NPC FORM
             for (int i = 101; i <= 200; i++) {
@@ -341,12 +313,6 @@ public class PlayerMap {
                     numOfTrees5--;
                 }
             }
-            Farm farm = new Farm();
-            for (Tile tile : tiles) {
-                if (tile.getPlaceable() == null ) {
-                    tile.setPlaceable(farm);
-                }
-            }
             Fence fence = new Fence(false);
             Fence fence2 = new Fence(true);
             for (int i = 0; i <= 301; i++) {
@@ -367,20 +333,20 @@ public class PlayerMap {
                 if (i < 255 && i > 250)
                     continue;
 
-                if (Tile.getTile(101, i).getPlaceable() instanceof Farm) {
+                if (Tile.getTile(101, i).getPlaceable() == null) {
                     Tile.getTile(101, i).setPlaceable(fence2);
                     Tile.getTile(101, i).setWalkAble(false);
                 }
-                if (Tile.getTile(200, i).getPlaceable() instanceof Farm) {
+                if (Tile.getTile(200, i).getPlaceable() == null) {
                     Tile.getTile(200, i).setPlaceable(fence2);
                     Tile.getTile(200, i).setWalkAble(false);
                 }
-                if (Tile.getTile(i, 101).getPlaceable() instanceof Farm) {
+                if (Tile.getTile(i, 101).getPlaceable() == null) {
                     Tile.getTile(i, 101).setPlaceable(fence);
                     Tile.getTile(i, 101).setWalkAble(false);
                 }
 
-                if (Tile.getTile(i, 200).getPlaceable() instanceof Farm) {
+                if (Tile.getTile(i, 200).getPlaceable()== null) {
                     Tile.getTile(i, 200).setPlaceable(fence);
                     Tile.getTile(i, 200).setWalkAble(false);
                 }
@@ -403,64 +369,98 @@ public class PlayerMap {
     }
 
     private void createShippingBins() {
-        if (Tile.getTile(30, 30).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(30, 30).getPlaceable() == null) {
             Tile.getTile(30, 30).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(30, 130).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(30, 130).getPlaceable() == null) {
             Tile.getTile(30, 130).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(180, 30).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(180, 30).getPlaceable() == null) {
             Tile.getTile(180, 30).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(180, 130).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(180, 130).getPlaceable() == null) {
             Tile.getTile(180, 130).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(70, 50).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(70, 50).getPlaceable() == null) {
             Tile.getTile(70, 50).setPlaceable(new ShippingBin());
 
         }
-        if (Tile.getTile(70, 50).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(70, 50).getPlaceable() == null) {
             Tile.getTile(70, 50).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(100, 105).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(100, 105).getPlaceable() == null) {
             Tile.getTile(100, 105).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(120, 50).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(120, 50).getPlaceable() == null) {
             Tile.getTile(120, 50).setPlaceable(new ShippingBin());
         }
-        if (Tile.getTile(120, 150).getPlaceable() instanceof Farm) {
+        if (Tile.getTile(120, 150).getPlaceable() == null) {
             Tile.getTile(120, 150).setPlaceable(new ShippingBin());
         }
     }
 
     private void createStores() {
-        for (int i = 60; i < 80; i++) {
-            for (int j = 130; j < 145; j++)
-                Tile.getTile(i, j).setPlaceable(new Store(StoreType.Blacksmith));
+        Store store = new Store(StoreType.Blacksmith, 60, 130, 8, 8);
+        for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
+            for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
+                App.getCurrentGame().getStoreManager().addStore(StoreType.Blacksmith, store);
+                Tile.getTile(i, j).setPlaceable(store);
+                Tile.getTile(i, j).setWalkAble(false);
+            }
         }
-        for (int i = 80; i < 90; i++) {
-            for (int j = 180; j < 198; j++)
-                Tile.getTile(i, j).setPlaceable(new Store(StoreType.Ranch));
+
+        store = new Store(StoreType.Ranch, 80, 180, 8, 8);
+        for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
+            for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
+                App.getCurrentGame().getStoreManager().addStore(StoreType.Ranch, store);
+                Tile.getTile(i, j).setPlaceable(store);
+                Tile.getTile(i, j).setWalkAble(false);
+            }
         }
-        for (int i = 160; i < 180; i++) {
-            for (int j = 30; j < 45; j++)
-                Tile.getTile(i, j).setPlaceable(new Store(StoreType.StardropSaloon));
+
+        store = new Store(StoreType.StardropSaloon, 160, 30, 8, 8);
+        for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
+            for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
+                App.getCurrentGame().getStoreManager().addStore(StoreType.StardropSaloon, store);
+                Tile.getTile(i, j).setPlaceable(store);
+                Tile.getTile(i, j).setWalkAble(false);
+            }
         }
-        for (int i = 180; i < 190; i++) {
-            for (int j = 80; j < 98; j++)
-                Tile.getTile(i, j).setPlaceable(new Store(StoreType.CarpentersShop));
+
+        store = new Store(StoreType.CarpentersShop, 180, 80, 8, 8);
+        for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
+            for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
+                App.getCurrentGame().getStoreManager().addStore(StoreType.CarpentersShop, store);
+                Tile.getTile(i, j).setPlaceable(store);
+                Tile.getTile(i, j).setWalkAble(false);
+            }
         }
-        for (int i = 230; i < 250; i++) {
-            for (int j = 180; j < 195; j++)
-                Tile.getTile(i, j).setPlaceable(new Store(StoreType.JojaMart));
+
+        store = new Store(StoreType.JojaMart, 230, 180, 12, 8);
+        for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
+            for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
+                App.getCurrentGame().getStoreManager().addStore(StoreType.JojaMart, store);
+                Tile.getTile(i, j).setPlaceable(store);
+                Tile.getTile(i, j).setWalkAble(false);
+            }
         }
-        for (int i = 110; i < 130; i++) {
-            for (int j = 230; j < 245; j++)
-                Tile.getTile(i, j).setPlaceable(new Store(StoreType.PierresGeneralStore));
+
+        store = new Store(StoreType.PierresGeneralStore, 110, 230, 8, 8);
+        for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
+            for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
+                App.getCurrentGame().getStoreManager().addStore(StoreType.PierresGeneralStore, store);
+                Tile.getTile(i, j).setPlaceable(store);
+                Tile.getTile(i, j).setWalkAble(false);
+            }
         }
-        for (int i = 130; i < 148; i++) {
-            for (int j = 280; j < 295; j++)
-                Tile.getTile(i, j).setPlaceable(new Store(StoreType.FishShop));
+
+        store = new Store(StoreType.FishShop, 130, 280, 8, 8);
+        for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
+            for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
+                App.getCurrentGame().getStoreManager().addStore(StoreType.FishShop, store);
+                Tile.getTile(i, j).setPlaceable(store);
+                Tile.getTile(i, j).setWalkAble(false);
+            }
         }
     }
 
@@ -469,7 +469,7 @@ public class PlayerMap {
             this.hut = new Hut(new Texture("hut.png"),4 + row , 4 + col);
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
-            this.greenHouse = new GreenHouse(this.player, 5, 8);
+            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
             this.x_start = 4 + row;
             this.y_start = 4 + col;
             for (int x = 0; x < 4; x++) {
@@ -490,27 +490,12 @@ public class PlayerMap {
                     Tile.getTile(i, j).setWalkAble(false);
                 }
             }
-            for (int i = 35 + row; i < 41 + row; i++) {
-                for (int j = 2 + col; j < 10 + col; j++) {
-                    Tile.getTile(34 + row, j).setPlaceable(lakes.get(0));
-                    Tile.getTile(i, j).setWalkAble(false);
-                    if (i == 40 + row) {
-                        if (j == 6 + col)
-                            continue;
-                        Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
-                    } else if (j == 9 + col || j == 2 + col)
-                        Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
-                    else
-                        Tile.getTile(i, j).setPlaceable(greenHouse);
-                    if (! (Tile.getTile(i, j).getPlaceable() instanceof Lake))
-                        Tile.getTile(i, j).setWalkAble(true);
-                }
-            }
+            createGreenHouse();
         } else if (type == 2) {
             this.hut = new Hut(new Texture("hut.png"),40 + row , 40 + col);
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
-            this.greenHouse = new GreenHouse(this.player, 5, 8);
+            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
             this.quarry = new Quarry();
             this.x_start = 40 + row;
             this.y_start = 40 + col;
@@ -538,24 +523,35 @@ public class PlayerMap {
                     Tile.getTile(i, j).setWalkAble(false);
                 }
             }
-            for (int i = 35 + row; i < 41 + row; i++) {
-                for (int j = 2 + col; j < 10 + col; j++) {
-                    Tile.getTile(34 + row, j).setPlaceable(lakes.get(0));
-                    Tile.getTile(i, j).setWalkAble(false);
-                    if (i == 40 + row) {
-                        if (j == 6 + col)
-                            continue;
-                        Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
-                    } else if (j == 9 + col || j == 2 + col)
-                        Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
-                    else
-                        Tile.getTile(i, j).setPlaceable(greenHouse);
-                    if (! (Tile.getTile(i, j).getPlaceable() instanceof Lake))
-                        Tile.getTile(i, j).setWalkAble(true);
-                }
-            }
+            createGreenHouse();
         }
         randomFillMap();
+    }
+
+    public void createGreenHouse() {
+        for (int i = 35 + row; i < 41 + row; i++) {
+            for (int j = 2 + col; j < 10 + col; j++) {
+                if (j == 8 + col || j == 9 + col)
+                    Tile.getTile(34 + row, j).setPlaceable(greenHouse.getLake());
+
+                else if (j == 2 + col) {
+                    if (i == 38 + row)
+                        continue;
+                    Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
+                } else if (j == 7 + col)
+                    Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
+                else if (i == 35 + row || i == 40 + row) {
+                    Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
+                }
+                else
+                    Tile.getTile(i, j).setPlaceable(greenHouse);
+
+                if ((Tile.getTile(i, j).getPlaceable() instanceof GreenHouse))
+                    Tile.getTile(i, j).setWalkAble(true);
+                else
+                    Tile.getTile(i, j).setWalkAble(false);
+            }
+        }
     }
 
     public int randomInt(int min, int max) {
@@ -575,15 +571,13 @@ public class PlayerMap {
             int randomIndex_x = randomInt(1 + row, 100 + row);
             int randomIndex_y = randomInt(1 + col, 100 + col);
             Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
-            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm) {
+            if (tile.getPlaceable() == null) {
                 if (counter < 2)
                     ForagingController.setTreeForaging(tile);
                 else if (counter < 4)
                     ForagingController.setCropForaging(tile);
                 else if (counter < 6)
                     ForagingController.setSeedForaging(tile);
-                else
-                    ForagingController.setMineralForaging(tile);
                 tile.setWalkAble(false);
                 numOfForagings--;
                 counter++;
@@ -596,7 +590,7 @@ public class PlayerMap {
             int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 100 + col);
             Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
-            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm) {
+            if (tile.getPlaceable() == null) {
                 Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
                 tile.setPlaceable(tree);
                 tile.setWalkAble(false);
@@ -673,4 +667,11 @@ public class PlayerMap {
     }
 
 
+    public ArrayList<Animal> getAnimals() {
+        return animals;
+    }
+
+    public ArrayList<AnimalPlace> getAnimalPlaces() {
+        return animalPlaces;
+    }
 }
