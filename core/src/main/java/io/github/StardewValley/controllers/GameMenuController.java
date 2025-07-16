@@ -1613,7 +1613,7 @@ public class GameMenuController {
             if (tile.getPlaceable() instanceof AnimalPlace) {
                 return new Result(false, "animal is already in a animalPlace");
             }
-            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm)  {
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm) {
                 animalPlace.getAnimals().remove(animal);
                 tile.setPlaceable(animal);
                 animal.setTile(tile);
@@ -1825,15 +1825,13 @@ public class GameMenuController {
     }
 
 
-    public Result friendship() {
+    public String friendship(Player player) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         String result = "";
-        for (Player player : currentPlayer.getFriendShips().keySet()) {
-            result += "your friendship amount with " + player.getUser().getUsername() + " : " +
-                currentPlayer.getFriendShips().get(player) + "\n" + "your friendship level : "
-                + String.valueOf((int) Math.floor(currentPlayer.getFriendShips().get(player) / 100)) + "\n";
-        }
-        return new Result(true, result);
+        result += "your friendship amount with " + player.getUser().getUsername() + " : " +
+            currentPlayer.getFriendShips().get(player) + "\n" + "your friendship level : "
+            + String.valueOf((int) Math.floor(currentPlayer.getFriendShips().get(player) / 100)) + "\n";
+        return result;
     }
 
 
@@ -1884,19 +1882,15 @@ public class GameMenuController {
         return new Result(false, "there isn't player in this game with this username");
     }
 
-    public Result talkHistory(String username) {
-        if (App.getUserWithUsername(username) == null) {
-            return new Result(false, "there isn't player in this game with this username");
-        }
+    public String talkHistory(String username) {
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
                 if (App.getCurrentGame().getCurrentPlayingPlayer().getTalk().get(player) != null) {
-                    return new Result(true,
-                        App.getCurrentGame().getCurrentPlayingPlayer().getTalk().get(player).getTalk());
+                    return App.getCurrentGame().getCurrentPlayingPlayer().getTalk().get(player).getTalk();
                 }
             }
         }
-        return new Result(false, "there isn't player in this game with this username");
+        return "";
     }
 
     public Result gift(String username, String item, String amount) {
@@ -1984,10 +1978,10 @@ public class GameMenuController {
         return new Result(false, "you have not received a gift with this giftNumber");
     }
 
-    public Result giftHistory(String username) {
+    public String giftHistory(String username) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         if (username.equals(App.getCurrentGame().getCurrentPlayingPlayer().getUser().getUsername())) {
-            return new Result(true, "you can't gift to your self.");
+            return "you can't gift to your self.";
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
@@ -1996,10 +1990,10 @@ public class GameMenuController {
                 for (Gift gift : currentPlayer.getGifts().get(player)) {
                     result += "whoGetGift : " + gift.getPlayerWhoGetGift().getUser().getUsername() + "\n" + gift.getItem() + " : (amount:)" + gift.getAmount() + " ---> (gift number:)" + gift.getGiftNumber() + "\n";
                 }
-                return new Result(true, result);
+                return result;
             }
         }
-        return new Result(false, "this username there is not in this game");
+        return "this username there is not in this game";
 
     }
 
@@ -2442,7 +2436,7 @@ public class GameMenuController {
         return new Result(false, "this username does not exist in this game");
     }
 
-    public Result tradeHistory() {
+    public String tradeHistory() {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         String result = "on going trades : \n";
         for (Trade trade : currentPlayer.getTrades()) {
@@ -2490,13 +2484,13 @@ public class GameMenuController {
                     + "--------------------------------------------------\n");
             }
         }
-        return new Result(true, result);
+        return result;
     }
 
-    public Result tradeList() {
+    public String tradeList() {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         if (currentPlayer.getTrades() == null) {
-            return new Result(false, "there are nothing trade for you");
+            return "there are nothing trade for you";
         } else {
             String result = "";
             for (Trade trade : currentPlayer.getTrades()) {
@@ -2524,9 +2518,9 @@ public class GameMenuController {
                 }
             }
             if (result.isEmpty()) {
-                return new Result(false, "there are nothing trade for you");
+                return "there are nothing trade for you";
             } else {
-                return new Result(true, result);
+                return result;
             }
         }
     }
@@ -2627,16 +2621,14 @@ public class GameMenuController {
         return new Result(false, "this NPC doesn't exist");
     }
 
-    public Result friendshipNPCList() {
+    public String friendshipNPCList(NPC npc) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         String result = "";
-        for (NPC npc : currentPlayer.getFriendShipsWithNPCs().keySet()) {
-            result += ("friendship score with " + npc.getName()
-                + " : " + currentPlayer.getFriendShipsWithNPCs().get(npc)
-                + "\n" + "friendship level with " + npc.getName() + " : "
-                + currentPlayer.getFriendShipsWithNPCs().get(npc) / 200 + "\n" + "-------------" + "\n");
-        }
-        return new Result(true, result);
+        result += ("friendship score with " + npc.getName()
+            + " : " + currentPlayer.getFriendShipsWithNPCs().get(npc)
+            + "\n" + "friendship level with " + npc.getName() + " : "
+            + currentPlayer.getFriendShipsWithNPCs().get(npc) / 200 + "\n" + "-------------" + "\n");
+        return result;
     }
 
     public Result questsList() {

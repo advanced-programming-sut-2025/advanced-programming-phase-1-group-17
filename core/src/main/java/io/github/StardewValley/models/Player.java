@@ -346,6 +346,8 @@ public class Player {
         return this.messages;
     }
 
+
+
     public String getStringMessage() {
         String message = "";
         for (int i = 0; i < messages.size(); i++) {
