@@ -283,6 +283,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
             for (Crop neighborGiantTile : neighborGiantTiles) {
                 neighborGiantTile.isWateredToday = true;
                 neighborGiantTile.daysWithoutWater = 0;
+
             }
         }
     }
