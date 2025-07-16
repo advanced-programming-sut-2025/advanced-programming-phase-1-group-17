@@ -1,6 +1,8 @@
 package io.github.StardewValley.models.NPCS;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.Talk;
 import io.github.StardewValley.models.User;
 
 import java.util.ArrayList;
@@ -15,6 +17,9 @@ abstract public class NPC {
     private String job;
     private ArrayList<Quest> quests =new ArrayList<>();
     private ArrayList<String> favorites;
+    public boolean isNPC;
+    public int x_start;
+    public int y_start;
 
     private HashMap<String, String> dialogue = new HashMap<>();
     private HashMap<String, String> dialogue2 = new HashMap<>();
@@ -88,5 +93,19 @@ abstract public class NPC {
 
     public HashMap<String, String> getDialogue2() {
         return dialogue2;
+    }
+    public boolean isNPC(){
+        return isNPC;
+    }
+
+    public int getX_start() {
+        return x_start;
+    }
+
+    public int getY_start() {
+        return y_start;
+    }
+    public Texture getTexture(){
+        return null;
     }
 }
