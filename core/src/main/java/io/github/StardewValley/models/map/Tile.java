@@ -17,7 +17,6 @@ public class Tile {
     private boolean isWalkAble = true;
     private boolean isPlowed = false;
     private Player owner;
-    private Player whoIsHere;
     private NPC npcIsHere;
     private boolean crowImmunity = false;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>();
@@ -109,13 +108,6 @@ public class Tile {
         return null;
     }
 
-    public Player getWhoIsHere() {
-        return whoIsHere;
-    }
-
-    public void setWhoIsHere(Player whoIsHere) {
-        this.whoIsHere = whoIsHere;
-    }
 
     public NPC getNpcIsHere() {
         return npcIsHere;

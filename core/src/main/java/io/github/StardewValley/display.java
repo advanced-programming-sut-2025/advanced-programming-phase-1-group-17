@@ -100,17 +100,8 @@ public class display {
                             System.out.print(BOLD + WHITE + "S" + RESET);
                         }
                     }
-                } else if (tile.getWhoIsHere() != null) {
-                    if (tile.getWhoIsHere().equals(game.getPlayers().get(0))) {
-                        System.out.print(BOLD + WHITE + "P" + RESET);
-                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(1))) {
-                        System.out.print(BOLD + RED + "P" + RESET);
-                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(2))) {
-                        System.out.print(BOLD + BLUE + "P" + RESET);
-                    } else if (tile.getWhoIsHere().equals(game.getPlayers().get(3))) {
-                        System.out.print(BOLD + YELLOW + "P" + RESET);
-                    }
-                } else if (tile.getPlaceable() instanceof Quarry) {
+                }
+                 else if (tile.getPlaceable() instanceof Quarry) {
                     System.out.print(BOLD + CYAN + "Q" + RESET);
                 } else if (tile.getPlaceable() instanceof Lake) {
                     System.out.print(BOLD + BLUE + "L" + RESET);

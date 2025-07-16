@@ -61,12 +61,6 @@ public class TimeAndDate {
     public void goToNextDay() {
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals("NPC")) continue;
-            try {
-                Tile.getTile(player.getTileX(), player.getTileY()).setWhoIsHere(null);
-                Tile.getTile(player.getPlayerMap().getX_start(), player.getPlayerMap().getY_start()).setWhoIsHere(player);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
             player.setX(player.getPlayerMap().getX_start());
             player.setY(player.getPlayerMap().getY_start());
         }
