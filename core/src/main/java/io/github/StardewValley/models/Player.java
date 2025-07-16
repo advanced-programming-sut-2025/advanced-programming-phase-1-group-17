@@ -30,6 +30,7 @@ public class Player {
     private float speed = 1000f;
     private transient Texture texture;
     private transient Texture backgroundTexture;
+    private int coin = 550;
     private transient Animation<TextureRegion> walkUpAnimation;
     private transient Animation<TextureRegion> walkDownAnimation;
     private transient Animation<TextureRegion> walkLeftAnimation;
@@ -577,5 +578,13 @@ public class Player {
 
     public boolean isMoved() {
         return moved;
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
     }
 }
