@@ -143,6 +143,16 @@ public class TalkController {
                 view.setText(gameMenuController.talkHistory(userName));
             }
         });
+        view.getButton14().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if (targetPlayer == null) {
+                    view.setError("please choose a player");
+                    return;
+                }
+                view.setError(gameMenuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), targetPlayer) ? "true" : "false");
+
+            }
+        });
 
 
         //TODO

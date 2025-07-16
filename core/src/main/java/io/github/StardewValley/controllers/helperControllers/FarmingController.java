@@ -52,8 +52,8 @@ public class FarmingController {
         int[] directions = App.handleDirection(Integer.parseInt(direction));
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
 
-        int newX = player.getX() + directions[0];
-        int newY = player.getY() + directions[1];
+        int newX = player.getTileX() + directions[0];
+        int newY = player.getTileY() + directions[1];
         Tile tile = Tile.getTile(newX, newY);
 
         if (tile == null) {
@@ -87,8 +87,8 @@ public class FarmingController {
         SeedType seedType = SeedType.getSeedTypeByName(source);
         SaplingType saplingType = SaplingType.getTypeByName(source);
 
-        int newX = player.getX() + directions[0];
-        int newY = player.getY() + directions[1];
+        int newX = player.getTileX() + directions[0];
+        int newY = player.getTileY() + directions[1];
 
         Tile tile = Tile.getTile(newX, newY);
         if (tile == null) {

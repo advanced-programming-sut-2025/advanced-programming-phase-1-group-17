@@ -67,10 +67,10 @@ public class MapViewController {
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals("NPC"))
                 continue;
-            if (!player.isMoved())
-                Main.getBatch().draw(player.getTexture(), offsetX + player.getX() * tileSize, offsetY + player.getY() * tileSize, tileSize * 10, tileSize * 10);
-            else
-                Main.getBatch().draw(player.getTexture(), offsetX + player.getTileX() * tileSize, offsetY + player.getTileY() * tileSize, tileSize * 10, tileSize * 10);
+//            if (!player.isMoved())
+//                Main.getBatch().draw(player.getTexture(), offsetX + player.getX() * tileSize, offsetY + player.getY() * tileSize, tileSize * 10, tileSize * 10);
+//            else
+            Main.getBatch().draw(player.getTexture(), offsetX + player.getTileX() * tileSize, offsetY + player.getTileY() * tileSize, tileSize * 10, tileSize * 10);
         }
 
     }
