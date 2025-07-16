@@ -359,9 +359,10 @@ public class GameMenu implements AppMenu, Screen {
         }
 
         // friendship
-        else if (command.trim().equals("friendships")) {
-            System.out.println(controller.friendship());
-        } else if ((matcher = GameMenuCommands.talk.getMatcher(command)) != null) {
+//        else if (command.trim().equals("friendships")) {
+//            System.out.println(controller.friendship());
+//        }
+        else if ((matcher = GameMenuCommands.talk.getMatcher(command)) != null) {
             System.out.println(controller.talk(matcher.group("username"), matcher.group("message").trim()));
         } else if ((matcher = GameMenuCommands.talkHistory.getMatcher(command)) != null) {
             System.out.println(controller.talkHistory(matcher.group("username").trim()));
@@ -396,9 +397,11 @@ public class GameMenu implements AppMenu, Screen {
             System.out.println(controller.meetNPC(matcher.group("npcName"),scanner));
         }else if ((matcher = GameMenuCommands.giftNPC.getMatcher(command)) != null) {
             System.out.println(controller.giftNPC(matcher));
-        }else if (command.trim().equals("friendship NPC list")) {
-            System.out.println(controller.friendshipNPCList());
-        }else if (command.trim().equals("quests list")) {
+        }
+//        else if (command.trim().equals("friendship NPC list")) {
+//            System.out.println(controller.friendshipNPCList());
+//        }
+        else if (command.trim().equals("quests list")) {
             System.out.println(controller.questsList());
         }else if ((matcher = GameMenuCommands.questFinish.getMatcher(command)) != null) {
             System.out.println(controller.questFinish(matcher.group("index")));

@@ -43,6 +43,7 @@ public class TalkController {
                 targetPlayer = view.getPlayers()[0];
                 targetNpc = null;
                 view.getWindow().remove();
+                view.setError(gameMenuController.friendship(targetPlayer));
             }
         });
         view.getButton2().addListener(new ClickListener() {
@@ -50,6 +51,7 @@ public class TalkController {
                 targetPlayer = view.getPlayers()[1];
                 targetNpc = null;
                 view.getWindow().remove();
+                view.setError(gameMenuController.friendship(targetPlayer));
             }
         });
         view.getButton3().addListener(new ClickListener() {
@@ -57,6 +59,7 @@ public class TalkController {
                 targetPlayer = view.getPlayers()[2];
                 targetNpc = null;
                 view.getWindow().remove();
+                view.setError(gameMenuController.friendship(targetPlayer));
             }
         });
         view.getButton4().addListener(new ClickListener() {
@@ -64,6 +67,7 @@ public class TalkController {
                 targetNpc = App.getCurrentGame().getNPCs().get(0);
                 targetPlayer = null;
                 view.getWindow().remove();
+                view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton5().addListener(new ClickListener() {
@@ -71,6 +75,7 @@ public class TalkController {
                 targetNpc = App.getCurrentGame().getNPCs().get(1);
                 targetPlayer = null;
                 view.getWindow().remove();
+                view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton6().addListener(new ClickListener() {
@@ -78,6 +83,7 @@ public class TalkController {
                 targetNpc = App.getCurrentGame().getNPCs().get(2);
                 targetPlayer = null;
                 view.getWindow().remove();
+                view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton7().addListener(new ClickListener() {
@@ -85,6 +91,7 @@ public class TalkController {
                 targetNpc = App.getCurrentGame().getNPCs().get(3);
                 targetPlayer = null;
                 view.getWindow().remove();
+                view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton8().addListener(new ClickListener() {
@@ -92,6 +99,7 @@ public class TalkController {
                 targetNpc = App.getCurrentGame().getNPCs().get(4);
                 targetPlayer = null;
                 view.getWindow().remove();
+                view.setText(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
 
@@ -119,7 +127,7 @@ public class TalkController {
 
                 String userName = targetPlayer.getUser().getUsername();
                 view.getStage().addActor(view.getWindow());
-                view.getWindow().getTitleLabel().setText("              Gift History with"+ " " + userName);
+                view.getWindow().getTitleLabel().setText("              Gift History with");
                 view.setText(gameMenuController.giftHistory(userName));
             }
         });
@@ -131,7 +139,7 @@ public class TalkController {
                 }
                 String userName = targetPlayer.getUser().getUsername();
                 view.getStage().addActor(view.getWindow());
-                view.getWindow().getTitleLabel().setText("                 Talk History with "+userName);
+                view.getWindow().getTitleLabel().setText("                 Talk History with ");
                 view.setText(gameMenuController.talkHistory(userName));
             }
         });

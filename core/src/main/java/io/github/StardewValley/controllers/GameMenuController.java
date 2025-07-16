@@ -1613,7 +1613,7 @@ public class GameMenuController {
             if (tile.getPlaceable() instanceof AnimalPlace) {
                 return new Result(false, "animal is already in a animalPlace");
             }
-            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm)  {
+            if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm) {
                 animalPlace.getAnimals().remove(animal);
                 tile.setPlaceable(animal);
                 animal.setTile(tile);
@@ -1825,15 +1825,13 @@ public class GameMenuController {
     }
 
 
-    public Result friendship() {
+    public String friendship(Player player) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         String result = "";
-        for (Player player : currentPlayer.getFriendShips().keySet()) {
-            result += "your friendship amount with " + player.getUser().getUsername() + " : " +
-                currentPlayer.getFriendShips().get(player) + "\n" + "your friendship level : "
-                + String.valueOf((int) Math.floor(currentPlayer.getFriendShips().get(player) / 100)) + "\n";
-        }
-        return new Result(true, result);
+        result += "your friendship amount with " + player.getUser().getUsername() + " : " +
+            currentPlayer.getFriendShips().get(player) + "\n" + "your friendship level : "
+            + String.valueOf((int) Math.floor(currentPlayer.getFriendShips().get(player) / 100)) + "\n";
+        return result;
     }
 
 
@@ -1892,7 +1890,7 @@ public class GameMenuController {
                 }
             }
         }
-        return  "";
+        return "";
     }
 
     public Result gift(String username, String item, String amount) {
@@ -1980,10 +1978,10 @@ public class GameMenuController {
         return new Result(false, "you have not received a gift with this giftNumber");
     }
 
-    public String  giftHistory(String username) {
+    public String giftHistory(String username) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         if (username.equals(App.getCurrentGame().getCurrentPlayingPlayer().getUser().getUsername())) {
-            return"you can't gift to your self.";
+            return "you can't gift to your self.";
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
@@ -2623,16 +2621,14 @@ public class GameMenuController {
         return new Result(false, "this NPC doesn't exist");
     }
 
-    public Result friendshipNPCList() {
+    public String friendshipNPCList(NPC npc) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         String result = "";
-        for (NPC npc : currentPlayer.getFriendShipsWithNPCs().keySet()) {
-            result += ("friendship score with " + npc.getName()
-                + " : " + currentPlayer.getFriendShipsWithNPCs().get(npc)
-                + "\n" + "friendship level with " + npc.getName() + " : "
-                + currentPlayer.getFriendShipsWithNPCs().get(npc) / 200 + "\n" + "-------------" + "\n");
-        }
-        return new Result(true, result);
+        result += ("friendship score with " + npc.getName()
+            + " : " + currentPlayer.getFriendShipsWithNPCs().get(npc)
+            + "\n" + "friendship level with " + npc.getName() + " : "
+            + currentPlayer.getFriendShipsWithNPCs().get(npc) / 200 + "\n" + "-------------" + "\n");
+        return result;
     }
 
     public Result questsList() {

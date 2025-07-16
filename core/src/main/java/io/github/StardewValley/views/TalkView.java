@@ -38,6 +38,7 @@ public class TalkView implements Screen {
     private Texture backgroundTexture = new Texture(Gdx.files.internal("background.png"));
     private Window window;
     private Label label1;
+    private Table tableLabel;
     private TextButton closeX;
     private Table table2;
     private Player[] players = new Player[3];
@@ -47,6 +48,8 @@ public class TalkView implements Screen {
         label1 = new Label("", skin);
         label1.setWrap(true);
         label1.setColor(Color.GREEN);
+        tableLabel = new Table(skin);
+
         ScrollPane scrollPane = new ScrollPane(label1, skin);
         scrollPane.setScrollingDisabled(true, true);
         window = new Window("                     messages", skin);
@@ -70,7 +73,9 @@ public class TalkView implements Screen {
         this.table2 = new Table(skin);
         this.backButton = new TextButton("Back", skin);
         this.label = new Label("", skin);
-        label.setColor(1, 0, 0, 1);
+        label.setColor(Color.BLACK);
+        label.setFontScale(1);
+
         int i = 0;
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals("NPC") || player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
@@ -109,7 +114,8 @@ public class TalkView implements Screen {
         Gdx.input.setInputProcessor(stage);
         table.setFillParent(true);
         table2.setFillParent(true);
-        label.setPosition(800,1000);
+        tableLabel.setFillParent(true);
+        tableLabel.add(label).center().top().padBottom(900);
         table.left();
         table2.right();
         table.add(button1).width(200).height(80);
@@ -137,7 +143,7 @@ public class TalkView implements Screen {
         table2.row().pad(10,0,10,0);
         table2.add(button13).width(300).height(80);
         stage.addActor(table2);
-        stage.addActor(label);
+        stage.addActor(tableLabel);
         stage.addActor(table);
 
     }
