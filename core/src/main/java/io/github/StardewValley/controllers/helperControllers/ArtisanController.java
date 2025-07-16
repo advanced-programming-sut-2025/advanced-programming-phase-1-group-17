@@ -31,7 +31,7 @@ public class ArtisanController {
 
         Tile artisanTile = null;
         for (int i = 0; i < 8; i++) {
-            Tile tile = Tile.getTile(player.getX() + dx[i], player.getY() + dy[i]);
+            Tile tile = Tile.getTile(player.getTileX() + dx[i], player.getTileY() + dy[i]);
             if (tile == null)
                 continue;
             if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm)
@@ -92,7 +92,7 @@ public class ArtisanController {
 
         Tile artisanTile = null;
         for (int i = 0; i < 8; i++) {
-            Tile tile = Tile.getTile(player.getX() + dx[i], player.getY() + dy[i]);
+            Tile tile = Tile.getTile(player.getTileX() + dx[i], player.getTileY() + dy[i]);
             if (tile == null)
                 continue;
             if (tile.getPlaceable() == null || tile.getPlaceable() instanceof Farm)

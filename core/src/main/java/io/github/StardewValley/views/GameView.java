@@ -18,6 +18,9 @@ import io.github.StardewValley.models.App;
 import io.github.StardewValley.controllers.MapViewController;
 import io.github.StardewValley.controllers.TalkController;
 import io.github.StardewValley.display;
+import io.github.StardewValley.models.TimeAndDate;
+
+import java.util.Scanner;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -60,6 +63,13 @@ public class GameView implements Screen, InputProcessor {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
             Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManager.getGameAssetManager().getSkin(), this));
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            try {
+                App.getCurrentGame().switchPlayer();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         //TODO handle input key
 

@@ -3,6 +3,7 @@ package io.github.StardewValley.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -35,7 +36,7 @@ public class ProfileMenu implements AppMenu, Screen {
     private Label error;
     public Table table;
     public Table buttons;
-
+    private TextButton changeAvatar;
 
 
     public ProfileMenu(ProfileMenuController profileMenuController, Skin skin) {
@@ -44,6 +45,8 @@ public class ProfileMenu implements AppMenu, Screen {
 //        Gdx.graphics.setCursor(customCursor);
 //        pixmap.dispose();
         this.changeNickName = new TextButton("Change Nickname", skin);
+        this.changeAvatar = new TextButton("Change Avatar", skin);
+        changeAvatar.setColor(0,0,1,1);
         changeNickName.setColor(0,0,1,1);
         this.NickName = new TextField("", skin);
         NickName.setMessageText("Enter new nickname");
@@ -111,6 +114,8 @@ public class ProfileMenu implements AppMenu, Screen {
         buttons.row().pad(10, 0, 10, 0);
         buttons.add(changeNickName).width(500);
         buttons.add(NickName).width(500);
+        buttons.row().pad(10, 0, 10, 0);
+        buttons.add(changeAvatar).width(500);
         stage.addActor(table);
         stage.addActor(buttons);
     }
@@ -266,5 +271,9 @@ public class ProfileMenu implements AppMenu, Screen {
     @Override
     public void run(Scanner scanner) {
 
+    }
+
+    public TextButton getChangeAvatar() {
+        return changeAvatar;
     }
 }

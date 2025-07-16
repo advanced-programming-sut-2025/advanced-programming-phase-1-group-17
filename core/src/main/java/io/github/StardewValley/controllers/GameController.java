@@ -34,7 +34,7 @@ public class GameController {
             this.game.getPlayerControllers().add(playerController);
         }
         Player player = game.getCurrentPlayingPlayer();
-        this.camera.position.set(player.getX(), player.getY(), 0);
+        this.camera.position.set(player.getX() , player.getY(), 0);
 
         this.worldController = new WorldController(this.camera);
         this.worldController.initTransients();

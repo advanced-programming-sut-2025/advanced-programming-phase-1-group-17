@@ -1,5 +1,8 @@
 package io.github.StardewValley.controllers;
+
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import io.github.StardewValley.GameAssetManager;
@@ -13,6 +16,7 @@ import io.github.StardewValley.views.ProfileMenu;
 
 public class ProfileMenuController {
     private ProfileMenu view;
+    public static int avatar = 1;
 
     public void setView(ProfileMenu profileMenu) {
         this.view = profileMenu;
@@ -29,12 +33,7 @@ public class ProfileMenuController {
                     @Override
                     public void run() {
                         Main.getMain().getScreen().dispose();
-                        Main.getMain().setScreen(
-                            new MainMenu(
-                                new MainMenuController(),
-                                GameAssetManager.getGameAssetManager().getSkin()
-                            )
-                        );
+                        Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
                     }
                 }, 2);
             }
@@ -133,7 +132,7 @@ public class ProfileMenuController {
                 view.setError("please enter old and new password");
 
                 User user = App.getLoggedInUser();
-                String oldPassword =  view.getOldPassword().getText().trim();
+                String oldPassword = view.getOldPassword().getText().trim();
                 if (oldPassword.isEmpty()) {
                     return;
                 }
@@ -165,10 +164,11 @@ public class ProfileMenuController {
         view.getShowUserInfo().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 User user = App.getLoggedInUser();
-                view.setError(user.getUsername()
-                    + "\n" + user.getNickName()
-                    + "\n" + user.getTheMostMoneyInGame()
-                    + "\n" + user.getNumOfPlay());
+                view.setError("username : " + user.getUsername() +
+                    "\n" + "email : " + user.getEmail()
+                    + "\n" + "nickname : " + user.getNickName()
+                    + "\n" + "TheMostMoneyInGame : " + user.getTheMostMoneyInGame()
+                    + "\n" + "NumOfPlay : " + user.getNumOfPlay());
             }
         });
         view.getChangeNickName().addListener(new ClickListener() {
@@ -199,6 +199,20 @@ public class ProfileMenuController {
                 view.getOldEmail().setVisible(false);
                 view.getNewEmail().setVisible(false);
                 view.getNickName().setVisible(false);
+
+            }
+        });
+        view.getChangeAvatar().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if (avatar == 8)
+                    avatar = 1;
+
+                avatar++;
+                if (avatar > 8)
+                    avatar = 1;
+
+                App.getLoggedInUser().setAvatar("avatar/avatar" + avatar + ".jpg");
+                SaveUser.saveUser(App.getUsers());
 
             }
         });
