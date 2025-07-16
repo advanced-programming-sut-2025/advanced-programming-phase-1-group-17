@@ -25,15 +25,16 @@ public class Player {
     private int x;
     private int y;
     private Buff buff;
-    private float speed = 500f;
+    private float speed = 1000f;
     private transient Texture texture;
     private transient Texture backgroundTexture;
-    private Animation<TextureRegion> walkUpAnimation;
-    private Animation<TextureRegion> walkDownAnimation;
-    private Animation<TextureRegion> walkLeftAnimation;
-    private Animation<TextureRegion> walkRightAnimation;
+    private transient Animation<TextureRegion> walkUpAnimation;
+    private transient Animation<TextureRegion> walkDownAnimation;
+    private transient Animation<TextureRegion> walkLeftAnimation;
+    private transient Animation<TextureRegion> walkRightAnimation;
     private TextureRegion currentFrame;
     private float animationTimer = 0f;
+    private boolean moved;
 
     enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
@@ -163,6 +164,7 @@ public class Player {
         });
         walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
         this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
+        this.texture = new Texture("Alex/Alex11.png");
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -498,9 +500,12 @@ public class Player {
                     isOky = false;
                 }
                 if (isOky) {
+                    moved = true;
                     int mapWidth = backgroundTexture.getWidth() * 300;
                     int mapHeight = backgroundTexture.getHeight() * 300;
 
+//                    x = tileX;
+//                    y = tileY;
 
                     x = (int) Math.max(1, Math.min(newX, mapWidth - playerWidth));
                     y = (int) Math.max(1, Math.min(newY, mapHeight - playerHeight));
@@ -538,7 +543,7 @@ public class Player {
                 currentFrame = walkDownAnimation.getKeyFrame(0);
                 break;
         }
-        Main.getBatch().draw(currentFrame, x, y, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+        Main.getBatch().draw(currentFrame, x == 0 ? 1 : x, y == 0 ? 1 : y, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
     }
 
     public BackPackable getEquippedItem() {
@@ -547,5 +552,28 @@ public class Player {
 
     public void setEquippedItem(BackPackable equippedItem) {
         this.equippedItem = equippedItem;
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public int getTileX() {
+        int playerWidth = backgroundTexture.getWidth();
+        float centerX = x + playerWidth / 2f;
+        return (int) (centerX / backgroundTexture.getWidth());
+
+
+    }
+
+    public int getTileY() {
+        int playerHeight = backgroundTexture.getHeight();
+        float centerY = y + playerHeight / 2f;
+        return (int) (centerY / backgroundTexture.getHeight());
+
+    }
+
+    public boolean isMoved() {
+        return moved;
     }
 }

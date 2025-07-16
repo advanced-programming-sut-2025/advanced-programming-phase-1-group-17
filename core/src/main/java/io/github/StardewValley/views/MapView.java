@@ -3,7 +3,10 @@ package io.github.StardewValley.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.controllers.MapController;
 import io.github.StardewValley.models.Player;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,27 +15,35 @@ import io.github.StardewValley.controllers.MapViewController;
 import io.github.StardewValley.models.Game;
 
 public class MapView implements Screen {
+    private Stage stage;
     private MapViewController controller;
     private GameView gameView;
 
     public MapView( MapViewController controller , GameView view) {
-
         this.controller = controller;
         this.gameView = view;
         controller.setView(this);
-        controller.showMap();
     }
+
     @Override
     public void show() {
-
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
-    public void render(float v) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(gameView);
-        }
+    public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0, 1);
+
+        Main.getBatch().begin();
+        controller.drawTiledBackground();
+        controller.showMap(delta);
+        Main.getBatch().end();
+
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
+
+        controller.handleExit();
     }
 
     @Override
@@ -58,5 +69,9 @@ public class MapView implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public GameView getGameView() {
+        return gameView;
     }
 }

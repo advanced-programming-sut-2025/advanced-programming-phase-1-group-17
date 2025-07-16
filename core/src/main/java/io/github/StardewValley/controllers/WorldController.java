@@ -3,13 +3,20 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.*;
+import io.github.StardewValley.models.NPCS.NPC;
+import io.github.StardewValley.models.enums.Season;
 import io.github.StardewValley.models.map.*;
+import io.github.StardewValley.models.market.Store;
+import io.github.StardewValley.models.market.StoreType;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Scanner;
 
 public class WorldController {
     private final OrthographicCamera camera;
@@ -17,12 +24,6 @@ public class WorldController {
     private transient Texture backgroundTexture;
     private int tileWidth;
     private int tileHeight;
-    Tile greenHouseLeftCorner = null;
-    Tile firstGreenHouseTile = null;
-
-    private final Set<Texture> bigTextures = new HashSet<>() {{
-        GameAssetManager.getGameAssetManager().getGreenHouseTexture();
-    }};
 
     public WorldController(OrthographicCamera camera) {
         this.camera = camera;
@@ -35,9 +36,6 @@ public class WorldController {
     }
 
     public void update() {
-        greenHouseLeftCorner = null;
-        firstGreenHouseTile = null;
-
         float camLeft = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
         float camRight = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
         float camBottom = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
@@ -47,48 +45,96 @@ public class WorldController {
         int maxTileX = Math.min((int) (camRight / tileWidth) + 1, 300);
         int minTileY = Math.max((int) (camBottom / tileHeight), 0);
         int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 300);
+        for (int x = minTileX - 1; x < maxTileX; x++) {
+            for (int y = minTileY - 1; y < maxTileY; y++) {
+                try {
+                    if (x < -2 || y < -2 || x > 300 || y > 300)
+                        continue;
+                    Tile tile = Tile.getTile(x + 1, y + 1);
+                    if (tile.getPlaceable() instanceof Store)
+                        continue;
 
-        for (int y = minTileY - 1; y < maxTileY; y++) {
-            for (int x = minTileX - 1; x < maxTileX; x++) {
-                if (x < -2 || y < -2 || x > 300 || y > 300)
-                    continue;
-                Tile tile = Tile.getTile(x + 1, y + 1);
-                Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+                    Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+                    if (tile.getPlaceable() == null)
+                        continue;
+                        //TODO: will be deleted
+                    else if (tile.getPlaceable().getTexture() == null)
+                        continue;
+                    else if (tile.getPlaceable() instanceof Fence)
+                        Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, 80, 80);
+                    else if (tile.getPlaceable() instanceof Hut)
+                        continue;
+                    else if (tile.getPlaceable() instanceof NPC && !((NPC) tile.getPlaceable()).isNPC())
+                        continue;
+                    else if (tile.getPlaceable() instanceof NPC && ((NPC) tile.getPlaceable()).isNPC())
+                        Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+                    else
+                        Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-
         drawBigTextures();
-
-        for (int y = minTileY - 1; y < maxTileY; y++) {
-            for (int x = minTileX - 1; x < maxTileX; x++) {
-                if (x < -2 || y < -2 || x > 300 || y > 300)
-                    continue;
-                Tile tile = Tile.getTile(x + 1, y + 1);
-
-                if (tile.getPlaceable() == null)
-                    continue;
-                    //TODO: will be deleted
-                else if (tile.getPlaceable().getTexture() == null)
-                    continue;
-                else if (tile.getPlaceable() instanceof Fence)
-                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, 80, 80);
-                else if (tile.getPlaceable() instanceof Hut)
-                    Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, 120, 120);
-                else
-                    printTileTexture(tile);
-
-            }
-        }
     }
 
     private void drawBigTextures() {
+        for (int i = 0 ; i < 4 ; i++) {
+            Main.getBatch().draw(App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getTexture()
+                ,App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getX() * tileWidth,
+                App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getY() * tileHeight, 400 , 400);
+        }
+        for (int i = 0 ; i < 5 ; i++) {
+            Main.getBatch().draw(App.getCurrentGame().getNPCHuts().get(i).getTexture(),
+                App.getCurrentGame().getNPCHuts().get(i).x_start * tileWidth, App.getCurrentGame().getNPCHuts().get(i).y_start * tileHeight, 500 , 500);
+        }
         for (GreenHouse greenHouse : App.getCurrentGame().getGreenHouses()) {
             Main.getBatch().draw(
                 GameAssetManager.getGameAssetManager().getGreenHouseTexture(),
                 greenHouse.getStarting_x() * tileWidth, greenHouse.getStarting_y() * tileHeight,
                 greenHouse.getWidth() * tileWidth, greenHouse.getHeight() * tileHeight);
         }
+        drawStores();
+    }
 
+    private void drawStores() {
+        GameAssetManager assets = GameAssetManager.getGameAssetManager();
+        Season season = App.getCurrentGame().getDate().getSeason();
+
+        Store store = App.getCurrentGame().getStoreManager().getStore(StoreType.Blacksmith);
+        Main.getBatch().draw(assets.getStoreTexture(season, StoreType.Blacksmith),
+            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight);
+
+        store = App.getCurrentGame().getStoreManager().getStore(StoreType.JojaMart);
+        Main.getBatch().draw(assets.getStoreTexture(season, StoreType.JojaMart),
+            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight);
+
+        store = App.getCurrentGame().getStoreManager().getStore(StoreType.PierresGeneralStore);
+        Main.getBatch().draw(assets.getStoreTexture(season, StoreType.PierresGeneralStore),
+            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight);
+
+        store = App.getCurrentGame().getStoreManager().getStore(StoreType.CarpentersShop);
+        Main.getBatch().draw(assets.getStoreTexture(season, StoreType.CarpentersShop),
+            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight);
+
+        store = App.getCurrentGame().getStoreManager().getStore(StoreType.FishShop);
+        Main.getBatch().draw(assets.getStoreTexture(season, StoreType.FishShop),
+            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight);
+
+        store = App.getCurrentGame().getStoreManager().getStore(StoreType.Ranch);
+        Main.getBatch().draw(assets.getStoreTexture(season, StoreType.Ranch),
+            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight);
+
+        store = App.getCurrentGame().getStoreManager().getStore(StoreType.StardropSaloon);
+        Main.getBatch().draw(assets.getStoreTexture(season, StoreType.StardropSaloon),
+            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight);
     }
 
 
@@ -231,27 +277,6 @@ public class WorldController {
 //                }
 //            }
 //        }
-    public void printTileTexture(Tile tile) {
-        Placeable placeable = tile.getPlaceable();
-
-        if (placeable instanceof GreenHouseFence) {
-            if (greenHouseLeftCorner == null)
-                greenHouseLeftCorner = tile;
-            return;
-        } else if (placeable instanceof Lake)
-            return;
-        else if (placeable instanceof GreenHouse) {
-            if (firstGreenHouseTile == null) {
-                firstGreenHouseTile = tile;
-                TextureRegion textureRegion = new TextureRegion(tile.getPlaceable().getTexture());
-                Main.getBatch().draw(textureRegion, tile.getX() * tileWidth, tile.getY() * tileHeight,
-                    ((GreenHouse) placeable).getWidth() * tileWidth, ((GreenHouse) placeable).getHeight() * tileHeight);
-            }
-            return;
-        }
-
-        Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
-    }
 
     public int getTileWidth() {
         return tileWidth;
