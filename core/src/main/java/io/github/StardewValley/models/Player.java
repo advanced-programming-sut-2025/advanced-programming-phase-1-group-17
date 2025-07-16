@@ -39,6 +39,7 @@ public class Player {
     private float animationTimer = 0f;
     private boolean moved;
 
+
     enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
     }
@@ -167,6 +168,7 @@ public class Player {
         });
         walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
         this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
+        currentFrame = walkDownAnimation.getKeyFrame(0);
         this.texture = new Texture("Alex/Alex11.png");
     }
 
@@ -189,7 +191,7 @@ public class Player {
     }
 
     public void setY(int y) {
-        this.y = y;
+        this.y = y * backgroundTexture.getHeight();
     }
 
     public int getX() {
@@ -197,7 +199,7 @@ public class Player {
     }
 
     public void setX(int x) {
-        this.x = x;
+        this.x = x * backgroundTexture.getWidth();
     }
 
     public PlayerMap getPlayerMap() {
@@ -347,7 +349,6 @@ public class Player {
     }
 
 
-
     public String getStringMessage() {
         String message = "";
         for (int i = 0; i < messages.size(); i++) {
@@ -458,25 +459,45 @@ public class Player {
 
         if (up) {
             newY += speed * delta;
-            currentDirection = Direction.UP;
+            this.currentDirection = Direction.UP;
+            energy -= energy * 0.0005;
+            if (energy < 0) {
+                energy = 0;
+                passOut();
+            }
         } else if (down) {
             newY -= speed * delta;
-            currentDirection = Direction.DOWN;
+            this.currentDirection = Direction.DOWN;
+            energy -= energy * 0.0005;
+            if (energy < 0) {
+                energy = 0;
+                passOut();
+            }
         } else if (left) {
             newX -= speed * delta;
-            currentDirection = Direction.LEFT;
+            this.currentDirection = Direction.LEFT;
+            energy -= energy * 0.0005;
+            if (energy < 0) {
+                energy = 0;
+                passOut();
+            }
         } else if (right) {
             newX += speed * delta;
-            currentDirection = Direction.RIGHT;
+            this.currentDirection = Direction.RIGHT;
+            energy -= energy * 0.0005;
+            if (energy < 0) {
+                energy = 0;
+                passOut();
+            }
         } else {
-            currentDirection = Direction.IDLE;
+            this.currentDirection = Direction.IDLE;
         }
 
 
-        if (currentDirection != Direction.IDLE) {
-            animationTimer += delta;
+        if (this.currentDirection != Direction.IDLE) {
+            this.animationTimer += delta;
         } else {
-            animationTimer = 0f;
+            this.animationTimer = 0f;
         }
 
 
@@ -514,11 +535,7 @@ public class Player {
 
                     x = (int) Math.max(1, Math.min(newX, mapWidth - playerWidth));
                     y = (int) Math.max(1, Math.min(newY, mapHeight - playerHeight));
-                    energy -= energy * 0.0005;
-                    if (energy < 0) {
-                        energy = 0;
-                        hasPassedOutToday = true;
-                    }
+
 
                 }
             }
@@ -531,24 +548,30 @@ public class Player {
 
 
     public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
-        switch (currentDirection) {
+        switch (this.currentDirection) {
             case UP:
-                currentFrame = walkUpAnimation.getKeyFrame(animationTimer);
+                this.currentFrame = walkUpAnimation.getKeyFrame(animationTimer);
                 break;
             case DOWN:
-                currentFrame = walkDownAnimation.getKeyFrame(animationTimer);
+                this.currentFrame = walkDownAnimation.getKeyFrame(animationTimer);
                 break;
             case LEFT:
-                currentFrame = walkLeftAnimation.getKeyFrame(animationTimer);
+                this.currentFrame = walkLeftAnimation.getKeyFrame(animationTimer);
                 break;
             case RIGHT:
-                currentFrame = walkRightAnimation.getKeyFrame(animationTimer);
+                this.currentFrame = walkRightAnimation.getKeyFrame(animationTimer);
                 break;
             case IDLE:
-                currentFrame = walkDownAnimation.getKeyFrame(0);
+                this.currentFrame = walkDownAnimation.getKeyFrame(0);
                 break;
         }
-        Main.getBatch().draw(currentFrame, x == 0 ? 1 : x, y == 0 ? 1 : y, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals("NPC")) continue;
+            if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
+                Main.getBatch().draw(this.currentFrame, player.getX() == 0 ? 1 : player.getX(), player.getY() == 0 ? 1 : player.getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+            else
+                Main.getBatch().draw(texture, player.getX() == 0 ? 1 : player.getX(), player.getY() == 0 ? 1 : player.getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+        }
     }
 
     public BackPackableType getEquippedItem() {
@@ -588,5 +611,9 @@ public class Player {
 
     public void setCoin(int coin) {
         this.coin = coin;
+    }
+
+    public Texture getBackgroundTexture() {
+        return backgroundTexture;
     }
 }

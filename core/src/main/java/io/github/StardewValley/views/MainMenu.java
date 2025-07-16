@@ -17,44 +17,52 @@ import io.github.StardewValley.models.enums.Menu;
 
 import java.util.Scanner;
 
-public class MainMenu implements AppMenu , Screen {
-    private  TextButton backButton;
+public class MainMenu implements AppMenu, Screen {
+    private TextButton backButton;
     private Table buttonsTable;
     private Stage stage;
     private Skin skin;
     private MainMenuController controller;
-    private  TextButton profileMenuButton;
-    private  TextButton gameMenuButton;
-    private  TextButton logoutAndGotoLoginMenuButton;
-    private  TextField newUserName;
-    private  TextField newPassword;
-    private  TextField oldPassword;
-    private  TextButton menuTitle;
-    private  TextButton showUserInfo;
-    private  TextField oldEmail;
-    private  TextField newEmail;
-    private  TextButton changeNickName;
-    private  TextField NickName;
+    private TextButton profileMenuButton;
+    private TextButton gameMenuButton;
+    private TextButton logoutAndGotoLoginMenuButton;
+    private TextField newUserName;
+    private TextField newPassword;
+    private TextField oldPassword;
+    private TextButton menuTitle;
+    private TextButton showUserInfo;
+    private TextField oldEmail;
+    private TextField newEmail;
+    private TextButton changeNickName;
+    private TextField NickName;
     private Label error;
     public Table table;
     public Table buttons;
+    private Image avatar;
+    private Label nickName;
+
     public MainMenu(MainMenuController mainMenuController, Skin skin) {
 
         this.controller = mainMenuController;
+        this.nickName = new Label(App.getLoggedInUser().getNickName(), skin);
+        nickName.setColor(0, 1, 0, 1);
+        nickName.setFontScale(2);
+        nickName.setPosition(1750, 800);
+        this.avatar = new Image(new Texture(App.getLoggedInUser().getAvatar()));
+        avatar.setSize(200, 200);
+        avatar.setPosition(1700, 850);
         this.gameMenuButton = new TextButton("Game menu", skin);
         this.profileMenuButton = new TextButton("Profile menu", skin);
         this.menuTitle = new TextButton("Main menu", skin);
-        menuTitle.setColor(0,0,1,1);
-        this.logoutAndGotoLoginMenuButton = new TextButton("log out",skin);
+        menuTitle.setColor(0, 0, 1, 1);
+        this.logoutAndGotoLoginMenuButton = new TextButton("log out", skin);
         this.table = new Table().top().left();
         this.skin = skin;
         this.buttons = new Table().center();
         controller.setView(this);
 
 
-
     }
-
 
 
     @Override
@@ -73,9 +81,10 @@ public class MainMenu implements AppMenu , Screen {
         buttons.add(logoutAndGotoLoginMenuButton).width(500);
         buttons.row().pad(10, 0, 10, 0);
         buttons.row().pad(10, 0, 10, 0);
+        stage.addActor(nickName);
+        stage.addActor(avatar);
         stage.addActor(table);
         stage.addActor(buttons);
-
 
 
     }
@@ -113,6 +122,7 @@ public class MainMenu implements AppMenu , Screen {
     public void dispose() {
 
     }
+
     public void run(Scanner scanner) {
 
     }
@@ -148,4 +158,6 @@ public class MainMenu implements AppMenu , Screen {
     public void setLogoutAndGotoLoginMenuButton(TextButton logoutAndGotoLoginMenuButton) {
         this.logoutAndGotoLoginMenuButton = logoutAndGotoLoginMenuButton;
     }
+
+
 }

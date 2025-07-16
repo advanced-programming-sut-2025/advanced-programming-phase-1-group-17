@@ -488,7 +488,7 @@ public class GameMenuController {
                     player.setEnergy(0);
                     try {
                         Tile tile = result.get(temp);
-                        Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
+                        Tile.getTile(player.getTileX(), player.getTileY()).setWhoIsHere(null);
                         tile.setWhoIsHere(player);
                         player.setX(tile.getX());
                         player.setY(tile.getY());
@@ -500,7 +500,7 @@ public class GameMenuController {
 //                    for (Tile tile : result) {
 //                        System.out.println(tile.getX() + " " + tile.getY());
 //                    }
-                    Tile.getTile(player.getX(), player.getY()).setWhoIsHere(null);
+                    Tile.getTile(player.getTileX(), player.getTileX()).setWhoIsHere(null);
                     Tile.getTile(x, y).setWhoIsHere(player);
                     player.setX(x);
                     player.setY(y);
@@ -717,7 +717,7 @@ public class GameMenuController {
 
     public Result toolUpgrade(String toolName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (Tile.getTile(player.getX(), player.getY()).getPlaceable() instanceof Store store) {
+        if (Tile.getTile(player.getTileX(), player.getTileY()).getPlaceable() instanceof Store store) {
             if (!store.getType().equals(StoreType.Blacksmith))
                 return new Result(false, "The Player is not in Blacksmith");
         } else
@@ -794,8 +794,8 @@ public class GameMenuController {
     public Result toolUse(String direction) {
         double leverage = App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        int x = player.getX() + App.handleDirection(Integer.parseInt(direction))[0];
-        int y = player.getY() + App.handleDirection(Integer.parseInt(direction))[1];
+        int x = player.getTileX() + App.handleDirection(Integer.parseInt(direction))[0];
+        int y = player.getTileY() + App.handleDirection(Integer.parseInt(direction))[1];
 
         Tool tool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
         Tile tile = Tile.getTile(x, y);
@@ -1037,7 +1037,7 @@ public class GameMenuController {
 
     public Result craftingShowRecipes() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
         if (tile == null) {
             return new Result(false, "Tile not found");
         }
@@ -1060,7 +1060,7 @@ public class GameMenuController {
 
     public Result craftingCraft(String itemName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
         if (tile == null) {
             return new Result(false, "Tile not found");
         }
@@ -1110,7 +1110,7 @@ public class GameMenuController {
             return new Result(false, " you dont have " + craftingItemType.name());
         }
         int[] direction1 = App.handleDirection(Integer.parseInt(direction));
-        Tile tile = Tile.getTile(player.getX() + direction1[0],
+        Tile tile = Tile.getTile(player.getTileX() + direction1[0],
             player.getY() + direction1[1]);
         if (tile.getPlaceable() != null) {
             return new Result(false, "tile is full");
@@ -1294,7 +1294,7 @@ public class GameMenuController {
 
     public Result cookingRefrigerator(String mode, String itemName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
         if (tile == null) {
             return new Result(false, "Tile not found");
         }
@@ -1325,7 +1325,7 @@ public class GameMenuController {
 
     public Result cookingShowRecipes() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
         if (tile == null) {
             return new Result(false, "Tile not found");
         }
@@ -1348,7 +1348,7 @@ public class GameMenuController {
 
     public Result cookingPrepare(String recipeName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
         if (tile == null) {
             return new Result(false, "Tile not found");
         }
@@ -1408,7 +1408,7 @@ public class GameMenuController {
 
     public Result eat(String foodName) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
         if (tile == null) {
             return new Result(false, "Tile not found");
         }
@@ -1550,7 +1550,7 @@ public class GameMenuController {
         }
 
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile tile = Tile.getTile(player.getX(), player.getY());
+        Tile tile = Tile.getTile(player.getTileX(), player.getTileY());
         if (animal.isPettedToday()) {
             return new Result(false, animal.getName() + " is a already petted today");
         }
@@ -1718,7 +1718,7 @@ public class GameMenuController {
 
     public Result fishing(String fishingPole) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (!Animal.areWeNearWater(player.getX(), player.getY())) {
+        if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
             return new Result(false, "first go near water");
         }
         if (player.getBackPack().isBackPackFull()) {
@@ -1836,10 +1836,10 @@ public class GameMenuController {
 
 
     public boolean sideBySide(Player currentPlayer, Player player) {
-        int x = currentPlayer.getX();
-        int y = currentPlayer.getY();
-        int x1 = player.getX();
-        int y1 = player.getY();
+        int x = currentPlayer.getTileX();
+        int y = currentPlayer.getTileY();
+        int x1 = player.getTileX();
+        int y1 = player.getTileY();
         if ((x == x1 && y == y1)
             || (x == x1 + 1 && y == y1)
             || (x == x1 - 1 && y == y1)
@@ -2526,8 +2526,8 @@ public class GameMenuController {
     }
 
     public boolean sideBySide(Player currentPlayer, NPC npc) {
-        int x = currentPlayer.getX();
-        int y = currentPlayer.getY();
+        int x = currentPlayer.getTileX();
+        int y = currentPlayer.getTileY();
         int x1 = npc.getX();
         int y1 = npc.getY();
         if ((x == x1 && y == y1)

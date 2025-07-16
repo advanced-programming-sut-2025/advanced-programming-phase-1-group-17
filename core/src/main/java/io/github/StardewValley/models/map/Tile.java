@@ -127,8 +127,8 @@ public class Tile {
 
     public static boolean findAround(Animal animal){
         Player player=App.getCurrentGame().getCurrentPlayingPlayer();
-        int x=player.getX();
-        int y=player.getY();
+        int x=player.getTileX();
+        int y=player.getTileY();
         for(int i=-1;i<2;i++){
             for(int j=-1;j<2;j++){
                 Tile tile = Tile.getTile(x+i,y+j);

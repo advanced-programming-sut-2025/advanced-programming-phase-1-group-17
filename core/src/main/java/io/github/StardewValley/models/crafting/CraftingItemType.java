@@ -55,6 +55,11 @@ public enum CraftingItemType implements BackPackableType {
         return sellPrice;
     }
 
+    @Override
+    public Texture getInventoryTexture() {
+        return icon;
+    }
+
     public static CraftingItemType getCraftingItemTypeByName(String artisanName) {
         for (CraftingItemType type : CraftingItemType.values()) {
             if (type.name().equalsIgnoreCase(artisanName)) {
