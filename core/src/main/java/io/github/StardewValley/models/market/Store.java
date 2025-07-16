@@ -6,9 +6,17 @@ import io.github.StardewValley.models.Placeable;
 import java.util.ArrayList;
 public class Store implements Placeable {
     private StoreType type;
+    private int start_x;
+    private int start_y;
+    private int width;
+    private int height;
 
-    public Store(StoreType type) {
+    public Store(StoreType type, int start_x, int start_y, int width, int height) {
         this.type = type;
+        this.start_x = start_x;
+        this.start_y = start_y;
+        this.width = width;
+        this.height = height;
     }
 
     public StoreType getType() {
@@ -22,7 +30,23 @@ public class Store implements Placeable {
 
     @Override
     public Texture getTexture() {
-        //TODO
+        //handled else where
         return null;
+    }
+
+    public int getStart_x() {
+        return start_x;
+    }
+
+    public int getStart_y() {
+        return start_y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

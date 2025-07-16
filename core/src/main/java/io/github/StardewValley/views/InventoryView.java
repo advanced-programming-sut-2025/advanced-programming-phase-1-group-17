@@ -1,7 +1,6 @@
 package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,18 +8,18 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.InventoryController;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.tools.BackPack;
+import io.github.StardewValley.models.tools.ToolType;
 
 public class InventoryView implements Screen {
     private Stage stage;
@@ -41,6 +40,7 @@ public class InventoryView implements Screen {
     private final TextButton skillMenuButton;
     private final TextButton socialMenuButton;
     private final TextButton mapButton;
+    private final TextButton exitButton;
 
     public InventoryView(InventoryController controller, Skin skin, Player player, GameView gameView) {
         this.controller = controller;
@@ -57,6 +57,10 @@ public class InventoryView implements Screen {
         this.itemsTable = new Table();
         for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
             // 1. Prepare image button style:
+            //TODO: need to delete this null-check
+            if (backPackableType.getInventoryTexture() == null)
+                continue;
+
             Texture itemTexture = backPackableType.getInventoryTexture();
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
@@ -67,7 +71,8 @@ public class InventoryView implements Screen {
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
             Label countLabel = new Label("%d".formatted(backPack.getBackPackItems().get(backPackableType).size()),
                 labelStyle);
-            countLabel.setFontScale(0.7f); // Adjust size
+            countLabel.setTouchable(Touchable.disabled);
+            countLabel.setFontScale(1.3f); // Adjust size
             countLabel.setAlignment(Align.bottomRight);
 
             // 3. Use a Stack:
@@ -122,6 +127,14 @@ public class InventoryView implements Screen {
                 controller.handleMap();
             }
         });
+
+        this.exitButton = new TextButton("Exit", skin);
+        this.exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.goToGameView();
+            }
+        });
     }
 
     @Override
@@ -141,6 +154,7 @@ public class InventoryView implements Screen {
         mainTable.add(skillMenuButton).left().padTop(10).row();
         mainTable.add(socialMenuButton).left().padTop(10).row();
         mainTable.add(mapButton).left().padTop(10).row();
+        mainTable.add(exitButton).left().row();
 
         stage.addActor(mainTable);
     }
@@ -149,17 +163,10 @@ public class InventoryView implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-        handlePlayerInput();
+        controller.handlePlayerInput();
 
         stage.act(delta);
         stage.draw();
-    }
-
-    private void handlePlayerInput() {
-        if (Gdx.input.isButtonJustPressed(Input.Keys.ESCAPE)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(gameView);
-        }
     }
 
     @Override
@@ -197,5 +204,83 @@ public class InventoryView implements Screen {
 
     public GameView getGameView() {
         return gameView;
+    }
+
+
+    public void refreshInventoryItems() {
+        itemsTable.clear();
+
+        for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
+            if (backPackableType.getInventoryTexture() == null) continue;
+            if (backPack.getBackPackItems().get(backPackableType).isEmpty()) continue;
+
+            Texture itemTexture = backPackableType.getInventoryTexture();
+            ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
+            style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
+
+            ImageButton itemButton = new ImageButton(style);
+
+            Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+            Label countLabel = new Label("%d".formatted(backPack.getBackPackItems().get(backPackableType).size()), labelStyle);
+            countLabel.setFontScale(1.3f);
+            countLabel.setAlignment(Align.bottomRight);
+            countLabel.setTouchable(Touchable.disabled);
+
+            Stack itemStack = new Stack();
+            itemStack.setSize(64, 64);
+            itemStack.add(itemButton);
+            itemStack.add(countLabel);
+
+            itemButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    controller.handleItemClick(backPackableType, player);
+                    itemPickLabel.setText("You picked: %s".formatted(backPackableType.getName()));
+                }
+            });
+
+            itemsTable.add(itemStack).size(64, 64).pad(5);
+        }
+
+        itemsTable.invalidate();
+    }
+
+    public void showOnlyTools() {
+        itemsTable.clear();
+
+        for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
+            if (backPackableType.getInventoryTexture() == null) continue;
+            if (!(backPackableType instanceof ToolType)) continue;
+            if (backPack.getBackPackItems().get(backPackableType).isEmpty()) continue;
+
+            Texture itemTexture = backPackableType.getInventoryTexture();
+            ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
+            style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
+
+            ImageButton itemButton = new ImageButton(style);
+
+            Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+            Label countLabel = new Label("%d".formatted(backPack.getBackPackItems().get(backPackableType).size()), labelStyle);
+            countLabel.setFontScale(1.3f);
+            countLabel.setAlignment(Align.bottomRight);
+            countLabel.setTouchable(Touchable.disabled);
+
+            Stack itemStack = new Stack();
+            itemStack.setSize(64, 64);
+            itemStack.add(itemButton);
+            itemStack.add(countLabel);
+
+            itemButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    controller.handleItemClick(backPackableType, player);
+                    itemPickLabel.setText("You picked: %s".formatted(backPackableType.getName()));
+                }
+            });
+
+            itemsTable.add(itemStack).size(64, 64).pad(5);
+        }
+
+        itemsTable.invalidate();
     }
 }
