@@ -71,7 +71,6 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
-            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
             Farm farm = new Farm();
             for (Tile tile : tiles) {
                 if (tile.getPlaceable() == null) {
@@ -91,7 +90,6 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
-            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
             Farm farm = new Farm();
             for (Tile tile : tiles) {
                 if (tile.getPlaceable() == null) {
@@ -111,7 +109,6 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
-            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
             Farm farm = new Farm();
             for (Tile tile : tiles) {
                 if (tile.getPlaceable() == null) {
@@ -131,7 +128,6 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
-            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
             Farm farm = new Farm();
             for (Tile tile : tiles) {
                 if (tile.getPlaceable() == null) {
@@ -209,7 +205,7 @@ public class PlayerMap {
             for (int k = 0; k < 81; k += 20) {
                 for (int i = 140; i < 145; i++) {
                     for (int j = 102 + k; j < 111 + k; j++) {
-                        if (Tile.getTile(i, j).getPlaceable() == null && Tile.getTile(i, j).getWhoIsHere() == null
+                        if (Tile.getTile(i, j).getPlaceable() == null
                             && Tile.getTile(i, j).isWalkAble()) {
                             if (k == 0) {
                                 abigail2.setX(i);

@@ -488,8 +488,6 @@ public class GameMenuController {
                     player.setEnergy(0);
                     try {
                         Tile tile = result.get(temp);
-                        Tile.getTile(player.getTileX(), player.getTileY()).setWhoIsHere(null);
-                        tile.setWhoIsHere(player);
                         player.setX(tile.getX());
                         player.setY(tile.getY());
                     } catch (Exception e) {
@@ -500,8 +498,6 @@ public class GameMenuController {
 //                    for (Tile tile : result) {
 //                        System.out.println(tile.getX() + " " + tile.getY());
 //                    }
-                    Tile.getTile(player.getTileX(), player.getTileX()).setWhoIsHere(null);
-                    Tile.getTile(x, y).setWhoIsHere(player);
                     player.setX(x);
                     player.setY(y);
                     return new Result(true, "you are in the destination now");
