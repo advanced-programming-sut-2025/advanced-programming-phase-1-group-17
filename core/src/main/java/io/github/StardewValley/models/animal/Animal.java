@@ -110,7 +110,7 @@ public class Animal implements Placeable {
     }
 
     public static Animal findAnimalByName(String name) {
-        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
+        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimals()) {
             if (animal.getName().equals(name)) {
                 return animal;
             }
@@ -192,8 +192,8 @@ public class Animal implements Placeable {
 
     public void sell() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        player.getPlayerMap().getFarm().getAnimals().remove(this);
-        for (AnimalPlace animalPlace : player.getPlayerMap().getFarm().getAnimalPlaces()) {
+        player.getPlayerMap().getAnimals().remove(this);
+        for (AnimalPlace animalPlace : player.getPlayerMap().getAnimalPlaces()) {
             animalPlace.getAnimals().remove(this);
         }
         double price = this.animalType.getPrice() * (((double) friendship / 1000) + 0.3);
@@ -201,7 +201,7 @@ public class Animal implements Placeable {
     }
     public static void goToNextDay(){
 
-        for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getFarm().getAnimals()) {
+        for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimals()) {
             animal.counter++;
             if(animal.isFedToday && animal.counter >= animal.dayTillProduce){
                 animal.counter=0;

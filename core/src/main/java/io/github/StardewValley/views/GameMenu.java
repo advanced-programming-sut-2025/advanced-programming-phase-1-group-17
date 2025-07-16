@@ -325,35 +325,8 @@ public class GameMenu implements AppMenu, Screen {
             ));
         }
 
-        //For Artisan
-        else if ((matcher = GameMenuCommands.ArtisanUse.getMatcher(command)) != null) {
-            System.out.println(controller.artisanUse(
-                matcher.group("artisanName"),
-                matcher.group("itemNames")
-            ));
-        } else if ((matcher = GameMenuCommands.ArtisanGet.getMatcher(command)) != null) {
-            System.out.println(controller.artisanGet(
-                matcher.group("artisanName")
-            ));
-        }
-
-        //For Trade
-        else if ((matcher = GameMenuCommands.ShowAllProducts.getMatcher(command)) != null) {
-            System.out.println(controller.showAllProducts());
-        } else if ((matcher = GameMenuCommands.ShowAllAvailableProducts.getMatcher(command)) != null) {
-            System.out.println(controller.showAllAvailableProducts());
-        } else if ((matcher = GameMenuCommands.Purchase.getMatcher(command)) != null) {
-            System.out.println(controller.purchase(
-                matcher.group("productName"),
-                matcher.group("count")
-            ));
-        } else if ((matcher = GameMenuCommands.CheatAddDollars.getMatcher(command)) != null) {
+        else if ((matcher = GameMenuCommands.CheatAddDollars.getMatcher(command)) != null) {
             System.out.println(controller.cheatAddDollars(
-                matcher.group("count")
-            ));
-        } else if ((matcher = GameMenuCommands.Sell.getMatcher(command)) != null) {
-            System.out.println(controller.sellProduct(
-                matcher.group("productName").trim(),
                 matcher.group("count")
             ));
         }

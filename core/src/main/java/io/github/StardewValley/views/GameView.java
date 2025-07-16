@@ -4,10 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManager;
@@ -16,8 +22,12 @@ import io.github.StardewValley.controllers.GameController;
 import io.github.StardewValley.controllers.GameMenuController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.controllers.MapViewController;
+import io.github.StardewValley.controllers.StoreMenuController;
 import io.github.StardewValley.controllers.TalkController;
 import io.github.StardewValley.display;
+import io.github.StardewValley.models.market.StoreType;
+
+import java.util.Map;
 import io.github.StardewValley.models.TimeAndDate;
 
 import java.util.Scanner;
@@ -34,6 +44,7 @@ public class GameView implements Screen, InputProcessor {
         this.menuController = menuController;
 //        display.run(1,1,300);
         this.controller.setView(this);
+        Main.setGameView(this);
     }
 
     @Override
@@ -56,7 +67,6 @@ public class GameView implements Screen, InputProcessor {
         controller.updateGame(v);
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             Main.getMain().getScreen().dispose();
-            ScreenUtils.clear(0, 0, 0, 1);
             Main.getMain().setScreen(new MapView(new MapViewController(), this));
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
@@ -116,7 +126,17 @@ public class GameView implements Screen, InputProcessor {
     }
 
     @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) {
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
+        for (Map.Entry<StoreType, Rectangle> entry : controller.getStoreBounds().entrySet()) {
+            if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
+                    GameAssetManager.getGameAssetManager().getSkin(),
+                    this, entry.getKey()));
+                return true;
+            }
+        }
         return false;
     }
 
