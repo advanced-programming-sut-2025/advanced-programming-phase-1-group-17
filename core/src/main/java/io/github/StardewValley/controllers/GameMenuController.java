@@ -1980,10 +1980,10 @@ public class GameMenuController {
         return new Result(false, "you have not received a gift with this giftNumber");
     }
 
-    public Result giftHistory(String username) {
+    public String  giftHistory(String username) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         if (username.equals(App.getCurrentGame().getCurrentPlayingPlayer().getUser().getUsername())) {
-            return new Result(true, "you can't gift to your self.");
+            return"you can't gift to your self.";
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
@@ -1992,10 +1992,10 @@ public class GameMenuController {
                 for (Gift gift : currentPlayer.getGifts().get(player)) {
                     result += "whoGetGift : " + gift.getPlayerWhoGetGift().getUser().getUsername() + "\n" + gift.getItem() + " : (amount:)" + gift.getAmount() + " ---> (gift number:)" + gift.getGiftNumber() + "\n";
                 }
-                return new Result(true, result);
+                return result;
             }
         }
-        return new Result(false, "this username there is not in this game");
+        return "this username there is not in this game";
 
     }
 
@@ -2438,7 +2438,7 @@ public class GameMenuController {
         return new Result(false, "this username does not exist in this game");
     }
 
-    public Result tradeHistory() {
+    public String tradeHistory() {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         String result = "on going trades : \n";
         for (Trade trade : currentPlayer.getTrades()) {
@@ -2486,13 +2486,13 @@ public class GameMenuController {
                     + "--------------------------------------------------\n");
             }
         }
-        return new Result(true, result);
+        return result;
     }
 
-    public Result tradeList() {
+    public String tradeList() {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         if (currentPlayer.getTrades() == null) {
-            return new Result(false, "there are nothing trade for you");
+            return "there are nothing trade for you";
         } else {
             String result = "";
             for (Trade trade : currentPlayer.getTrades()) {
@@ -2520,9 +2520,9 @@ public class GameMenuController {
                 }
             }
             if (result.isEmpty()) {
-                return new Result(false, "there are nothing trade for you");
+                return "there are nothing trade for you";
             } else {
-                return new Result(true, result);
+                return result;
             }
         }
     }
