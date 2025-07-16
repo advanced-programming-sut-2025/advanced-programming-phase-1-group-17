@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -49,6 +50,7 @@ public class MainMenu implements AppMenu , Screen {
         this.skin = skin;
         this.buttons = new Table().center();
         controller.setView(this);
+
 
 
     }
