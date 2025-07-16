@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.TalkController;
 import io.github.StardewValley.models.App;
+import io.github.StardewValley.models.Player;
 
 public class TalkView implements Screen {
 
@@ -28,17 +30,25 @@ public class TalkView implements Screen {
     private TextButton button6;
     private TextButton button7;
     private TextButton button8;
+    private TextButton button9;
+    private TextButton button10;
+    private TextButton button11;
+    private TextButton button12;
+    private TextButton button13;
     private Texture backgroundTexture = new Texture(Gdx.files.internal("background.png"));
     private Window window;
     private Label label1;
     private TextButton closeX;
+    private Table table2;
+    private Player[] players = new Player[3];
 
 
     public TalkView(TalkController controller, Skin skin, GameView gameView) {
         label1 = new Label("", skin);
         label1.setWrap(true);
+        label1.setColor(Color.GREEN);
         ScrollPane scrollPane = new ScrollPane(label1, skin);
-        scrollPane.setScrollingDisabled(true, false);
+        scrollPane.setScrollingDisabled(true, true);
         window = new Window("                     messages", skin);
         window.setSize(500, 500);
         window.setPosition(
@@ -57,18 +67,36 @@ public class TalkView implements Screen {
         this.controller = controller;
         this.skin = skin;
         this.table = new Table(skin);
+        this.table2 = new Table(skin);
         this.backButton = new TextButton("Back", skin);
         this.label = new Label("", skin);
         label.setColor(1, 0, 0, 1);
-        this.button1 = new TextButton(App.getCurrentGame().getPlayers().get(0).getUser().getUsername(), skin);
-        this.button2 = new TextButton(App.getCurrentGame().getPlayers().get(1).getUser().getUsername(), skin);
-        this.button3 = new TextButton(App.getCurrentGame().getPlayers().get(2).getUser().getUsername(), skin);
+        int i = 0;
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals("NPC") || player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
+                continue;
+            players[i] = player;
+            i++;
+        }
+        this.button1 = new TextButton(players[0].getUser().getUsername(), skin);
+        this.button2 = new TextButton(players[1].getUser().getUsername(), skin);
+        this.button3 = new TextButton(players[2].getUser().getUsername(), skin);
         this.button4 = new TextButton(App.getCurrentGame().getNPCs().get(0).getName(), skin);
         this.button5 = new TextButton(App.getCurrentGame().getNPCs().get(1).getName(), skin);
         this.button6 = new TextButton(App.getCurrentGame().getNPCs().get(2).getName(), skin);
         this.button7 = new TextButton(App.getCurrentGame().getNPCs().get(3).getName(), skin);
         this.button8 = new TextButton(App.getCurrentGame().getNPCs().get(4).getName(), skin);
+        this.button9 = new TextButton("messages", skin);
+        this.button11 = new TextButton("Trade List", skin);
+        this.button10 = new TextButton("Trade History", skin);
+        this.button12 = new TextButton("Gift History", skin);
+        this.button13 = new TextButton("Talk History", skin);
+//        this.button14 = new TextButton("Talk", skin);
+//        this.button15 = new TextButton("Gift", skin);
 
+
+
+        //TODO
 
 
 
@@ -80,26 +108,35 @@ public class TalkView implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         table.setFillParent(true);
+        table2.setFillParent(true);
         label.setPosition(800,1000);
         table.left();
-        table.add(button1).width(200).height(100);
+        table2.right();
+        table.add(button1).width(200).height(80);
         table.row().pad(10,0,10,0);
-        table.add(button2).width(200).height(100);
+        table.add(button2).width(200).height(80);
         table.row().pad(10,0,10,0);
-        table.add(button3).width(200).height(100);
+        table.add(button3).width(200).height(80);
         table.row().pad(10,0,10,0);
-        table.add(button4).width(200).height(100);
+        table.add(button4).width(200).height(80);
         table.row().pad(10,0,10,0);
-        table.add(button5).width(200).height(100);
+        table.add(button5).width(200).height(80);
         table.row().pad(10,0,10,0);
-        table.add(button6).width(200).height(100);
+        table.add(button6).width(200).height(80);
         table.row().pad(10,0,10,0);
-        table.add(button7).width(200).height(100);
+        table.add(button7).width(200).height(80);
         table.row().pad(10,0,10,0);
-        table.add(button8).width(200).height(100);
+        table.add(button8).width(200).height(80);
         table.row().pad(10,0,10,0);
-        table.add(backButton).width(200).height(100);
-//        stage.addActor(window);
+        table.add(backButton).width(200).height(80);
+        table2.add(button10).width(300).height(80);
+        table2.row().pad(10,0,10,0);
+        table2.add(button11).width(300).height(80);
+        table2.row().pad(10,0,10,0);
+        table2.add(button12).width(300).height(80);
+        table2.row().pad(10,0,10,0);
+        table2.add(button13).width(300).height(80);
+        stage.addActor(table2);
         stage.addActor(label);
         stage.addActor(table);
 
@@ -204,7 +241,7 @@ public class TalkView implements Screen {
         this.label.setText(error);
     }
     public void setText(String text) {
-        this.label.setText(text);
+        this.label1.setText(text);
     }
     public Window getWindow() {
         return window;
@@ -216,5 +253,38 @@ public class TalkView implements Screen {
 
     public TextButton getCloseX() {
         return closeX;
+    }
+
+    public Label getLabel1() {
+        return label1;
+    }
+
+    public TextButton getButton9() {
+        return button9;
+    }
+
+    public Player[] getPlayers() {
+        return players;
+    }
+
+    public TextButton getButton10() {
+        return button10;
+    }
+
+    public TextButton getButton11() {
+        return button11;
+    }
+
+    public TextButton getButton12() {
+        return button12;
+    }
+
+    public TextButton getButton13() {
+        return button13;
+    }
+
+
+    public Table getTable2() {
+        return table2;
     }
 }
