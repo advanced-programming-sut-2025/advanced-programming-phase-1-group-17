@@ -31,13 +31,6 @@ public class MapViewController {
         uiCam.update();
     }
 
-    //    public void showMap() {
-//        for (Tile tile : Tile.getTiles()) {
-//            if (tile.getPlaceable().getTexture() == null)
-//                continue;
-//            Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * 2, tile.getY() * 2,5,5);
-//        }
-//    }
     public void showMap(float delta) {
         uiCam.update();
         handleCameraInput(delta);
@@ -58,15 +51,11 @@ public class MapViewController {
         float offsetY = screenCenterY - totalMapHeight / 2f;
 
         for (Tile tile : Tile.getTiles()) {
-            try {
                 float drawX = offsetX + tile.getX() * tileSize;
                 float drawY = offsetY + tile.getY() * tileSize;
                 if (tile.getPlaceable() == null || tile.getPlaceable().getTexture() == null)
                     continue;
                 Main.getBatch().draw(tile.getPlaceable().getTexture(), drawX, drawY, tileSize, tileSize);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         for (NPC npc : App.getCurrentGame().getNPCs()) {

@@ -25,7 +25,7 @@ public class PlayerMap {
     private ArrayList<Tile> tiles = new ArrayList<>();
     private Player player;
     private int type;
-    private ArrayList<Animal> animals;
+    private ArrayList<Animal> animals = new ArrayList<>();
     private ArrayList<AnimalPlace> animalPlaces;
     private GreenHouse greenHouse;
     private Hut hut;
