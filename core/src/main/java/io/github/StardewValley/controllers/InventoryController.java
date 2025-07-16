@@ -1,5 +1,7 @@
 package io.github.StardewValley.controllers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.*;
@@ -25,7 +27,7 @@ public class InventoryController {
 
     public void handleItemClick(BackPackableType backPackableType, Player player) {
         //TODO: maybe we can delete player.currentTool
-        player.setEquippedItem(backPackableType);
+        player.setEquippedItem(player.getBackPack().getBackPackItems().get(backPackableType).get(0));
         if (backPackableType instanceof ToolType toolType)
             toolEquip(toolType, player);
         else if (backPackableType instanceof FishingPoleType fishingPoleType)
@@ -39,13 +41,22 @@ public class InventoryController {
             this.view.getItemPickLabel().setText("You haven't picked any item.");
             return;
         } else {
-            BackPackableType backPackableType = player.getEquippedItem();
-            if (player.getEquippedItem() instanceof ToolType toolType)
+            BackPackable backPackable = player.getEquippedItem();
+            if (player.getEquippedItem() instanceof Tool tool)
                 player.setCurrentTool(null);
             player.setEquippedItem(null);
-            player.getBackPack().getBackPackItems().get(backPackableType).removeFirst();
+
+            if (player.getBackPack().getInventorySize(backPackable.getType().getName()) == 1)
+                player.getBackPack().getBackPackItems().remove(backPackable.getType());
+            else
+                player.getBackPack().getBackPackItems().get(backPackable.getType()).removeFirst();
+
+
             this.view.getItemPickLabel().setText("Item deleted from Inventory");
-            handleRefund(backPackableType, player);
+            handleRefund(backPackable, player);
+
+            //for updating the view
+            view.refreshInventoryItems();
         }
     }
 
@@ -62,9 +73,9 @@ public class InventoryController {
     }
 
 
-    public void handleRefund(BackPackableType backPackableType, Player player) {
+    public void handleRefund(BackPackable backPackable, Player player) {
         double refundPercentage = player.getTrashCan().getTrashCanRefundPercentage() / 100.0;
-        double refund = backPackableType.getPrice() * refundPercentage;
+        double refund = backPackable.getType().getPrice() * refundPercentage;
         player.getBackPack().addCoin(refund);
     }
 
@@ -72,7 +83,7 @@ public class InventoryController {
     public void handleSkillMenu() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(new SkillMenu(new SkillMenuController(),
-            GameAssetManager.getGameAssetManager().getSkin(), view.getPlayer()));
+            GameAssetManager.getGameAssetManager().getSkin(), view.getPlayer(), view.getGameView()));
     }
 
     public void handleSocialMenu() {
@@ -82,8 +93,21 @@ public class InventoryController {
     }
 
     public void handleMap() {
-//        Main.getMain().getScreen().dispose();
-//        Main.getMain().setScreen(new MapView(new MapController(),
-//            GameAssetManager.getGameAssetManager().getSkin(), view.getPlayer(), view.getGameView()));
+        Main.getMain().getScreen().dispose();
+        Main.getMain().setScreen(new MapView(new MapViewController(), view.getGameView()));
+    }
+
+    public void handlePlayerInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(view.getGameView());
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+            view.showOnlyTools();
+        }
+    }
+
+    public void goToGameView() {
+        Main.getMain().getScreen().dispose();
+        Main.getMain().setScreen(view.getGameView());
     }
 }

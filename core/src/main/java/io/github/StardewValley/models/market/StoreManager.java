@@ -1,5 +1,12 @@
 package io.github.StardewValley.models.market;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.ItemMenuController;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.cooking.FoodType;
@@ -16,13 +23,17 @@ import io.github.StardewValley.models.plant.FertilizerType;
 import io.github.StardewValley.models.plant.SeedType;
 import io.github.StardewValley.models.plant.SaplingType;
 import io.github.StardewValley.models.tools.FishingPoleType;
+import io.github.StardewValley.views.ItemMenu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class StoreManager {
     private final Map<StoreType, StoreInventory> shopInventories = new HashMap<>();
+
+    private final HashMap<StoreType, Store> stores = new HashMap<>();
 
     public void registerShop(StoreInventory inventory) {
         shopInventories.put(inventory.getStoreType(), inventory);
@@ -344,79 +355,6 @@ public class StoreManager {
 
     }
 
-    public String showAllProducts(Store store) {
-        StringBuilder result = new StringBuilder();
-        StoreInventory inventory = shopInventories.get(store.getType());
-
-        result.append("Store Name: %s".formatted(store.getType().name()));
-        int rank = 1;
-
-        double price;
-
-        for (ShopItem item : inventory.getItems()) {
-            if (store.getType().equals(StoreType.PierresGeneralStore))
-                price = getSeasonalPrice(item);
-            else
-                price = item.getPrice();
-            result.append("\n%d- %s(%.2f)".formatted(
-                rank++,
-                item.getType().getName(),
-                price
-            ));
-        }
-
-        if (store.getType().equals(StoreType.Blacksmith)) {
-            result.append("\nUpgrade Services:");
-            rank = 1;
-            for (UpgradeService upgradeService : inventory.getUpgradeServices()) {
-                result.append("\n%d- %s(%d)".formatted(
-                    rank++,
-                    upgradeService.getName(),
-                    upgradeService.getCost()
-                ));
-            }
-        }
-        return result.toString();
-    }
-
-    public String showAllAvailableProducts(Store store) {
-        StringBuilder result = new StringBuilder();
-        StoreInventory inventory = shopInventories.get(store.getType());
-        Season season = App.getCurrentGame().getDate().getSeason();
-
-        result.append("Store Name: %s".formatted(store.getType().name()));
-        int rank = 1;
-
-        double price;
-        for (ShopItem item : inventory.getItems()) {
-            if (!item.isAvailableInSeason(season) ||
-                !(item.isAvailable()) ||
-                (item.getSoldToday() >= item.getDailyLimit()))
-                continue;
-
-            result.append("\n%d- %s(%.2f)".formatted(
-                rank++,
-                item.getType().getName(),
-                item.getPrice()
-            ));
-        }
-
-        if (store.getType().equals(StoreType.Blacksmith)) {
-            result.append("\nUpgrade Services:");
-            rank = 1;
-            for (UpgradeService upgradeService : inventory.getUpgradeServices()) {
-                if (upgradeService.getSoldToday() >= upgradeService.getDailyLimit())
-                    continue;
-
-                result.append("\n%d- %s(%d)".formatted(
-                    rank++,
-                    upgradeService.getName(),
-                    upgradeService.getCost()
-                ));
-            }
-        }
-        return result.toString();
-    }
 
     public void resetDailyLimits() {
         for (StoreType storeType : shopInventories.keySet()) {
@@ -467,7 +405,7 @@ public class StoreManager {
         return true;
     }
 
-    public Result purchaseBackpack(ShopItem product) {
+    public void purchaseBackpack(ShopItem product) {
         if (product.getType().equals(BackPackType.LargeBackPack)) {
             for (ShopItem item : shopInventories.get(StoreType.PierresGeneralStore).getItems()) {
                 if (item.getType().equals(BackPackType.DeluxeBackPack)){
@@ -487,7 +425,6 @@ public class StoreManager {
             backPack.setCoin(App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin());
             App.getCurrentGame().getCurrentPlayingPlayer().setBackPack(backPack);
         }
-        return new Result(true, "Backpack purchased and equipped successfully");
     }
 
     public double getSeasonalPrice(ShopItem product) {
@@ -533,4 +470,11 @@ public class StoreManager {
         return product.getPrice(); // Default to item's base price
     }
 
+    public Store getStore(StoreType storeType) {
+        return stores.get(storeType);
+    }
+
+    public void addStore(StoreType storeType, Store store) {
+        stores.put(storeType, store);
+    }
 }

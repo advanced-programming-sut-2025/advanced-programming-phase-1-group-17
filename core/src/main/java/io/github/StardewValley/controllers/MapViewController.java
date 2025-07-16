@@ -1,7 +1,10 @@
 package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Game;
@@ -15,10 +18,17 @@ import io.github.StardewValley.views.MapView;
 import java.util.HashMap;
 
 public class MapViewController {
-    private MapView View;
+    private MapView view;
+
+    private final OrthographicCamera uiCam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    private final float cameraSpeed = 300;
+    private final Texture backgroundTile = GameAssetManager.getGameAssetManager().getBackgroundTexture();
+
 
     public void setView(MapView view) {
-        this.View = view;
+        this.view = view;
+        uiCam.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
+        uiCam.update();
     }
 
     //    public void showMap() {
@@ -28,11 +38,9 @@ public class MapViewController {
 //            Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * 2, tile.getY() * 2,5,5);
 //        }
 //    }
-    public void showMap() {
-
-        OrthographicCamera uiCam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        uiCam.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
+    public void showMap(float delta) {
         uiCam.update();
+        handleCameraInput(delta);
 
         Main.getBatch().setProjectionMatrix(uiCam.combined);
 
@@ -73,5 +81,41 @@ public class MapViewController {
             Main.getBatch().draw(player.getTexture(), offsetX + player.getTileX() * tileSize, offsetY + player.getTileY() * tileSize, tileSize * 10, tileSize * 10);
         }
 
+    }
+
+    public void handleExit() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(view.getGameView());
+        }
+    }
+
+    public void drawTiledBackground() {
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+
+        int tileWidth = backgroundTile.getWidth();
+        int tileHeight = backgroundTile.getHeight();
+
+        for (int x = 0; x < screenWidth; x += tileWidth) {
+            for (int y = 0; y < screenHeight; y += tileHeight) {
+                Main.getBatch().draw(backgroundTile, x, y);
+            }
+        }
+    }
+
+    private void handleCameraInput(float delta) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            uiCam.position.x -= cameraSpeed * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            uiCam.position.x += cameraSpeed * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            uiCam.position.y += cameraSpeed * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            uiCam.position.y -= cameraSpeed * delta;
+        }
     }
 }

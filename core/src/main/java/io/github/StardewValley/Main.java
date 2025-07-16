@@ -23,6 +23,7 @@ public class Main extends Game {
     private static SpriteBatch batch;
     private static ShapeRenderer shapeRenderer;
     private static boolean isLoggedInUser = false;
+    private static GameView gameView;
 
     @Override
     public void create() {
@@ -79,4 +80,11 @@ public class Main extends Game {
         return shapeRenderer;
     }
 
+    public static GameView getGameView() {
+        return gameView;
+    }
+
+    public static void setGameView(GameView gameView) {
+        Main.gameView = gameView;
+    }
 }
