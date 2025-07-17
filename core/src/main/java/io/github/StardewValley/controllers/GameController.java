@@ -8,6 +8,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.models.Game;
+import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.PlayerController;
+import io.github.StardewValley.views.*;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.animal.Animal;
 import io.github.StardewValley.models.animal.AnimalProduct;
@@ -31,10 +35,6 @@ import io.github.StardewValley.models.plant.Tree;
 import io.github.StardewValley.models.tools.FishingPoleType;
 import io.github.StardewValley.models.tools.Tool;
 import io.github.StardewValley.models.tools.ToolType;
-import io.github.StardewValley.views.GameView;
-import io.github.StardewValley.views.InventoryView;
-import io.github.StardewValley.views.MapView;
-import io.github.StardewValley.views.TalkView;
 
 import java.util.*;
 
@@ -174,7 +174,19 @@ public class GameController {
                     GameAssetManager.getGameAssetManager().getSkin(),
                     game.getCurrentPlayingPlayer(),
                     view));
+
                 break;
+            case Input.Keys.E:
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new CookingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CookingController()));
+                break;
+            case Input.Keys.R:
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
+                break;
+
+
+
         }
     }
 
