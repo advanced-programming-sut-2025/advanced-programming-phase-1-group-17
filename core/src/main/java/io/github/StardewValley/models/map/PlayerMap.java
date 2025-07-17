@@ -25,7 +25,7 @@ public class PlayerMap {
     private ArrayList<Tile> tiles = new ArrayList<>();
     private Player player;
     private int type;
-    private ArrayList<Animal> animals;
+    private ArrayList<Animal> animals = new ArrayList<>();
     private ArrayList<AnimalPlace> animalPlaces;
     private GreenHouse greenHouse;
     private Hut hut;
@@ -67,7 +67,6 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
-            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 1) {
             this.row = 0;
             this.col = 200;
@@ -81,7 +80,6 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
-            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 2) {
             this.row = 200;
             this.col = 0;
@@ -95,7 +93,6 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
-            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 3) {
             this.row = 200;
             this.col = 200;
@@ -109,7 +106,6 @@ public class PlayerMap {
                     owner.setPlayerMap(this);
                 }
             }
-            Tile.getTile(row + 1, col + 1).setWhoIsHere(owner);
         } else if (index == 4) {
             // NPC FORM
             for (int i = 101; i <= 200; i++) {
@@ -181,7 +177,7 @@ public class PlayerMap {
             for (int k = 0; k < 81; k += 20) {
                 for (int i = 140; i < 145; i++) {
                     for (int j = 102 + k; j < 111 + k; j++) {
-                        if (Tile.getTile(i, j).getPlaceable() == null && Tile.getTile(i, j).getWhoIsHere() == null
+                        if (Tile.getTile(i, j).getPlaceable() == null
                             && Tile.getTile(i, j).isWalkAble()) {
                             if (k == 0) {
                                 abigail2.setX(i);
