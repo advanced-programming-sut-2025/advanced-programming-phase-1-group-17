@@ -14,10 +14,6 @@ import io.github.StardewValley.views.MapView;
 import io.github.StardewValley.views.SkillMenu;
 import io.github.StardewValley.views.SocialMenu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class InventoryController {
     private InventoryView view;
 

@@ -22,7 +22,6 @@ public class Crop extends Plant implements BackPackable, Placeable {
 
     public Crop(boolean isForaging, CropType type, Tile tile, boolean isInsideGreenHouse) {
         super(isForaging, tile, isInsideGreenHouse);
-        this.isFullyGrown = isForaging;
         this.type = type;
         this.daysTillNextHarvest = 0;
     }

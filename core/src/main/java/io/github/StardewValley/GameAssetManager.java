@@ -8,14 +8,15 @@ import io.github.StardewValley.models.enums.Season;
 import io.github.StardewValley.models.market.StoreType;
 
 import java.util.HashMap;
-import java.util.Scanner;
 
 
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager;
     private final Skin skin = new Skin(Gdx.files.internal("skin/star-soldier-ui.json"));
 
-    private final Texture backgroundTexture = new Texture("Flooring/Flooring_44.png");
+    private final Texture backgroundTexture1 = new Texture("Flooring/Flooring_44.png");
+    private final Texture backgroundTexture2 = new Texture("Flooring/Flooring_50.png");
+    private final Texture plowedTexture = new Texture("Flooring/Flooring_57.png");
     private final Texture farmTexture = new Texture("Flooring/Flooring_14.png");
 
     //For GreenHouse
@@ -44,8 +45,16 @@ public class GameAssetManager {
         return skin;
     }
 
-    public Texture getBackgroundTexture() {
-        return backgroundTexture;
+    public Texture getBackgroundTexture1() {
+        return backgroundTexture1;
+    }
+
+    public Texture getBackgroundTexture2() {
+        return backgroundTexture2;
+    }
+
+    public Texture getPlowedTexture() {
+        return plowedTexture;
     }
 
     public Texture getGreenHouseTexture() {

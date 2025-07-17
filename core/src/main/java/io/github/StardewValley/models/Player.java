@@ -36,9 +36,10 @@ public class Player {
     private TextureRegion currentFrame;
     private float animationTimer = 0f;
     private boolean moved;
+    private Direction lastDirection = Direction.DOWN;
 
 
-    enum Direction {
+    public enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
     }
 
@@ -165,7 +166,7 @@ public class Player {
             new TextureRegion(new Texture("Alex/Alex34.png"))
         });
         walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
+        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
         currentFrame = walkDownAnimation.getKeyFrame(0);
         this.texture = new Texture("Alex/Alex11.png");
     }
@@ -613,5 +614,9 @@ public class Player {
 
     public Texture getBackgroundTexture() {
         return backgroundTexture;
+    }
+
+    public Direction getCurrentDirection() {
+        return currentDirection;
     }
 }
