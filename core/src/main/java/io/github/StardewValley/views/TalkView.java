@@ -42,6 +42,8 @@ public class TalkView implements Screen {
     private Table tableLabel;
     private TextButton closeX;
     private Table table2;
+    private TextField textField;
+    private TextButton send;
     private Player[] players = new Player[3];
 
 
@@ -71,6 +73,15 @@ public class TalkView implements Screen {
         this.controller = controller;
         this.skin = skin;
         this.table = new Table(skin);
+        this.textField = new TextField("", skin);
+        textField.setMessageText("Message");
+        textField.setWidth(400);
+        this.send = new TextButton("Send", skin);
+        send.setWidth(200);
+        textField.setVisible(false);
+        send.setVisible(false);
+        textField.setPosition(700,600);
+        send.setPosition(1100,600);
         this.table2 = new Table(skin);
         this.backButton = new TextButton("Back", skin);
         this.label = new Label("", skin);
@@ -146,6 +157,9 @@ public class TalkView implements Screen {
         table2.add(button12).width(300).height(80);
         table2.row().pad(10,0,10,0);
         table2.add(button13).width(300).height(80);
+
+        stage.addActor(textField);
+        stage.addActor(send);
         stage.addActor(table2);
         stage.addActor(tableLabel);
         stage.addActor(table);
@@ -300,5 +314,13 @@ public class TalkView implements Screen {
 
     public TextButton getButton14() {
         return button14;
+    }
+
+    public TextField getTextField() {
+        return textField;
+    }
+
+    public TextButton getSend() {
+        return send;
     }
 }
