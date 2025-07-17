@@ -42,15 +42,15 @@ public class WorldController {
         float camTop = camera.position.y + camera.viewportHeight / 2 * camera.zoom;
 
         int minTileX = Math.max((int) (camLeft / tileWidth), 0);
-        int maxTileX = Math.min((int) (camRight / tileWidth) + 1, 300);
+        int maxTileX = Math.min((int) (camRight / tileWidth) + 1, 302);
         int minTileY = Math.max((int) (camBottom / tileHeight), 0);
-        int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 300);
+        int maxTileY = Math.min((int) (camTop / tileHeight) + 1, 302);
         for (int x = minTileX - 1; x < maxTileX; x++) {
             for (int y = minTileY - 1; y < maxTileY; y++) {
-                try {
                     if (x < -2 || y < -2 || x > 300 || y > 300)
                         continue;
                     Tile tile = Tile.getTile(x + 1, y + 1);
+                    if (tile == null) continue;
                     if (tile.getPlaceable() instanceof Store)
                         continue;
 
@@ -70,9 +70,7 @@ public class WorldController {
                         Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
                     else
                         Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
-                }catch (Exception e) {
-                    e.printStackTrace();
-                }
+
             }
         }
         drawBigTextures();
