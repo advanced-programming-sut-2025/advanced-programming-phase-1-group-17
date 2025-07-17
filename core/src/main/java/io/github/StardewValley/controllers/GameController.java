@@ -8,9 +8,9 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.models.Game;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.PlayerController;
+import io.github.StardewValley.views.CookingShow;
 import io.github.StardewValley.views.GameView;
-import io.github.StardewValley.views.InventoryView;
-import io.github.StardewValley.views.MapView;
+import io.github.StardewValley.views.CraftingShow;
 
 public class GameController {
     public GameView view;
@@ -99,11 +99,18 @@ public class GameController {
                 break;
             case Input.Keys.ESCAPE:
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new InventoryView(new InventoryController(),
-                    GameAssetManager.getGameAssetManager().getSkin(),
-                    game.getCurrentPlayingPlayer(),
-                    view));
+//                Main.getMain().setScreen(new InventoryView(new InventoryController(),
+//                    GameAssetManager.getGameAssetManager().getSkin(),
+//                    game.getCurrentPlayingPlayer(),
+//                    view));
+
+                Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
+
                 break;
+            case Input.Keys.E:
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new CookingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CookingController()));
+
         }
     }
 
