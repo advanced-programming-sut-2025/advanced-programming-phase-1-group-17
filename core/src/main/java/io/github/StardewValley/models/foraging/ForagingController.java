@@ -17,35 +17,33 @@ import java.util.Random;
 public abstract class ForagingController {
     public static void setForagingForNextDay() {
         Random random = new Random();
-        for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
-            for (Tile tile : playerMap.getTiles()) {
-                if (tile.getPlaceable() instanceof Quarry) {
-                    if (random.nextInt(100) == 1)
-                        setMineralForaging(tile);
+        for (Tile tile : Tile.getTiles()) {
+            if (tile.getPlaceable() instanceof Quarry) {
+                if (random.nextInt(100) == 1)
+                    setMineralForaging(tile);
+                continue;
+            }
+
+            if (tile.getPlaceable() != null)
+                continue;
+            int randInt = random.nextInt(100) + 1;
+
+            if (randInt == 1) {
+                if (tile.isPlowed()) {
+                    setSeedForaging(tile);
                     continue;
                 }
-
-                if (tile.getPlaceable() != null)
-                    continue;
-                int randInt = random.nextInt(100) + 1;
-
+                randInt = random.nextInt(5) + 1;
                 if (randInt == 1) {
-                    if (tile.isPlowed()) {
-                        setSeedForaging(tile);
-                        continue;
-                    }
-                    randInt = random.nextInt(5) + 1;
-                    if (randInt == 1) {
-                        setCropForaging(tile);
-                    } else if (randInt == 2) {
-                        setTreeForaging(tile);
-                    } else if (randInt == 3) {
-                        setStoneForaging(tile);
-                    } else if (randInt == 4) {
-                        setWoodForaging(tile);
-                    } else
-                        setGrassForaging(tile);
-                }
+                    setCropForaging(tile);
+                } else if (randInt == 2) {
+                    setTreeForaging(tile);
+                } else if (randInt == 3) {
+                    setStoneForaging(tile);
+                } else if (randInt == 4) {
+                    setWoodForaging(tile);
+                } else
+                    setGrassForaging(tile);
             }
         }
     }
@@ -69,6 +67,7 @@ public abstract class ForagingController {
 
     public static void setMineralForaging(Tile tile) {
         tile.setPlaceable(new Mineral(getRandomMineralType(), true));
+        tile.setWalkAble(false);
     }
 
     public static boolean canBreakMineral(ToolMaterial toolMaterial, MineralType mineralType) {
@@ -98,6 +97,7 @@ public abstract class ForagingController {
     public static void setTreeForaging(Tile tile) {
         TreeType treeType = getRandomTreeType();
         tile.setPlaceable(new Tree(true, treeType, tile, false));
+        tile.setWalkAble(false);
     }
 
 
@@ -109,6 +109,7 @@ public abstract class ForagingController {
             foragingCrop = ForagingCropType.values()[randInt];
         } while (!foragingCrop.getSeasons().contains(App.getCurrentGame().getDate().getSeason()));
         tile.setPlaceable(new Crop(true, foragingCrop.getCropType(), tile, false));
+        tile.setWalkAble(false);
     }
 
 
@@ -124,7 +125,7 @@ public abstract class ForagingController {
         Crop crop = new Crop(false, Objects.requireNonNull(CropType.getCropTypeBySeedType(chosenSeed)), tile, false);
         tile.setPlowed(false);
         tile.setPlaceable(crop);
-
+        tile.setWalkAble(false);
     }
 
 }

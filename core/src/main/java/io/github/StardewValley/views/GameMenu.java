@@ -198,11 +198,12 @@ public class GameMenu implements AppMenu, Screen {
             System.out.println(controller.toolUpgrade(
                 matcher.group("toolName")
             ));
-        } else if ((matcher = GameMenuCommands.ToolsUse.getMatcher(command))!= null) {
-            System.out.println(controller.toolUse(
-                matcher.group("direction")
-            ));
         }
+//         else if ((matcher = GameMenuCommands.ToolsUse.getMatcher(command))!= null) {
+//            System.out.println(controller.toolUse(
+//                matcher.group("direction")
+//            ));
+//        }
 
         //For Inventory
         else if ((matcher = GameMenuCommands.InventoryShow.getMatcher(command)) != null) {
@@ -245,9 +246,9 @@ public class GameMenu implements AppMenu, Screen {
         } else if ((matcher = GameMenuCommands.CraftingCraft.getMatcher(command)) != null) {
             System.out.println(controller.craftingCraft(matcher.group("itemName")));
         }
-        else if((matcher = GameMenuCommands.PlaceItem.getMatcher(command)) != null) {
-            System.out.println(controller.placeItem(matcher.group("itemName"),matcher.group("direction")));
-        }
+//        else if((matcher = GameMenuCommands.PlaceItem.getMatcher(command)) != null) {
+//            System.out.println(controller.placeItem(matcher.group("itemName"),matcher.group("direction")));
+//        }
         else if((matcher = GameMenuCommands.CheatAddItem.getMatcher(command)) != null) {
             System.out.println(controller.addItem(matcher.group("itemName"),matcher.group("count")));
         }
@@ -287,9 +288,9 @@ public class GameMenu implements AppMenu, Screen {
         }
 
         //For fishing
-        else if((matcher = GameMenuCommands.Fishing.getMatcher(command)) != null) {
-            System.out.println(controller.fishing(matcher.group("fishingPole")));
-        }
+//        else if((matcher = GameMenuCommands.Fishing.getMatcher(command)) != null) {
+//            System.out.println(controller.fishing(matcher.group("fishingPole")));
+//        }
 
 
 

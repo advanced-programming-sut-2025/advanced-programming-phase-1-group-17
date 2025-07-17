@@ -1,6 +1,5 @@
 package io.github.StardewValley.models;
 
-import io.github.StardewValley.models.enums.Menu;
 import io.github.StardewValley.models.tools.ToolType;
 
 import java.util.ArrayList;
@@ -9,7 +8,7 @@ public class App {
     private static User loggedInUser;
     private static Game currentGame;
     private static ArrayList<User> users = new ArrayList<>();
-    private static ArrayList<Game> games = new ArrayList<Game>();
+    private static final ArrayList<Game> games = new ArrayList<Game>();
 
     public static ArrayList<User> getUsers() {
         return users;
@@ -31,9 +30,6 @@ public class App {
         return games;
     }
 
-    public static void setGames(ArrayList<Game> games) {
-        App.games = games;
-    }
     public static User getUserWithUsername(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
