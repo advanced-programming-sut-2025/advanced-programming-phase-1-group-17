@@ -458,8 +458,8 @@ public class Player {
 
         if (up) {
             newY += speed * delta;
-            lastDirection = currentDirection;
             this.currentDirection = Direction.UP;
+            lastDirection = currentDirection;
             energy -= energy * 0.0005;
             if (energy < 0) {
                 energy = 0;
@@ -467,8 +467,8 @@ public class Player {
             }
         } else if (down) {
             newY -= speed * delta;
-            lastDirection = currentDirection;
             this.currentDirection = Direction.DOWN;
+            lastDirection = currentDirection;
 
             energy -= energy * 0.0005;
             if (energy < 0) {
@@ -477,8 +477,9 @@ public class Player {
             }
         } else if (left) {
             newX -= speed * delta;
-            lastDirection = currentDirection;
+
             this.currentDirection = Direction.LEFT;
+            lastDirection = currentDirection;
             energy -= energy * 0.0005;
             if (energy < 0) {
                 energy = 0;
@@ -486,8 +487,9 @@ public class Player {
             }
         } else if (right) {
             newX += speed * delta;
-            lastDirection = currentDirection;
+
             this.currentDirection = Direction.RIGHT;
+            lastDirection = currentDirection;
             energy -= energy * 0.0005;
             if (energy < 0) {
                 energy = 0;
