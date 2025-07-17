@@ -1,9 +1,6 @@
 package io.github.StardewValley.views;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,6 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -25,9 +25,14 @@ import io.github.StardewValley.controllers.MapViewController;
 import io.github.StardewValley.controllers.StoreMenuController;
 import io.github.StardewValley.controllers.TalkController;
 import io.github.StardewValley.display;
+import io.github.StardewValley.models.Player;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import io.github.StardewValley.models.market.StoreType;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Map;
+
 import io.github.StardewValley.models.TimeAndDate;
 
 import java.util.Scanner;
@@ -37,12 +42,25 @@ public class GameView implements Screen, InputProcessor {
     private final GameController controller;
     private final GameMenuController menuController;
     private HUD hud;
-
+    private Window window = new Window("interactions", GameAssetManager.getGameAssetManager().getSkin());
+    private TextButton talkButton = new TextButton("Talk", GameAssetManager.getGameAssetManager().getSkin());
+    private TextButton tradeButton = new TextButton("Trade", GameAssetManager.getGameAssetManager().getSkin());
+    private TextButton HugButton = new TextButton("Hug", GameAssetManager.getGameAssetManager().getSkin());
+    private TextButton giftButton = new TextButton("Gift", GameAssetManager.getGameAssetManager().getSkin());
+    private TextButton askMarriageButton = new TextButton("Ask Marriage", GameAssetManager.getGameAssetManager().getSkin());
+    Table content = new Table(GameAssetManager.getGameAssetManager().getSkin());
+    private boolean activeWindow = true;
 
     public GameView(GameController controller, GameMenuController menuController) {
         this.controller = controller;
         this.menuController = menuController;
 //        display.run(1,1,300);
+        window.add(talkButton).width(60).height(30).pad(10).row();
+        window.add(tradeButton).width(60).height(30).pad(10).row();
+        window.add(giftButton).width(60).height(30).pad(10).row();
+        window.add(HugButton).width(60).height(30).pad(10).row();
+        window.add(askMarriageButton).width(60).height(30).pad(10).row();
+
         this.controller.setView(this);
         Main.setGameView(this);
     }
@@ -50,7 +68,11 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(this);
+
+        Gdx.input.setInputProcessor(multiplexer);
         this.hud = new HUD();
 
     }
@@ -58,13 +80,15 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public void render(float v) {
         ScreenUtils.clear(0, 0, 0, 1);
-
         controller.getCamera().update();
-
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
-
         controller.updateGame(v);
+        window.remove();
+
+        if (activeWindow)
+            updateInteractions();
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new MapView(new MapViewController(), this));
@@ -77,8 +101,8 @@ public class GameView implements Screen, InputProcessor {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             try {
-                App.getCurrentGame().getDate().goToNextDay();
-            }catch (Exception e){
+                menuController.nextTurn();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -92,7 +116,6 @@ public class GameView implements Screen, InputProcessor {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
-
 
 
     @Override
@@ -184,5 +207,49 @@ public class GameView implements Screen, InputProcessor {
 
     public GameMenuController getMenuController() {
         return menuController;
+    }
+
+    public void updateInteractions() {
+        ArrayList<Player> targetPlayers = new ArrayList<>();
+        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals("NPC") || player.equals(currentPlayer)) continue;
+            if (menuController.sideBySide(player, currentPlayer)) {
+                targetPlayers.add(player);
+            }
+        }
+        if (!targetPlayers.isEmpty()) {
+            for (Player player : targetPlayers) {
+                showInteractionWindow(player);
+            }
+        }
+
+    }
+
+    private void showInteractionWindow(Player targetPlayer) {
+
+
+        talkButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
+
+        tradeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
+        Vector3 worldPos = new Vector3(targetPlayer.getX(), targetPlayer.getY(), 0);
+        Vector3 screenPos = controller.getCamera().project(worldPos);
+        window.setMovable(true);
+        window.setResizable(false);
+        window.setSize(250,300);
+        window.setPosition(screenPos.x - window.getWidth() / 2f, screenPos.y);
+        window.add(content).expand().center();
+
+        stage.addActor(window);
     }
 }

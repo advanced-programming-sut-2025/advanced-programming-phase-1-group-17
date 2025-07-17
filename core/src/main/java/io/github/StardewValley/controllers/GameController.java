@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
@@ -12,10 +15,13 @@ import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.PlayerController;
 import io.github.StardewValley.models.market.Store;
 import io.github.StardewValley.models.market.StoreType;
+import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.InventoryView;
 import io.github.StardewValley.views.MapView;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameController {
@@ -25,6 +31,7 @@ public class GameController {
     int mapHeightInPixels;
     private final Game game;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
+    private final GameMenuController gameMenuController = new GameMenuController();
 
 
     private final WorldController worldController;
@@ -123,6 +130,8 @@ public class GameController {
             game.getCurrentPlayingPlayer().draw(Main.getBatch());
         }
     }
+
+
 
     private boolean upPressed, downPressed, leftPressed, rightPressed;
 
