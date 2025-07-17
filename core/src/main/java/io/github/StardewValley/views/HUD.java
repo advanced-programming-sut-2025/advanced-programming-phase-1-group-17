@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.models.App;
+import io.github.StardewValley.models.crafting.CraftingItem;
+import io.github.StardewValley.models.crafting.CraftingItemType;
 
 public class HUD {
     private Texture clock;
@@ -33,7 +35,11 @@ public class HUD {
         fall = new TextureRegion(clock,106,9,13,9);
         winter = new TextureRegion(clock,119,9,13,9);
         sunny = new TextureRegion(clock,119,18,13,9);
-
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
         font = new BitmapFont();
         dateFont = new BitmapFont();
         timeFont = new BitmapFont();
