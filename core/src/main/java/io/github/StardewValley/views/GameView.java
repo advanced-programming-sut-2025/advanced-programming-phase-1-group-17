@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
@@ -18,15 +19,14 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.GameController;
-import io.github.StardewValley.controllers.GameMenuController;
+import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.controllers.MapViewController;
-import io.github.StardewValley.controllers.StoreMenuController;
-import io.github.StardewValley.controllers.TalkController;
 import io.github.StardewValley.display;
+import io.github.StardewValley.models.Game;
 import io.github.StardewValley.models.Player;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import io.github.StardewValley.models.Result;
+import io.github.StardewValley.models.enums.Gender;
 import io.github.StardewValley.models.market.StoreType;
 
 import java.awt.*;
@@ -48,7 +48,8 @@ public class GameView implements Screen, InputProcessor {
     private TextButton HugButton = new TextButton("Hug", GameAssetManager.getGameAssetManager().getSkin());
     private TextButton giftButton = new TextButton("Gift", GameAssetManager.getGameAssetManager().getSkin());
     private TextButton askMarriageButton = new TextButton("Ask Marriage", GameAssetManager.getGameAssetManager().getSkin());
-    Table content = new Table(GameAssetManager.getGameAssetManager().getSkin());
+    public Table content = new Table(GameAssetManager.getGameAssetManager().getSkin());
+    private Label error = new Label("",GameAssetManager.getGameAssetManager().getSkin());
     private boolean activeWindow = true;
 
     public GameView(GameController controller, GameMenuController menuController) {
@@ -112,7 +113,8 @@ public class GameView implements Screen, InputProcessor {
 
         // فقط این خط کافیه
         hud.render(Main.getBatch());
-
+        error.setPosition(10,1000);
+        stage.addActor(error);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
@@ -220,25 +222,50 @@ public class GameView implements Screen, InputProcessor {
         }
         if (!targetPlayers.isEmpty()) {
             for (Player player : targetPlayers) {
-                showInteractionWindow(player);
+                showInteractionWindow(player,this);
             }
         }
 
     }
 
-    private void showInteractionWindow(Player targetPlayer) {
+    private void showInteractionWindow(Player targetPlayer,GameView gameView) {
 
 
         talkButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                Main.getMain().getScreen().dispose();
+                ScreenUtils.clear(0, 0, 0, 1);
+                Main.getMain().setScreen(new TalkView(new TalkController(targetPlayer), GameAssetManager.getGameAssetManager().getSkin(), gameView));
             }
         });
 
-        tradeButton.addListener(new ClickListener() {
+        HugButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Result r = menuController.hug(targetPlayer.getUser().getUsername());
+                error.setText(r.toString());
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        if (r.isSuccessful()) {
+                            if (App.getCurrentGame().getCurrentPlayingPlayer().getUser().getGender().equals(
+                                targetPlayer.getUser().getGender())) {
+                                if (targetPlayer.getUser().getGender().equals(Gender.Male)) {
+                                    //TODO
+                                }else{
+
+                                }
+
+
+                            }else if (!App.getCurrentGame().getCurrentPlayingPlayer().getUser().getGender().equals(
+                                targetPlayer.getUser().getGender())) {
+
+                            }
+                        }
+                        error.setText("");
+                    }
+                }, 2);
 
             }
         });
