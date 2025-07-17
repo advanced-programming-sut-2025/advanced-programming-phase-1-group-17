@@ -3,7 +3,13 @@ package io.github.StardewValley.models;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum RingType implements BackPackableType{
-    Ring;
+    Ring ("Ring/Glow_Ring.png") ;
+
+    private final String texturePath;
+
+    RingType(String texturePath) {
+        this.texturePath = texturePath;
+    }
 
     @Override
     public String getName() {
@@ -17,7 +23,6 @@ public enum RingType implements BackPackableType{
 
     @Override
     public Texture getInventoryTexture() {
-        //TODO
-        return null;
+        return new Texture(this.texturePath);
     }
 }

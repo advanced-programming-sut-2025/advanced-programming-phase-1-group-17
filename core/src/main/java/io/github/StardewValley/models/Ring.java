@@ -16,4 +16,5 @@ public class Ring implements BackPackable{
     public BackPackableType getType() {
         return RingType.Ring;
     }
+
 }

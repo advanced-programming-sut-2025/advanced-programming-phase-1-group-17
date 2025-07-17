@@ -3,7 +3,14 @@ package io.github.StardewValley.models;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum FlowerType implements BackPackableType {
-    FLOWER;
+    FLOWER ("Craftable_item/Tub_o%27_Flowers.png");
+
+    private final String texturePath;
+
+    FlowerType(String texturePath) {
+        this.texturePath = texturePath;
+    }
+
     public String getName(){
         return name();
     }
@@ -13,7 +20,6 @@ public enum FlowerType implements BackPackableType {
 
     @Override
     public Texture getInventoryTexture() {
-        //TODO
-        return null;
+        return new Texture(this.texturePath);
     }
 }
