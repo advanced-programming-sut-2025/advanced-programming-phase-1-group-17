@@ -36,6 +36,7 @@ public class Player {
     private TextureRegion currentFrame;
     private float animationTimer = 0f;
     private boolean moved;
+    private Direction lastDirection = Direction.DOWN;
 
 
     enum Direction {
@@ -457,6 +458,7 @@ public class Player {
 
         if (up) {
             newY += speed * delta;
+            lastDirection = currentDirection;
             this.currentDirection = Direction.UP;
             energy -= energy * 0.0005;
             if (energy < 0) {
@@ -465,7 +467,9 @@ public class Player {
             }
         } else if (down) {
             newY -= speed * delta;
+            lastDirection = currentDirection;
             this.currentDirection = Direction.DOWN;
+
             energy -= energy * 0.0005;
             if (energy < 0) {
                 energy = 0;
@@ -473,6 +477,7 @@ public class Player {
             }
         } else if (left) {
             newX -= speed * delta;
+            lastDirection = currentDirection;
             this.currentDirection = Direction.LEFT;
             energy -= energy * 0.0005;
             if (energy < 0) {
@@ -481,6 +486,7 @@ public class Player {
             }
         } else if (right) {
             newX += speed * delta;
+            lastDirection = currentDirection;
             this.currentDirection = Direction.RIGHT;
             energy -= energy * 0.0005;
             if (energy < 0) {
@@ -560,7 +566,23 @@ public class Player {
                 this.currentFrame = walkRightAnimation.getKeyFrame(animationTimer);
                 break;
             case IDLE:
-                this.currentFrame = walkDownAnimation.getKeyFrame(0);
+                switch (this.lastDirection) {
+                    case UP:
+                        this.currentFrame = walkUpAnimation.getKeyFrame(0);
+                        break;
+                    case DOWN:
+                        this.currentFrame = walkDownAnimation.getKeyFrame(0);
+                        break;
+                    case LEFT:
+                        this.currentFrame = walkLeftAnimation.getKeyFrame(0);
+                        break;
+                    case RIGHT:
+                        this.currentFrame = walkRightAnimation.getKeyFrame(0);
+                        break;
+                    default:
+                        this.currentFrame = walkDownAnimation.getKeyFrame(0);
+                        break;
+                }
                 break;
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
@@ -613,5 +635,9 @@ public class Player {
 
     public Texture getBackgroundTexture() {
         return backgroundTexture;
+    }
+
+    public Direction getCurrentDirection() {
+        return currentDirection;
     }
 }
