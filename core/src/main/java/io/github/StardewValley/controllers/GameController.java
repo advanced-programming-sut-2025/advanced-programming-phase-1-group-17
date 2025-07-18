@@ -31,10 +31,7 @@ import io.github.StardewValley.models.plant.Tree;
 import io.github.StardewValley.models.tools.FishingPoleType;
 import io.github.StardewValley.models.tools.Tool;
 import io.github.StardewValley.models.tools.ToolType;
-import io.github.StardewValley.views.GameView;
-import io.github.StardewValley.views.InventoryView;
-import io.github.StardewValley.views.MapView;
-import io.github.StardewValley.views.TalkView;
+import io.github.StardewValley.views.*;
 
 import java.util.*;
 
@@ -225,6 +222,10 @@ public class GameController {
                 toolController.toolUse(dx, dy);
             else if (player.getEquippedItem() instanceof CraftingItem)
                 placeItem(dx, dy);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManager.getGameAssetManager().getSkin()));
         }
         //TODO handle input key
     }
