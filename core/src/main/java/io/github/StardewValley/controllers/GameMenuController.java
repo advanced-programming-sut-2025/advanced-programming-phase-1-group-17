@@ -1607,7 +1607,7 @@ public class GameMenuController {
             if (tile.getPlaceable() instanceof AnimalPlace) {
                 return new Result(false, "animal is already in a animalPlace");
             }
-            if (tile.getPlaceable() == null)  {
+            if (tile.getPlaceable() == null) {
                 animalPlace.getAnimals().remove(animal);
                 tile.setPlaceable(animal);
                 animal.setTile(tile);
@@ -1862,7 +1862,7 @@ public class GameMenuController {
         int Amount;
         try {
             Amount = Integer.parseInt(amount);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new Result(false, e.getMessage());
         }
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
@@ -2049,9 +2049,10 @@ public class GameMenuController {
                             } else if (player.getUser().getGender() == currentPlayer.getUser().getGender()) {
                                 return new Result(false, "khejalat bekesh dadash (abjy)");
                             } else if (currentPlayer.getBackPack().getInventorySize(ring) < 1) {
-                                return new Result(false, "you have not this Ring for ask marriage");
+                                return new Result(false, "you haven't Ring for ask marriage");
                             } else {
-                                message message = new message(currentPlayer, "ask for marriage with " + ring);
+                                message message = new message(currentPlayer, "ask for marriage with "
+                                    + App.getCurrentGame().getCurrentPlayingPlayer().getUser().getUsername());
                                 player.getMessage().add(message);
                                 return new Result(true, "your marriage request has been sent");
                             }
@@ -2070,16 +2071,16 @@ public class GameMenuController {
     public Result respond(String accept, String username) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         for (message m : currentPlayer.getMessage()) {
-            if (m.getMessage().startsWith("ask for marriage with ")) {
+            if (m.getMessage().startsWith("ask for marriage")) {
                 for (Player player : App.getCurrentGame().getPlayers()) {
                     if (player.getUser().getUsername().equals(username)) {
                         if (m.getSender().equals(player)) {
                             if (accept.trim().equals("accept")) {
-                                BackPackable b = player.getBackPack().useItem(m.getMessage().substring(22));
+                                BackPackable b = player.getBackPack().useItem("Ring");
                                 currentPlayer.getBackPack().addItemToInventory(b);
                                 ArrayList<message> temp = new ArrayList<message>();
                                 for (message message : player.getMessage()) {
-                                    if (m.getMessage().startsWith("ask for marriage with ")) {
+                                    if (m.getMessage().startsWith("ask for marriage")) {
                                         temp.add(message);
                                     }
                                 }
@@ -2094,6 +2095,9 @@ public class GameMenuController {
                                 currentPlayer.getBackPack().addCoin(player.getBackPack().getCoin());
                                 player.setPartner(currentPlayer);
                                 currentPlayer.setPartner(player);
+                                message m1 = new message(App.getCurrentGame().getCurrentPlayingPlayer()
+                                    , "oh my God, I was taken by surprise. I thought about it. I accept");
+                                player.addMessage(m1);
                                 return new Result(true, "Congratulations, you got married");
                             } else {
                                 player.setIsbrokenUp(7);
@@ -2108,6 +2112,8 @@ public class GameMenuController {
                                 for (message message : temp) {
                                     player.getMessage().remove(message);
                                 }
+                                message m1 = new message(App.getCurrentGame().getCurrentPlayingPlayer(), "i do not intend to marry");
+                                player.addMessage(m1);
                                 return new Result(true, "request was rejected");
                             }
                         } else {
@@ -2119,7 +2125,7 @@ public class GameMenuController {
             }
         }
 
-        return new Result(false, "this username does not exist in this game");
+        return new Result(false, "this username did not request marriage to you");
     }
 
     public Result startTrade() {
@@ -2562,33 +2568,35 @@ public class GameMenuController {
         }
     }
 
-    public Result giftNPC(Matcher matcher) {
-        String NPCName = matcher.group("npcName");
-        String item = matcher.group("item");
+    public Result giftNPC(NPC npc, String item,String amount) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (App.getCurrentGame().getNPC(NPCName) != null) {
-            NPC npc = App.getCurrentGame().getNPC(NPCName);
-            if (currentPlayer.getBackPack().getInventorySize(item) == 0) {
-                return new Result(false, "your inventory is empty");
-            } else {
+        if (currentPlayer.getBackPack().getInventorySize(item) == 0) {
+            return new Result(false, "your inventory is empty");
+        } else {
+            int Amount;
+            try {
+                Amount = Integer.parseInt(amount);
+            }catch (NumberFormatException e) {
+                return new Result(false, "amount is not a number");
+            }
+            for (int i = 0; i < Amount ; i++) {
                 currentPlayer.getBackPack().useItem(item);
-                if (!currentPlayer.getGiftNPCToday().get(npc)) {
-                    if (npc.getFavorites().contains(item)) {
-                        currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 200));
-                        currentPlayer.getGiftNPCToday().put(npc, true);
-                        return new Result(true, "your beautiful gift was received by  " + npc.getName());
-                    } else {
-                        currentPlayer.getGiftNPCToday().put(npc, true);
-                        currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 50));
-                        return new Result(true, "your gift was received by  " + npc.getName());
-                    }
+            }
+            if (!currentPlayer.getGiftNPCToday().get(npc)) {
+                if (npc.getFavorites().contains(item)) {
+                    currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 200));
+                    currentPlayer.getGiftNPCToday().put(npc, true);
+                    return new Result(true, "your beautiful gift was received by  " + npc.getName());
                 } else {
+                    currentPlayer.getGiftNPCToday().put(npc, true);
+                    currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 50));
                     return new Result(true, "your gift was received by  " + npc.getName());
                 }
-
+            } else {
+                return new Result(true, "your gift was received by  " + npc.getName());
             }
+
         }
-        return new Result(false, "this NPC doesn't exist");
     }
 
     public String friendshipNPCList(NPC npc) {

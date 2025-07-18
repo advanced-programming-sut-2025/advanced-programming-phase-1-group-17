@@ -6,6 +6,7 @@ import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.BackPackableType;
+import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.GiftMenu;
@@ -19,6 +20,7 @@ public class GiftMenuController {
     private GameView gameView;
     private Player targetPlayer;
     private Player currentPlayer;
+    private NPC targetNpc;
     private BackPackableType backPackableType;
     private GameMenuController gameMenuController = new GameMenuController();
     private int amount;
@@ -28,6 +30,13 @@ public class GiftMenuController {
         this.view = view;
         this.gameView = gameView;
         currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        setListener();
+    }
+
+    public void setView(GiftMenu view, NPC npc, GameView gameView) {
+        this.view = view;
+        this.gameView = gameView;
+        this.targetNpc = npc;
         setListener();
     }
 
@@ -46,8 +55,11 @@ public class GiftMenuController {
             public void clicked(InputEvent event, float x, float y) {
                 if (backPackableType != null) {
                     String amount = view.getAmountTextField().getText().trim();
-                    view.setText(gameMenuController.gift(targetPlayer.getUser().getUsername(), backPackableType.getName(), amount).toString());
-                }else{
+                    if (targetPlayer != null)
+                        view.setText(gameMenuController.gift(targetPlayer.getUser().getUsername(), backPackableType.getName(), amount).toString());
+                    else
+                        view.setText(gameMenuController.giftNPC(targetNpc, backPackableType.getName(), amount).toString());
+                } else {
                     view.setText("please choose a gift");
                 }
             }

@@ -132,6 +132,9 @@ public class Player {
         backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic, null));
         backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic, null));
         backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic, null));
+
+        backPack.addItemToInventory(new Ring());
+
         this.currentTool = wateringCan;
         this.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MegaBomb));
         backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));
@@ -642,8 +645,8 @@ public class Player {
         return backgroundTexture;
     }
 
-    public Direction getCurrentDirection() {
-        return currentDirection;
+    public Direction getLastDirection() {
+        return lastDirection;
     }
 
     public boolean isNewMessage() {
