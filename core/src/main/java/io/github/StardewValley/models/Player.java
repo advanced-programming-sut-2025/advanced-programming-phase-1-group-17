@@ -10,6 +10,7 @@ import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
 import io.github.StardewValley.models.enums.BackPackType;
+import io.github.StardewValley.models.enums.Gender;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.map.PlayerMap;
@@ -139,36 +140,36 @@ public class Player {
 
 
         walkDownAnimation = new Animation<>(0.1f, new TextureRegion[]{
-            new TextureRegion(new Texture("Alex/Alex11.png")),
-            new TextureRegion(new Texture("Alex/Alex12.png")),
-            new TextureRegion(new Texture("Alex/Alex13.png")),
-            new TextureRegion(new Texture("Alex/Alex14.png"))
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex12.png" : "Emily/Emily12.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex13.png" : "Emily/Emily13.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex14.png" : "Emily/Emily14.png"))
         });
         walkDownAnimation.setPlayMode(Animation.PlayMode.LOOP);
         walkLeftAnimation = new Animation<>(0.1f, new TextureRegion[]{
-            new TextureRegion(new Texture("Alex/Alex41.png")),
-            new TextureRegion(new Texture("Alex/Alex42.png")),
-            new TextureRegion(new Texture("Alex/Alex43.png")),
-            new TextureRegion(new Texture("Alex/Alex44.png"))
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex41.png" : "Emily/Emily41.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex42.png" : "Emily/Emily42.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex43.png" : "Emily/Emily43.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex44.png" : "Emily/Emily44.png"))
         });
         walkLeftAnimation.setPlayMode(Animation.PlayMode.LOOP);
         walkRightAnimation = new Animation<>(0.1f, new TextureRegion[]{
-            new TextureRegion(new Texture("Alex/Alex21.png")),
-            new TextureRegion(new Texture("Alex/Alex22.png")),
-            new TextureRegion(new Texture("Alex/Alex23.png")),
-            new TextureRegion(new Texture("Alex/Alex24.png"))
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex21.png" : "Emily/Emily21.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex22.png" : "Emily/Emily22.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex23.png" : "Emily/Emily23.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex24.png" : "Emily/Emily24.png"))
         });
         walkRightAnimation.setPlayMode(Animation.PlayMode.LOOP);
         walkUpAnimation = new Animation<>(0.1f, new TextureRegion[]{
-            new TextureRegion(new Texture("Alex/Alex31.png")),
-            new TextureRegion(new Texture("Alex/Alex32.png")),
-            new TextureRegion(new Texture("Alex/Alex33.png")),
-            new TextureRegion(new Texture("Alex/Alex34.png"))
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex31.png" : "Emily/Emily31.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex32.png" : "Emily/Emily32.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex33.png" : "Emily/Emily33.png")),
+            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex34.png" : "Emily/Emily34.png"))
         });
         walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
         this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
         currentFrame = walkDownAnimation.getKeyFrame(0);
-        this.texture = new Texture("Alex/Alex11.png");
+        this.texture = new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png");
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -592,7 +593,7 @@ public class Player {
             if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
                 Main.getBatch().draw(this.currentFrame, player.getX() == 0 ? 1 : player.getX(), player.getY() == 0 ? 1 : player.getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
             else
-                Main.getBatch().draw(texture, player.getX() == 0 ? 1 : player.getX(), player.getY() == 0 ? 1 : player.getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+                Main.getBatch().draw(player.getTexture(), player.getX() == 0 ? 1 : player.getX(), player.getY() == 0 ? 1 : player.getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
         }
     }
 
