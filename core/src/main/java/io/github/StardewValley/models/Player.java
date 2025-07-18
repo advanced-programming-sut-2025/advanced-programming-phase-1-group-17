@@ -50,6 +50,7 @@ public class Player {
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
+    private boolean newMessage = false;
 
 
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
@@ -342,6 +343,7 @@ public class Player {
 
     public void addMessage(message message) {
         this.messages.add(message);
+        newMessage = true;
     }
 
     public ArrayList<message> getMessage() {
@@ -642,5 +644,13 @@ public class Player {
 
     public Direction getCurrentDirection() {
         return currentDirection;
+    }
+
+    public boolean isNewMessage() {
+        return newMessage;
+    }
+
+    public void setNewMessage(boolean newMessage) {
+        this.newMessage = newMessage;
     }
 }
