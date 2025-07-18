@@ -17,12 +17,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.GiftMenuController;
-import io.github.StardewValley.controllers.InventoryController;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.tools.BackPack;
 
-import java.lang.foreign.PaddingLayout;
 
 public class GiftMenu implements Screen {
     private final ScrollPane itemsPane;
@@ -33,17 +31,26 @@ public class GiftMenu implements Screen {
     private final Table itemsTable;
     private final Table mainTable;
     private Stage stage;
+    private final Label itemPickLabel;
+    private final TextField amountTextField;
+    private final TextButton back;
+    private final TextButton gift;
 
 
 
 
-    public GiftMenu(Player player, GiftMenuController controller, Skin skin,Player targetPlayer) {
+    public GiftMenu(Player player, GiftMenuController controller, Skin skin,Player targetPlayer,GameView gameView) {
         this.player = player;
         this.controller = controller;
         this.skin = skin;
         this.backPack = player.getBackPack();
         this.itemsTable = new Table();
         this.mainTable = new Table();
+        this.itemPickLabel = new Label("", skin);
+        this.amountTextField = new TextField("", skin);
+        amountTextField.setMessageText("amount");
+        this.back = new TextButton("Back", skin);
+        this.gift = new TextButton("Gift", skin);
         for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
             // 1. Prepare image button style:
             //TODO: need to delete this null-check
@@ -72,6 +79,7 @@ public class GiftMenu implements Screen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     controller.handleItemClick(backPackableType);
+                    itemPickLabel.setText("You chose the %s".formatted(backPackableType.getName()));
                 }
             });
 
@@ -79,7 +87,7 @@ public class GiftMenu implements Screen {
         }
 
         this.itemsPane = new ScrollPane(itemsTable, skin);
-        controller.setView(this, targetPlayer);
+        controller.setView(this, targetPlayer,gameView);
 
 
     }
@@ -92,6 +100,12 @@ public class GiftMenu implements Screen {
         mainTable.setFillParent(true);
         mainTable.top().pad(10);
         mainTable.add(itemsPane).height(300).width(500).row();
+        mainTable.row().pad(10,0,10,0);
+        mainTable.add(itemPickLabel).row();
+        mainTable.add(amountTextField).width(100).row();
+        mainTable.add(gift).row();
+        mainTable.add(back).row();
+
 
 
 
@@ -130,5 +144,56 @@ public class GiftMenu implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public ScrollPane getItemsPane() {
+        return itemsPane;
+    }
+
+    public Skin getSkin() {
+        return skin;
+    }
+
+    public GiftMenuController getController() {
+        return controller;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public BackPack getBackPack() {
+        return backPack;
+    }
+
+    public Table getItemsTable() {
+        return itemsTable;
+    }
+
+    public Table getMainTable() {
+        return mainTable;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public Label getItemPickLabel() {
+        return itemPickLabel;
+    }
+    public void setText(String text) {
+        itemPickLabel.setText(text);
+    }
+
+    public TextField getAmountTextField() {
+        return amountTextField;
+    }
+
+    public TextButton getBackButton() {
+        return back;
+    }
+
+    public TextButton getGift() {
+        return gift;
     }
 }

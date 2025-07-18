@@ -1859,7 +1859,12 @@ public class GameMenuController {
     }
 
     public Result gift(String username, String item, String amount) {
-        int Amount = Integer.parseInt(amount);
+        int Amount;
+        try {
+            Amount = Integer.parseInt(amount);
+        }catch (Exception e){
+            return new Result(false, e.getMessage());
+        }
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
         if (App.getUserWithUsername(username) == null) {
             return new Result(false, "there isn't player in this game with this username");

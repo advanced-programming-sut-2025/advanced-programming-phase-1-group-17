@@ -17,10 +17,12 @@ public class TalkController {
     private Player targetPlayer;
     private NPC targetNpc;
     private GameMenuController gameMenuController;
-    public TalkController (Player player) {
+
+    public TalkController(Player player) {
         this.targetPlayer = player;
     }
-    public TalkController () {
+
+    public TalkController() {
 
     }
 
@@ -40,6 +42,9 @@ public class TalkController {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 Main.getMain().getScreen().dispose();
@@ -49,6 +54,9 @@ public class TalkController {
         view.getButton9().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 view.getStage().addActor(view.getWindow());
@@ -59,6 +67,9 @@ public class TalkController {
         view.getButton1().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetPlayer = view.getPlayers()[0];
@@ -70,6 +81,9 @@ public class TalkController {
         view.getButton2().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetPlayer = view.getPlayers()[1];
@@ -81,6 +95,9 @@ public class TalkController {
         view.getButton3().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetPlayer = view.getPlayers()[2];
@@ -92,6 +109,9 @@ public class TalkController {
         view.getButton4().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetNpc = App.getCurrentGame().getNPCs().get(0);
@@ -103,6 +123,9 @@ public class TalkController {
         view.getButton5().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetNpc = App.getCurrentGame().getNPCs().get(1);
@@ -114,6 +137,9 @@ public class TalkController {
         view.getButton6().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetNpc = App.getCurrentGame().getNPCs().get(2);
@@ -125,6 +151,9 @@ public class TalkController {
         view.getButton7().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetNpc = App.getCurrentGame().getNPCs().get(3);
@@ -136,6 +165,9 @@ public class TalkController {
         view.getButton8().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetNpc = App.getCurrentGame().getNPCs().get(4);
@@ -148,6 +180,9 @@ public class TalkController {
         view.getButton10().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 view.getStage().addActor(view.getWindow());
@@ -158,6 +193,9 @@ public class TalkController {
         view.getButton11().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 view.getStage().addActor(view.getWindow());
@@ -169,6 +207,9 @@ public class TalkController {
         view.getButton12().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 if (targetPlayer == null) {
@@ -185,6 +226,9 @@ public class TalkController {
         view.getButton13().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 if (targetPlayer == null) {
@@ -200,6 +244,9 @@ public class TalkController {
         view.getButton14().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 if (targetPlayer == null) {
@@ -224,6 +271,29 @@ public class TalkController {
                 String Message = view.getTextField().getText();
                 if (Message.isEmpty()) return;
                 view.setError(gameMenuController.talk(targetPlayer.getUser().getUsername(), Message).toString());
+            }
+        });
+        view.getButton15().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                view.getButton16().setVisible(true);
+                view.getGiftNumber().setVisible(true);
+                view.getGiftRate().setVisible(true);
+            }
+        });
+        view.getButton16().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                String number = view.getGiftNumber().getText();
+                String rate = view.getGiftRate().getText();
+                if (number.isEmpty() || rate.isEmpty()) {
+                    view.setError("please enter number and rate");
+                    return;
+                }
+                view.setError(gameMenuController.giftRate(number, rate).toString());
+
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
+
             }
         });
 

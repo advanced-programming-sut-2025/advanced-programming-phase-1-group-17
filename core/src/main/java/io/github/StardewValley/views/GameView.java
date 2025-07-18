@@ -40,7 +40,7 @@ public class GameView implements Screen, InputProcessor {
         Main.setGameView(this);
 
         initUI();
-        setupListeners();
+        setupListeners(this);
     }
 
     private void initUI() {
@@ -62,7 +62,7 @@ public class GameView implements Screen, InputProcessor {
         window.add(askMarriageButton).width(60).height(30).pad(10).row();
     }
 
-    private void setupListeners() {
+    private void setupListeners(GameView gameView) {
         talkButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -122,7 +122,7 @@ public class GameView implements Screen, InputProcessor {
                 if (currentTargetPlayer == null) return;
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(),new GiftMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(), currentTargetPlayer));
+                    GameAssetManager.getGameAssetManager().getSkin(), currentTargetPlayer,gameView));
             }
         });
     }

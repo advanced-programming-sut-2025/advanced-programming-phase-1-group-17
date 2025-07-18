@@ -78,6 +78,9 @@ public class BackPack {
         } else {
             BackPackable b = backPackItems.get(backPackType).get(0);
             backPackItems.get(backPackType).remove(0);
+            if (backPackItems.get(backPackType).isEmpty()) {
+                backPackItems.remove(backPackType);
+            }
             return b;
         }
     }
