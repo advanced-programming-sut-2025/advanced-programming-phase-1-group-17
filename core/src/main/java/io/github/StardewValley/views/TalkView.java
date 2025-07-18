@@ -36,6 +36,10 @@ public class TalkView implements Screen {
     private TextButton button12;
     private TextButton button13;
     private TextButton button14;
+    private TextButton button15;
+    private TextButton button16;
+    private TextField giftRate;
+    private TextField giftNumber;
     private Texture backgroundTexture = new Texture(Gdx.files.internal("background.png"));
     private Window window;
     private Label label1;
@@ -82,6 +86,7 @@ public class TalkView implements Screen {
         send.setVisible(false);
         textField.setPosition(700,600);
         send.setPosition(1100,600);
+
         this.table2 = new Table(skin);
         this.backButton = new TextButton("Back", skin);
         this.label = new Label("", skin);
@@ -109,6 +114,21 @@ public class TalkView implements Screen {
         this.button12 = new TextButton("Gift History", skin);
         this.button13 = new TextButton("Talk History", skin);
         this.button14 = new TextButton("Talk", skin);
+        this.button15 = new TextButton("Gift Rate", skin);
+        this.giftRate = new TextField("", skin);
+        giftRate.setMessageText("Rate[0-5]");
+        this.giftNumber = new TextField("", skin);
+        this.giftNumber.setMessageText("Number");
+        this.button16 = new TextButton("Send Rate", skin);
+        giftRate.setWidth(200);
+        giftNumber.setWidth(200);
+        button16.setWidth(200);
+        giftNumber.setPosition(700,600);
+        giftRate.setPosition(900,600);
+        button16.setPosition(700,550);
+        button16.setVisible(false);
+        giftNumber.setVisible(false);
+        giftRate.setVisible(false);
 //        this.button14 = new TextButton("Talk", skin);
 //        this.button15 = new TextButton("Gift", skin);
 
@@ -148,6 +168,8 @@ public class TalkView implements Screen {
         table.add(button8).width(200).height(80);
         table.row().pad(10,0,10,0);
         table.add(backButton).width(200).height(80);
+        table2.add(button9).width(300).height(80);
+        table2.row().pad(10,0,10,0);
         table2.add(button14).width(300).height(80);
         table2.row().pad(10,0,10,0);
         table2.add(button10).width(300).height(80);
@@ -157,7 +179,11 @@ public class TalkView implements Screen {
         table2.add(button12).width(300).height(80);
         table2.row().pad(10,0,10,0);
         table2.add(button13).width(300).height(80);
-
+        table2.row().pad(10,0,10,0);
+        table2.add(button15).width(300).height(80);
+        stage.addActor(giftNumber);
+        stage.addActor(giftRate);
+        stage.addActor(button16);
         stage.addActor(textField);
         stage.addActor(send);
         stage.addActor(table2);
@@ -322,5 +348,25 @@ public class TalkView implements Screen {
 
     public TextButton getSend() {
         return send;
+    }
+
+    public TextButton getButton15() {
+        return button15;
+    }
+
+    public TextButton getButton16() {
+        return button16;
+    }
+
+    public TextField getGiftRate() {
+        return giftRate;
+    }
+
+    public TextField getGiftNumber() {
+        return giftNumber;
+    }
+
+    public Table getTableLabel() {
+        return tableLabel;
     }
 }
