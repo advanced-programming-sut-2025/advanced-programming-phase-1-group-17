@@ -59,6 +59,8 @@ public class TalkController {
                 view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
+                App.getCurrentGame().getCurrentPlayingPlayer().setNewMessage(false);
+                gameView.setError("");
                 view.getStage().addActor(view.getWindow());
                 view.getWindow().getTitleLabel().setText("                     messages");
                 view.setText(App.getCurrentGame().getCurrentPlayingPlayer().getStringMessage());

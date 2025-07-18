@@ -88,7 +88,7 @@ public class GameView implements Screen, InputProcessor {
                         if (r.isSuccessful()) {
                             Gender playerGender = App.getCurrentGame().getCurrentPlayingPlayer().getUser().getGender();
                             Gender targetGender = currentTargetPlayer.getUser().getGender();
-
+                            window.setVisible(false);
                             String imagePath;
                             if (playerGender == targetGender) {
                                 imagePath = (targetGender == Gender.Male) ? "hug1.png" : "hug3.png";
@@ -144,7 +144,9 @@ public class GameView implements Screen, InputProcessor {
         Main.getBatch().begin();
         controller.updateGame(delta);
         Main.getBatch().end();
-
+        if (App.getCurrentGame().getCurrentPlayingPlayer().isNewMessage()) {
+            error.setText("you have a new message");
+        }
         if (activeWindow) updateInteractions();
 
         error.setPosition(10, 1000);
@@ -237,4 +239,8 @@ public class GameView implements Screen, InputProcessor {
     @Override public boolean scrolled(float amountX, float amountY) { return false; }
     @Override public boolean keyDown(int keycode) { controller.setKey(keycode, true); return true; }
     @Override public boolean keyUp(int keycode) { controller.setKey(keycode, false); return true; }
+    public void setError(String error) {
+        this.error.setText(error);
+    }
+
 }
