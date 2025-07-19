@@ -227,8 +227,6 @@ public class GameView implements Screen, InputProcessor {
         error.setPosition(10, 1000);
         stage.addActor(error);
         hud.render(Main.getBatch());
-
-        controller.updateGame(v);
         controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
