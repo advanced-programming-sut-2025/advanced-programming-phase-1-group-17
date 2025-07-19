@@ -10,10 +10,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.GameController;
-import io.github.StardewValley.controllers.GameMenuController;
+import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.controllers.StoreMenuController;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.market.StoreType;
@@ -32,7 +30,6 @@ public class GameView implements Screen, InputProcessor {
     public GameView(GameController controller, GameMenuController menuController) {
         this.controller = controller;
         this.menuController = menuController;
-//        display.run(1,1,300);
         this.controller.setView(this);
         Main.setGameView(this);
     }
@@ -101,14 +98,18 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
+        if (checkCraftingItemBounds(worldCoordinates, true))
+            return true;
         if(handleToolUse(worldCoordinates))
             return true;
+        //return checkCraftingItemBounds(worldCoordinates, true);
         return checkStoreBounds(worldCoordinates);
     }
 
     @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) {
-        return false;
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
+        return checkCraftingItemBounds(worldCoordinates, false);
     }
 
     @Override
@@ -148,9 +149,23 @@ public class GameView implements Screen, InputProcessor {
             if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(),
-                    this, entry.getKey()));
+                    GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkCraftingItemBounds(Vector3 worldCoordinates , boolean isLeftClick) {
+        for (Map.Entry<CraftingItem, Rectangle> entry:  CraftingItem.getCraftingItemBounds().entrySet()) {
+            if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
+                Main.getMain().getScreen().dispose();
+                if (isLeftClick)
+                    Main.getMain().setScreen(new ArtisanCraftMenu(new ArtisanCraftMenuController(),
+                        GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
+                else
+                    Main.getMain().setScreen(new ArtisanInfoMenu(new ArtisanInfoMenuController(),
+                        GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
             }
         }
         return false;

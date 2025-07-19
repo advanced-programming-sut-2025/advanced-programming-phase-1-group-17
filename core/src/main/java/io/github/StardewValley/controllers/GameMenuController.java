@@ -4,7 +4,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.helperControllers.ArtisanController;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
 import io.github.StardewValley.display;
@@ -16,17 +15,13 @@ import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.cooking.Food;
 import io.github.StardewValley.models.cooking.FoodType;
 import io.github.StardewValley.models.cooking.Recipe;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
 import io.github.StardewValley.models.enums.*;
-import io.github.StardewValley.models.foraging.ForagingController;
-import io.github.StardewValley.models.foraging.Mineral;
 import io.github.StardewValley.models.animal.AnimalPlace;
 import io.github.StardewValley.models.map.*;
-import io.github.StardewValley.models.plant.*;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.Trade;
 import io.github.StardewValley.models.market.*;
@@ -257,7 +252,6 @@ public class GameMenuController {
     }
 
 
-    private final ArtisanController artisanController = new ArtisanController();
     private final FarmingController farmingController = new FarmingController();
     private final MarketsController marketsController = new MarketsController();
 
@@ -372,16 +366,16 @@ public class GameMenuController {
         return new Result(true, "added successfully");
     }
 
-    public Result changeDate(String day) {
-        int amount = Integer.parseInt(day);
-        for (int i = 0; i < amount; i++) {
-            App.getCurrentGame().getDate().goToNextDay();
-            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
-                artisanItemsInProgress.goToNextDay(24);
-            }
-        }
-        return new Result(true, amount + " days added successfully");
-    }
+//    public Result changeDate(String day) {
+//        int amount = Integer.parseInt(day);
+//        for (int i = 0; i < amount; i++) {
+//            App.getCurrentGame().getDate().goToNextDay();
+//            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
+//                artisanItemsInProgress.goToNextDay(24);
+//            }
+//        }
+//        return new Result(true, amount + " days added successfully");
+//    }
 
     public Result cheatThor(int x, int y) {
         Tile tile = Tile.getTile(x, y);
@@ -1087,7 +1081,7 @@ public class GameMenuController {
                 player.getBackPack().useItem(entry.getKey());
             }
         }
-        CraftingItem craftingItem = new CraftingItem(recipe.getTargetItem());
+        CraftingItem craftingItem = new CraftingItem(recipe.getTargetItem(), player);
         backPack.addItemToInventory(craftingItem);
         return new Result(true, itemName + " crafted successfully");
     }

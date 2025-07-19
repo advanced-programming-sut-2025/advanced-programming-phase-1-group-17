@@ -8,6 +8,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.models.Game;
+import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.PlayerController;
+import io.github.StardewValley.views.*;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.animal.Animal;
 import io.github.StardewValley.models.animal.AnimalProduct;
@@ -169,9 +173,20 @@ public class GameController {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new InventoryView(new InventoryController(),
                     GameAssetManager.getGameAssetManager().getSkin(),
-                    game.getCurrentPlayingPlayer(),
-                    view));
+                    game.getCurrentPlayingPlayer()));
+
                 break;
+            case Input.Keys.E:
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new CookingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CookingController()));
+                break;
+            case Input.Keys.R:
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
+                break;
+
+
+
         }
     }
 
@@ -215,13 +230,16 @@ public class GameController {
                     dx = -1;
                     break;
                 case IDLE:
-                    return;
+                    //return;
+                    break;
             }
 
             if (player.getEquippedItem() instanceof Tool)
                 toolController.toolUse(dx, dy);
             else if (player.getEquippedItem() instanceof CraftingItem)
-                placeItem(dx, dy);
+                //placeItem(dx, dy);
+                placeItem(0, -1);
+
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
@@ -235,8 +253,10 @@ public class GameController {
         player = App.getCurrentGame().getCurrentPlayingPlayer();
         CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
 
-        Tile tile = Tile.getTile(player.getTileX() + dx,
-            player.getY() + dy);
+        int x = player.getX() / worldController.getTileWidth() + dx;
+        int y = player.getY() / worldController.getTileHeight() + dy;
+        Tile tile = Tile.getTile(x, y);
+
         if (tile.getPlaceable() != null) {
             //TODO: maybe graphical error
             return;
@@ -244,7 +264,8 @@ public class GameController {
         }
 
         App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(craftingItemType);
-        tile.setPlaceable(new CraftingItem(craftingItemType));
+        tile.setPlaceable(new CraftingItem(craftingItemType, player));
+        tile.setWalkAble(false);
         switch (craftingItemType) {
             case CherryBomb -> {
                 int range = 3;

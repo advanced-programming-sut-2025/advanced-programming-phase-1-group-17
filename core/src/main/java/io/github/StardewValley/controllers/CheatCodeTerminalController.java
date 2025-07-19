@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 
 public class CheatCodeTerminalController {
     private CheatCodeTerminal view;
-    private MarketsController marketsController;
+    private final MarketsController marketsController = new MarketsController();
 
     public void setView(CheatCodeTerminal cheatCodeTerminal) {
         this.view = cheatCodeTerminal;
@@ -55,7 +55,8 @@ public class CheatCodeTerminalController {
                 matcher.group("count")
             );
         }
-        view.getOutputArea().setText("%s\n%s".formatted(view.getOutputArea().getText(), result));
+        view.getOutputArea().setText(">%s\n%s\n%s"
+            .formatted(view.getInputField().getText(), view.getOutputArea().getText(), result));
     }
 
     private String changeTime(String hour) {
@@ -87,8 +88,8 @@ public class CheatCodeTerminalController {
         int amount = Integer.parseInt(day);
         for (int i = 0; i < amount; i++) {
             App.getCurrentGame().getDate().goToNextDay();
-            for (ArtisanProduct artisanItemsInProgress : CraftingItem.getAllArtisanProductsInProgress()) {
-                artisanItemsInProgress.goToNextDay(24);
+            for (CraftingItem craftingItem : CraftingItem.getAllCraftingItems()) {
+                craftingItem.getArtisanProductInProgress().goToNextDay(24);
             }
         }
         return amount + " days added successfully";
