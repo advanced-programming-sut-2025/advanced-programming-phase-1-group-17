@@ -24,6 +24,7 @@ public class InventoryController {
     public void handleItemClick(BackPackableType backPackableType, Player player) {
         //TODO: maybe we can delete player.currentTool
         player.setEquippedItem(player.getBackPack().getBackPackItems().get(backPackableType).get(0));
+        player.setCurrentTool(null);
         if (backPackableType instanceof ToolType toolType)
             toolEquip(toolType, player);
         else if (backPackableType instanceof FishingPoleType fishingPoleType)
@@ -79,7 +80,7 @@ public class InventoryController {
     public void handleSkillMenu() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(new SkillMenu(new SkillMenuController(),
-            GameAssetManager.getGameAssetManager().getSkin(), view.getPlayer(), view.getGameView()));
+            GameAssetManager.getGameAssetManager().getSkin(), view.getPlayer(), Main.getGameView()));
     }
 
     public void handleSocialMenu() {
@@ -90,13 +91,13 @@ public class InventoryController {
 
     public void handleMap() {
         Main.getMain().getScreen().dispose();
-        Main.getMain().setScreen(new MapView(new MapViewController(), view.getGameView()));
+        Main.getMain().setScreen(new MapView(new MapViewController(), Main.getGameView()));
     }
 
     public void handlePlayerInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(view.getGameView());
+            Main.getMain().setScreen(Main.getGameView());
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             view.showOnlyTools();
         }
@@ -104,6 +105,6 @@ public class InventoryController {
 
     public void goToGameView() {
         Main.getMain().getScreen().dispose();
-        Main.getMain().setScreen(view.getGameView());
+        Main.getMain().setScreen(Main.getGameView());
     }
 }

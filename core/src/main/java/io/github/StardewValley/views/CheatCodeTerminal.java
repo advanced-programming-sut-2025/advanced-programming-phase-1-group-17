@@ -114,4 +114,8 @@ public class CheatCodeTerminal implements Screen {
     public TextArea getOutputArea() {
         return outputArea;
     }
+
+    public TextField getInputField() {
+        return inputField;
+    }
 }

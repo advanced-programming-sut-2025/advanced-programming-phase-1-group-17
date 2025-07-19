@@ -619,4 +619,6 @@ public class Player {
     public Direction getCurrentDirection() {
         return currentDirection;
     }
+
+
 }

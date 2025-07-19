@@ -24,7 +24,6 @@ import io.github.StardewValley.models.tools.ToolType;
 public class InventoryView implements Screen {
     private Stage stage;
     private final InventoryController controller;
-    private final GameView gameView;
 
     private final Label titleLabel;
     private final Table mainTable;
@@ -42,10 +41,9 @@ public class InventoryView implements Screen {
     private final TextButton mapButton;
     private final TextButton exitButton;
 
-    public InventoryView(InventoryController controller, Skin skin, Player player, GameView gameView) {
+    public InventoryView(InventoryController controller, Skin skin, Player player) {
         this.controller = controller;
         this.controller.setView(this);
-        this.gameView = gameView;
         this.mainTable = new Table();
 
         this.titleLabel = new Label("Journal", skin);
@@ -200,10 +198,6 @@ public class InventoryView implements Screen {
 
     public Player getPlayer() {
         return player;
-    }
-
-    public GameView getGameView() {
-        return gameView;
     }
 
 

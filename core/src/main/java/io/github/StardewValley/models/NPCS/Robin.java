@@ -77,7 +77,7 @@ public class Robin extends NPC implements Placeable {
             player.getBackPack().addcoin(1000);
         } else if (index == 1) {
             for (int i = 0; i < 3; i++) {
-                CraftingItem c = new CraftingItem(CraftingItemType.BeeHouse);
+                CraftingItem c = new CraftingItem(CraftingItemType.BeeHouse, player);
                 player.getBackPack().addItemToInventory(c);
             }
         } else {
