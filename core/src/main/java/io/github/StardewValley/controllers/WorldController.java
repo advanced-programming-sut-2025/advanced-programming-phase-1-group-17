@@ -10,6 +10,7 @@ import io.github.StardewValley.models.enums.Season;
 import io.github.StardewValley.models.map.*;
 import io.github.StardewValley.models.market.Store;
 import io.github.StardewValley.models.market.StoreType;
+import io.github.StardewValley.models.plant.Tree;
 
 public class WorldController {
     private final OrthographicCamera camera;
@@ -67,6 +68,8 @@ public class WorldController {
                         continue;
                     else if (tile.getPlaceable() instanceof NPC && !((NPC) tile.getPlaceable()).isNPC())
                         continue;
+                    else if (tile.getPlaceable() instanceof Tree)
+                        continue;
                     else if (tile.getPlaceable() instanceof NPC && ((NPC) tile.getPlaceable()).isNPC())
                         Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
                     else
@@ -78,6 +81,9 @@ public class WorldController {
     }
 
     private void drawBigTextures() {
+        for (Tile tile : Tile.getTreeTile()) {
+            Main.getBatch().draw(tile.getPlaceable().getTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
+        }
         for (int i = 0 ; i < 4 ; i++) {
             Main.getBatch().draw(App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getTexture()
                 ,App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getX() * tileWidth,

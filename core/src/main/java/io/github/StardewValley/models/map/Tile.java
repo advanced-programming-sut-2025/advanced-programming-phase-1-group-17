@@ -20,6 +20,7 @@ public class Tile {
     private NPC npcIsHere;
     private boolean crowImmunity = false;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>();
+    private static ArrayList<Tile> treeTile = new ArrayList<Tile>();
 
     public Tile(int x, int y, Player owner) {
         this.x = x;
@@ -63,7 +64,15 @@ public class Tile {
     }
 
     public void setPlaceable(Placeable placeable) {
+        if (!(placeable instanceof Tree) && treeTile.contains(this)) {
+            treeTile.remove(this);
+        }
         this.placeable = placeable;
+        if (placeable instanceof Tree) {
+            this.setWalkAble(false);
+            treeTile.add(this);
+        }
+
     }
 
     public boolean isWalkAble() {
@@ -149,5 +158,9 @@ public class Tile {
 
     public void setCrowImmunity(boolean crowImmunity) {
         this.crowImmunity = crowImmunity;
+    }
+
+    public static ArrayList<Tile> getTreeTile() {
+        return treeTile;
     }
 }
