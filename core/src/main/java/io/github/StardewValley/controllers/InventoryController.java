@@ -11,10 +11,6 @@ import io.github.StardewValley.models.tools.Tool;
 import io.github.StardewValley.models.tools.ToolType;
 import io.github.StardewValley.views.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class InventoryController {
     private InventoryView view;
 

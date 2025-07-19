@@ -47,7 +47,7 @@ public class Player {
 
 
 
-    enum Direction {
+    public enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
     }
 
@@ -175,7 +175,7 @@ public class Player {
             new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex34.png" : "Emily/Emily34.png"))
         });
         walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
+        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
         currentFrame = walkDownAnimation.getKeyFrame(0);
         this.texture = new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png");
     }
@@ -692,5 +692,9 @@ public class Player {
 
     public void setNewMessage(boolean newMessage) {
         this.newMessage = newMessage;
+    }
+
+    public Direction getCurrentDirection() {
+        return currentDirection;
     }
 }

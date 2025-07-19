@@ -77,7 +77,4 @@ public enum CraftingItemType implements BackPackableType {
             ));
     }
 
-    public Texture getIcon() {
-        return icon;
-    }
 }
