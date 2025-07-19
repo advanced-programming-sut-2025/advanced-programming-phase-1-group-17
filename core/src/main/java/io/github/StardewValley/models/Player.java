@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.NPCS.NPC;
+import io.github.StardewValley.models.artisan.ArtisanProduct;
+import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
@@ -132,9 +134,7 @@ public class Player {
         backPack.addItemToInventory(new Tool(ToolType.Hoe, ToolMaterial.Basic, null));
         backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic, null));
         backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic, null));
-
-        backPack.addItemToInventory(new Ring());
-
+//        backPack.addItemToInventory(new ArtisanProduct(ArtisanProductType.GoldBar, null));
         this.currentTool = wateringCan;
         this.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MegaBomb));
         backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));

@@ -210,6 +210,11 @@ public class GameView implements Screen, InputProcessor {
             Main.getMain().setScreen(new TalkView(new TalkController(),
                 GameAssetManager.getGameAssetManager().getSkin(), this));
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
+                ,GameAssetManager.getGameAssetManager().getSkin(), this));
+        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             try {

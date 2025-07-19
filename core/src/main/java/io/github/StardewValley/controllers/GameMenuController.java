@@ -2645,7 +2645,7 @@ public class GameMenuController {
             }
         }
         if (npc == null) {
-            return new Result(false, "npc not found");
+            return new Result(false, "you must be next to the NPC to complete the mission");
         } else {
             Quest quest = npc.getRequests().get(i - 1);
             if (quest.isCompleted()) {
