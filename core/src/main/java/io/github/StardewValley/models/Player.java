@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.ChooseMapController;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.artisan.ArtisanProductType;
@@ -16,6 +17,7 @@ import io.github.StardewValley.models.enums.Gender;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.map.PlayerMap;
+import io.github.StardewValley.views.chooseMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class Player {
     private PlayerMap playerMap;
     private User user;
     private boolean isGuest = false;
+    private boolean isPassedOut = false;
     private int x;
     private int y;
     private Buff buff;
@@ -38,6 +41,7 @@ public class Player {
     private transient Animation<TextureRegion> walkRightAnimation;
     private TextureRegion currentFrame;
     private float animationTimer = 0f;
+    private float passOutTimer = 0f;
     private boolean moved;
     private Direction lastDirection = Direction.DOWN;
 
@@ -184,10 +188,24 @@ public class Player {
         }
     }
 
+//    public void passOut() {
+//        isPassedOut = true;
+//        hasPassedOutToday = true;
+//        Main.getBatch().draw(new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex.png" : "Emily.png")), getX() == 0 ? 1 : getX(), getY() == 0 ? 1 : getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+//        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+//            @Override
+//            public void run() {
+//                App.getCurrentGame().switchPlayer();
+//                hasPassedOutToday = false;
+//                isPassedOut = false;
+//            }
+//        }, 3);
+//  }
     public void passOut() {
+        if (isPassedOut) return;
         hasPassedOutToday = true;
-        App.getCurrentGame().switchPlayer();
-        hasPassedOutToday = false;
+        isPassedOut = true;
+        passOutTimer = 3f;
     }
 
     public int getY() {
@@ -458,6 +476,15 @@ public class Player {
     }
 
     public void update(float delta, boolean up, boolean down, boolean left, boolean right) {
+        if (isPassedOut) {
+            passOutTimer -= delta;
+            if (passOutTimer <= 0) {
+                App.getCurrentGame().switchPlayer();
+                isPassedOut = false;
+                hasPassedOutToday = false;
+            }
+            return; // هیچ حرکتی انجام نده
+        }
         float newX = x;
         float newY = y;
 
@@ -560,6 +587,16 @@ public class Player {
 
 
     public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
+        if (isPassedOut) {
+            batch.draw(
+                new Texture(user.getGender().equals(Gender.Male) ? "Alex.png" : "Emily.png"),
+                getX() == 0 ? 1 : getX(),
+                getY() == 0 ? 1 : getY(),
+                backgroundTexture.getWidth() / 1.5f,
+                backgroundTexture.getHeight() / 1.5f
+            );
+            return;
+        }
         switch (this.currentDirection) {
             case UP:
                 this.currentFrame = walkUpAnimation.getKeyFrame(animationTimer);
