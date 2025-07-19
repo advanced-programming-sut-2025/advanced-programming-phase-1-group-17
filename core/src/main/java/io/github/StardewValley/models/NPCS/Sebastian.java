@@ -21,6 +21,12 @@ public class Sebastian extends NPC implements Placeable {
 
     public Sebastian(boolean isSebastian){
         isNPC = isSebastian;
+        this.dialogueText.add("hello i am sebastian");
+        this.dialogueText.add("hi how are you?");
+        this.dialogueText.add("what do you do on vacation?");
+        this.dialogueText.add("I am a cook");
+        this.dialogueText.add("this is a village in iran.");
+        this.dialogueText.add("be careful,the weather is very hot.go home quickly.");
     }
     public Sebastian(boolean isHarvey, int x, int y){
         isNPC = isHarvey;
