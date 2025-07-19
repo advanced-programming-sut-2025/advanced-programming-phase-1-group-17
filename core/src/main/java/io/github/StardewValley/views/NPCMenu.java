@@ -5,14 +5,17 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.NPCMenuController;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.NPCS.NPC;
 
 public class NPCMenu implements Screen {
     private NPCMenuController controller;
@@ -27,12 +30,12 @@ public class NPCMenu implements Screen {
     private TextButton button7;
     private TextButton button8;
     private TextButton button10;
-    private TextButton button13;
     private TextButton button1;
     private Texture backgroundTexture = new Texture(Gdx.files.internal("background.png"));
     private Label label1;
     private Table tableLabel;
     private Table table2;
+
 
     public NPCMenu(NPCMenuController controller, Skin skin, GameView gameView) {
         label1 = new Label("", skin);
@@ -56,11 +59,7 @@ public class NPCMenu implements Screen {
         this.button7 = new TextButton(App.getCurrentGame().getNPCs().get(3).getName(), skin);
         this.button8 = new TextButton(App.getCurrentGame().getNPCs().get(4).getName(), skin);
         this.button10 = new TextButton("Quests List", skin);
-        this.button13 = new TextButton("Quests Finish", skin);
         this.button1 = new TextButton("Gift", skin);
-
-
-        //TODO
 
 
         controller.setView(this, gameView);
@@ -88,8 +87,6 @@ public class NPCMenu implements Screen {
         table.row().pad(10, 0, 10, 0);
         table.add(backButton).width(200).height(80);
         table2.add(button10).width(300).height(80);
-        table2.row().pad(10, 0, 10, 0);
-        table2.add(button13).width(300).height(80);
         table2.row().pad(10, 0, 10, 0);
         table2.add(button1).width(300).height(80);
         stage.addActor(table2);
@@ -199,15 +196,11 @@ public class NPCMenu implements Screen {
     }
 
 
-
     public TextButton getButton10() {
         return button10;
     }
 
 
-    public TextButton getButton13() {
-        return button13;
-    }
 
 
     public Table getTable2() {
@@ -216,5 +209,31 @@ public class NPCMenu implements Screen {
 
     public TextButton getButton1() {
         return button1;
+    }
+
+    public void showQuestDialog(NPC npc) {
+        Dialog dialog = new Dialog("Choose a Quest", skin);
+
+        for (int i = 0; i < 3; i++) {
+            final int index = i;
+            String questText = (i + 1) + "- Level: " +
+                npc.getRequests().get(i).getLevel() +
+                " | " + npc.getRequests().get(i).getQuestExplanation() +
+                (npc.getRequests().get(i).isCompleted() ? " [COMPLETED]" : "");
+
+            TextButton questButton = new TextButton(questText, skin);
+            questButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    dialog.hide();
+                    controller.onQuestSelected(npc, index + 1);
+                }
+            });
+
+            dialog.getContentTable().add(questButton).pad(5).row();
+        }
+
+        dialog.button("Cancel", false);
+        dialog.show(stage);
     }
 }

@@ -6,11 +6,9 @@ import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.Player;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.GiftMenu;
 import io.github.StardewValley.views.NPCMenu;
-import io.github.StardewValley.views.TalkView;
 
 public class NPCMenuController {
     private NPCMenu view;
@@ -60,7 +58,7 @@ public class NPCMenuController {
         view.getButton8().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 targetNpc = App.getCurrentGame().getNPCs().get(4);
-                view.setText(gameMenuController.friendshipNPCList(targetNpc));
+                view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton1().addListener(new ClickListener() {
@@ -71,7 +69,18 @@ public class NPCMenuController {
                     GameAssetManager.getGameAssetManager().getSkin(), null, gameView,targetNpc));
             }
         });
+        view.getButton10().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if (targetNpc == null) view.setError("please select a npc");
+                else {
+                    view.showQuestDialog(targetNpc);
+                }
+            }
+        });
 
 
+    }
+    public void onQuestSelected(NPC npc, int index) {
+        view.setError(gameMenuController.questFinish(String.valueOf(index)).toString());
     }
 }
