@@ -2,11 +2,6 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.*;
@@ -16,12 +11,11 @@ import io.github.StardewValley.models.map.*;
 import io.github.StardewValley.models.market.Store;
 import io.github.StardewValley.models.market.StoreType;
 
-import java.util.Scanner;
-
 public class WorldController {
     private final OrthographicCamera camera;
 
     private transient Texture backgroundTexture;
+    private transient Texture backgroundTexture2;
     private int tileWidth;
     private int tileHeight;
 
@@ -30,7 +24,8 @@ public class WorldController {
     }
 
     public void initTransients() {
-        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture();
+        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
+        this.backgroundTexture2 = GameAssetManager.getGameAssetManager().getBackgroundTexture2();
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
     }
@@ -54,8 +49,14 @@ public class WorldController {
                     if (tile.getPlaceable() instanceof Store)
                         continue;
 
-                    Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-                    if (tile.getPlaceable() == null)
+                    if ((tile.getX() + tile.getY()) % 2 == 0)
+                        Main.getBatch().draw(backgroundTexture2, tile.getX() * tileWidth, tile.getY() * tileHeight);
+                    else
+                        Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+
+                    if (tile.isPlowed())
+                        Main.getBatch().draw(GameAssetManager.getGameAssetManager().getPlowedTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
+                    else if (tile.getPlaceable() == null)
                         continue;
                         //TODO: will be deleted
                     else if (tile.getPlaceable().getTexture() == null)

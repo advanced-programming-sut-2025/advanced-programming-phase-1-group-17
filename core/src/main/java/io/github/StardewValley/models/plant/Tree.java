@@ -3,7 +3,6 @@ package io.github.StardewValley.models.plant;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.models.tools.ToolMaterial;
 
 public class Tree extends Plant implements Placeable {
     private TreeType type;
@@ -15,12 +14,14 @@ public class Tree extends Plant implements Placeable {
         this.type = treeType;
         this.daysTillNextHarvest = 0;
 
-        String[] paths = type.getImageAddresses();
+        String[] paths = type.getStageTexturePaths();
         this.textures = new Texture[paths.length];
         for (int i = 0; i < paths.length; i++) {
             this.textures[i] = new Texture(paths[i]);
         }
-        this.hasFruitTexture = new Texture(type.getHasFruitImageAddress());
+        this.hasFruitTexture = new Texture(type.getHasFruitTexturePath());
+        if (isForaging)
+            this.currentStageIndex = type.getStages().size() - 1;
     }
 
     public int getDaysTillFullGrowth() {
@@ -53,7 +54,7 @@ public class Tree extends Plant implements Placeable {
     }
 
     void handleFruitCycle() {
-        if (!isFullyGrown)
+        if (!isFullyGrown || isForaging)
             return;
 
         if (daysTillNextHarvest == 0) {
@@ -81,8 +82,8 @@ public class Tree extends Plant implements Placeable {
 
     public Texture getTexture() {
         if (hasFruit) {
-            return hasFruitTexture;
+            return TreeAssetManager.getTreeAssetManager().getHasFruitTexture(type);
         }
-        return textures[currentStageIndex];
+        return TreeAssetManager.getTreeAssetManager().getStageTexture(type, currentStageIndex);
     }
 }

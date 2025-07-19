@@ -23,6 +23,7 @@ public abstract class Plant implements Placeable {
         this.isInsideGreenhouse = isInsideGreenhouse;
         this.tile = tile;
         this.isForaging = isForaging;
+        this.isFullyGrown = isForaging;
     }
 
     public abstract int getDaysTillFullGrowth();
@@ -38,6 +39,8 @@ public abstract class Plant implements Placeable {
     }
 
     private void handleDaysWithoutWater() {
+        if (isForaging)
+            return;
         Random random = new Random();
         int randInt = random.nextInt(100);
         if (fertilizerType != null) {

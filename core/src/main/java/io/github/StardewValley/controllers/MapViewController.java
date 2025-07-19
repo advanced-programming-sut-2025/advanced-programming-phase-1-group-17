@@ -7,22 +7,17 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Game;
-import io.github.StardewValley.models.NPCS.Abigail;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.map.Hut;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.views.MapView;
-
-import java.util.HashMap;
 
 public class MapViewController {
     private MapView view;
 
     private final OrthographicCamera uiCam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     private final float cameraSpeed = 300;
-    private final Texture backgroundTile = GameAssetManager.getGameAssetManager().getBackgroundTexture();
+    private final Texture backgroundTile = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
 
 
     public void setView(MapView view) {

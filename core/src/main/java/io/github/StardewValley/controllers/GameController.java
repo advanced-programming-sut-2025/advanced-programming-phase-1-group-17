@@ -3,26 +3,50 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Game;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.PlayerController;
+import io.github.StardewValley.views.*;
+import io.github.StardewValley.models.*;
+import io.github.StardewValley.models.animal.Animal;
+import io.github.StardewValley.models.animal.AnimalProduct;
+import io.github.StardewValley.models.animal.AnimalType;
+import io.github.StardewValley.models.cooking.BuffType;
+import io.github.StardewValley.models.crafting.CraftingItem;
+import io.github.StardewValley.models.crafting.CraftingItemType;
+import io.github.StardewValley.models.enums.FishType;
+import io.github.StardewValley.models.foraging.ForagingController;
+import io.github.StardewValley.models.foraging.Mineral;
+import io.github.StardewValley.models.map.GreenHouse;
+import io.github.StardewValley.models.map.Tile;
+import io.github.StardewValley.models.market.Fish;
+import io.github.StardewValley.models.market.ItemQuality;
 import io.github.StardewValley.models.market.Store;
 import io.github.StardewValley.models.market.StoreType;
 import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.InventoryView;
 import io.github.StardewValley.views.MapView;
+import io.github.StardewValley.models.plant.Crop;
+import io.github.StardewValley.models.plant.Fruit;
+import io.github.StardewValley.models.plant.Plant;
+import io.github.StardewValley.models.plant.Tree;
+import io.github.StardewValley.models.tools.FishingPoleType;
+import io.github.StardewValley.models.tools.Tool;
+import io.github.StardewValley.models.tools.ToolType;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.*;
 
 public class GameController {
     public GameView view;
@@ -33,8 +57,10 @@ public class GameController {
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
     private final GameMenuController gameMenuController = new GameMenuController();
 
-
     private final WorldController worldController;
+    private final ToolController toolController;
+
+    private Player player;
 
     {
         create();
@@ -53,6 +79,9 @@ public class GameController {
 
         this.worldController = new WorldController(this.camera);
         this.worldController.initTransients();
+
+        this.toolController = new ToolController(player);
+
         this.mapWidthInPixels = worldController.getTileWidth();
         this.mapHeightInPixels = worldController.getTileHeight();
 
@@ -124,10 +153,13 @@ public class GameController {
 
     public void updateGame(float delta) {
         if (view != null) {
+            player = App.getCurrentGame().getCurrentPlayingPlayer();
             game.getCurrentPlayingPlayer().update(delta, upPressed, downPressed, leftPressed, rightPressed);
             updateCamera(game.getCurrentPlayingPlayer());
             worldController.update();
+
             game.getCurrentPlayingPlayer().draw(Main.getBatch());
+            toolController.update(delta, player);
         }
     }
 
@@ -155,7 +187,19 @@ public class GameController {
                     GameAssetManager.getGameAssetManager().getSkin(),
                     game.getCurrentPlayingPlayer(),
                     view));
+
                 break;
+            case Input.Keys.E:
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new CookingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CookingController()));
+                break;
+            case Input.Keys.R:
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
+                break;
+
+
+
         }
     }
 
@@ -165,5 +209,216 @@ public class GameController {
 
     public HashMap<StoreType, Rectangle> getStoreBounds() {
         return storeBounds;
+    }
+
+    public void handlePlayerInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new MapView(new MapViewController(), view));
+
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+            Main.getMain().getScreen().dispose();
+            ScreenUtils.clear(0, 0, 0, 1);
+            Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManager.getGameAssetManager().getSkin(), view));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            try {
+                App.getCurrentGame().getDate().goToNextDay();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+            int dx = 0, dy = 0;
+            switch (player.getCurrentDirection()) {
+                case UP:
+                    dy = 1;
+                    break;
+                case RIGHT:
+                    dx = 1;
+                    break;
+                case DOWN:
+                    dy = -1;
+                    break;
+                case LEFT:
+                    dx = -1;
+                    break;
+                case IDLE:
+                    return;
+            }
+
+            if (player.getEquippedItem() instanceof Tool)
+                toolController.toolUse(dx, dy);
+            else if (player.getEquippedItem() instanceof CraftingItem)
+                placeItem(dx, dy);
+        }
+        //TODO handle input key
+    }
+
+
+    public void placeItem(int dx, int dy) {
+        player = App.getCurrentGame().getCurrentPlayingPlayer();
+        CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
+
+        Tile tile = Tile.getTile(player.getTileX() + dx,
+            player.getY() + dy);
+        if (tile.getPlaceable() != null) {
+            //TODO: maybe graphical error
+            return;
+            //return new Result(false, "tile is full");
+        }
+
+        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(craftingItemType);
+        tile.setPlaceable(new CraftingItem(craftingItemType));
+        switch (craftingItemType) {
+            case CherryBomb -> {
+                int range = 3;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case Bomb -> {
+                int range = 5;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case MegaBomb -> {
+                int range = 7;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case Sprinkler -> {
+                int[] dx2 = {0, 1, 0, -1};
+                int[] dy2 = {1, 0, -1, 0};
+                for (int i = 0; i < 4; i++) {
+                    Tile target = Tile.getTile(tile.getX() + dx2[i], tile.getY() + dy2[i]);
+                    if (target != null && target.getPlaceable() instanceof Plant plant) {
+                        plant.wateringPlant();
+                    }
+                }
+            }
+
+            case QualitySprinkler -> {
+                int range = 1;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null && target.getPlaceable() instanceof Plant plant) {
+                            plant.wateringPlant();
+                        }
+                    }
+                }
+            }
+
+            case IridiumSprinkler -> {
+                int range = 2;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null && target.getPlaceable() instanceof Plant plant) {
+                            plant.wateringPlant();
+                        }
+                    }
+                }
+            }
+
+            case Scarecrow -> {
+                int range = 8;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            tile.setCrowImmunity(true);
+                        }
+                    }
+                }
+            }
+
+            case DeluxeScarecrow -> {
+                int range = 12;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            tile.setCrowImmunity(true);
+                        }
+                    }
+                }
+            }
+
+            case BeeHouse -> {
+
+            }
+
+            case CheesePress -> {
+
+            }
+
+            case Keg -> {
+
+            }
+
+            case Loom -> {
+
+            }
+
+            case MayonnaiseMachine -> {
+
+            }
+
+            case OilMaker -> {
+
+            }
+
+            case PreservesJar -> {
+
+            }
+
+            case Dehydrator -> {
+
+            }
+
+            case FishSmoker -> {
+
+            }
+
+            case MysticTreeSeed -> {
+
+            }
+        }
+    }
+
+    public WorldController getWorldController() {
+        return worldController;
+    }
+
+    public ToolController getToolController() {
+        return toolController;
     }
 }

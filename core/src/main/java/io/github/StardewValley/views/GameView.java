@@ -3,6 +3,9 @@ package io.github.StardewValley.views;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,11 +22,16 @@ import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.Result;
 import io.github.StardewValley.models.enums.Gender;
+import io.github.StardewValley.controllers.StoreMenuController;
+import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.market.StoreType;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
+
+import io.github.StardewValley.models.tools.Tool;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -220,6 +228,8 @@ public class GameView implements Screen, InputProcessor {
         stage.addActor(error);
         hud.render(Main.getBatch());
 
+        controller.updateGame(v);
+        controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
@@ -266,6 +276,7 @@ public class GameView implements Screen, InputProcessor {
         if (targetPlayers.isEmpty()) {
             window.setVisible(false);
         }
+        hud.render(Main.getBatch());
 
         if (!targetPlayers.isEmpty()) {
             window.setVisible(true);
@@ -314,15 +325,9 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        for (Map.Entry<StoreType, Rectangle> entry : controller.getStoreBounds().entrySet()) {
-            if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(), this, entry.getKey()));
-                return true;
-            }
-        }
-        return false;
+        if(handleToolUse(worldCoordinates))
+            return true;
+        return checkStoreBounds(worldCoordinates);
     }
 
     @Override
@@ -361,6 +366,40 @@ public class GameView implements Screen, InputProcessor {
         controller.setKey(keycode, false);
         return true;
     }
+
+    private boolean checkStoreBounds(Vector3 worldCoordinates) {
+        for (Map.Entry<StoreType, Rectangle> entry : controller.getStoreBounds().entrySet()) {
+            if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
+                    GameAssetManager.getGameAssetManager().getSkin(),
+                    this, entry.getKey()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean handleToolUse(Vector3 worldCoordinates) {
+        float tileWidth = controller.getWorldController().getTileWidth();
+        float tileHeight = controller.getWorldController().getTileHeight();
+        int clickedTileX = (int)(worldCoordinates.x / tileWidth);
+        int clickedTileY = (int)(worldCoordinates.y / tileHeight);
+
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        int dx = clickedTileX - player.getTileX();
+        int dy = clickedTileY - player.getTileY();
+
+        if (Math.abs(dx) + Math.abs(dy) == 1) {
+            if (player.getEquippedItem() instanceof Tool)
+                controller.getToolController().toolUse(dx, dy);
+            else if (player.getEquippedItem() instanceof CraftingItem)
+                controller.placeItem(dx, dy);
+            return true;
+        }
+        return false;
+    }
+
 
     public void setError(String error) {
         this.error.setText(error);
