@@ -25,6 +25,12 @@ public class Lia extends NPC implements Placeable {
 
     public Lia(boolean isLia){
         isNPC = isLia;
+        this.dialogueText.add("hello i am lia");
+        this.dialogueText.add("hi how are you?");
+        this.dialogueText.add("what do you do on vacation?");
+        this.dialogueText.add("I am a waiter");
+        this.dialogueText.add("this is a village in iran.");
+        this.dialogueText.add("be careful,the weather is very hot.go home quickly.");
     }
     public Lia(boolean isHarvey, int x, int y){
         isNPC = isHarvey;

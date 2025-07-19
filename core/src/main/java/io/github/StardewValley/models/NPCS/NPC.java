@@ -7,6 +7,7 @@ import io.github.StardewValley.models.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 abstract public class NPC {
     private int x;
@@ -20,6 +21,9 @@ abstract public class NPC {
     public boolean isNPC;
     public int x_start;
     public int y_start;
+    private int Tile_x;
+    private int Tile_y;
+    public ArrayList<String> dialogueText = new ArrayList<>();
 
     private HashMap<String, String> dialogue = new HashMap<>();
     private HashMap<String, String> dialogue2 = new HashMap<>();
@@ -108,4 +112,27 @@ abstract public class NPC {
     public Texture getTexture(){
         return null;
     }
+    public String getDialogueText(){
+        Random rand = new Random();
+        int min = 0;
+        int max = dialogueText.size() - 1;
+        int randomInt = rand.nextInt(max - min + 1) + min;
+        return dialogueText.get(randomInt);
+    }
+    public int getTile_x() {
+        return Tile_x;
+    }
+
+    public void setTile_x(int tile_x) {
+        Tile_x = tile_x;
+    }
+
+    public int getTile_y() {
+        return Tile_y;
+    }
+
+    public void setTile_y(int tile_y) {
+        Tile_y = tile_y;
+    }
+
 }

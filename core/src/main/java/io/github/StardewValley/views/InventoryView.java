@@ -41,6 +41,7 @@ public class InventoryView implements Screen {
     private final TextButton socialMenuButton;
     private final TextButton mapButton;
     private final TextButton exitButton;
+    private final TextButton saveanndexitButton;
 
     public InventoryView(InventoryController controller, Skin skin, Player player, GameView gameView) {
         this.controller = controller;
@@ -135,6 +136,13 @@ public class InventoryView implements Screen {
                 controller.goToGameView();
             }
         });
+        this.saveanndexitButton = new TextButton("Save and Exit Game", skin);
+        this.saveanndexitButton.addListener(new ClickListener(){
+                public void clicked(InputEvent event, float x, float y) {
+                    controller.saveAndExitButton();
+                }
+        });
+
     }
 
     @Override
@@ -155,6 +163,7 @@ public class InventoryView implements Screen {
         mainTable.add(socialMenuButton).left().padTop(10).row();
         mainTable.add(mapButton).left().padTop(10).row();
         mainTable.add(exitButton).left().row();
+        mainTable.add(saveanndexitButton).left().row();
 
         stage.addActor(mainTable);
     }

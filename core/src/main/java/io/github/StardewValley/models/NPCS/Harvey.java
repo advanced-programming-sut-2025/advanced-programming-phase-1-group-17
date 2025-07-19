@@ -23,6 +23,12 @@ public class Harvey extends NPC implements Placeable {
 
     public Harvey(boolean isHarvey) {
         isNPC = isHarvey;
+        this.dialogueText.add("hello i am harvey");
+        this.dialogueText.add("hi how are you?");
+        this.dialogueText.add("what do you do on vacation?");
+        this.dialogueText.add("I am a teacher");
+        this.dialogueText.add("this is a village in iran.");
+        this.dialogueText.add("be careful,the weather is very hot.go home quickly.");
     }
     public Harvey(boolean isHarvey, int x, int y){
         isNPC = isHarvey;

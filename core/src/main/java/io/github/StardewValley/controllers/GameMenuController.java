@@ -31,6 +31,7 @@ import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.Trade;
 import io.github.StardewValley.models.market.*;
 import io.github.StardewValley.views.GameMenu;
+import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MainMenu;
 import io.github.StardewValley.views.chooseMap;
 
@@ -240,13 +241,10 @@ public class GameMenuController {
                         @Override
                         public void run() {
                             view.setError("you are in Game now");
-//                            Main.getMain().getScreen().dispose();
-//                            Main.getMain().setScreen(
-//                                new MainMenu(
-//                                    new MainMenuController(),
-//                                    GameAssetManager.getGameAssetManager().getSkin()
-//                                )
-//                            );
+                            Main.getMain().getScreen().dispose();
+                            Main.getMain().setScreen(
+                                new GameView(new GameController(App.getCurrentGame()),new GameMenuController())
+                            );
                         }
                     }, 2);
 
@@ -2504,8 +2502,8 @@ public class GameMenuController {
     public boolean sideBySide(Player currentPlayer, NPC npc) {
         int x = currentPlayer.getTileX();
         int y = currentPlayer.getTileY();
-        int x1 = npc.getX();
-        int y1 = npc.getY();
+        int x1 = npc.getTile_x();
+        int y1 = npc.getTile_y();
         if ((x == x1 && y == y1)
             || (x == x1 + 1 && y == y1)
             || (x == x1 - 1 && y == y1)
@@ -2665,7 +2663,8 @@ public class GameMenuController {
                         } else {
                             npc.giveReward(currentPlayer, Integer.parseInt(index) - 1);
                         }
-                        return new Result(true, "the mission was successfully completed." +
+                        quest.setCompleted(true);
+                        return new Result(true, "the mission was successfully completed.\n" +
                             "your reward has been added to your backpack");
                     } else {
                         return new Result(false, "you can't finish quest because you do not have a the required item");

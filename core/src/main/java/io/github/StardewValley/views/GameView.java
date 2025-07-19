@@ -1,6 +1,7 @@
 package io.github.StardewValley.views;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -14,6 +15,7 @@ import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.models.App;
+import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.Result;
 import io.github.StardewValley.models.enums.Gender;
@@ -21,6 +23,7 @@ import io.github.StardewValley.models.market.StoreType;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -33,6 +36,15 @@ public class GameView implements Screen, InputProcessor {
     private Table content;
     private boolean activeWindow = true;
     private Player currentTargetPlayer;
+    private boolean isPlayerNearNPC = false;
+    private float dialogueTimer = 0;
+    private int dialogueCharIndex = 0;
+    private String currentDialogueText = "";
+    private Label dialogueLabel;
+    private NPC currentNPC = null;
+    private boolean dialogueActive = false;
+    private Table dialogueTable;
+
 
     public GameView(GameController controller, GameMenuController menuController) {
         this.controller = controller;
@@ -46,6 +58,17 @@ public class GameView implements Screen, InputProcessor {
 
     private void initUI() {
         Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+        dialogueLabel = new Label("", skin);
+        dialogueLabel.setColor(Color.WHITE);
+        dialogueLabel.setFontScale(1.2f);
+        dialogueLabel.setVisible(false);
+        dialogueTable = new Table();
+
+        dialogueTable.top();
+        dialogueTable.add(dialogueLabel).padTop(50);
+
+
+
 
         window = new Window("Interactions", skin);
         talkButton = new TextButton("Talk", skin);
@@ -124,7 +147,7 @@ public class GameView implements Screen, InputProcessor {
                 if (currentTargetPlayer == null) return;
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(), currentTargetPlayer, gameView,null));
+                    GameAssetManager.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
             }
         });
         givingFlower.addListener(new ClickListener() {
@@ -162,7 +185,7 @@ public class GameView implements Screen, InputProcessor {
         askMarriageButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 if (currentTargetPlayer == null) return;
-                Result r = menuController.askMarriage(currentTargetPlayer.getUser().getUsername(),"Ring");
+                Result r = menuController.askMarriage(currentTargetPlayer.getUser().getUsername(), "Ring");
                 error.setText(r.toString());
             }
         });
@@ -171,6 +194,7 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
+        dialogueTable.setFillParent(true);
         InputMultiplexer multiplexer = new InputMultiplexer(stage, this);
         Gdx.input.setInputProcessor(multiplexer);
         hud = new HUD();
@@ -189,10 +213,13 @@ public class GameView implements Screen, InputProcessor {
             error.setText("you have a new message");
         }
         if (activeWindow) updateInteractions();
+        updateDialogue(delta);
 
+        stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
         stage.addActor(error);
         hud.render(Main.getBatch());
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
@@ -213,7 +240,7 @@ public class GameView implements Screen, InputProcessor {
         if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
-                ,GameAssetManager.getGameAssetManager().getSkin(), this));
+                , GameAssetManager.getGameAssetManager().getSkin(), this));
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
@@ -338,5 +365,42 @@ public class GameView implements Screen, InputProcessor {
     public void setError(String error) {
         this.error.setText(error);
     }
+
+    public NPC getNearbyNPC() {
+        for (NPC npc : App.getCurrentGame().getNPCs()) {
+            if (menuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), npc)) {
+                return npc;
+            }
+        }
+        return null;
+    }
+
+    private void updateDialogue(float delta) {
+        NPC nearbyNPC = getNearbyNPC();
+        if (nearbyNPC != null ) {
+            if (!dialogueActive || currentNPC != nearbyNPC) {
+                currentNPC = nearbyNPC;
+                currentDialogueText = currentNPC.getDialogueText();
+                dialogueCharIndex = 0;
+                dialogueTimer = 0;
+                dialogueLabel.setText("");
+                dialogueLabel.setVisible(true);
+                dialogueActive = true;
+            }
+
+            dialogueTimer += delta;
+            if (dialogueTimer > 0.05f && dialogueCharIndex < currentDialogueText.length()) {
+                dialogueLabel.setText(currentDialogueText.substring(0, dialogueCharIndex + 1));
+                dialogueCharIndex++;
+                dialogueTimer = 0;
+            }
+
+        } else {
+            dialogueLabel.setVisible(false);
+            dialogueActive = false;
+            currentNPC = null;
+        }
+    }
+
 
 }

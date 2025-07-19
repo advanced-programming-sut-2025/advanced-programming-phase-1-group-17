@@ -9,10 +9,7 @@ import io.github.StardewValley.models.tools.BackPack;
 import io.github.StardewValley.models.tools.FishingPoleType;
 import io.github.StardewValley.models.tools.Tool;
 import io.github.StardewValley.models.tools.ToolType;
-import io.github.StardewValley.views.InventoryView;
-import io.github.StardewValley.views.MapView;
-import io.github.StardewValley.views.SkillMenu;
-import io.github.StardewValley.views.SocialMenu;
+import io.github.StardewValley.views.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +85,8 @@ public class InventoryController {
 
     public void handleSocialMenu() {
         Main.getMain().getScreen().dispose();
-        Main.getMain().setScreen(new SocialMenu(new SocialMenuController(),
-            GameAssetManager.getGameAssetManager().getSkin(),  view.getPlayer()));
+        Main.getMain().setScreen(new TalkView(new TalkController(),
+            GameAssetManager.getGameAssetManager().getSkin(), view.getGameView()));
     }
 
     public void handleMap() {
@@ -109,5 +106,15 @@ public class InventoryController {
     public void goToGameView() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(view.getGameView());
+    }
+
+    public void saveAndExitButton() {
+        GameMenuController gameMenuController = new GameMenuController();
+        Result result =  gameMenuController.exitGame();
+        this.view.getItemPickLabel().setText(result.toString());
+        if (result.isSuccessful()) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+        }
     }
 }

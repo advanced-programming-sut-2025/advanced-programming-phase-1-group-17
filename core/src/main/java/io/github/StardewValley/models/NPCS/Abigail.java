@@ -18,9 +18,16 @@ public class Abigail extends NPC implements Placeable {
     private final HashMap<String, String> dialogue2 = new HashMap<>();
     private Texture texture1 = new Texture("Abigail.png");
     private Texture texture2 = new Texture("hut2.png");
+
     //TODO
 
-    public Abigail(boolean isAbigail){
+    public Abigail(boolean isAbigail) {
+        this.dialogueText.add("hello i am abigail");
+        this.dialogueText.add("hi how are you?");
+        this.dialogueText.add("what do you do on vacation?");
+        this.dialogueText.add("I am a miner");
+        this.dialogueText.add("this is a village in iran.");
+        this.dialogueText.add("be careful,the weather is very hot.go home quickly.");
         isNPC = isAbigail;
     }
     public Abigail(boolean isAbigail, int x, int y){
@@ -46,6 +53,7 @@ public class Abigail extends NPC implements Placeable {
         dialogue2.put("how is the weather?", "the weather is very cold!");
         dialogue2.put("what is your job?", "I am a miner");
     }
+
 
     private ArrayList<String> favorites = new ArrayList<>();
 
@@ -132,5 +140,6 @@ public class Abigail extends NPC implements Placeable {
         else
             return texture2;
     }
+
 
 }

@@ -184,6 +184,8 @@ public class PlayerMap {
                                 abigail2.setY(j);
                                 Tile.getTile(i,j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(abigail2);
+                                abigail2.setTile_x(i);
+                                abigail2.setTile_y(j);
                                 Tile.getTile(i, j).setNpcIsHere(abigail2);
                                 continue out;
                             } else if (k == 20) {
@@ -191,6 +193,8 @@ public class PlayerMap {
                                 harvey2.setY(j);
                                 Tile.getTile(i,j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(harvey2);
+                                harvey2.setTile_x(i);
+                                harvey2.setTile_y(j);
                                 Tile.getTile(i, j).setNpcIsHere(harvey2);
                                 continue out;
                             } else if (k == 40) {
@@ -198,6 +202,8 @@ public class PlayerMap {
                                 lia2.setY(j);
                                 Tile.getTile(i,j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(lia2);
+                                lia2.setTile_x(i);
+                                lia2.setTile_y(j);
                                 Tile.getTile(i, j).setNpcIsHere(lia2);
                                 continue out;
                             } else if (k == 60) {
@@ -205,6 +211,8 @@ public class PlayerMap {
                                 robin2.setY(j);
                                 Tile.getTile(i,j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(robin2);
+                                robin2.setTile_x(i);
+                                robin2.setTile_y(j);
                                 Tile.getTile(i, j).setNpcIsHere(robin2);
                                 continue out;
                             } else {
@@ -212,6 +220,8 @@ public class PlayerMap {
                                 sebastian2.setY(j);
                                 Tile.getTile(i,j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(sebastian2);
+                                sebastian2.setTile_x(i);
+                                sebastian2.setTile_y(j);
                                 Tile.getTile(i, j).setNpcIsHere(sebastian2);
                                 continue out;
                             }

@@ -6,6 +6,7 @@ import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NPCS.NPC;
+import io.github.StardewValley.models.Result;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.GiftMenu;
 import io.github.StardewValley.views.NPCMenu;
@@ -81,6 +82,13 @@ public class NPCMenuController {
 
     }
     public void onQuestSelected(NPC npc, int index) {
-        view.setError(gameMenuController.questFinish(String.valueOf(index)).toString());
+        Result result = gameMenuController.questFinish(String.valueOf(index));
+        if (result.isSuccessful()) {
+            view.getQuestFinishLabel().setText(result.toString());
+            view.showQuestFinishAnimation();
+
+        }else {
+            view.setError(result.toString());
+        }
     }
 }

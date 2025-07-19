@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -35,6 +36,7 @@ public class NPCMenu implements Screen {
     private Label label1;
     private Table tableLabel;
     private Table table2;
+    private Label questfinishLable;
 
 
     public NPCMenu(NPCMenuController controller, Skin skin, GameView gameView) {
@@ -60,6 +62,13 @@ public class NPCMenu implements Screen {
         this.button8 = new TextButton(App.getCurrentGame().getNPCs().get(4).getName(), skin);
         this.button10 = new TextButton("Quests List", skin);
         this.button1 = new TextButton("Gift", skin);
+        questfinishLable = new Label("", skin);
+        questfinishLable.setFontScale(2f);
+        questfinishLable.setPosition(
+            Gdx.graphics.getWidth() / 2f - 600,
+            Gdx.graphics.getHeight() / 2f + 300
+        );
+        questfinishLable.setColor(Color.GOLDENROD);
 
 
         controller.setView(this, gameView);
@@ -89,6 +98,7 @@ public class NPCMenu implements Screen {
         table2.add(button10).width(300).height(80);
         table2.row().pad(10, 0, 10, 0);
         table2.add(button1).width(300).height(80);
+        stage.addActor(questfinishLable);
         stage.addActor(table2);
         stage.addActor(tableLabel);
         stage.addActor(table);
@@ -235,5 +245,21 @@ public class NPCMenu implements Screen {
 
         dialog.button("Cancel", false);
         dialog.show(stage);
+    }
+    public void showQuestFinishAnimation() {
+
+        questfinishLable.addAction(Actions.sequence(
+            Actions.fadeIn(0.5f),
+            Actions.scaleTo(1.5f, 1.5f, 0.3f),
+            Actions.delay(3.0f),
+            Actions.fadeOut(0.5f),
+            Actions.run(() -> {
+                questfinishLable.setScale(1f);
+            })
+        ));
+    }
+
+    public Label getQuestFinishLabel() {
+        return questfinishLable;
     }
 }
