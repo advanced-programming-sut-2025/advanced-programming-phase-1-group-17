@@ -16,8 +16,8 @@ public class GameAssetManager {
 
     private final Texture backgroundTexture1 = new Texture("Flooring/Flooring_44.png");
     private final Texture backgroundTexture2 = new Texture("Flooring/Flooring_50.png");
-    private final float tileWidth = GameAssetManager.getGameAssetManager().getBackgroundTexture1().getWidth();
-    private final float tileHeight = GameAssetManager.getGameAssetManager().getBackgroundTexture1().getHeight();
+    private final float tileWidth = backgroundTexture1.getWidth();
+    private final float tileHeight = backgroundTexture1.getHeight();
 
     private final Texture plowedTexture = new Texture("Flooring/Flooring_57.png");
     private final Texture farmTexture = new Texture("Flooring/Flooring_14.png");
