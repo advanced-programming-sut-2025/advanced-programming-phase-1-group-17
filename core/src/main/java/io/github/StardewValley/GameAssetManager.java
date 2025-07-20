@@ -16,6 +16,9 @@ public class GameAssetManager {
 
     private final Texture backgroundTexture1 = new Texture("Flooring/Flooring_44.png");
     private final Texture backgroundTexture2 = new Texture("Flooring/Flooring_50.png");
+    private final float tileWidth = backgroundTexture1.getWidth();
+    private final float tileHeight = backgroundTexture1.getHeight();
+
     private final Texture plowedTexture = new Texture("Flooring/Flooring_57.png");
     private final Texture farmTexture = new Texture("Flooring/Flooring_14.png");
 
@@ -51,6 +54,14 @@ public class GameAssetManager {
 
     public Texture getBackgroundTexture2() {
         return backgroundTexture2;
+    }
+
+    public float getTileWidth() {
+        return tileWidth;
+    }
+
+    public float getTileHeight() {
+        return tileHeight;
     }
 
     public Texture getPlowedTexture() {

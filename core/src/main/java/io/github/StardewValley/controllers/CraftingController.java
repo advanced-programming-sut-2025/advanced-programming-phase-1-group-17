@@ -41,7 +41,7 @@ public class CraftingController {
                 player.getBackPack().useItem(entry.getKey());
             }
         }
-        CraftingItem craftingItem = new CraftingItem(item);
+        CraftingItem craftingItem = new CraftingItem(item, App.getCurrentGame().getCurrentPlayingPlayer());
         backPack.addItemToInventory(craftingItem);
         view.getErrorMessage().setText("crafted successfully");
 

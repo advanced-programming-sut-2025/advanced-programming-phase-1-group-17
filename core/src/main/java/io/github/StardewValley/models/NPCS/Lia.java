@@ -76,7 +76,7 @@ public class Lia extends NPC implements Placeable {
             player.getBackPack().addItemToInventory(f);
         } else {
             for (int i =0 ; i < 3; i++) {
-                CraftingItem c = new CraftingItem(CraftingItemType.DeluxeScarecrow);
+                CraftingItem c = new CraftingItem(CraftingItemType.DeluxeScarecrow, player);
                 player.getBackPack().addItemToInventory(c);
             }
         }

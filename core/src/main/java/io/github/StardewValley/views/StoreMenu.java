@@ -19,7 +19,6 @@ import io.github.StardewValley.models.market.*;
 public class StoreMenu implements Screen {
     private Stage stage;
     private final StoreMenuController controller;
-    private final GameView gameView;
     private final StoreType storeType;
 
     private final Label titleLabel;
@@ -34,10 +33,9 @@ public class StoreMenu implements Screen {
     private final Label errorLabel;
     private final TextButton exitButton;
 
-    public StoreMenu(StoreMenuController controller, Skin skin, GameView gameView, StoreType storeType) {
+    public StoreMenu(StoreMenuController controller, Skin skin, StoreType storeType) {
         this.controller = controller;
         this.controller.setView(this);
-        this.gameView = gameView;
         this.storeType = storeType;
 
         this.titleLabel = new Label("Store Name: %s".formatted(storeType), skin);

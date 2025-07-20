@@ -86,7 +86,7 @@ public class Abigail extends NPC implements Placeable {
         } else if (index == 1) {
             player.getBackPack().addcoin(500);
         } else {
-            CraftingItem c = new CraftingItem(CraftingItemType.IridiumSprinkler);
+            CraftingItem c = new CraftingItem(CraftingItemType.IridiumSprinkler, player);
             player.getBackPack().addItemToInventory(c);
         }
     }

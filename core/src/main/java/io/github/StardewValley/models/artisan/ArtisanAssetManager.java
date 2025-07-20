@@ -13,7 +13,7 @@ public class ArtisanAssetManager {
             if (type.equals(ArtisanProductType.Coal))
                 artisanProductTypeTextureHashMap.put(type, new Texture("Resource/Coal.png"));
             else if (type.equals(ArtisanProductType.Oil))
-                artisanProductTypeTextureHashMap.put(type, new Texture("Ingredients/Oil.png"));
+                artisanProductTypeTextureHashMap.put(type, new Texture("Ingredient/Oil.png"));
             else if (type.equals(ArtisanProductType.SmokedFish))
                 artisanProductTypeTextureHashMap.put(type, new Texture("Fish/Smoked_Fish.png"));
             else if (type.equals(ArtisanProductType.IridiumBar))
@@ -24,6 +24,8 @@ public class ArtisanAssetManager {
                 artisanProductTypeTextureHashMap.put(type, new Texture("Crafting/Iron_Bar.png"));
             else if (type.equals(ArtisanProductType.CopperBar))
                 artisanProductTypeTextureHashMap.put(type, new Texture("Crafting/Copper_Bar.png"));
+            else if (type.equals(ArtisanProductType.Vinegar))
+                artisanProductTypeTextureHashMap.put(type, new Texture("Ingredient/Vinegar.png"));
             else
                 artisanProductTypeTextureHashMap.put(type, new Texture("Artisan_good/" + type.name() + ".png"));
         }
