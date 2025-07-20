@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.map;
 
+import io.github.StardewValley.controllers.LightningController;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.animal.Animal;
@@ -143,6 +144,7 @@ public class Tile {
     }
 
     public void lightningStrike() {
+        LightningController.getLightningController().triggerLightning();
         if (placeable instanceof Tree tree) {
             if (!tree.isInsideGreenhouse())
                 placeable = new Mineral(MineralType.Coal, false);

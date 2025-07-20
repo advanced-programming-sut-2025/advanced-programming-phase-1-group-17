@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Rectangle;
@@ -323,13 +324,19 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
+        if (button == Input.Buttons.RIGHT)
+            return checkCraftingItemBounds(worldCoordinates, false);
+
+        if (checkCraftingItemBounds(worldCoordinates, true))
+            return true;
         if(handleToolUse(worldCoordinates))
             return true;
+        //return checkCraftingItemBounds(worldCoordinates, true);
         return checkStoreBounds(worldCoordinates);
     }
 
     @Override
-    public boolean touchUp(int x, int y, int pointer, int button) {
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
 
@@ -370,9 +377,23 @@ public class GameView implements Screen, InputProcessor {
             if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(),
-                    this, entry.getKey()));
+                    GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkCraftingItemBounds(Vector3 worldCoordinates , boolean isLeftClick) {
+        for (Map.Entry<CraftingItem, Rectangle> entry:  CraftingItem.getCraftingItemBounds().entrySet()) {
+            if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
+                Main.getMain().getScreen().dispose();
+                if (isLeftClick)
+                    Main.getMain().setScreen(new ArtisanCraftMenu(new ArtisanCraftMenuController(),
+                        GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
+                else
+                    Main.getMain().setScreen(new ArtisanInfoMenu(new ArtisanInfoMenuController(),
+                        GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
             }
         }
         return false;

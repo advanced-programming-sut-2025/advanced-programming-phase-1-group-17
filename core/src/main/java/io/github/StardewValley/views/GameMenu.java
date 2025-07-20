@@ -138,27 +138,20 @@ public class GameMenu implements AppMenu, Screen {
 //                matcher.group("rest"),
 //                scanner));
 //        } else
-        if ((matcher = GameMenuCommands.ExitGame.getMatcher(command)) != null) {
-            System.out.println(controller.exitGame());
-        }  else if ((matcher = GameMenuCommands.NextTurn.getMatcher(command)) != null) {
-            System.out.println(controller.nextTurn());
-        } else if ((matcher = GameMenuCommands.Time.getMatcher(command)) != null) {
-            System.out.println(controller.getTime());
-        } else if ((matcher = GameMenuCommands.Date.getMatcher(command)) != null) {
-            System.out.println(controller.getDate());
-        } else if ((matcher = GameMenuCommands.DateTime.getMatcher(command)) != null) {
-            System.out.println(controller.getDateTime());
-        } else if ((matcher = GameMenuCommands.DayOfTheWeek.getMatcher(command)) != null) {
-            System.out.println(controller.getDayOfTheWeek());
-        } else if ((matcher = GameMenuCommands.CheatAdvanceTime.getMatcher(command)) != null) {
-            System.out.println(controller.changeTime(
-                matcher.group("hour")
-            ));
-        } else if ((matcher = GameMenuCommands.CheatAdvanceDate.getMatcher(command)) != null) {
-            System.out.println(controller.changeDate(
-                matcher.group("day")
-            ));
-        } else if ((matcher = GameMenuCommands.Season.getMatcher(command)) != null) {
+//        if ((matcher = GameMenuCommands.ExitGame.getMatcher(command)) != null) {
+//            System.out.println(controller.exitGame());
+//        }  else if ((matcher = GameMenuCommands.NextTurn.getMatcher(command)) != null) {
+//            System.out.println(controller.nextTurn());
+//        } else if ((matcher = GameMenuCommands.Time.getMatcher(command)) != null) {
+//            System.out.println(controller.getTime());
+//        } else if ((matcher = GameMenuCommands.Date.getMatcher(command)) != null) {
+//            System.out.println(controller.getDate());
+//        } else if ((matcher = GameMenuCommands.DateTime.getMatcher(command)) != null) {
+//            System.out.println(controller.getDateTime());
+//        } else if ((matcher = GameMenuCommands.DayOfTheWeek.getMatcher(command)) != null) {
+//            System.out.println(controller.getDayOfTheWeek());
+//        }
+        if ((matcher = GameMenuCommands.Season.getMatcher(command)) != null) {
             System.out.println(controller.getSeason());
         } else if ((matcher = GameMenuCommands.CheatThor.getMatcher(command)) != null) {
             System.out.println(controller.cheatThor(

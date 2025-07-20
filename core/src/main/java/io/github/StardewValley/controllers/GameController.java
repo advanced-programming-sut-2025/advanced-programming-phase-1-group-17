@@ -42,6 +42,7 @@ import io.github.StardewValley.models.plant.Tree;
 import io.github.StardewValley.models.tools.FishingPoleType;
 import io.github.StardewValley.models.tools.Tool;
 import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.views.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class GameController {
 
     private final WorldController worldController;
     private final ToolController toolController;
+    private final LightningController lightningController;
 
     private Player player;
 
@@ -81,6 +83,7 @@ public class GameController {
         this.worldController.initTransients();
 
         this.toolController = new ToolController(player);
+        this.lightningController = LightningController.getLightningController();
 
         this.mapWidthInPixels = worldController.getTileWidth();
         this.mapHeightInPixels = worldController.getTileHeight();
@@ -160,6 +163,9 @@ public class GameController {
 
             game.getCurrentPlayingPlayer().draw(Main.getBatch());
             toolController.update(delta, player);
+
+            lightningController.updateLightning(delta);
+            lightningController.renderLightning(Main.getBatch());
         }
     }
 
@@ -181,14 +187,6 @@ public class GameController {
             case com.badlogic.gdx.Input.Keys.D:
                 rightPressed = pressed;
                 break;
-            case Input.Keys.ESCAPE:
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new InventoryView(new InventoryController(),
-                    GameAssetManager.getGameAssetManager().getSkin(),
-                    game.getCurrentPlayingPlayer(),
-                    view));
-
-                break;
             case Input.Keys.E:
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new CookingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CookingController()));
@@ -197,9 +195,6 @@ public class GameController {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
                 break;
-
-
-
         }
     }
 
@@ -243,13 +238,24 @@ public class GameController {
                     dx = -1;
                     break;
                 case IDLE:
-                    return;
+                    //return;
+                    break;
             }
 
             if (player.getEquippedItem() instanceof Tool)
                 toolController.toolUse(dx, dy);
             else if (player.getEquippedItem() instanceof CraftingItem)
-                placeItem(dx, dy);
+                //placeItem(dx, dy);
+                placeItem(0, -1);
+
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManager.getGameAssetManager().getSkin()));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new InventoryView(new InventoryController(),
+                GameAssetManager.getGameAssetManager().getSkin(),
+                game.getCurrentPlayingPlayer()));
         }
         //TODO handle input key
     }
@@ -259,8 +265,10 @@ public class GameController {
         player = App.getCurrentGame().getCurrentPlayingPlayer();
         CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
 
-        Tile tile = Tile.getTile(player.getTileX() + dx,
-            player.getY() + dy);
+        int x = player.getX() / worldController.getTileWidth() + dx;
+        int y = player.getY() / worldController.getTileHeight() + dy;
+        Tile tile = Tile.getTile(x, y);
+
         if (tile.getPlaceable() != null) {
             //TODO: maybe graphical error
             return;
@@ -268,7 +276,14 @@ public class GameController {
         }
 
         App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(craftingItemType);
-        tile.setPlaceable(new CraftingItem(craftingItemType));
+        CraftingItem craftingItem = new CraftingItem(craftingItemType, player);
+        craftingItem.setStart_x(x);
+        craftingItem.setStart_y(y);
+        craftingItem.addCraftingItemBound();
+
+        tile.setPlaceable(craftingItem);
+        tile.setWalkAble(false);
+
         switch (craftingItemType) {
             case CherryBomb -> {
                 int range = 3;
@@ -421,4 +436,6 @@ public class GameController {
     public ToolController getToolController() {
         return toolController;
     }
+
+
 }

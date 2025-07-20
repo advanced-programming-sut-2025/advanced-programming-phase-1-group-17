@@ -247,7 +247,7 @@ public class MarketsController {
         BackPackable sampleItem = null;
         try {
             type = CraftingItemType.valueOf(itemName);
-            sampleItem = new CraftingItem((CraftingItemType) type);
+            sampleItem = new CraftingItem((CraftingItemType) type, App.getCurrentGame().getCurrentPlayingPlayer());
         } catch (IllegalArgumentException e1) {
             try {
                 type = NormalItemType.valueOf(itemName);
