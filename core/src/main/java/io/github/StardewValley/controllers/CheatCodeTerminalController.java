@@ -55,8 +55,8 @@ public class CheatCodeTerminalController {
                 matcher.group("count")
             );
         }
-        view.getOutputArea().setText(">%s\n%s\n%s"
-            .formatted(view.getInputField().getText(), view.getOutputArea().getText(), result));
+        view.getOutputArea().setText("%s\n>%s\n%s"
+            .formatted(view.getOutputArea().getText().trim(), view.getInputField().getText(), result));
     }
 
     private String changeTime(String hour) {
@@ -89,7 +89,10 @@ public class CheatCodeTerminalController {
         for (int i = 0; i < amount; i++) {
             App.getCurrentGame().getDate().goToNextDay();
             for (CraftingItem craftingItem : CraftingItem.getAllCraftingItems()) {
+                if (craftingItem.getArtisanProductInProgress() == null)
+                    continue;
                 craftingItem.getArtisanProductInProgress().goToNextDay(24);
+                craftingItem.updateProgressBar();
             }
         }
         return amount + " days added successfully";
@@ -135,6 +138,9 @@ public class CheatCodeTerminalController {
         if (type == null && sampleItem == null)
             return "Invalid item name";
 
+        if (player.getBackPack().getBackPackItems().get(type) == null &&
+            player.getBackPack().isBackPackFull())
+            return "Backpack Full";
 
         for (int i = 0; i < count; i++) {
             player.getBackPack().addItemToInventory(sampleItem);

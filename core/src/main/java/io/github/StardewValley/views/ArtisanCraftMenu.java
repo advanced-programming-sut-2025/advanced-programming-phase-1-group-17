@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.controllers.ArtisanCraftMenuController;
 import io.github.StardewValley.models.App;
@@ -27,6 +29,7 @@ public class ArtisanCraftMenu implements Screen {
     private final CraftingItem craftingItem;
 
     private final Table mainTable;
+    private final Label titleLabel;
     private final Table inventoryTable;
     private final Table selectedItemsTable;
 
@@ -34,6 +37,7 @@ public class ArtisanCraftMenu implements Screen {
     private final TextButton craftButton;
 
     private final HashMap<BackPackableType, ArrayList<BackPackable>> selectedItems = new HashMap<>();
+
 
     public ArtisanCraftMenu(ArtisanCraftMenuController controller, Skin skin, CraftingItem craftingItem) {
         this.controller = controller;
@@ -44,15 +48,22 @@ public class ArtisanCraftMenu implements Screen {
         this.skin = skin;
 
         this.mainTable = new Table();
+
+        this.titleLabel = new Label("%s Crafting Menu".formatted(craftingItem.getName()), skin);
+        this.titleLabel.setFontScale(2f);
+        titleLabel.setAlignment(Align.center);
+
         this.inventoryTable = new Table();
         this.selectedItemsTable = new Table();
         this.errorLabel = new Label("", skin);
+        this.errorLabel.setAlignment(Align.center);
 
-        this.craftButton = new TextButton("Craft", skin);
+        this.craftButton = new TextButton("Craft %s".formatted(craftingItem.getName()), skin);
         this.craftButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.craft();
+                //used to delay the method call so that the UI input is executed(selectedItems is updated properly)
+                Gdx.app.postRunnable(controller::craft);
             }
         });
     }
@@ -83,6 +94,7 @@ public class ArtisanCraftMenu implements Screen {
                 public void clicked(InputEvent event, float x, float y) {
                     controller.selectItem(item);
                     refreshSelectedItems();
+                    refreshInventory();
                 }
             });
 
@@ -115,6 +127,7 @@ public class ArtisanCraftMenu implements Screen {
         Gdx.input.setInputProcessor(stage);
         mainTable.setFillParent(true);
         mainTable.defaults().pad(10);
+        mainTable.add(titleLabel).padTop(20).padBottom(30);
 
         Label inventoryLabel = new Label("Inventory", skin);
         Label selectedLabel = new Label("Selected Items", skin);
@@ -136,6 +149,7 @@ public class ArtisanCraftMenu implements Screen {
     }
 
     @Override public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0, 1);
         controller.handlePlayerInput();
         stage.act(delta);
         stage.draw();

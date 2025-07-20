@@ -1,11 +1,15 @@
 package io.github.StardewValley.controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.NPCS.NPC;
+import io.github.StardewValley.models.artisan.ArtisanProduct;
+import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.enums.Season;
 import io.github.StardewValley.models.map.*;
 import io.github.StardewValley.models.market.Store;
@@ -74,7 +78,28 @@ public class WorldController {
 
             }
         }
+        drawCraftingItemsProgressBars();
         drawBigTextures();
+    }
+
+    private void drawCraftingItemsProgressBars() {
+        for (CraftingItem craftingItem : CraftingItem.getAllCraftingItems()) {
+            ProgressBar bar = craftingItem.getProgressBar();
+            ArtisanProduct artisanProduct = craftingItem.getArtisanProductInProgress();
+            if (bar != null) {
+                bar.setPosition(craftingItem.getStart_x() * tileWidth, craftingItem.getStart_y() * tileHeight + craftingItem.getHeight() + 5);
+                bar.setWidth(craftingItem.getWidth());
+                bar.setHeight(50f);
+                bar.act(Gdx.graphics.getDeltaTime());
+                bar.draw(Main.getBatch(), 1f);
+            } else if (artisanProduct != null && artisanProduct.isReady()) {
+                Main.getBatch().draw(
+                    artisanProduct.getType().getInventoryTexture(),
+                    craftingItem.getStart_x() * tileWidth, craftingItem.getStart_y() * tileHeight + craftingItem.getHeight() + 5,
+                    (float) 0.5 * tileWidth, (float) 0.5 * tileHeight
+                    );
+            }
+        }
     }
 
     private void drawBigTextures() {

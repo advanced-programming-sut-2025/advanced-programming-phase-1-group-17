@@ -39,7 +39,10 @@ public class TimeAndDate {
     public void increaseHour() {
         hour++;
         for (CraftingItem craftingItem :  CraftingItem.getAllCraftingItems()) {
+            if (craftingItem.getArtisanProductInProgress() == null)
+                continue;
             craftingItem.getArtisanProductInProgress().goToNextHour();
+            craftingItem.updateProgressBar();
         }
         for (Player player : App.getCurrentGame().getPlayers()) {
             player.updateTemporaryBoostTimer();
@@ -50,6 +53,7 @@ public class TimeAndDate {
         if (hour > 22) {
             for (CraftingItem craftingItem :  CraftingItem.getAllCraftingItems()) {
                 craftingItem.getArtisanProductInProgress().goToNextDay(11);
+                craftingItem.updateProgressBar();
             }
 
             hour = 9;

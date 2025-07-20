@@ -49,6 +49,7 @@ public class GameController {
 
     private final WorldController worldController;
     private final ToolController toolController;
+    private final LightningController lightningController;
 
     private Player player;
 
@@ -71,6 +72,7 @@ public class GameController {
         this.worldController.initTransients();
 
         this.toolController = new ToolController(player);
+        this.lightningController = LightningController.getLightningController();
 
         this.mapWidthInPixels = worldController.getTileWidth();
         this.mapHeightInPixels = worldController.getTileHeight();
@@ -150,6 +152,9 @@ public class GameController {
 
             game.getCurrentPlayingPlayer().draw(Main.getBatch());
             toolController.update(delta, player);
+
+            lightningController.updateLightning(delta);
+            lightningController.renderLightning(Main.getBatch());
         }
     }
 
@@ -169,13 +174,6 @@ public class GameController {
             case com.badlogic.gdx.Input.Keys.D:
                 rightPressed = pressed;
                 break;
-            case Input.Keys.ESCAPE:
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new InventoryView(new InventoryController(),
-                    GameAssetManager.getGameAssetManager().getSkin(),
-                    game.getCurrentPlayingPlayer()));
-
-                break;
             case Input.Keys.E:
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new CookingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CookingController()));
@@ -184,9 +182,6 @@ public class GameController {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
                 break;
-
-
-
         }
     }
 
@@ -240,10 +235,14 @@ public class GameController {
                 //placeItem(dx, dy);
                 placeItem(0, -1);
 
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManager.getGameAssetManager().getSkin()));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new InventoryView(new InventoryController(),
+                GameAssetManager.getGameAssetManager().getSkin(),
+                game.getCurrentPlayingPlayer()));
         }
         //TODO handle input key
     }
@@ -264,8 +263,14 @@ public class GameController {
         }
 
         App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(craftingItemType);
-        tile.setPlaceable(new CraftingItem(craftingItemType, player));
+        CraftingItem craftingItem = new CraftingItem(craftingItemType, player);
+        craftingItem.setStart_x(x);
+        craftingItem.setStart_y(y);
+        craftingItem.addCraftingItemBound();
+
+        tile.setPlaceable(craftingItem);
         tile.setWalkAble(false);
+
         switch (craftingItemType) {
             case CherryBomb -> {
                 int range = 3;
@@ -418,4 +423,6 @@ public class GameController {
     public ToolController getToolController() {
         return toolController;
     }
+
+
 }

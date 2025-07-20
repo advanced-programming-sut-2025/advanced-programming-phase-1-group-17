@@ -1,6 +1,7 @@
 package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Rectangle;
@@ -98,6 +99,9 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
+        if (button == Input.Buttons.RIGHT)
+            return checkCraftingItemBounds(worldCoordinates, false);
+
         if (checkCraftingItemBounds(worldCoordinates, true))
             return true;
         if(handleToolUse(worldCoordinates))
@@ -108,8 +112,7 @@ public class GameView implements Screen, InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        return checkCraftingItemBounds(worldCoordinates, false);
+        return false;
     }
 
     @Override
