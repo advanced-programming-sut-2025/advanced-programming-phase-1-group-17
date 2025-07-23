@@ -3,7 +3,7 @@ package io.github.StardewValley.models.tools;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 
 import java.util.HashMap;
 

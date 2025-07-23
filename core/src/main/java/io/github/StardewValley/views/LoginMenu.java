@@ -13,7 +13,7 @@ import io.github.StardewValley.controllers.LoginMenuController;
 import java.util.Scanner;
 
 
-public class LoginMenu implements AppMenu, Screen {
+public class LoginMenu implements Screen {
     LoginMenuController controller ;
     private  TextButton backButton;
     private Table buttonsTable;
@@ -137,8 +137,6 @@ public class LoginMenu implements AppMenu, Screen {
     @Override
     public void dispose() {
 
-    }
-    public void run(Scanner scanner) {
     }
 
     public TextButton getBackButton() {

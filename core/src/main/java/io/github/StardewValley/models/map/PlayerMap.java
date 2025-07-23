@@ -8,7 +8,7 @@ import io.github.StardewValley.models.animal.AnimalPlace;
 import io.github.StardewValley.models.foraging.ForagingController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NPCS.*;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.plant.Tree;
 import io.github.StardewValley.models.market.ShippingBin;
 import io.github.StardewValley.models.market.Store;

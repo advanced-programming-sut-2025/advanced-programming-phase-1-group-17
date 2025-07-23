@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.controllers.SkillMenuController;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 
 public class SkillMenu implements Screen {
     private Stage stage;

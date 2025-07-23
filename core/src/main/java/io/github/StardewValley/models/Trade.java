@@ -1,5 +1,7 @@
 package io.github.StardewValley.models;
 
+import io.github.StardewValley.shared.model.Player;
+
 import java.util.regex.Matcher;
 
 public class Trade {

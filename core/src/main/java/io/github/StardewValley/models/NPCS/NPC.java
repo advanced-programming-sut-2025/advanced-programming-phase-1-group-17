@@ -1,8 +1,7 @@
 package io.github.StardewValley.models.NPCS;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.Talk;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.User;
 
 import java.util.ArrayList;

@@ -23,6 +23,7 @@ import io.github.StardewValley.models.tools.FishingPoleType;
 import io.github.StardewValley.models.tools.Tool;
 import io.github.StardewValley.models.tools.ToolAssetManager;
 import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.model.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;

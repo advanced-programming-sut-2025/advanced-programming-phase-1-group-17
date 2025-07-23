@@ -1,7 +1,7 @@
 package io.github.StardewValley;
 
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Game;
+import io.github.StardewValley.shared.model.Game;
 import io.github.StardewValley.models.NPCS.*;
 import io.github.StardewValley.models.NormalItem;
 import io.github.StardewValley.models.NormalItemType;

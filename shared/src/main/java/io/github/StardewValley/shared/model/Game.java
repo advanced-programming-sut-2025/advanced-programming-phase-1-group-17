@@ -1,14 +1,12 @@
-package io.github.StardewValley.models;
+package io.github.StardewValley.shared.model;
 
 import io.github.StardewValley.models.NPCS.*;
 import io.github.StardewValley.models.cooking.FoodType;
-import io.github.StardewValley.models.cooking.Recipe;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
 import io.github.StardewValley.models.map.GameMap;
 import io.github.StardewValley.models.map.GreenHouse;
 import io.github.StardewValley.models.map.PlayerMap;
-import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.market.StoreManager;
 
 import java.util.ArrayList;
@@ -201,7 +199,4 @@ public class Game {
     public ArrayList<PlayerController> getPlayerControllers() {
         return playerControllers;
     }
-
-
-
 }

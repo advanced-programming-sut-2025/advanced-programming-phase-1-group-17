@@ -11,7 +11,6 @@ import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.animal.*;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.NPCS.Quest;
-import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItem;
@@ -25,6 +24,8 @@ import io.github.StardewValley.models.map.*;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.Trade;
 import io.github.StardewValley.models.market.*;
+import io.github.StardewValley.shared.model.Game;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MainMenu;
@@ -1914,7 +1915,7 @@ public class GameMenuController {
     }
 
     public Result giftRate(String giftNumber, String rate) {
-        if (GameMenuCommands.Int.getMatcher(rate) == null || GameMenuCommands.Int.getMatcher(giftNumber) == null) {
+        if (CheatCodeCommands.Int.getMatcher(rate) == null || CheatCodeCommands.Int.getMatcher(giftNumber) == null) {
             return new Result(true, "your rate or giftNumber is not valid");
         } else if (Integer.parseInt(rate) > 5 || Integer.parseInt(rate) < 1) {
             return new Result(true, "your rate is not valid");

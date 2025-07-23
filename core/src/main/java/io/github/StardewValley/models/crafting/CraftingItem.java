@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.artisan.ArtisanProduct;
+import io.github.StardewValley.shared.model.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;

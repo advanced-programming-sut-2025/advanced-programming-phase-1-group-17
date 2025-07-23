@@ -8,7 +8,7 @@ import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.views.MapView;
 

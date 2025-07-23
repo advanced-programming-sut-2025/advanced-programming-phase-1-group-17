@@ -15,7 +15,7 @@ import io.github.StardewValley.controllers.ArtisanCraftMenuController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.crafting.CraftingItem;
 
 import java.util.ArrayList;

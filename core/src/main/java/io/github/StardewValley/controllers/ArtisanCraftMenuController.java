@@ -12,6 +12,7 @@ import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.views.ArtisanCraftMenu;
 
 import java.util.ArrayList;

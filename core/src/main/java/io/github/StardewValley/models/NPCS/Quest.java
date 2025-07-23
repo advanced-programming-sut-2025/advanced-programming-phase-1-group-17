@@ -1,7 +1,5 @@
 package io.github.StardewValley.models.NPCS;
 
-import io.github.StardewValley.models.Player;
-
 public class Quest {
     private int level;
     private int amount;

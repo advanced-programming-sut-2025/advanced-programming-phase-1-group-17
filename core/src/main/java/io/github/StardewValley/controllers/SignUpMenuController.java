@@ -1,45 +1,29 @@
 package io.github.StardewValley.controllers;
 
+import com.google.gson.Gson;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.PasswordUtil;
-import io.github.StardewValley.SaveUser;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Result;
 import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.enums.Gender;
-import io.github.StardewValley.models.enums.Menu;
 import io.github.StardewValley.models.enums.SignUpMenuCommands;
+import io.github.StardewValley.shared.dto.RegisterRequest;
+import io.github.StardewValley.shared.dto.RegisterResponse;
+import io.github.StardewValley.shared.enums.Gender;
 import io.github.StardewValley.views.LoginMenu;
-import io.github.StardewValley.views.MainMenu;
+import okhttp3.*;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 public class SignUpMenuController {
-//    public Result enterLoginMenu() {
-//        App.setCurrentMenu(Menu.LoginMenu);
-//
-//        return new Result(true, "Redirecting to Login Menu...");
-//    }
-
-
     public void enterLoginMenu() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(new LoginMenu(new LoginMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
     }
-
-
-//    public void exit() {
-//        App.setCurrentMenu(Menu.ExitMenu);
-//    }
-//
-//    public Result showCurrentMenu() {
-//        return new Result(true, App.getCurrentMenu().name());
-//    }
 
     public Result register(String username,
                            String password,
@@ -47,23 +31,7 @@ public class SignUpMenuController {
                            String nickname,
                            String email,
                            Gender gender) {
-        User user = App.getUserWithUsername(username);
-        if (user != null) {
-            return new Result(false, "Username Already Taken;");
-
-//            String suggestedUsername = giveSimilarUsername(username);
-//            System.out.printf("Suggested Username: %s\n", suggestedUsername);
-//            while (true) {
-//                System.out.println("Press [y] to confirm this username, or press [n] to exit.");
-//                String input = scanner.nextLine();
-//                if (input.equals("y")) {
-//                    username = suggestedUsername;
-//                    break;
-//                } else if (input.equals("n")) {
-//                    return;
-//                }
-//            }
-        } else if (SignUpMenuCommands.Username.getMatcher(username) == null) {
+        if (SignUpMenuCommands.Username.getMatcher(username) == null) {
             return new Result(false, "Username format is invalid.\n" +
                 "Username can only contain letters, digits, and -.");
 
@@ -74,34 +42,59 @@ public class SignUpMenuController {
             return new Result(false, "Password format is invalid. " +
                 "Password can only contain letters, digits, and special characters.");
 
-        } else if (!isPasswordStrong(password).getMessage().isEmpty()) {
-            return isPasswordStrong(password);
-
-        } else if (!password.equals(passwordConfirm)) {
+        }
+        Result passwordCheck = isPasswordStrong(password);
+        if (!passwordCheck.isSuccessful()) {
+            return passwordCheck;
+        }
+        else if (!password.equals(passwordConfirm)) {
             return new Result(false, "Password Confirm Incorrect!");
         }
 
-        String hashedPassword = PasswordUtil.hashPassword(password);
-        User newUser = new User(username, password, hashedPassword, email, nickname, gender);
+//        String hashedPassword = PasswordUtil.hashPassword(password);
+//        User newUser = new User(username, hashedPassword, email, nickname, gender);
 
+        return sendRegisterRequest(username, password, nickname, email, gender);
 
-        //chooseSecurityQuestion(newUser, scanner);
-        App.getUsers().add(newUser);
-        SaveUser.saveUser(App.getUsers());
-        return new Result(true, "User successfully added!");
+//        App.getUsers().add(newUser);
+//        SaveUser.saveUser(App.getUsers());
     }
 
+    private Result sendRegisterRequest(String username, String password,
+                                       String nickname, String email, Gender gender) {
 
-//    public String giveSimilarUsername(String username) {
-//        String similarUsername = null;
-//
-//        while (true) {
-//            int randomNumber = (int) (Math.random() * 10000);
-//            similarUsername = username + randomNumber;
-//            if (App.getUserWithUsername(similarUsername) == null)
-//                return similarUsername;
-//        }
-//    }
+        OkHttpClient client = new OkHttpClient();
+        RegisterRequest registerRequest = new RegisterRequest(username, password, nickname, email, gender);
+        Gson gson = new Gson();
+        String json = gson.toJson(registerRequest);
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+        Request request = new Request.Builder()
+            .url("http://localhost:8080/api/auth/register")
+            .post(body)
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                return new Result(false, "Server Error: " + response.code());
+            }
+
+            String responseJson = response.body().string();
+            RegisterResponse registerResponse = gson.fromJson(responseJson, RegisterResponse.class);
+
+            if (registerResponse.isSuccess()) {
+                App.setLoggedInUser(new User(username, password, email, nickname, gender));
+                return new Result(true, "User registered successfully!");
+            } else {
+                return new Result(false, registerResponse.getMessage());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result(false, "Network error: " + e.getMessage());
+        }
+    }
+
 
     public Result isPasswordStrong(String password) {
         if (password.length() < 8) {
@@ -117,26 +110,6 @@ public class SignUpMenuController {
         }
         return new Result(true, ""); //password is strong
     }
-
-
-//    public static String handleRandomPasswordInput(Scanner scanner) {
-//        while (true) {
-//            String randomPassword = generateStrongPassword(12);
-//            System.out.println("Suggested password: " + randomPassword);
-//            System.out.println("Do you want to set this as your password?(yes/no)");
-//            String confirm = scanner.nextLine().trim().toLowerCase();
-//            if (confirm.equals("yes")) {
-//                return randomPassword;
-//            } else {
-//                System.out.println("Enter 'generate' to generate a new random password or enter 'back'" +
-//                    "to go back to signup menu");
-//                String next = scanner.nextLine().trim().toLowerCase();
-//                if (next.equals("back")) {
-//                    return null;
-//                }
-//            }
-//        }
-//    }
 
 
     public String generateStrongPassword(int length) {

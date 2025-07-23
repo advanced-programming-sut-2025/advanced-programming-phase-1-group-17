@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.ChooseMapController;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.User;
 
 public class chooseMap implements Screen {
     private ChooseMapController controller;

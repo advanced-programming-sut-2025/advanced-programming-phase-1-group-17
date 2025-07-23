@@ -1,4 +1,4 @@
-package io.github.StardewValley;
+package io.github.StardewValley.server.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

@@ -4,16 +4,14 @@ import io.github.StardewValley.models.animal.Animal;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.foraging.ForagingController;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.enums.DaysOfTheWeek;
 import io.github.StardewValley.models.enums.Season;
 import io.github.StardewValley.models.enums.WeatherType;
-import io.github.StardewValley.models.foraging.Mineral;
-import io.github.StardewValley.models.foraging.MineralType;
 import io.github.StardewValley.models.map.PlayerMap;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.plant.*;
 import io.github.StardewValley.models.market.ShippingBin;
+import io.github.StardewValley.shared.model.Player;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

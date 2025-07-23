@@ -20,19 +20,17 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.Result;
-import io.github.StardewValley.models.enums.Gender;
 import io.github.StardewValley.controllers.StoreMenuController;
-import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.market.StoreType;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 
 import io.github.StardewValley.models.tools.Tool;
+import io.github.StardewValley.shared.enums.Gender;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;

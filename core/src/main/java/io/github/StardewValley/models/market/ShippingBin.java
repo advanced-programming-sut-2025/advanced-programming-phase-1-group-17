@@ -2,18 +2,13 @@ package io.github.StardewValley.models.market;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackable;
-import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.Placeable;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.animal.AnimalProduct;
-import io.github.StardewValley.models.animal.AnimalProductType;
-import io.github.StardewValley.models.enums.FishType;
 import io.github.StardewValley.models.plant.Crop;
-import io.github.StardewValley.models.plant.CropType;
 import io.github.StardewValley.models.plant.Fruit;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ShippingBin implements Placeable {
     private static ArrayList<ShippingBin> allShippingBins = new ArrayList<>();

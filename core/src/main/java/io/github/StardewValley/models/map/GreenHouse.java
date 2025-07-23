@@ -4,9 +4,7 @@ import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.GreenHouseLake;
 import io.github.StardewValley.models.Placeable;
-import io.github.StardewValley.models.Player;
-
-import java.util.ArrayList;
+import io.github.StardewValley.shared.model.Player;
 
 public class GreenHouse implements Placeable {
     //TODO: handle sprinkler

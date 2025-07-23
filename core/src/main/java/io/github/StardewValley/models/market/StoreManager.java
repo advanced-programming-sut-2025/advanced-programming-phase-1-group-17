@@ -1,12 +1,5 @@
 package io.github.StardewValley.models.market;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.StardewValley.GameAssetManager;
-import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.ItemMenuController;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.cooking.FoodType;
@@ -23,9 +16,7 @@ import io.github.StardewValley.models.plant.FertilizerType;
 import io.github.StardewValley.models.plant.SeedType;
 import io.github.StardewValley.models.plant.SaplingType;
 import io.github.StardewValley.models.tools.FishingPoleType;
-import io.github.StardewValley.views.ItemMenu;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
