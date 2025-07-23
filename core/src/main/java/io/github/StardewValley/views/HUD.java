@@ -10,6 +10,8 @@ import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 
+import java.awt.*;
+
 public class HUD {
     private Texture clock;
     private BitmapFont font;
@@ -25,6 +27,7 @@ public class HUD {
     private TextureRegion rainy;
     private TextureRegion storm;
     private TextureRegion snow;
+    private float angle=0;
 
 
     public HUD() {
@@ -35,11 +38,6 @@ public class HUD {
         fall = new TextureRegion(clock,106,9,13,9);
         winter = new TextureRegion(clock,119,9,13,9);
         sunny = new TextureRegion(clock,119,18,13,9);
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(new CraftingItem(CraftingItemType.CherryBomb));
         font = new BitmapFont();
         dateFont = new BitmapFont();
         timeFont = new BitmapFont();
@@ -55,7 +53,7 @@ public class HUD {
         hudCamera.update();
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch,float v) {
         // تنظیم دوربین HUD
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
@@ -87,7 +85,17 @@ public class HUD {
 
         batch.draw(clock,x, y,clock.getWidth()*3,clock.getHeight()*3);
         float arrowSize=3f;
-        batch.draw(arrow,1765,980,arrow.getRegionWidth()*arrowSize,arrow.getRegionHeight()*arrowSize);
+        int arrowX = 1765;
+        int arrowY = 980;
+
+        angle+=v*50;
+        batch.draw(arrow
+            ,arrowX,arrowY
+            ,10,10
+            ,arrow.getRegionWidth()*arrowSize,arrow.getRegionHeight()*arrowSize
+            ,1f,1f,
+            angle
+        );
         float otherSize=3.2f;
         batch.draw(sunny,1794,973,spring.getRegionWidth()*otherSize,spring.getRegionHeight()*otherSize);
 
@@ -95,7 +103,7 @@ public class HUD {
 
 
         // کشیدن مقدار پول
-        int money = App.getCurrentGame().getCurrentPlayingPlayer().getCoin();
+        int money = (int)App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin();
         int i=0;
         while(money>0){
             font.draw(batch, String.valueOf(money%10), 1885-18*i, Gdx.graphics.getHeight() - 150);

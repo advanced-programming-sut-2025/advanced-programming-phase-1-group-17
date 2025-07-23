@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.NPCS.NPC;
+import io.github.StardewValley.models.animal.Animal;
 import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
@@ -35,6 +36,7 @@ public class Player {
     private transient Animation<TextureRegion> walkRightAnimation;
     private TextureRegion currentFrame;
     private float animationTimer = 0f;
+    private ArrayList<Animal> animals = new ArrayList<>();
     private boolean moved;
     private Direction lastDirection = Direction.DOWN;
 
@@ -618,5 +620,13 @@ public class Player {
 
     public Direction getCurrentDirection() {
         return currentDirection;
+    }
+
+    public ArrayList<Animal> getAnimals() {
+        return animals;
+    }
+
+    public void setAnimals(ArrayList<Animal> animals) {
+        this.animals = animals;
     }
 }

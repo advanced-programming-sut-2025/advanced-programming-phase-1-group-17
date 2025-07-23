@@ -1,5 +1,6 @@
 package io.github.StardewValley.models;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import io.github.StardewValley.models.tools.ToolType;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ public class App {
     private static Game currentGame;
     private static ArrayList<User> users = new ArrayList<>();
     private static final ArrayList<Game> games = new ArrayList<Game>();
+    private static OrthographicCamera camera = new OrthographicCamera();
 
     public static ArrayList<User> getUsers() {
         return users;
@@ -87,4 +89,11 @@ public class App {
         return null;
     }
 
+    public static OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public static void setCamera(OrthographicCamera camera) {
+        App.camera = camera;
+    }
 }
