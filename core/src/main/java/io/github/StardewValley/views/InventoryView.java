@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.controllers.InventoryController;
 import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.tools.BackPack;
 import io.github.StardewValley.models.tools.ToolType;
 

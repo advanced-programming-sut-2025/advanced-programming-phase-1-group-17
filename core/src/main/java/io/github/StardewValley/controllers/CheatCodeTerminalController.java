@@ -4,11 +4,11 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.enums.GameMenuCommands;
+import io.github.StardewValley.models.enums.CheatCodeCommands;
 import io.github.StardewValley.models.enums.WeatherType;
 import io.github.StardewValley.models.map.Tile;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.views.CheatCodeTerminal;
 
 import java.util.ArrayList;
@@ -26,31 +26,31 @@ public class CheatCodeTerminalController {
         Matcher matcher;
         String result = "Invalid Command";
 
-        if ((matcher = GameMenuCommands.CheatAdvanceTime.getMatcher(command)) != null) {
+        if ((matcher = CheatCodeCommands.CheatAdvanceTime.getMatcher(command)) != null) {
             result = changeTime(
                 matcher.group("hour")
             );
-        } else if ((matcher = GameMenuCommands.CheatAdvanceDate.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatAdvanceDate.getMatcher(command)) != null) {
             result = changeDate(
                 matcher.group("day")
             );
-        } else if ((matcher = GameMenuCommands.CheatThor.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatThor.getMatcher(command)) != null) {
             result = cheatThor(
                 Integer.parseInt(matcher.group("x")),
                 Integer.parseInt(matcher.group("y"))
             );
-        } else if ((matcher = GameMenuCommands.CheatWeatherSet.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatWeatherSet.getMatcher(command)) != null) {
             result = changeWeather(
                 matcher.group("type")
             );
-        } else if ((matcher = GameMenuCommands.EnergyUnlimited.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.EnergyUnlimited.getMatcher(command)) != null) {
             result = energyUnlimited();
-        } else if ((matcher = GameMenuCommands.CheatAddItem.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatAddItem.getMatcher(command)) != null) {
             result = addItem(matcher.group("itemName"), matcher.group("count"));
-        } else if ((matcher = GameMenuCommands.CheatSetFriendshipWithAnimal.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatSetFriendshipWithAnimal.getMatcher(command)) != null) {
             result = setFriendship(matcher.group("animalName"),
                 matcher.group("amount"));
-        } else if ((matcher = GameMenuCommands.CheatAddDollars.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatAddDollars.getMatcher(command)) != null) {
             result = cheatAddDollars(
                 matcher.group("count")
             );

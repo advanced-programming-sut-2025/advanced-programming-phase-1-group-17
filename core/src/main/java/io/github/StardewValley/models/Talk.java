@@ -1,6 +1,6 @@
 package io.github.StardewValley.models;
 
-import java.util.ArrayList;
+import io.github.StardewValley.shared.model.Player;
 
 public class Talk {
     private Player player;

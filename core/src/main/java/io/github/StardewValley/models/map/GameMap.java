@@ -1,11 +1,8 @@
 package io.github.StardewValley.models.map;
 
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Game;
 import io.github.StardewValley.models.NPCS.*;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.cooking.Recipe;
 import io.github.StardewValley.models.enums.Gender;
 
 import java.util.ArrayList;

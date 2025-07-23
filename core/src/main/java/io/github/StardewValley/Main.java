@@ -3,19 +3,9 @@ package io.github.StardewValley;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import io.github.StardewValley.controllers.GameController;
-import io.github.StardewValley.controllers.ProfileMenuController;
-import io.github.StardewValley.controllers.SignUpMenuController;
-import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.enums.Menu;
 import io.github.StardewValley.views.GameView;
-import io.github.StardewValley.views.ProfileMenu;
-import io.github.StardewValley.views.SignUpMenu;
 import io.github.StardewValley.views.*;
-
-import java.util.ArrayList;
 
 public class Main extends Game {
 
@@ -30,11 +20,13 @@ public class Main extends Game {
         main = this;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        ArrayList<User> users = LoadUser.loadUsers();
-        if (users != null) {
-            App.setUsers(users);
-        }
-        User user1 = LoadUser.loadStayLoggedInUser();
+
+
+//        ArrayList<User> users = LoadUser.loadUsers();
+//        if (users != null) {
+//            App.setUsers(users);
+//        }
+//        User user1 = LoadUser.loadStayLoggedInUser();
         if (user1 != null) {
             assert users != null;
             for (User user : users) {

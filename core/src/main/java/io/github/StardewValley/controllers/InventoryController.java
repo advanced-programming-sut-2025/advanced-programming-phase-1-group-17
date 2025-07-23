@@ -9,6 +9,7 @@ import io.github.StardewValley.models.tools.BackPack;
 import io.github.StardewValley.models.tools.FishingPoleType;
 import io.github.StardewValley.models.tools.Tool;
 import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.views.*;
 
 public class InventoryController {

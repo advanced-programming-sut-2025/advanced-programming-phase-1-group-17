@@ -2,7 +2,7 @@ package io.github.StardewValley.models.NPCS;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.Placeable;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.foraging.Mineral;
 import io.github.StardewValley.models.foraging.MineralType;
 import java.util.ArrayList;

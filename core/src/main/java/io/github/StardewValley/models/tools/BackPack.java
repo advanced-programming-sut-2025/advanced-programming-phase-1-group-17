@@ -2,8 +2,7 @@ package io.github.StardewValley.models.tools;
 
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Placeable;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.enums.BackPackType;
 
 import java.util.ArrayList;

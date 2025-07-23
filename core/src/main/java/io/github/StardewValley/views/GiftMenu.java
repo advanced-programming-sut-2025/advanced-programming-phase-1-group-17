@@ -19,7 +19,7 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.GiftMenuController;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.tools.BackPack;
 
 

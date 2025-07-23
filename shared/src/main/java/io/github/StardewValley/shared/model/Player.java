@@ -1,23 +1,19 @@
-package io.github.StardewValley.models;
+package io.github.StardewValley.shared.model;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.ChooseMapController;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.artisan.ArtisanProduct;
-import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
 import io.github.StardewValley.models.enums.BackPackType;
-import io.github.StardewValley.models.enums.Gender;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.tools.*;
 import io.github.StardewValley.models.map.PlayerMap;
-import io.github.StardewValley.views.chooseMap;
+import io.github.StardewValley.shared.enums.Gender;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +21,7 @@ import java.util.HashSet;
 
 public class Player {
     private PlayerMap playerMap;
-    private User user;
+    private UserDTO user;
     private boolean isGuest = false;
     private boolean isPassedOut = false;
     private int x;
@@ -129,7 +125,7 @@ public class Player {
         this.recipes = recipes;
     }
 
-    public Player(User user, boolean isGuest) {
+    public Player(UserDTO user, boolean isGuest) {
         this.user = user;
         this.isGuest = isGuest;
         this.energy = maxEnergy;
@@ -232,11 +228,11 @@ public class Player {
         this.playerMap = playerMap;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 
@@ -697,6 +693,4 @@ public class Player {
     public Direction getCurrentDirection() {
         return currentDirection;
     }
-
-
 }

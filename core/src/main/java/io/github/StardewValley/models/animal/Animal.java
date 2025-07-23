@@ -3,7 +3,7 @@ package io.github.StardewValley.models.animal;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Placeable;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.models.map.Tile;
 
 import java.util.ArrayList;

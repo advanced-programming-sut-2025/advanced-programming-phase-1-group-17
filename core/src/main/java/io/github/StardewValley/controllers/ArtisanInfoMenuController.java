@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.views.ArtisanInfoMenu;
 
 public class ArtisanInfoMenuController {

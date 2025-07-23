@@ -11,13 +11,10 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.MainMenuController;
 import io.github.StardewValley.controllers.ProfileMenuController;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.enums.MainMenuCommands;
-import io.github.StardewValley.models.enums.Menu;
 
 import java.util.Scanner;
 
-public class MainMenu implements AppMenu, Screen {
+public class MainMenu implements Screen {
     private TextButton backButton;
     private Table buttonsTable;
     private Stage stage;
@@ -120,10 +117,6 @@ public class MainMenu implements AppMenu, Screen {
 
     @Override
     public void dispose() {
-
-    }
-
-    public void run(Scanner scanner) {
 
     }
 

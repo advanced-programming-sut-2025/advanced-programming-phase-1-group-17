@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.TalkController;
 import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 
 public class TalkView implements Screen {
 

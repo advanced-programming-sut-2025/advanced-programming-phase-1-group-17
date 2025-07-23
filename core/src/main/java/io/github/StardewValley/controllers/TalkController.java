@@ -5,11 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.model.Player;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.TalkView;
-
-import java.security.PublicKey;
 
 public class TalkController {
     private TalkView view;

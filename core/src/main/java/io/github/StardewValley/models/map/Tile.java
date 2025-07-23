@@ -8,6 +8,7 @@ import io.github.StardewValley.models.foraging.Mineral;
 import io.github.StardewValley.models.foraging.MineralType;
 import io.github.StardewValley.models.plant.Crop;
 import io.github.StardewValley.models.plant.Tree;
+import io.github.StardewValley.shared.model.Player;
 
 import java.util.ArrayList;
 

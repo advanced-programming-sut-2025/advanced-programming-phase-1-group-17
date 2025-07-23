@@ -1,6 +1,7 @@
 package io.github.StardewValley.models;
 
 import io.github.StardewValley.models.NPCS.NPC;
+import io.github.StardewValley.shared.model.Player;
 
 public class message {
     private Player sender;

@@ -4,6 +4,7 @@ import io.github.StardewValley.models.cooking.FoodType;
 import io.github.StardewValley.models.cooking.Recipe;
 import io.github.StardewValley.models.crafting.CraftingItemType;
 import io.github.StardewValley.models.crafting.CraftingRecipe;
+import io.github.StardewValley.shared.model.Player;
 
 public class Ability {
     private int farmingAbility = 0;

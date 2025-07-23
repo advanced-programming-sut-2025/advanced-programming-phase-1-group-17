@@ -11,12 +11,11 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.MainMenuController;
 import io.github.StardewValley.controllers.SecurityQuestionMenuController;
 import io.github.StardewValley.controllers.SignUpMenuController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Result;
-import io.github.StardewValley.models.enums.Gender;
+import io.github.StardewValley.shared.enums.Gender;
 
 
 public class SignUpMenu implements Screen {
