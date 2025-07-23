@@ -15,12 +15,16 @@ import io.github.StardewValley.controllers.GameMenuController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.controllers.StoreMenuController;
 import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.animal.Animal;
+import io.github.StardewValley.models.animal.AnimalType;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.market.StoreType;
 
 import java.util.Map;
 
 import io.github.StardewValley.models.tools.Tool;
+
+import static io.github.StardewValley.models.animal.AnimalType.*;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -35,6 +39,15 @@ public class GameView implements Screen, InputProcessor {
 //        display.run(1,1,300);
         this.controller.setView(this);
         Main.setGameView(this);
+        int i=0;
+        for(AnimalType type : AnimalType.values()) {
+            Animal animal = new Animal(type.getName(), type);
+            animal.setX(100+20*i);
+            animal.setY(100+20*i);
+            i++;
+            App.getCurrentGame().getCurrentPlayingPlayer().getAnimals().add(animal);
+        }
+
     }
 
     @Override
@@ -56,10 +69,14 @@ public class GameView implements Screen, InputProcessor {
 
         controller.updateGame(v);
         controller.handlePlayerInput();
+        for(Animal animal:App.getCurrentGame().getCurrentPlayingPlayer().getAnimals()) {
+            animal.update(v);
+            animal.render(Main.getBatch(),v);
+        }
 
         Main.getBatch().end();
 
-        hud.render(Main.getBatch());
+        hud.render(Main.getBatch(),v);
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

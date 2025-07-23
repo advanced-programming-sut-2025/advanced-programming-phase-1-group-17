@@ -5,17 +5,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.Game;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.PlayerController;
+import io.github.StardewValley.models.animal.*;
+import io.github.StardewValley.models.map.Lake;
 import io.github.StardewValley.views.*;
 import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.animal.AnimalProduct;
-import io.github.StardewValley.models.animal.AnimalType;
 import io.github.StardewValley.models.cooking.BuffType;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.crafting.CraftingItemType;
@@ -58,7 +58,6 @@ public class GameController {
 
     public GameController(Game game) {
         this.game = game;
-
         for (Player player : game.getPlayers()) {
             PlayerController playerController = new PlayerController(player);
             this.game.getPlayerControllers().add(playerController);
@@ -75,6 +74,7 @@ public class GameController {
         this.mapHeightInPixels = worldController.getTileHeight();
 
         initializeStoreRectangles();
+        App.setCamera(this.camera);
     }
 
     public void setView(GameView gameView) {
@@ -150,6 +150,20 @@ public class GameController {
             game.getCurrentPlayingPlayer().draw(Main.getBatch());
             toolController.update(delta, player);
         }
+        if(Gdx.input.isTouched()) {
+            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            Tile tile = Tile.getTile((int)vector3.x,(int)vector3.y);
+            if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
+                Main.getMain().getScreen().dispose();
+                //Main.getMain().setScreen(new FishingView(new FishingController()));
+            }
+
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(),view));
+
+        }
     }
 
     private boolean upPressed, downPressed, leftPressed, rightPressed;
@@ -184,6 +198,7 @@ public class GameController {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
                 break;
+
 
 
 

@@ -1,15 +1,24 @@
 package io.github.StardewValley.models.animal;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import io.github.StardewValley.controllers.WorldController;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.enums.Direction;
 import io.github.StardewValley.models.map.Tile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import static io.github.StardewValley.models.animal.AnimalType.*;
+import static io.github.StardewValley.models.enums.Direction.*;
 import static io.github.StardewValley.models.market.ItemQuality.*;
 
 public class Animal implements Placeable {
@@ -24,9 +33,38 @@ public class Animal implements Placeable {
     private boolean isFedOutside = false;
     private boolean isOutside=false;
     private Tile tile=null;
+    private float x=100,y=100;
+    private Direction direction = Up;
+    private float stateTime = 0f;
+    private EnumMap<Direction, Animation<TextureRegion>> chickenMap;
+    private EnumMap<Direction, Animation<TextureRegion>> rabbitMap;
+    private EnumMap<Direction, Animation<TextureRegion>> cowMap;
+    private EnumMap<Direction, Animation<TextureRegion>> pigMap;
+    private EnumMap<Direction, Animation<TextureRegion>> goatMap;
+    private EnumMap<Direction, Animation<TextureRegion>> dinosaurMap;
+    private EnumMap<Direction, Animation<TextureRegion>> sheepMap;
+    private EnumMap<Direction, Animation<TextureRegion>> duckMap;
+    private Vector2 vector2;
+    private Rectangle hitBox;
+    private Texture loveTexture;
+
+
+    private EnumMap<AnimalType,EnumMap<Direction,Animation<TextureRegion>>> animalsAnimationMap;
+    private float speed = 100f;
     private int dayTillProduce=0;
     private int counter=0;
     public Animal(String name, AnimalType animalType){
+        this.loveTexture = new Texture("Heart/Marriage_Icon.png");
+        this.vector2 = new Vector2();
+        this.chickenMap = new EnumMap<>(Direction.class);
+        this.rabbitMap = new EnumMap<>(Direction.class);
+        this.cowMap = new EnumMap<>(Direction.class);
+        this.pigMap = new EnumMap<>(Direction.class);
+        this.goatMap = new EnumMap<>(Direction.class);
+        this.dinosaurMap = new EnumMap<>(Direction.class);
+        this.sheepMap = new EnumMap<>(Direction.class);
+        this.duckMap = new EnumMap<>(Direction.class);
+        animalsAnimationMap = new EnumMap<>(AnimalType.class);
         this.name=name;
         this.animalType=animalType;
         switch (animalType) {
@@ -37,6 +75,141 @@ public class Animal implements Placeable {
             case Sheep -> dayTillProduce =3;
             default -> dayTillProduce =0;
         }
+        Texture animalTexture = new Texture("sprites/Chicken Brown.png");
+        TextureRegion[][] animalRegion = TextureRegion.split(animalTexture, 16, 16);
+        Animation<TextureRegion>[] animalAnimation = new Animation[4];
+        for (int i = 0; i < 4; i++) {
+                animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
+        }
+        chickenMap.put(Down, animalAnimation[0]);
+        chickenMap.put(Right, animalAnimation[1]);
+        chickenMap.put(Up, animalAnimation[2]);
+        chickenMap.put(Left, animalAnimation[3]);
+        animalsAnimationMap.put(Chicken, chickenMap);
+
+         animalTexture = new Texture("sprites/Cow Brown.png");
+         animalRegion = TextureRegion.split(animalTexture, 32, 32);
+         animalAnimation = new Animation[4];
+        for (int i = 0; i < 4; i++) {
+            if (i == 3) {
+                TextureRegion[] flippedFrames = new TextureRegion[4];
+                for (int j = 0; j < 4; j++) {
+                    flippedFrames[j] = new TextureRegion(animalRegion[1][j]);
+                    flippedFrames[j].flip(true, false);
+                }
+                animalAnimation[i] = new Animation<TextureRegion>(0.1f, flippedFrames);
+            }
+            else animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
+        }
+        cowMap.put(Down, animalAnimation[0]);
+        cowMap.put(Right, animalAnimation[1]);
+        cowMap.put(Up, animalAnimation[2]);
+        cowMap.put(Left, animalAnimation[3]);
+        animalsAnimationMap.put(Cow, cowMap);
+
+        animalTexture = new Texture("sprites/Rabbit.png");
+        animalRegion = TextureRegion.split(animalTexture, 16, 16);
+        animalAnimation = new Animation[4];
+        for (int i = 0; i < 4; i++) {
+            animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
+        }
+        rabbitMap.put(Down, animalAnimation[0]);
+        rabbitMap.put(Right, animalAnimation[1]);
+        rabbitMap.put(Up, animalAnimation[2]);
+        rabbitMap.put(Left, animalAnimation[3]);
+        animalsAnimationMap.put(Rabbit, rabbitMap);
+
+        animalTexture = new Texture("sprites/Dinosaur.png");
+        animalRegion = TextureRegion.split(animalTexture, 16, 16);
+        animalAnimation = new Animation[4];
+        for (int i = 0; i < 4; i++) {
+            animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
+        }
+        dinosaurMap.put(Down, animalAnimation[0]);
+        dinosaurMap.put(Right, animalAnimation[1]);
+        dinosaurMap.put(Up, animalAnimation[2]);
+        dinosaurMap.put(Left, animalAnimation[3]);
+        animalsAnimationMap.put(Dinosaur, dinosaurMap);
+
+        animalTexture = new Texture("sprites/Goat.png");
+        animalRegion = TextureRegion.split(animalTexture, 32, 32);
+        animalAnimation = new Animation[4];
+        for (int i = 0; i < 4; i++) {
+            if (i == 3) {
+                TextureRegion[] flippedFrames = new TextureRegion[4];
+                for (int j = 0; j < 4; j++) {
+                    flippedFrames[j] = new TextureRegion(animalRegion[1][j]);
+                    flippedFrames[j].flip(true, false);
+                }
+                animalAnimation[i] = new Animation<TextureRegion>(0.1f, flippedFrames);
+            }
+            else animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
+        }
+
+        goatMap.put(Down, animalAnimation[0]);
+        goatMap.put(Right, animalAnimation[1]);
+        goatMap.put(Up, animalAnimation[2]);
+        goatMap.put(Left, animalAnimation[3]);
+        animalsAnimationMap.put(Goat, goatMap);
+
+        animalTexture = new Texture("sprites/Sheep.png");
+        animalRegion = TextureRegion.split(animalTexture, 32, 32);
+        animalAnimation = new Animation[4];
+        for (int i = 0; i < 4; i++) {
+            if (i == 3) {
+                TextureRegion[] flippedFrames = new TextureRegion[4];
+                for (int j = 0; j < 4; j++) {
+                    flippedFrames[j] = new TextureRegion(animalRegion[1][j]);
+                    flippedFrames[j].flip(true, false);
+                }
+                animalAnimation[i] = new Animation<TextureRegion>(0.1f, flippedFrames);
+            }
+            else animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
+        }
+        sheepMap.put(Down, animalAnimation[0]);
+        sheepMap.put(Right, animalAnimation[1]);
+        sheepMap.put(Up, animalAnimation[2]);
+        sheepMap.put(Left, animalAnimation[3]);
+        animalsAnimationMap.put(Sheep, sheepMap);
+
+        animalTexture = new Texture("sprites/Pig.png");
+        animalRegion = TextureRegion.split(animalTexture, 32, 32);
+        animalAnimation = new Animation[4];
+        for (int i = 0; i < 4; i++) {
+            if (i == 3) {
+                TextureRegion[] flippedFrames = new TextureRegion[4];
+                for (int j = 0; j < 4; j++) {
+                    flippedFrames[j] = new TextureRegion(animalRegion[1][j]);
+                    flippedFrames[j].flip(true, false);
+                }
+                animalAnimation[i] = new Animation<TextureRegion>(0.1f, flippedFrames);
+            }
+            else animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
+        }
+        pigMap.put(Down, animalAnimation[0]);
+        pigMap.put(Right, animalAnimation[1]);
+        pigMap.put(Up, animalAnimation[2]);
+        pigMap.put(Left, animalAnimation[3]);
+        animalsAnimationMap.put(Pig, pigMap);
+
+        animalTexture = new Texture("sprites/Duck.png");
+        animalRegion = TextureRegion.split(animalTexture, 16, 16);
+        animalAnimation = new Animation[4];
+        for (int i = 0; i < 4; i++) {
+            if(i==2) {
+                for(int j=0;j<4;j++) {
+                    animalRegion[i][j].flip(true,false);
+                }
+            }
+            animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
+
+        }
+        duckMap.put(Down, animalAnimation[0]);
+        duckMap.put(Right, animalAnimation[1]);
+        duckMap.put(Up, animalAnimation[2]);
+        duckMap.put(Left, animalAnimation[3]);
+        animalsAnimationMap.put(Duck, duckMap);
+
     }
 
     public Tile getTile() {
@@ -152,9 +325,9 @@ public class Animal implements Placeable {
     }
 
     public void produce() {
-        if (!isFedToday) {
-            return;
-        }
+//        if (!isFedToday) {
+//            return;
+//        }
         if(this.getAnimalType().equals(AnimalType.Pig) && !this.isOutside){
             return ;
         }
@@ -182,6 +355,9 @@ public class Animal implements Placeable {
         }
         animalProduct.setAnimal(this);
         addProduct(animalProduct);
+        animalProduct.setX(x);
+        animalProduct.setY(y);
+
 
 
     }
@@ -259,5 +435,122 @@ public class Animal implements Placeable {
     public Texture getTexture() {
         //TODO
         return null;
+    }
+    private float timeSinceLastDirectionChange = 0f;
+    private float directionChangeInterval = 3f;
+    public void update(float delta) {
+
+        // هر ۳ ثانیه جهت رو عوض کن
+        if (timeSinceLastDirectionChange >= directionChangeInterval) {
+            direction = getRandomDirection();
+            timeSinceLastDirectionChange = 0;
+        }
+         vector2 = new Vector2(App.getCurrentGame().getCurrentPlayingPlayer().getX()-x,App.getCurrentGame().getCurrentPlayingPlayer().getY()- y);
+
+        if(true) {
+            timeSinceLastDirectionChange += delta;
+            stateTime += delta;
+            float newX = x;
+            float newY = y;
+            switch (direction) {
+                case Up -> newY += speed * delta;
+                case Down -> newY -= speed * delta;
+                case Left -> newX -= speed * delta;
+                case Right -> newX += speed * delta;
+            }
+            float centerX = newX + this.animalType.getTexttureSize()/2f;
+            float centerY = newY + this.animalType.getTexttureSize()/2f;
+            Texture backgroundTexture = App.getCurrentGame().getCurrentPlayingPlayer().getBackgroundTexture();
+            int tileX = (int) (centerX / backgroundTexture.getWidth());
+            int tileY = (int) (centerY / backgroundTexture.getHeight());
+            if (tileX == 0) tileX = 1;
+            if (tileY == 0) tileY = 1;
+
+            Tile destination = Tile.getTile(tileX, tileY);
+            if(destination != null && destination.isWalkAble()){
+                int mapWidth = backgroundTexture.getWidth() * 300;
+                int mapHeight = backgroundTexture.getHeight() * 300;
+
+//                    x = tileX;
+//                    y = tileY;
+
+                x = (int) Math.max(1, Math.min(newX, mapWidth - this.animalType.getTexttureSize()));
+                y = (int) Math.max(1, Math.min(newY, mapHeight - this.animalType.getTexttureSize()));
+            }
+        }
+
+    }
+    private boolean showHeart = false;
+    private float heartTimer = 0f;
+    private float heartMovement = 0f;
+    public void render(SpriteBatch batch,float v) {
+
+        TextureRegion frame = animalsAnimationMap.get(this.animalType).get(direction).getKeyFrame(stateTime, true);
+        int originalWidth = frame.getRegionWidth();
+        int originalHeight = frame.getRegionHeight();
+        float scale = 1f;
+        if(Gdx.input.justTouched()){
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            App.getCamera().unproject(touchPos);
+            if(this.getHitBox().contains(touchPos.x,touchPos.y) ){
+                System.out.println(this.isPettedToday);
+                if(!this.isPettedToday){
+                    this.setPettedToday(true);
+                    showHeart = true;
+                    heartTimer = 0f;        // ریست زمان
+                    heartMovement = 0f;
+                }
+            }
+        }
+        if (showHeart) {
+            heartTimer += v;
+            heartMovement += v * 25f;
+
+            batch.draw(
+                loveTexture,
+                x + animalType.getTexttureSize() / 2f - loveTexture.getWidth() / 2f,
+                y + animalType.getTexttureSize() + heartMovement
+            );
+
+            if (heartTimer > 1.5f) {
+                showHeart = false;
+            }
+        }
+        batch.draw(frame, x, y, this.animalType.getTexttureSize()*scale, this.animalType.getTexttureSize()*scale);
+        List<AnimalProduct> toRemove = new ArrayList<>();
+
+        for (AnimalProduct animalProduct : this.getAnimalProducts()) {
+            animalProduct.render(batch, v);
+            if (!animalProduct.isRender()) {
+                toRemove.add(animalProduct);
+            }
+        }
+
+        this.getAnimalProducts().removeAll(toRemove);
+
+    }
+
+    private Direction getRandomDirection() {
+        Direction[] directions = Direction.values();
+        return directions[(int) (Math.random() * directions.length)];
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+    public Rectangle getHitBox(){
+        return new Rectangle(x,y,this.animalType.getTexttureSize(),this.animalType.getTexttureSize());
     }
 }

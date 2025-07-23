@@ -1,5 +1,12 @@
 package io.github.StardewValley.models.animal;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.market.ItemQuality;
@@ -9,6 +16,8 @@ public class AnimalProduct implements BackPackable {
     private String name;
     private AnimalProductType animalProductType;
     private ItemQuality quality = ItemQuality.Regular;
+    private float x=100;
+    private float y=100;
 
 
     public Animal getAnimal() {
@@ -53,5 +62,45 @@ public class AnimalProduct implements BackPackable {
     @Override
     public BackPackableType getType() {
         return animalProductType;
+    }
+    public Rectangle getHitBox(){
+        return new Rectangle(x,y,this.animalProductType.getInventoryTexture().getWidth(),this.animalProductType.getInventoryTexture().getHeight());
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+    boolean isRender=true;
+    public boolean isRender(){
+        return isRender;
+    }
+    public void render(SpriteBatch batch, float v) {
+        if(isRender){
+            batch.draw(this.animalProductType.getInventoryTexture(),x,y,this.animalProductType.getInventoryTexture().getWidth(),this.animalProductType.getInventoryTexture().getHeight());
+        }
+        if(Gdx.input.justTouched()){
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            App.getCamera().unproject(touchPos);
+            if(this.getHitBox().contains(touchPos.x,touchPos.y)){
+                isRender =false;
+            }
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+            for(Animal animal1: App.getCurrentGame().getCurrentPlayingPlayer().getAnimals()){
+                animal1.produce();
+            }
+        }
     }
 }

@@ -19,7 +19,7 @@ public class BackPack {
 
 
     private final BackPackType type;
-    private double coin = 0;
+    private double coin = 100000;
 
     public BackPack(BackPackType type, Player player) {
         this.type = type;

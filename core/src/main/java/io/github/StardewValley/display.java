@@ -104,7 +104,7 @@ public class display {
                  else if (tile.getPlaceable() instanceof Quarry) {
                     System.out.print(BOLD + CYAN + "Q" + RESET);
                 } else if (tile.getPlaceable() instanceof Lake) {
-                    System.out.print(BOLD + BLUE + "L" + RESET);
+                    System.out.print(BOLD + BLUE + "T" + RESET);
                 } else if (tile.getPlaceable() instanceof Mineral) {
                     System.out.print(BOLD + CHOCOLATE + "M" + RESET);
                 } else if (tile.getPlaceable() instanceof Hut) {
