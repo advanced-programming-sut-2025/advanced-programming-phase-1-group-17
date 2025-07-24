@@ -16,10 +16,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.controllers.InventoryController;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.shared.model.Player;
-import io.github.StardewValley.models.tools.BackPack;
-import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.tools.BackPack;
+import io.github.StardewValley.shared.models.tools.ToolType;
 
 public class InventoryView implements Screen {
     private Stage stage;

@@ -1,15 +1,15 @@
 package io.github.StardewValley.controllers;
 
 import com.google.gson.Gson;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Result;
-import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.enums.SignUpMenuCommands;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.dto.RegisterRequest;
 import io.github.StardewValley.shared.dto.RegisterResponse;
 import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.enums.SignUpMenuCommands;
 import io.github.StardewValley.views.LoginMenu;
 import okhttp3.*;
 
@@ -50,14 +50,7 @@ public class SignUpMenuController {
         else if (!password.equals(passwordConfirm)) {
             return new Result(false, "Password Confirm Incorrect!");
         }
-
-//        String hashedPassword = PasswordUtil.hashPassword(password);
-//        User newUser = new User(username, hashedPassword, email, nickname, gender);
-
         return sendRegisterRequest(username, password, nickname, email, gender);
-
-//        App.getUsers().add(newUser);
-//        SaveUser.saveUser(App.getUsers());
     }
 
     private Result sendRegisterRequest(String username, String password,
@@ -83,7 +76,7 @@ public class SignUpMenuController {
             RegisterResponse registerResponse = gson.fromJson(responseJson, RegisterResponse.class);
 
             if (registerResponse.isSuccess()) {
-                App.setLoggedInUser(new User(username, password, email, nickname, gender));
+                App.setLoggedInUser(new UserDTO(username, nickname, gender));
                 return new Result(true, "User registered successfully!");
             } else {
                 return new Result(false, registerResponse.getMessage());

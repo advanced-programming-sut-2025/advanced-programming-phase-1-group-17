@@ -8,12 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.controllers.ArtisanInfoMenuController;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.artisan.ArtisanProductType;
-import io.github.StardewValley.models.artisan.IngredientGroup;
-import io.github.StardewValley.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
+import io.github.StardewValley.shared.models.artisan.IngredientGroup;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
 
 public class ArtisanInfoMenu implements Screen {
     private Stage stage;

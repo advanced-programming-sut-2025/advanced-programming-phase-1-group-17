@@ -2,13 +2,13 @@ package io.github.StardewValley.controllers;
 
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
-import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.enums.CheatCodeCommands;
-import io.github.StardewValley.models.enums.WeatherType;
-import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.shared.model.Player;
+import io.github.StardewValley.shared.controller.LightningController;
+import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
+import io.github.StardewValley.shared.models.enums.WeatherType;
+import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.views.CheatCodeTerminal;
 
 import java.util.ArrayList;
@@ -102,6 +102,7 @@ public class CheatCodeTerminalController {
         Tile tile = Tile.getTile(x, y);
         if (tile == null)
             return "tile not found";
+        LightningController.getLightningController().triggerLightning();
         tile.lightningStrike();
         return "Successfully lightninged.";
     }

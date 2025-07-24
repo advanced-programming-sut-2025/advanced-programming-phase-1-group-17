@@ -9,10 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.MainMenuController;
-import io.github.StardewValley.controllers.ProfileMenuController;
-import io.github.StardewValley.models.App;
-
-import java.util.Scanner;
+import io.github.StardewValley.shared.models.App;
 
 public class MainMenu implements Screen {
     private TextButton backButton;
@@ -41,7 +38,7 @@ public class MainMenu implements Screen {
     public MainMenu(MainMenuController mainMenuController, Skin skin) {
 
         this.controller = mainMenuController;
-        this.nickName = new Label(App.getLoggedInUser().getNickName(), skin);
+        this.nickName = new Label(App.getLoggedInUser().getNickname(), skin);
         nickName.setColor(0, 1, 0, 1);
         nickName.setFontScale(2);
         nickName.setPosition(1750, 800);

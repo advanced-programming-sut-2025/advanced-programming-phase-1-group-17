@@ -1,0 +1,166 @@
+package io.github.StardewValley.shared.models.map;
+
+import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.foraging.Mineral;
+import io.github.StardewValley.shared.models.foraging.MineralType;
+import io.github.StardewValley.shared.models.plant.Crop;
+import io.github.StardewValley.shared.models.plant.Tree;
+
+import java.util.ArrayList;
+
+public class Tile {
+    private int x;
+    private int y;
+    private Placeable placeable;
+    private boolean isWalkAble = true;
+    private boolean isPlowed = false;
+    private Player owner;
+    private NPC npcIsHere;
+    private boolean crowImmunity = false;
+    private static ArrayList<Tile> tiles = new ArrayList<Tile>();
+    private static ArrayList<Tile> treeTile = new ArrayList<Tile>();
+
+    public Tile(int x, int y, Player owner) {
+        this.x = x;
+        this.y = y;
+        this.owner = owner;
+        tiles.add(this);
+    }
+
+    public static ArrayList<Tile> getTiles() {
+        return tiles;
+    }
+
+//    public static void resetTiles() {
+//        for (Tile[] tileColumn : tiles) {
+//            tileColumn = new Tile[PlayerMap.getLength()];
+//        }
+//    }
+
+    public void plant(String plantName) {
+        isPlowed = false;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public Placeable getPlaceable() {
+        return placeable;
+    }
+
+    public void setPlaceable(Placeable placeable) {
+        if (!(placeable instanceof Tree) && treeTile.contains(this)) {
+            treeTile.remove(this);
+        }
+        this.placeable = placeable;
+        if (placeable instanceof Tree) {
+            this.setWalkAble(false);
+            treeTile.add(this);
+        }
+
+    }
+
+    public boolean isWalkAble() {
+        return isWalkAble;
+    }
+
+    public void setWalkAble(boolean walkAble) {
+        isWalkAble = walkAble;
+    }
+
+    public boolean isPlowed() {
+        return isPlowed;
+    }
+
+    public void setPlowed(boolean plowed) {
+        isPlowed = plowed;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    public boolean isWater() {
+        if (placeable instanceof Lake)
+            return true;
+        else if (placeable instanceof NormalItem normalItem){
+            return normalItem.getType().equals(NormalItemType.Well);
+        }
+        return false;
+    }
+
+    public static Tile getTile(int x, int y) {
+        for (Tile tile : tiles) {
+            if (tile.getX() == x && tile.getY() == y) {
+                return tile;
+            }
+        }
+        return null;
+    }
+
+
+    public NPC getNpcIsHere() {
+        return npcIsHere;
+    }
+
+    public void setNpcIsHere(NPC npcIsHere) {
+        this.npcIsHere = npcIsHere;
+    }
+
+    public static boolean findAround(Animal animal){
+        Player player= App.getCurrentGame().getCurrentPlayingPlayer();
+        int x=player.getTileX();
+        int y=player.getTileY();
+        for(int i=-1;i<2;i++){
+            for(int j=-1;j<2;j++){
+                Tile tile = Tile.getTile(x+i,y+j);
+
+                if(tile != null && tile.getPlaceable() != null && tile.getPlaceable().equals(animal)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void lightningStrike() {
+        if (placeable instanceof Tree tree) {
+            if (!tree.isInsideGreenhouse())
+                placeable = new Mineral(MineralType.Coal, false);
+        } else if (placeable instanceof Crop crop) {
+            if (!crop.isInsideGreenhouse())
+                crop.getTile().setPlaceable(null);
+        }
+    }
+
+    public boolean isCrowImmunity() {
+        return crowImmunity;
+    }
+
+    public void setCrowImmunity(boolean crowImmunity) {
+        this.crowImmunity = crowImmunity;
+    }
+
+    public static ArrayList<Tile> getTreeTile() {
+        return treeTile;
+    }
+}

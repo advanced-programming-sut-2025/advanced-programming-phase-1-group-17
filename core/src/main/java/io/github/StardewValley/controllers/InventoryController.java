@@ -2,14 +2,16 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.tools.BackPack;
-import io.github.StardewValley.models.tools.FishingPoleType;
-import io.github.StardewValley.models.tools.Tool;
-import io.github.StardewValley.models.tools.ToolType;
-import io.github.StardewValley.shared.model.Player;
+import io.github.StardewValley.shared.models.BackPackable;
+import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.tools.BackPack;
+import io.github.StardewValley.shared.models.tools.FishingPoleType;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.ToolType;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.views.*;
 
 public class InventoryController {
@@ -84,7 +86,7 @@ public class InventoryController {
     public void handleSocialMenu() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(new TalkView(new TalkController(),
-            GameAssetManager.getGameAssetManager().getSkin(), view.getGameView()));
+            GameAssetManager.getGameAssetManager().getSkin(), Main.getGameView()));
     }
 
     public void handleMap() {

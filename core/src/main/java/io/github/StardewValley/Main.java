@@ -3,7 +3,7 @@ package io.github.StardewValley;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import io.github.StardewValley.models.App;
+import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.*;
 
@@ -27,19 +27,20 @@ public class Main extends Game {
 //            App.setUsers(users);
 //        }
 //        User user1 = LoadUser.loadStayLoggedInUser();
-        if (user1 != null) {
-            assert users != null;
-            for (User user : users) {
-                if (user.equals(user1)) {
-                    App.setLoggedInUser(user);
-                    isLoggedInUser = true;
-                    Main.getMain().setScreen(new WelcomeMenu(this,true));
-                }
-            }
-        }
-        if (!isLoggedInUser) {
-            Main.getMain().setScreen(new WelcomeMenu(this,false));
-        }
+//        if (user1 != null) {
+//            assert users != null;
+//            for (User user : users) {
+//                if (user.equals(user1)) {
+//                    App.setLoggedInUser(user);
+//                    isLoggedInUser = true;
+//                    Main.getMain().setScreen(new WelcomeMenu(this,true));
+//                }
+//            }
+//        }
+//        if (!isLoggedInUser) {
+//            Main.getMain().setScreen(new WelcomeMenu(this,false));
+//        }
+        Main.getMain().setScreen(new WelcomeMenu(this,false));
     }
 
     @Override

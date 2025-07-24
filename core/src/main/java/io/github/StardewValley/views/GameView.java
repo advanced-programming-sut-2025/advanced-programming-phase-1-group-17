@@ -15,21 +15,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.shared.model.Player;
-import io.github.StardewValley.models.Result;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.controllers.StoreMenuController;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.market.StoreType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.market.StoreType;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import io.github.StardewValley.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.enums.Gender;
 
 public class GameView implements Screen, InputProcessor {

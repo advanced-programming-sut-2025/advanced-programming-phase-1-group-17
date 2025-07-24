@@ -3,8 +3,8 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.shared.model.Player;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.views.ArtisanInfoMenu;
 
 public class ArtisanInfoMenuController {

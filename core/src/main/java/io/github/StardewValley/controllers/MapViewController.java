@@ -4,12 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.shared.model.Player;
-import io.github.StardewValley.models.map.Tile;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.views.MapView;
 
 public class MapViewController {

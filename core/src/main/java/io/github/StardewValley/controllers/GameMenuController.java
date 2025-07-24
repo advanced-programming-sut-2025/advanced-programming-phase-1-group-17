@@ -2,30 +2,30 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
-import io.github.StardewValley.display;
-import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.animal.*;
-import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.NPCS.Quest;
-import io.github.StardewValley.models.artisan.ArtisanProductType;
-import io.github.StardewValley.models.cooking.*;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.cooking.Food;
-import io.github.StardewValley.models.cooking.FoodType;
-import io.github.StardewValley.models.cooking.Recipe;
-import io.github.StardewValley.models.crafting.CraftingRecipe;
-import io.github.StardewValley.models.enums.*;
-import io.github.StardewValley.models.animal.AnimalPlace;
-import io.github.StardewValley.models.map.*;
-import io.github.StardewValley.models.tools.*;
-import io.github.StardewValley.models.Trade;
-import io.github.StardewValley.models.market.*;
-import io.github.StardewValley.shared.model.Game;
-import io.github.StardewValley.shared.model.Player;
+import io.github.StardewValley.shared.controller.LightningController;
+import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.NPCS.Quest;
+import io.github.StardewValley.shared.models.animal.*;
+import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
+import io.github.StardewValley.shared.models.cooking.*;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
+import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
+import io.github.StardewValley.shared.models.enums.FishType;
+import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.enums.WeatherType;
+import io.github.StardewValley.shared.models.map.Hut;
+import io.github.StardewValley.shared.models.map.PlayerMap;
+import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.market.Store;
+import io.github.StardewValley.shared.models.market.StoreType;
+import io.github.StardewValley.shared.models.tools.*;
 import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MainMenu;
@@ -43,210 +43,210 @@ public class GameMenuController {
     }
 
     private void setupButtonListener() {
-        view.getBackButton().addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                view.setError("Entering to MainMenu...");
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        Main.getMain().getScreen().dispose();
-                        Main.getMain().setScreen(
-                            new MainMenu(
-                                new MainMenuController(),
-                                GameAssetManager.getGameAssetManager().getSkin()
-                            )
-                        );
-                    }
-                }, 2);
-            }
-        });
-        view.getAddUser().addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                view.setError("");
-                String username = view.getUserName().getText().trim();
-                if (username.isEmpty()) {
-                    view.setError("Please enter a username");
-                    return;
-                }
-                if (!(view.getUser1().getText().toString().equals("-") || view.getUser2().getLabel().getText().toString().equals("-")
-                    || view.getUser3().getLabel().getText().toString().equals("-") || view.getUser4().getLabel().getText().toString().equals("-"))) {
-                    view.setError("you can only add a maximum of 4 players to the game!");
-                    return;
-                }
-
-                if (username.equals(view.getUser1().getLabel().getText().toString()) ||
-                    username.equals(view.getUser2().getLabel().getText().toString()) ||
-                    username.equals(view.getUser3().getLabel().getText().toString()) ||
-                    username.equals(view.getUser4().getLabel().getText().toString())) {
-                    view.setError("you cannot add repetitive player!");
-                    return;
-                }
-                if (App.getUserWithUsername(username) == null) {
-                    view.setError("no user exists with this username");
-                    return;
-                }
-                if (App.getUserWithUsername(username).getActiveGame() != null) {
-                    view.setError("user with this username has an active game");
-                    return;
-                }
-                if (view.getUser2().getLabel().getText().toString().equals("-")) {
-                    view.getUser2().getLabel().setText(view.getUserName().getText().trim());
-                    return;
-                }
-                if (view.getUser3().getLabel().getText().toString().equals("-")) {
-                    view.getUser3().getLabel().setText(view.getUserName().getText().trim());
-                    return;
-                }
-                if (view.getUser4().getLabel().getText().toString().equals("-")) {
-                    view.getUser4().getLabel().setText(view.getUserName().getText().trim());
-                    return;
-                }
-
-            }
-        });
-        view.getStartGame().addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                view.setError("");
-
-                String username1 = view.getUser1().getLabel().getText().toString().trim();
-                String username2 = view.getUser2().getLabel().getText().toString().trim();
-                String username3 = view.getUser3().getLabel().getText().toString().trim();
-                String username4 = view.getUser4().getLabel().getText().toString().trim();
-                User user1 = App.getUserWithUsername(username1);
-                User user2 = App.getUserWithUsername(username2);
-                User user3 = App.getUserWithUsername(username3);
-                User user4 = App.getUserWithUsername(username4);
-
-                if (username1.equals("-")) {
-                    view.setError("you must give at least 1 username");
-                    return;
-                }
-                if (username2.equals("-")) {
-                    if (App.getUserWithUsername("guest1") != null) {
-                        App.getUsers().remove(App.getUserWithUsername("guest1"));
-                    }
-                    user2 = new User();
-                    user2.setUsername("guest1");
-                    App.getUsers().add(user2);
-                } else {
-                    user2 = App.getUserWithUsername(username2);
-                }
-                if (username3.equals("-")) {
-                    if (App.getUserWithUsername("guest2") != null) {
-                        App.getUsers().remove(App.getUserWithUsername("guest2"));
-                    }
-                    user3 = new User();
-                    user3.setUsername("guest2");
-                    App.getUsers().add(user3);
-                } else {
-                    user3 = App.getUserWithUsername(username3);
-                }
-                if (username4.equals("-")) {
-                    if (App.getUserWithUsername("guest3") != null) {
-                        App.getUsers().remove(App.getUserWithUsername("guest3"));
-                    }
-                    user4 = new User();
-                    user4.setUsername("guest3");
-                    App.getUsers().add(user4);
-                } else {
-                    user4 = App.getUserWithUsername(username4);
-                }
-                Tile.getTiles().clear();
-
-                NPC.setFatherPlayer(null);
-                NPC.setFatherUser(null);
-                Game game = new Game(user2, user3, user4);
-                App.setCurrentGame(game);
-                App.getGames().add(game);
-                view.setError("new game created Successfully");
-
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        Main.getMain().getScreen().dispose();
-                        Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManager.getGameAssetManager().getSkin()));
-                    }
-                }, 2);
-
-
-            }
-        });
-        view.getDeleteUser1().addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                view.setError("");
-                String username1 = view.getUser1().getLabel().getText().toString().trim();
-                view.setError("you can not delete the loggedIn user (you)");
-                return;
-            }
-        });
-        view.getDeleteUser2().addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                view.setError("");
-                view.getUser2().getLabel().setText("-");
-                view.setError("delete user");
-                return;
-            }
-        });
-        view.getDeleteUser3().addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                view.setError("");
-                view.getUser3().getLabel().setText("-");
-                view.setError("delete user");
-                return;
-            }
-        });
-        view.getDeleteUser4().addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                view.setError("");
-                view.getUser4().getLabel().setText("-");
-                view.setError("delete user");
-                return;
-            }
-        });
-        view.getLoadGame().addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                User user = App.getLoggedInUser();
-                Player currentPlayer = null;
-                if (user.getLastGame() == null) {
-                    view.setError("you have no game to load");
-                } else {
-                    Game game = user.getLastGame();
-                    for (Player player : game.getPlayers()) {
-                        if (!(player.getUser().getLastGame() != null && player.getUser().getLastGame().equals(game))) {
-                            view.setError("your friends have another active game");
-                            return;
-                        }
-                        if (player.getUser().equals(user)) {
-                            currentPlayer = player;
-                        }
-                    }
-                    App.setCurrentGame(game);
-                    App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
-                    App.getCurrentGame().setCreator(currentPlayer);
-                    for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
-                        for (Tile tile : pm.getTiles()) {
-                            Tile.getTiles().add(tile);
-                        }
-                    }
-                    NPC.setFatherPlayer(game.getPlayers().get(4));
-                    NPC.setFatherUser(game.getPlayers().get(4).getUser());
-
-                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                        @Override
-                        public void run() {
-                            view.setError("you are in Game now");
-                            Main.getMain().getScreen().dispose();
-                            Main.getMain().setScreen(
-                                new GameView(new GameController(App.getCurrentGame()),new GameMenuController())
-                            );
-                        }
-                    }, 2);
-
-                }
-            }
-        });
+//        view.getBackButton().addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                view.setError("Entering to MainMenu...");
+//                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+//                    @Override
+//                    public void run() {
+//                        Main.getMain().getScreen().dispose();
+//                        Main.getMain().setScreen(
+//                            new MainMenu(
+//                                new MainMenuController(),
+//                                GameAssetManager.getGameAssetManager().getSkin()
+//                            )
+//                        );
+//                    }
+//                }, 2);
+//            }
+//        });
+//        view.getAddUser().addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                view.setError("");
+//                String username = view.getUserName().getText().trim();
+//                if (username.isEmpty()) {
+//                    view.setError("Please enter a username");
+//                    return;
+//                }
+//                if (!(view.getUser1().getText().toString().equals("-") || view.getUser2().getLabel().getText().toString().equals("-")
+//                    || view.getUser3().getLabel().getText().toString().equals("-") || view.getUser4().getLabel().getText().toString().equals("-"))) {
+//                    view.setError("you can only add a maximum of 4 players to the game!");
+//                    return;
+//                }
+//
+//                if (username.equals(view.getUser1().getLabel().getText().toString()) ||
+//                    username.equals(view.getUser2().getLabel().getText().toString()) ||
+//                    username.equals(view.getUser3().getLabel().getText().toString()) ||
+//                    username.equals(view.getUser4().getLabel().getText().toString())) {
+//                    view.setError("you cannot add repetitive player!");
+//                    return;
+//                }
+//                if (App.getUserWithUsername(username) == null) {
+//                    view.setError("no user exists with this username");
+//                    return;
+//                }
+//                if (App.getUserWithUsername(username).getActiveGame() != null) {
+//                    view.setError("user with this username has an active game");
+//                    return;
+//                }
+//                if (view.getUser2().getLabel().getText().toString().equals("-")) {
+//                    view.getUser2().getLabel().setText(view.getUserName().getText().trim());
+//                    return;
+//                }
+//                if (view.getUser3().getLabel().getText().toString().equals("-")) {
+//                    view.getUser3().getLabel().setText(view.getUserName().getText().trim());
+//                    return;
+//                }
+//                if (view.getUser4().getLabel().getText().toString().equals("-")) {
+//                    view.getUser4().getLabel().setText(view.getUserName().getText().trim());
+//                    return;
+//                }
+//
+//            }
+//        });
+//        view.getStartGame().addListener(new ClickListener() {
+//            public void clicked(InputEvent event, float x, float y) {
+//                view.setError("");
+//
+//                String username1 = view.getUser1().getLabel().getText().toString().trim();
+//                String username2 = view.getUser2().getLabel().getText().toString().trim();
+//                String username3 = view.getUser3().getLabel().getText().toString().trim();
+//                String username4 = view.getUser4().getLabel().getText().toString().trim();
+//                User user1 = App.getUserWithUsername(username1);
+//                User user2 = App.getUserWithUsername(username2);
+//                User user3 = App.getUserWithUsername(username3);
+//                User user4 = App.getUserWithUsername(username4);
+//
+//                if (username1.equals("-")) {
+//                    view.setError("you must give at least 1 username");
+//                    return;
+//                }
+//                if (username2.equals("-")) {
+//                    if (App.getUserWithUsername("guest1") != null) {
+//                        App.getUsers().remove(App.getUserWithUsername("guest1"));
+//                    }
+//                    user2 = new User();
+//                    user2.setUsername("guest1");
+//                    App.getUsers().add(user2);
+//                } else {
+//                    user2 = App.getUserWithUsername(username2);
+//                }
+//                if (username3.equals("-")) {
+//                    if (App.getUserWithUsername("guest2") != null) {
+//                        App.getUsers().remove(App.getUserWithUsername("guest2"));
+//                    }
+//                    user3 = new User();
+//                    user3.setUsername("guest2");
+//                    App.getUsers().add(user3);
+//                } else {
+//                    user3 = App.getUserWithUsername(username3);
+//                }
+//                if (username4.equals("-")) {
+//                    if (App.getUserWithUsername("guest3") != null) {
+//                        App.getUsers().remove(App.getUserWithUsername("guest3"));
+//                    }
+//                    user4 = new User();
+//                    user4.setUsername("guest3");
+//                    App.getUsers().add(user4);
+//                } else {
+//                    user4 = App.getUserWithUsername(username4);
+//                }
+//                Tile.getTiles().clear();
+//
+//                NPC.setFatherPlayer(null);
+//                NPC.setFatherUser(null);
+//                Game game = new Game(user2, user3, user4);
+//                App.setCurrentGame(game);
+//                App.getGames().add(game);
+//                view.setError("new game created Successfully");
+//
+//                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+//                    @Override
+//                    public void run() {
+//                        Main.getMain().getScreen().dispose();
+//                        Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManager.getGameAssetManager().getSkin()));
+//                    }
+//                }, 2);
+//
+//
+//            }
+//        });
+//        view.getDeleteUser1().addListener(new ClickListener() {
+//            public void clicked(InputEvent event, float x, float y) {
+//                view.setError("");
+//                String username1 = view.getUser1().getLabel().getText().toString().trim();
+//                view.setError("you can not delete the loggedIn user (you)");
+//                return;
+//            }
+//        });
+//        view.getDeleteUser2().addListener(new ClickListener() {
+//            public void clicked(InputEvent event, float x, float y) {
+//                view.setError("");
+//                view.getUser2().getLabel().setText("-");
+//                view.setError("delete user");
+//                return;
+//            }
+//        });
+//        view.getDeleteUser3().addListener(new ClickListener() {
+//            public void clicked(InputEvent event, float x, float y) {
+//                view.setError("");
+//                view.getUser3().getLabel().setText("-");
+//                view.setError("delete user");
+//                return;
+//            }
+//        });
+//        view.getDeleteUser4().addListener(new ClickListener() {
+//            public void clicked(InputEvent event, float x, float y) {
+//                view.setError("");
+//                view.getUser4().getLabel().setText("-");
+//                view.setError("delete user");
+//                return;
+//            }
+//        });
+//        view.getLoadGame().addListener(new ClickListener() {
+//            public void clicked(InputEvent event, float x, float y) {
+//                User user = App.getLoggedInUser();
+//                Player currentPlayer = null;
+//                if (user.getLastGame() == null) {
+//                    view.setError("you have no game to load");
+//                } else {
+//                    Game game = user.getLastGame();
+//                    for (Player player : game.getPlayers()) {
+//                        if (!(player.getUser().getLastGame() != null && player.getUser().getLastGame().equals(game))) {
+//                            view.setError("your friends have another active game");
+//                            return;
+//                        }
+//                        if (player.getUser().equals(user)) {
+//                            currentPlayer = player;
+//                        }
+//                    }
+//                    App.setCurrentGame(game);
+//                    App.getCurrentGame().setCurrentPlayingPlayer(currentPlayer);
+//                    App.getCurrentGame().setCreator(currentPlayer);
+//                    for (PlayerMap pm : game.getGameMap().getPlayerMaps()) {
+//                        for (Tile tile : pm.getTiles()) {
+//                            Tile.getTiles().add(tile);
+//                        }
+//                    }
+//                    NPC.setFatherPlayer(game.getPlayers().get(4));
+//                    NPC.setFatherUser(game.getPlayers().get(4).getUser());
+//
+//                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+//                        @Override
+//                        public void run() {
+//                            view.setError("you are in Game now");
+//                            Main.getMain().getScreen().dispose();
+//                            Main.getMain().setScreen(
+//                                new GameView(new GameController(App.getCurrentGame()),new GameMenuController())
+//                            );
+//                        }
+//                    }, 2);
+//
+//                }
+//            }
+//        });
 
     }
 
@@ -283,39 +283,41 @@ public class GameMenuController {
 //    }
 
 
-    public Result deleteAndExitThisGame(Scanner scanner) {
-        System.out.println("enter your comment about deleting this game");
-        for (Player player : App.getCurrentGame().getPlayers()) {
-            if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer())) continue;
-            if (player.getUser().getUsername().equals("NPC") || player.isGuest()) continue;
-            System.out.println(player.getUser().getUsername() + " please enter your comment (y/n)");
-            String input = scanner.nextLine();
-            if (input.equals("n")) {
-                return new Result(false, "Not all players agree, so the game will not be deleted. You are in gameMenu now.");
-            }
-        }
-        App.setLoggedInUser(App.getCurrentGame().getCreator().getUser());
-
-        for (Player player : App.getCurrentGame().getPlayers()) {
-            player.getUser().setLastGame(null);
-            player.getUser().setActiveGame(null);
-        }
-
-        App.getGames().remove(App.getCurrentGame());
-        App.setCurrentGame(null);
-        //App.setCurrentMenu(Menu.MainMenu);
-        return new Result(true, "game deleted, you are in MainMenu now.");
-
-    }
-
+//    public Result deleteAndExitThisGame(Scanner scanner) {
+//        System.out.println("enter your comment about deleting this game");
+//        for (Player player : App.getCurrentGame().getPlayers()) {
+//            if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer())) continue;
+//            if (player.getUser().getUsername().equals("NPC") || player.isGuest()) continue;
+//            System.out.println(player.getUser().getUsername() + " please enter your comment (y/n)");
+//            String input = scanner.nextLine();
+//            if (input.equals("n")) {
+//                return new Result(false, "Not all players agree, so the game will not be deleted. You are in gameMenu now.");
+//            }
+//        }
+//        App.setLoggedInUser(App.getCurrentGame().getCreator().getUser());
+//
+//        for (Player player : App.getCurrentGame().getPlayers()) {
+//            player.getUser().setLastGame(null);
+//            player.getUser().setActiveGame(null);
+//        }
+//
+//        App.getGames().remove(App.getCurrentGame());
+//        App.setCurrentGame(null);
+//        //App.setCurrentMenu(Menu.MainMenu);
+//        return new Result(true, "game deleted, you are in MainMenu now.");
+//
+//    }
+//
     public Result exitGame() {
         if (!App.getCurrentGame().getCurrentPlayingPlayer().equals(App.getCurrentGame().getCreator()))
             return new Result(false, "Only the game creator can exit the game.");
         for (Player p : App.getCurrentGame().getPlayers()) {
-            p.getUser().setLastGame(App.getCurrentGame());
+            //TODO
+            //p.getUser().setLastGame(App.getCurrentGame());
             p.getUser().setActiveGame(null);
             if (p.isGuest()) continue;
-            p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
+            //TODO
+            //p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
         }
         App.setCurrentGame(null);
         //App.setCurrentMenu(Menu.MainMenu);
@@ -380,6 +382,7 @@ public class GameMenuController {
         Tile tile = Tile.getTile(x, y);
         if (tile == null)
             return new Result(false, "tile not found");
+        LightningController.getLightningController().triggerLightning();
         tile.lightningStrike();
         return new Result(true, "Successfully lightninged.");
     }
@@ -573,14 +576,6 @@ public class GameMenuController {
         int dx = Math.abs(a.getX() - b.getX());
         int dy = Math.abs(a.getY() - b.getY());
         return dx + dy;
-    }
-
-    public void printMap(int x, int y, int size) {
-        display.run(x, y, size);
-    }
-
-    public void helpReadingMap() {
-        display.helpReadingMap();
     }
 
     public Result energyShow() {
@@ -1004,22 +999,6 @@ public class GameMenuController {
 
     public Result craftInfo(String name) {
         return farmingController.craftInfo(name);
-    }
-
-    public Result plantSeed(String source, String direction) {
-        return farmingController.plantSeed(source, direction);
-    }
-
-    public Result showPlant(String x, String y) {
-        return farmingController.showPlant(x, y);
-    }
-
-    public Result fertilize(String fertilizer, String direction) {
-        return farmingController.fertilize(fertilizer, direction);
-    }
-
-    public Result howMuchWater() {
-        return farmingController.howMuchWater();
     }
 
     public Result craftingShowRecipes() {
@@ -1859,9 +1838,9 @@ public class GameMenuController {
             return new Result(false, e.getMessage());
         }
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (App.getUserWithUsername(username) == null) {
-            return new Result(false, "there isn't player in this game with this username");
-        }
+//        if (App.getUserWithUsername(username) == null) {
+//            return new Result(false, "there isn't player in this game with this username");
+//        }
 
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
@@ -1961,9 +1940,9 @@ public class GameMenuController {
     }
 
     public Result hug(String username) {
-        if (App.getUserWithUsername(username) == null) {
-            return new Result(false, "there isn't player in this game with this username");
-        }
+//        if (App.getUserWithUsername(username) == null) {
+//            return new Result(false, "there isn't player in this game with this username");
+//        }
         if (App.getCurrentGame().getCurrentPlayingPlayer().getUser().getUsername().equals(username)) {
             return new Result(false, "you can't hug yourself");
         }
