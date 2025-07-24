@@ -198,6 +198,12 @@ public class GameController {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
                 break;
+            case Input.Keys.P:
+                for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
+                    for(Animal animal:animalPlace.getAnimals()){
+                        animal.produce();
+                    }
+                }
 
 
 

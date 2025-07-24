@@ -2,6 +2,7 @@ package io.github.StardewValley.models;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.views.GameView;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class App {
     private static ArrayList<User> users = new ArrayList<>();
     private static final ArrayList<Game> games = new ArrayList<Game>();
     private static OrthographicCamera camera = new OrthographicCamera();
+    private static GameView gameView;
 
     public static ArrayList<User> getUsers() {
         return users;
@@ -95,5 +97,13 @@ public class App {
 
     public static void setCamera(OrthographicCamera camera) {
         App.camera = camera;
+    }
+
+    public static GameView getGameView() {
+        return gameView;
+    }
+
+    public static void setGameView(GameView gameView) {
+        App.gameView = gameView;
     }
 }

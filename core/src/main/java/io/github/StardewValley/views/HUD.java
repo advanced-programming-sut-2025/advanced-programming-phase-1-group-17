@@ -94,7 +94,7 @@ public class HUD {
             ,10,10
             ,arrow.getRegionWidth()*arrowSize,arrow.getRegionHeight()*arrowSize
             ,1f,1f,
-            angle
+            (float) ((App.getCurrentGame().getDate().getHour() - 9) * 180) /13
         );
         float otherSize=3.2f;
         batch.draw(sunny,1794,973,spring.getRegionWidth()*otherSize,spring.getRegionHeight()*otherSize);
