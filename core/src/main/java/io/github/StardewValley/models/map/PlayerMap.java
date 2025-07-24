@@ -54,6 +54,8 @@ public class PlayerMap {
     }
 
     public PlayerMap(int index, Player owner) {
+        this.animalPlaces = new ArrayList<>();
+        this.animals = new ArrayList<>();
         if (index == 0) {
             this.row = 0;
             this.col = 0;

@@ -16,6 +16,8 @@ import io.github.StardewValley.models.App;
 import io.github.StardewValley.controllers.StoreMenuController;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.animal.Animal;
+import io.github.StardewValley.models.animal.AnimalPlace;
+import io.github.StardewValley.models.animal.AnimalPlaceType;
 import io.github.StardewValley.models.animal.AnimalType;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.market.StoreType;
@@ -31,22 +33,42 @@ public class GameView implements Screen, InputProcessor {
     private final GameController controller;
     private final GameMenuController menuController;
     private HUD hud;
+    private AnimalPlace animalPlace;
+    private AnimalPlace animalPlace1;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
+        App.setGameView(this);
+        this.animalPlace = new AnimalPlace(AnimalPlaceType.BigBarn);
+        animalPlace.getAnimals().add(new Animal("test",Cow));
+        this.animalPlace1 = new AnimalPlace(AnimalPlaceType.Barn);
+        animalPlace1.setX(2000);
+        animalPlace1.setY(2000);
+//        App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace);
+//        App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace1);
+        int i=0;
+        for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
+            AnimalPlace ap = new AnimalPlace(animalPlaceType);
+            ap.setX(1000+500*i);
+            ap.setY(1000+500*i);
+            i++;
+            App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
+            Animal animal = new Animal("test" + i,AnimalType.values()[i]);
+            animal.setX(100+20*i);
+            animal.setY(100+20*i);
+            ap.getAnimals().add(animal);
+
+        }
+
+
+
         this.controller = controller;
         this.menuController = menuController;
 //        display.run(1,1,300);
         this.controller.setView(this);
         Main.setGameView(this);
-        int i=0;
-        for(AnimalType type : AnimalType.values()) {
-            Animal animal = new Animal(type.getName(), type);
-            animal.setX(100+20*i);
-            animal.setY(100+20*i);
-            i++;
-            App.getCurrentGame().getCurrentPlayingPlayer().getAnimals().add(animal);
-        }
+
+
 
     }
 
@@ -69,9 +91,12 @@ public class GameView implements Screen, InputProcessor {
 
         controller.updateGame(v);
         controller.handlePlayerInput();
-        for(Animal animal:App.getCurrentGame().getCurrentPlayingPlayer().getAnimals()) {
-            animal.update(v);
-            animal.render(Main.getBatch(),v);
+        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
+            animalPlace.render(v);
+            for(Animal animal:animalPlace.getAnimals()){
+                animal.render(Main.getBatch(),v);
+                animal.update(v);
+            }
         }
 
         Main.getBatch().end();

@@ -94,13 +94,10 @@ public class AnimalProduct implements BackPackable {
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             App.getCamera().unproject(touchPos);
             if(this.getHitBox().contains(touchPos.x,touchPos.y)){
+                App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(this);
                 isRender =false;
             }
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
-            for(Animal animal1: App.getCurrentGame().getCurrentPlayingPlayer().getAnimals()){
-                animal1.produce();
-            }
-        }
+
     }
 }

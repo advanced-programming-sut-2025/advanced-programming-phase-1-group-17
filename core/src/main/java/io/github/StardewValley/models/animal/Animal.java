@@ -1,10 +1,12 @@
 package io.github.StardewValley.models.animal;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -47,14 +49,20 @@ public class Animal implements Placeable {
     private Vector2 vector2;
     private Rectangle hitBox;
     private Texture loveTexture;
-
+    private Direction lastDirection = Up;
+    private Texture hayTexture;
+    private Texture afterPetTexture;
+    private TextureRegion[][] regions;
 
     private EnumMap<AnimalType,EnumMap<Direction,Animation<TextureRegion>>> animalsAnimationMap;
     private float speed = 100f;
     private int dayTillProduce=0;
     private int counter=0;
     public Animal(String name, AnimalType animalType){
+        this.hayTexture = new Texture("hay.png");
         this.loveTexture = new Texture("Heart/Marriage_Icon.png");
+         regions= TextureRegion.split(new Texture("heart/Zero_Hearts.png"), 12, 9);
+        afterPetTexture = new Texture("icons8-pixel-heart-24.png");
         this.vector2 = new Vector2();
         this.chickenMap = new EnumMap<>(Direction.class);
         this.rabbitMap = new EnumMap<>(Direction.class);
@@ -77,20 +85,21 @@ public class Animal implements Placeable {
         }
         Texture animalTexture = new Texture("sprites/Chicken Brown.png");
         TextureRegion[][] animalRegion = TextureRegion.split(animalTexture, 16, 16);
-        Animation<TextureRegion>[] animalAnimation = new Animation[4];
-        for (int i = 0; i < 4; i++) {
+        Animation<TextureRegion>[] animalAnimation = new Animation[5];
+        for (int i = 0; i < 5; i++) {
                 animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
         }
         chickenMap.put(Down, animalAnimation[0]);
         chickenMap.put(Right, animalAnimation[1]);
         chickenMap.put(Up, animalAnimation[2]);
         chickenMap.put(Left, animalAnimation[3]);
+        chickenMap.put(Eating, animalAnimation[4]);
         animalsAnimationMap.put(Chicken, chickenMap);
 
          animalTexture = new Texture("sprites/Cow Brown.png");
          animalRegion = TextureRegion.split(animalTexture, 32, 32);
-         animalAnimation = new Animation[4];
-        for (int i = 0; i < 4; i++) {
+         animalAnimation = new Animation[5];
+        for (int i = 0; i < 5; i++) {
             if (i == 3) {
                 TextureRegion[] flippedFrames = new TextureRegion[4];
                 for (int j = 0; j < 4; j++) {
@@ -105,36 +114,39 @@ public class Animal implements Placeable {
         cowMap.put(Right, animalAnimation[1]);
         cowMap.put(Up, animalAnimation[2]);
         cowMap.put(Left, animalAnimation[3]);
+        cowMap.put(Eating, animalAnimation[4]);
         animalsAnimationMap.put(Cow, cowMap);
 
         animalTexture = new Texture("sprites/Rabbit.png");
         animalRegion = TextureRegion.split(animalTexture, 16, 16);
-        animalAnimation = new Animation[4];
-        for (int i = 0; i < 4; i++) {
+        animalAnimation = new Animation[5];
+        for (int i = 0; i < 5; i++) {
             animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
         }
         rabbitMap.put(Down, animalAnimation[0]);
         rabbitMap.put(Right, animalAnimation[1]);
         rabbitMap.put(Up, animalAnimation[2]);
         rabbitMap.put(Left, animalAnimation[3]);
+        rabbitMap.put(Eating, animalAnimation[4]);
         animalsAnimationMap.put(Rabbit, rabbitMap);
 
         animalTexture = new Texture("sprites/Dinosaur.png");
         animalRegion = TextureRegion.split(animalTexture, 16, 16);
-        animalAnimation = new Animation[4];
-        for (int i = 0; i < 4; i++) {
+        animalAnimation = new Animation[5];
+        for (int i = 0; i < 5; i++) {
             animalAnimation[i] = new Animation<TextureRegion>(0.1f, animalRegion[i]);
         }
         dinosaurMap.put(Down, animalAnimation[0]);
         dinosaurMap.put(Right, animalAnimation[1]);
         dinosaurMap.put(Up, animalAnimation[2]);
         dinosaurMap.put(Left, animalAnimation[3]);
+        dinosaurMap.put(Eating, animalAnimation[4]);
         animalsAnimationMap.put(Dinosaur, dinosaurMap);
 
         animalTexture = new Texture("sprites/Goat.png");
         animalRegion = TextureRegion.split(animalTexture, 32, 32);
-        animalAnimation = new Animation[4];
-        for (int i = 0; i < 4; i++) {
+        animalAnimation = new Animation[5];
+        for (int i = 0; i < 5; i++) {
             if (i == 3) {
                 TextureRegion[] flippedFrames = new TextureRegion[4];
                 for (int j = 0; j < 4; j++) {
@@ -150,12 +162,13 @@ public class Animal implements Placeable {
         goatMap.put(Right, animalAnimation[1]);
         goatMap.put(Up, animalAnimation[2]);
         goatMap.put(Left, animalAnimation[3]);
+        goatMap.put(Eating,animalAnimation[4]);
         animalsAnimationMap.put(Goat, goatMap);
 
         animalTexture = new Texture("sprites/Sheep.png");
         animalRegion = TextureRegion.split(animalTexture, 32, 32);
-        animalAnimation = new Animation[4];
-        for (int i = 0; i < 4; i++) {
+        animalAnimation = new Animation[5];
+        for (int i = 0; i < 5; i++) {
             if (i == 3) {
                 TextureRegion[] flippedFrames = new TextureRegion[4];
                 for (int j = 0; j < 4; j++) {
@@ -170,12 +183,13 @@ public class Animal implements Placeable {
         sheepMap.put(Right, animalAnimation[1]);
         sheepMap.put(Up, animalAnimation[2]);
         sheepMap.put(Left, animalAnimation[3]);
+        sheepMap.put(Eating, animalAnimation[4]);
         animalsAnimationMap.put(Sheep, sheepMap);
 
         animalTexture = new Texture("sprites/Pig.png");
         animalRegion = TextureRegion.split(animalTexture, 32, 32);
-        animalAnimation = new Animation[4];
-        for (int i = 0; i < 4; i++) {
+        animalAnimation = new Animation[5];
+        for (int i = 0; i < 5; i++) {
             if (i == 3) {
                 TextureRegion[] flippedFrames = new TextureRegion[4];
                 for (int j = 0; j < 4; j++) {
@@ -190,12 +204,13 @@ public class Animal implements Placeable {
         pigMap.put(Right, animalAnimation[1]);
         pigMap.put(Up, animalAnimation[2]);
         pigMap.put(Left, animalAnimation[3]);
+        pigMap.put(Eating, animalAnimation[4]);
         animalsAnimationMap.put(Pig, pigMap);
 
         animalTexture = new Texture("sprites/Duck.png");
         animalRegion = TextureRegion.split(animalTexture, 16, 16);
-        animalAnimation = new Animation[4];
-        for (int i = 0; i < 4; i++) {
+        animalAnimation = new Animation[5];
+        for (int i = 0; i < 5; i++) {
             if(i==2) {
                 for(int j=0;j<4;j++) {
                     animalRegion[i][j].flip(true,false);
@@ -208,6 +223,7 @@ public class Animal implements Placeable {
         duckMap.put(Right, animalAnimation[1]);
         duckMap.put(Up, animalAnimation[2]);
         duckMap.put(Left, animalAnimation[3]);
+        duckMap.put(Eating,animalAnimation[4]);
         animalsAnimationMap.put(Duck, duckMap);
 
     }
@@ -437,12 +453,25 @@ public class Animal implements Placeable {
         return null;
     }
     private float timeSinceLastDirectionChange = 0f;
-    private float directionChangeInterval = 3f;
+    private float directionChangeInterval = MathUtils.random(1f,5f);
     public void update(float delta) {
+        if(!this.isOutside)return;
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            Vector3 clickPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            App.getCamera().unproject(clickPos);
+            if(this.getHitBox().contains(clickPos.x,clickPos.y ) && !this.isFedToday){
+                lastDirection = direction;
+                timeSinceLastDirectionChange = 0;
+                direction = Eating;
+                this.setFedToday(true);
+            }
 
-        // هر ۳ ثانیه جهت رو عوض کن
+        }
+
+
         if (timeSinceLastDirectionChange >= directionChangeInterval) {
             direction = getRandomDirection();
+            directionChangeInterval = MathUtils.random(1f,5f);
             timeSinceLastDirectionChange = 0;
         }
          vector2 = new Vector2(App.getCurrentGame().getCurrentPlayingPlayer().getX()-x,App.getCurrentGame().getCurrentPlayingPlayer().getY()- y);
@@ -481,15 +510,16 @@ public class Animal implements Placeable {
 
     }
     private boolean showHeart = false;
+    private boolean showHeartAfterPet=false;
     private float heartTimer = 0f;
     private float heartMovement = 0f;
     public void render(SpriteBatch batch,float v) {
-
+        if(!this.isOutside)return;
         TextureRegion frame = animalsAnimationMap.get(this.animalType).get(direction).getKeyFrame(stateTime, true);
         int originalWidth = frame.getRegionWidth();
         int originalHeight = frame.getRegionHeight();
         float scale = 1f;
-        if(Gdx.input.justTouched()){
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             App.getCamera().unproject(touchPos);
             if(this.getHitBox().contains(touchPos.x,touchPos.y) ){
@@ -500,8 +530,15 @@ public class Animal implements Placeable {
                     heartTimer = 0f;        // ریست زمان
                     heartMovement = 0f;
                 }
+                else {
+                    showHeartAfterPet = true;
+                    heartTimer = 0f;
+                    heartMovement = 0f;
+                }
             }
+
         }
+
         if (showHeart) {
             heartTimer += v;
             heartMovement += v * 25f;
@@ -516,7 +553,29 @@ public class Animal implements Placeable {
                 showHeart = false;
             }
         }
+        if (showHeartAfterPet) {
+            heartTimer += v;
+            heartMovement += v * 25f;
+
+            batch.draw(
+                afterPetTexture,
+                x + animalType.getTexttureSize() / 2f - loveTexture.getWidth() / 2f,
+                y + animalType.getTexttureSize() + heartMovement
+            );
+
+            if (heartTimer > 1.5f) {
+                showHeartAfterPet = false;
+            }
+        }
         batch.draw(frame, x, y, this.animalType.getTexttureSize()*scale, this.animalType.getTexttureSize()*scale);
+        if(direction.equals(Eating)){
+            batch.draw(hayTexture,
+                x + animalType.getTexttureSize()/2f-4,
+                y -20,
+                24,
+                24
+            );
+        }
         List<AnimalProduct> toRemove = new ArrayList<>();
 
         for (AnimalProduct animalProduct : this.getAnimalProducts()) {
@@ -532,7 +591,8 @@ public class Animal implements Placeable {
 
     private Direction getRandomDirection() {
         Direction[] directions = Direction.values();
-        return directions[(int) (Math.random() * directions.length)];
+        int random = MathUtils.random(0,3);
+        return directions[random];
     }
 
     public float getX() {
