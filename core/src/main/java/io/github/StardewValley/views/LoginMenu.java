@@ -37,10 +37,6 @@ public class LoginMenu implements Screen {
 
 
     public LoginMenu(LoginMenuController controller, Skin skin) {
-//        Pixmap pixmap = new Pixmap(Gdx.files.internal("cursor2.png"));
-//        Cursor customCursor = Gdx.graphics.newCursor(pixmap, 0, 0);
-//        Gdx.graphics.setCursor(customCursor);
-//        pixmap.dispose();
         this.controller = controller;
         this.userNameButton = new TextButton("UserName", skin);
         this.userNameButton.setColor(0, 0, 1, 1);

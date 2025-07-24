@@ -1,14 +1,14 @@
 package io.github.StardewValley.controllers.helperControllers;
 
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Result;
-import io.github.StardewValley.models.enums.Season;
-import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.models.plant.*;
-import io.github.StardewValley.models.tools.BackPack;
-import io.github.StardewValley.models.tools.Tool;
-import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.plant.*;
+import io.github.StardewValley.shared.models.tools.BackPack;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.ToolType;
 
 public class FarmingController {
 

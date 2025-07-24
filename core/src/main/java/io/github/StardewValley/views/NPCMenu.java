@@ -10,13 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.NPCMenuController;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.NPCS.NPC;
 
 public class NPCMenu implements Screen {
     private NPCMenuController controller;

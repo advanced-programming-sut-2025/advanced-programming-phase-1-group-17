@@ -2,10 +2,9 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.SaveUser;
-import io.github.StardewValley.models.*;
+import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.LoginMenu;
 import io.github.StardewValley.views.MainMenu;
@@ -36,7 +35,8 @@ public class MainMenuController {
             new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
                     App.setLoggedInUser(null);
-                    SaveUser.clearStayLoggedInFile();
+                    //TODO: change stay logged in logic
+                    //SaveUser.clearStayLoggedInFile();
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
                 }

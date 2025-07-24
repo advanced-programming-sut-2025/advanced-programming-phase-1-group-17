@@ -4,7 +4,7 @@ import io.github.StardewValley.shared.enums.Gender;
 
 import java.util.Objects;
 
-import io.github.StardewValley.shared.model.Game;
+import io.github.StardewValley.shared.models.Game;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,13 +13,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(unique = true, nullable = false)
     private String username;
-
-    @Column(nullable = false)
     private String passwordHash;
-
     private String email;
     private String nickName;
 
@@ -28,7 +23,7 @@ public class User {
 
     private String securityQuestion;
     private String securityAnswer;
-    private int numOfPlay;
+    private int numOfPlay = 0;
     private double theMostMoneyInGame;
     private transient Game activeGame;
     private transient Game lastGame;
@@ -53,5 +48,21 @@ public class User {
         if (obj == null || getClass() != obj.getClass()) return false;
         User other = (User) obj;
         return Objects.equals(username, other.username);
+    }
+
+    public String getSecurityQuestion() {
+        return securityQuestion;
+    }
+
+    public void setSecurityQuestion(String securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
     }
 }

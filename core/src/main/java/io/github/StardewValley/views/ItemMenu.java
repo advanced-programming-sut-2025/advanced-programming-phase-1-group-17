@@ -12,8 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.controllers.ItemMenuController;
-import io.github.StardewValley.models.market.ShopItem;
-import io.github.StardewValley.models.market.StoreType;
+import io.github.StardewValley.shared.models.market.ShopItem;
+import io.github.StardewValley.shared.models.market.StoreType;
 
 public class ItemMenu implements Screen {
     private Stage stage;

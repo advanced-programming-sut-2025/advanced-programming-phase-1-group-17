@@ -3,15 +3,10 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 
-import io.github.StardewValley.PasswordUtil;
-import io.github.StardewValley.SaveUser;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.User;
 import io.github.StardewValley.views.LoginMenu;
-import io.github.StardewValley.views.MainMenu;
 import io.github.StardewValley.views.SignUpMenu;
 
 
@@ -27,7 +22,6 @@ public class LoginMenuController {
         view.getBackButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                Sfx_Controller.getInstance().playClick();
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
             }
@@ -52,26 +46,28 @@ public class LoginMenuController {
                     view.setError("Please enter a username");
                     return;
                 }
-                if (App.getUserWithUsername(view.getUserName().getText()) == null) {
-                    view.setError("Username not found");
-                    return;
-                }
-                User user = App.getUserWithUsername(view.getUserName().getText());
-                if (view.getError().getText().toString().isEmpty()) {
-                    view.setError(user.getSecurityQuestion());
-                    return;
-                }
-                String answer = view.getAnswer().getText();
-                if (answer.equals(user.getSecurityAnswer())) {
-                    SignUpMenuController controller = new SignUpMenuController();
-                    String newPass = controller.generateStrongPassword(12);
-                    user.setPasswordHash(PasswordUtil.hashPassword(newPass));
-                    view.setError("your new pass is : " + newPass + "\n you can change this pass on ProfileMenu");
-                    SaveUser.saveUser(App.getUsers());
-                } else {
-                    view.setError("Wrong answer");
+                sendForgotPasswordRequest();
 
-                }
+//                if (App.getUserWithUsername(view.getUserName().getText()) == null) {
+//                    view.setError("Username not found");
+//                    return;
+//                }
+//                User user = App.getUserWithUsername(view.getUserName().getText());
+//                if (view.getError().getText().toString().isEmpty()) {
+//                    view.setError(user.getSecurityQuestion());
+//                    return;
+//                }
+//                String answer = view.getAnswer().getText();
+//                if (answer.equals(user.getSecurityAnswer())) {
+//                    SignUpMenuController controller = new SignUpMenuController();
+//                    String newPass = controller.generateStrongPassword(12);
+//                    user.setPasswordHash(PasswordUtil.hashPassword(newPass));
+//                    view.setError("your new pass is : " + newPass + "\n you can change this pass on ProfileMenu");
+//                    SaveUser.saveUser(App.getUsers());
+//                } else {
+//                    view.setError("Wrong answer");
+//
+//                }
 
 
             }
@@ -84,27 +80,31 @@ public class LoginMenuController {
                     view.setError("Username and Password are required");
                     return;
                 }
-                if (App.getUserWithUsername(username) != null) {
-                    User user = App.getUserWithUsername(username);
-                    String hashedInput = PasswordUtil.hashPassword(password);
-                    if (user.getPasswordHash().equals(hashedInput)) {
-                        App.setLoggedInUser(user);
-                        Main.getMain().getScreen().dispose();
-                        if (view.getCheckBox().isChecked()) {
-                            SaveUser.saveLoggedInUser(user);
-                        }
-                        view.getCheckBox().setChecked(false);
-                        Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
-                    } else {
-                        view.setError("invalid password");
-                    }
-                } else {
-                    view.setError("username not found");
-                }
-
+//                if (App.getUserWithUsername(username) != null) {
+//                    User user = App.getUserWithUsername(username);
+//                    String hashedInput = PasswordUtil.hashPassword(password);
+//                    if (user.getPasswordHash().equals(hashedInput)) {
+//                        App.setLoggedInUser(user);
+//                        Main.getMain().getScreen().dispose();
+//                        if (view.getCheckBox().isChecked()) {
+//                            SaveUser.saveLoggedInUser(user);
+//                        }
+//                        view.getCheckBox().setChecked(false);
+//                        Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+//                    } else {
+//                        view.setError("invalid password");
+//                    }
+//                } else {
+//                    view.setError("username not found");
+//                }
+//
 
             }
         });
+    }
+
+    private void sendForgotPasswordRequest() {
+
     }
 
 
