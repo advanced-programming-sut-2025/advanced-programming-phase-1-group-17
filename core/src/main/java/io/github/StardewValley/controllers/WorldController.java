@@ -12,7 +12,7 @@ import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.Season;
-import io.github.StardewValley.shared.models.map.GreenHouse;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.Hut;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.Store;

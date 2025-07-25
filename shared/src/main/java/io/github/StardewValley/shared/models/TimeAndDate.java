@@ -1,6 +1,8 @@
 package io.github.StardewValley.shared.models;
 
 import io.github.StardewValley.shared.controller.LightningController;
+import io.github.StardewValley.shared.models.NPCS.Flower;
+import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.foraging.ForagingController;

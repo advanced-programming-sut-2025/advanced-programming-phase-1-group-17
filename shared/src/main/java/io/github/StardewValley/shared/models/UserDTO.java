@@ -1,6 +1,6 @@
 package io.github.StardewValley.shared.models;
 
-import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.enums.Gender;
 
 public class UserDTO {
     /*
@@ -24,6 +24,14 @@ public class UserDTO {
         this.username = username;
         this.nickname = nickname;
         this.gender = gender;
+    }
+
+    public UserDTO(String username, String nickname, Gender gender, String securityQuestion, String securityAnswer) {
+        this.username = username;
+        this.nickname = nickname;
+        this.gender = gender;
+        this.securityQuestion = securityQuestion;
+        this.securityAnswer = securityAnswer;
     }
 
     public String getUsername() {

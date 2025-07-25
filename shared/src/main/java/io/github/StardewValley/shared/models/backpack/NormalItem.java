@@ -1,8 +1,9 @@
-package io.github.StardewValley.shared.models;
+package io.github.StardewValley.shared.models.backpack;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.map.Placeable;
 
-public class NormalItem implements BackPackable, Placeable{
+public class NormalItem implements BackPackable, Placeable {
     private NormalItemType type;
 
     public NormalItem(NormalItemType type) {

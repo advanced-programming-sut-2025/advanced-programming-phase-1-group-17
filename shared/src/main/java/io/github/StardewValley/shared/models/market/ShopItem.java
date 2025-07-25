@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.market;
 
-import io.github.StardewValley.shared.models.BackPackable;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.Season;
 
 import java.util.ArrayList;

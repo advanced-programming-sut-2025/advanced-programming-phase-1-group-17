@@ -1,13 +1,14 @@
 package io.github.StardewValley.controllers;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
 import io.github.StardewValley.shared.controller.LightningController;
-import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.NPCS.Gift;
+import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
+import io.github.StardewValley.shared.models.enums.Gender;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.NPCS.Quest;
@@ -21,15 +22,11 @@ import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.enums.WeatherType;
 import io.github.StardewValley.shared.models.map.Hut;
-import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.tools.*;
 import io.github.StardewValley.views.GameMenu;
-import io.github.StardewValley.views.GameView;
-import io.github.StardewValley.views.MainMenu;
-import io.github.StardewValley.views.chooseMap;
 
 import java.util.*;
 import java.util.regex.Matcher;

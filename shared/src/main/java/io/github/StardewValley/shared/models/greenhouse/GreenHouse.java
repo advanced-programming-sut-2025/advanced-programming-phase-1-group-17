@@ -1,9 +1,8 @@
-package io.github.StardewValley.shared.models.map;
+package io.github.StardewValley.shared.models.greenhouse;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.GreenHouseLake;
-import io.github.StardewValley.shared.models.Placeable;
+import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 
 public class GreenHouse implements Placeable {

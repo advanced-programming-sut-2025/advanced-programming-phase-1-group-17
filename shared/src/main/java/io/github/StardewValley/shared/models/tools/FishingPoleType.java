@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.tools;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum FishingPoleType implements BackPackableType {
     TrainingFishingPole(0.1, 12.5),

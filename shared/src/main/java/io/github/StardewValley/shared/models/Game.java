@@ -6,7 +6,7 @@ import io.github.StardewValley.shared.models.cooking.Recipe;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.map.GameMap;
-import io.github.StardewValley.shared.models.map.GreenHouse;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.market.StoreManager;
 
@@ -18,7 +18,6 @@ public class Game {
     private TimeAndDate date = new TimeAndDate();
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
-    private ArrayList<PlayerController> playerControllers = new ArrayList<>();
     private GameMap gameMap;
     private ArrayList<NPC> NPCs = new ArrayList<>();
     private StoreManager storeManager = new StoreManager();
@@ -195,9 +194,5 @@ public class Game {
 
     public void addGreenHouses(GreenHouse greenHouse) {
         GreenHouses.add(greenHouse);
-    }
-
-    public ArrayList<PlayerController> getPlayerControllers() {
-        return playerControllers;
     }
 }

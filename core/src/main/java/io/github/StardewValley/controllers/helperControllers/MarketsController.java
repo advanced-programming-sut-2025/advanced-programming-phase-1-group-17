@@ -1,10 +1,18 @@
 package io.github.StardewValley.controllers.helperControllers;
 
 import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.NPCS.Flower;
+import io.github.StardewValley.shared.models.NPCS.FlowerType;
+import io.github.StardewValley.shared.models.NPCS.Ring;
+import io.github.StardewValley.shared.models.NPCS.RingType;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.animal.AnimalProductType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.NormalItem;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;

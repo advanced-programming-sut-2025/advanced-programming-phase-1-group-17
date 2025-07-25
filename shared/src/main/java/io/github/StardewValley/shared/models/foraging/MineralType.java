@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.foraging;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum MineralType implements BackPackableType  {
     Quartz("A clear crystal commonly found in caves and mines.", 25, "Mineral/Quartz.png"),

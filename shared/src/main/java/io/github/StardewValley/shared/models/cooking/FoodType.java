@@ -1,11 +1,11 @@
 package io.github.StardewValley.shared.models.cooking;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 import java.util.Map;
 
-import static io.github.StardewValley.shared.models.NormalItemType.*;
+import static io.github.StardewValley.shared.models.backpack.NormalItemType.*;
 import static io.github.StardewValley.shared.models.animal.AnimalProductType.*;
 import static io.github.StardewValley.shared.models.artisan.ArtisanProductType.*;
 import static io.github.StardewValley.shared.models.enums.FishType.*;

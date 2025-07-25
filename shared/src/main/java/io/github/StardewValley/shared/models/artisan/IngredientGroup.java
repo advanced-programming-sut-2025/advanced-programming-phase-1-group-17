@@ -1,13 +1,13 @@
 package io.github.StardewValley.shared.models.artisan;
 
-import io.github.StardewValley.shared.models.BackPackable;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.animal.AnimalProductType;
 import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.foraging.ForagingCropType;
 import io.github.StardewValley.shared.models.plant.CropType;
 import io.github.StardewValley.shared.models.plant.FruitType;
-import io.github.StardewValley.shared.models.tools.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPack;
 
 import java.util.ArrayList;
 import java.util.List;

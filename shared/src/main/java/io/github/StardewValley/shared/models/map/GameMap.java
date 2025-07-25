@@ -1,6 +1,6 @@
 package io.github.StardewValley.shared.models.map;
 
-import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.enums.Gender;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.UserDTO;

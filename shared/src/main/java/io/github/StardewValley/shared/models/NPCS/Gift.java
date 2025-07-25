@@ -1,4 +1,6 @@
-package io.github.StardewValley.shared.models;
+package io.github.StardewValley.shared.models.NPCS;
+
+import io.github.StardewValley.shared.models.Player;
 
 public class Gift {
     private Player playerWhoGiveGift;

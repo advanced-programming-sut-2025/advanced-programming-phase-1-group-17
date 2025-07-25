@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.plant;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum SeedType implements BackPackableType {
     BlueJazzSeeds("Crops/Blueberry_Seeds.png"),

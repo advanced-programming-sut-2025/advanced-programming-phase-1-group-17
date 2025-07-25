@@ -13,9 +13,8 @@ import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.SecurityQuestionMenuController;
 import io.github.StardewValley.controllers.SignUpMenuController;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.enums.Gender;
 
 
 public class SignUpMenu implements Screen {

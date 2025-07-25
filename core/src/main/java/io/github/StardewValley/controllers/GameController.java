@@ -11,7 +11,6 @@ import io.github.StardewValley.shared.controller.LightningController;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.PlayerController;
 import io.github.StardewValley.views.*;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
@@ -33,7 +32,6 @@ public class GameController {
     int mapHeightInPixels;
     private final Game game;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
-    private final GameMenuController gameMenuController = new GameMenuController();
 
     private final WorldController worldController;
     private final ToolController toolController;
@@ -48,11 +46,6 @@ public class GameController {
 
     public GameController(Game game) {
         this.game = game;
-
-        for (Player player : game.getPlayers()) {
-            PlayerController playerController = new PlayerController(player);
-            this.game.getPlayerControllers().add(playerController);
-        }
         Player player = game.getCurrentPlayingPlayer();
         this.camera.position.set(player.getX() , player.getY(), 0);
 

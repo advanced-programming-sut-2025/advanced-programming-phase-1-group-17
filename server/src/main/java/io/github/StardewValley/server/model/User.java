@@ -1,6 +1,6 @@
 package io.github.StardewValley.server.model;
 
-import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.enums.Gender;
 
 import java.util.Objects;
 
@@ -64,5 +64,25 @@ public class User {
 
     public void setSecurityAnswer(String securityAnswer) {
         this.securityAnswer = securityAnswer;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 }

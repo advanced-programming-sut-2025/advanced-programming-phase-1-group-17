@@ -1,9 +1,6 @@
-package io.github.StardewValley.shared.models.tools;
+package io.github.StardewValley.shared.models.backpack;
 
-import io.github.StardewValley.shared.models.BackPackable;
-import io.github.StardewValley.shared.models.BackPackableType;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.enums.BackPackType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

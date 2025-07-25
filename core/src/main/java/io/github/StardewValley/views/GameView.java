@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import io.github.StardewValley.shared.models.tools.Tool;
-import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.enums.Gender;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;

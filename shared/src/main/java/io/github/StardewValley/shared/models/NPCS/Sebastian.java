@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.NPCS;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.Placeable;
+import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.foraging.Mineral;
 import io.github.StardewValley.shared.models.foraging.MineralType;
