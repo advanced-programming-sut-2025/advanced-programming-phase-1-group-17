@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.foraging;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.plant.CropAssetManager;
 import io.github.StardewValley.shared.models.plant.CropType;

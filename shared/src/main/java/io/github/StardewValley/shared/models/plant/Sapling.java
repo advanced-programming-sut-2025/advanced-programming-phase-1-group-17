@@ -1,6 +1,6 @@
 package io.github.StardewValley.shared.models.plant;
 
-import io.github.StardewValley.shared.models.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
 
 public class Sapling implements BackPackable {
     private SaplingType type;

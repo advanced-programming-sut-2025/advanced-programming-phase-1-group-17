@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.artisan;
 
-import io.github.StardewValley.shared.models.BackPackable;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.plant.CropType;
 import io.github.StardewValley.shared.models.plant.FruitType;

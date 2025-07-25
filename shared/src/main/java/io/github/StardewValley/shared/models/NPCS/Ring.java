@@ -1,6 +1,9 @@
-package io.github.StardewValley.shared.models;
+package io.github.StardewValley.shared.models.NPCS;
 
-public class Ring implements BackPackable{
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+
+public class Ring implements BackPackable {
 
     @Override
     public String getName() {

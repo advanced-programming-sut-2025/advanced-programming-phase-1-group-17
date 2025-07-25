@@ -8,7 +8,8 @@ import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.dto.RegisterRequest;
 import io.github.StardewValley.shared.dto.RegisterResponse;
-import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.enums.Gender;
+import io.github.StardewValley.shared.models.enums.NetworkRequests;
 import io.github.StardewValley.shared.models.enums.SignUpMenuCommands;
 import io.github.StardewValley.views.LoginMenu;
 import okhttp3.*;
@@ -63,7 +64,11 @@ public class SignUpMenuController {
 
         RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
         Request request = new Request.Builder()
-            .url("http://localhost:8080/api/auth/register")
+            .url("http://%s:%d/api/auth/%s".formatted(
+                Main.getServerIP(),
+                Main.getServerPort(),
+                NetworkRequests.Register.getMessage()
+            ))
             .post(body)
             .build();
 

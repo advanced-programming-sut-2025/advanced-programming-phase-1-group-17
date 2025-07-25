@@ -1,6 +1,6 @@
 package io.github.StardewValley.shared.dto;
 
-import io.github.StardewValley.shared.enums.Gender;
+import io.github.StardewValley.shared.models.enums.Gender;
 
 public class RegisterRequest {
     private String username;

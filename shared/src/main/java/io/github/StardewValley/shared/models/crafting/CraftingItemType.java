@@ -1,14 +1,14 @@
 package io.github.StardewValley.shared.models.crafting;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static io.github.StardewValley.shared.models.NormalItemType.*;
+import static io.github.StardewValley.shared.models.backpack.NormalItemType.*;
 import static io.github.StardewValley.shared.models.foraging.MineralType.*;
 import static io.github.StardewValley.shared.models.plant.SaplingType.*;
 

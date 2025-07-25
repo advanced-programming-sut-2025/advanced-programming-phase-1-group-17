@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.cooking;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum RecipeType implements BackPackableType {
     FriedEggRecipe(FoodType.FriedEgg, 0),

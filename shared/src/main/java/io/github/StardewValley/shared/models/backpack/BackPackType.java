@@ -1,8 +1,7 @@
-package io.github.StardewValley.shared.models.enums;
+package io.github.StardewValley.shared.models.backpack;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.BackPackableType;
 
 public enum BackPackType implements BackPackableType {
     PrimaryBackpack(12, 0),

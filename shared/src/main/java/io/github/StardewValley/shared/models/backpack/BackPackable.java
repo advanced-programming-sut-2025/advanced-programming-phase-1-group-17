@@ -1,4 +1,4 @@
-package io.github.StardewValley.shared.models;
+package io.github.StardewValley.shared.models.backpack;
 
 public interface BackPackable {
     String getName();

@@ -1,9 +1,9 @@
 package io.github.StardewValley.shared.models.cooking;
 
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.BackPackable;
-import io.github.StardewValley.shared.models.BackPackableType;
-import io.github.StardewValley.shared.models.tools.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPack;
 
 public class Food implements BackPackable {
     private FoodType foodtype;

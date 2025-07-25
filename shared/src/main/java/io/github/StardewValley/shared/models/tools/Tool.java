@@ -1,8 +1,9 @@
 package io.github.StardewValley.shared.models.tools;
 
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.BackPackable;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public class Tool implements BackPackable {
     private ToolType type;

@@ -10,6 +10,7 @@ import io.github.StardewValley.shared.dto.SecurityQuestionResponse;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.UserDTO;
+import io.github.StardewValley.shared.models.enums.NetworkRequests;
 import io.github.StardewValley.views.SecurityQuestionMenu;
 import io.github.StardewValley.views.SignUpMenu;
 import okhttp3.*;
@@ -61,7 +62,11 @@ public class SecurityQuestionMenuController {
 
         RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
         Request request = new Request.Builder()
-            .url("http://localhost:8080/api/auth/securityQuestion")
+            .url("http://%s:%d/api/auth/%s".formatted(
+                Main.getServerIP(),
+                Main.getServerPort(),
+                NetworkRequests.SecurityQuestion.getMessage()
+            ))
             .post(body)
             .build();
 

@@ -2,7 +2,8 @@ package io.github.StardewValley.shared.models.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.Fence;
-import io.github.StardewValley.shared.models.GreenHouseLake;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouseLake;
 import io.github.StardewValley.shared.models.NPCS.*;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.animal.AnimalPlace;

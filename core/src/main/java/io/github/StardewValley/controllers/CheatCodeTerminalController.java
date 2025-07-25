@@ -5,6 +5,8 @@ import io.github.StardewValley.controllers.helperControllers.MarketsController;
 import io.github.StardewValley.shared.controller.LightningController;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
 import io.github.StardewValley.shared.models.enums.WeatherType;

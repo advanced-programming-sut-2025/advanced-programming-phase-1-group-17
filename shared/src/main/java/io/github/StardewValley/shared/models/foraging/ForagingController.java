@@ -1,8 +1,8 @@
 package io.github.StardewValley.shared.models.foraging;
 
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.NormalItem;
-import io.github.StardewValley.shared.models.NormalItemType;
+import io.github.StardewValley.shared.models.backpack.NormalItem;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.plant.*;
 import io.github.StardewValley.shared.models.tools.ToolMaterial;

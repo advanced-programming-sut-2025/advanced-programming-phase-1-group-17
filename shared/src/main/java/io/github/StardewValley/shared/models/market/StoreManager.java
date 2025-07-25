@@ -1,15 +1,19 @@
 package io.github.StardewValley.shared.models.market;
 
 import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.NPCS.FlowerType;
+import io.github.StardewValley.shared.models.NPCS.RingType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.cooking.RecipeType;
 import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipeType;
-import io.github.StardewValley.shared.models.enums.BackPackType;
+import io.github.StardewValley.shared.models.backpack.BackPackType;
 import io.github.StardewValley.shared.models.enums.Season;
-import io.github.StardewValley.shared.models.tools.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import io.github.StardewValley.shared.models.foraging.MineralType;
 import io.github.StardewValley.shared.models.plant.FertilizerType;

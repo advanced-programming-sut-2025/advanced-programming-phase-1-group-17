@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.controllers.ArtisanInfoMenuController;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 import io.github.StardewValley.shared.models.artisan.IngredientGroup;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;

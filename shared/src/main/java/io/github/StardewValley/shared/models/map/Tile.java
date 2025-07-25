@@ -3,6 +3,8 @@ package io.github.StardewValley.shared.models.map;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.backpack.NormalItem;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.foraging.Mineral;
 import io.github.StardewValley.shared.models.foraging.MineralType;
 import io.github.StardewValley.shared.models.plant.Crop;

@@ -1,6 +1,6 @@
 package io.github.StardewValley.shared.models.market;
 
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public class UpgradeService {
     private int soldToday = 0;

@@ -1,8 +1,9 @@
-package io.github.StardewValley.shared.models;
+package io.github.StardewValley.shared.models.backpack;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.map.Placeable;
 
-public enum NormalItemType implements BackPackableType,Placeable{
+public enum NormalItemType implements BackPackableType, Placeable {
     //    CopperBar(50),
 //    IronBar(100),
 //    GoldBar(250),

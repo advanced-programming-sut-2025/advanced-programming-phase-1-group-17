@@ -3,7 +3,6 @@ package io.github.StardewValley;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.*;
 
@@ -14,6 +13,8 @@ public class Main extends Game {
     private static ShapeRenderer shapeRenderer;
     private static boolean isLoggedInUser = false;
     private static GameView gameView;
+    private static final String serverIP = "localhost";
+    private static final int serverPort = 8080;
 
     @Override
     public void create() {
@@ -79,5 +80,13 @@ public class Main extends Game {
 
     public static void setGameView(GameView gameView) {
         Main.gameView = gameView;
+    }
+
+    public static String getServerIP() {
+        return serverIP;
+    }
+
+    public static int getServerPort() {
+        return serverPort;
     }
 }

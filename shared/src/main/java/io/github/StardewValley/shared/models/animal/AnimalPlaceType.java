@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.animal;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum AnimalPlaceType implements BackPackableType {
     Coop(4,4000),

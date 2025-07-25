@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.tools;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum ToolType implements BackPackableType  {
     Pickaxe(new int[]{0, 1, 2, 3, 4},new int[]{5,4,3,2,1}),

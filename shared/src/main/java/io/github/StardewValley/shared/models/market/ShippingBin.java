@@ -1,8 +1,8 @@
 package io.github.StardewValley.shared.models.market;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackable;
-import io.github.StardewValley.shared.models.Placeable;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.plant.Crop;

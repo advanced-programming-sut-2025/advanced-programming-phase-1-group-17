@@ -1,8 +1,8 @@
 package io.github.StardewValley.shared.models.artisan;
 
 import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.BackPackableType;
-import io.github.StardewValley.shared.models.NormalItemType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.animal.AnimalProductType;
 import io.github.StardewValley.shared.models.foraging.MineralType;
