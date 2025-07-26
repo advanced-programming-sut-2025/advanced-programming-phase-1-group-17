@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.LoginMenu;
 import io.github.StardewValley.views.MainMenu;

@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.market;
 
-import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.NPCS.RingType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;

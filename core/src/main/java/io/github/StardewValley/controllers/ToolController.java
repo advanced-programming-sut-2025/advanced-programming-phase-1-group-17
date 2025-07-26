@@ -3,6 +3,7 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;

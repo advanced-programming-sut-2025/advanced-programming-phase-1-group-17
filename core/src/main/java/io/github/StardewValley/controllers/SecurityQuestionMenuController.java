@@ -3,11 +3,9 @@ package io.github.StardewValley.controllers;
 import com.google.gson.Gson;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.dto.RegisterRequest;
-import io.github.StardewValley.shared.dto.RegisterResponse;
 import io.github.StardewValley.shared.dto.SecurityQuestionRequest;
 import io.github.StardewValley.shared.dto.SecurityQuestionResponse;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.enums.NetworkRequests;
@@ -16,7 +14,6 @@ import io.github.StardewValley.views.SignUpMenu;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 public class SecurityQuestionMenuController {
     private UserDTO user;

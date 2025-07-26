@@ -2,7 +2,7 @@ package io.github.StardewValley.controllers;
 
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.cooking.FoodType;

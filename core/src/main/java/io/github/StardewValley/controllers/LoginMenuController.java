@@ -8,7 +8,7 @@ import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 
 import io.github.StardewValley.shared.dto.*;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.models.enums.NetworkRequests;
 import io.github.StardewValley.views.LoginMenu;
 import io.github.StardewValley.views.MainMenu;

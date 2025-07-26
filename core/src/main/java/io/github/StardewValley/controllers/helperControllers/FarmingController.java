@@ -1,6 +1,6 @@
 package io.github.StardewValley.controllers.helperControllers;
 
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.enums.Season;
