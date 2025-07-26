@@ -478,7 +478,7 @@ public class Player {
         if (isPassedOut) {
             passOutTimer -= delta;
             if (passOutTimer <= 0) {
-                App.getCurrentGame().switchPlayer();
+                //App.getCurrentGame().switchPlayer();
                 isPassedOut = false;
                 hasPassedOutToday = false;
             }
@@ -541,7 +541,6 @@ public class Player {
 
         //TODO  Create movement restrictions
         boolean isOky = true;
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         int playerWidth = backgroundTexture.getWidth();
         int playerHeight = backgroundTexture.getHeight();
         try {
@@ -556,8 +555,8 @@ public class Player {
 
             Tile destination = Tile.getTile(tileX, tileY);
             if (destination != null) {
-                if (!(destination.getOwner().equals(player.getPartner())
-                    || destination.getOwner().equals(player)
+                if (!(destination.getOwner().equals(this.getPartner())
+                    || destination.getOwner().equals(this)
                     || destination.getOwner().equals(NPC.getFatherPlayer()))) {
                     isOky = false;
                 } else if (!destination.isWalkAble()) {

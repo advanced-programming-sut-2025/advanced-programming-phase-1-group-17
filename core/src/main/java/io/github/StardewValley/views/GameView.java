@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
@@ -248,14 +248,6 @@ public class GameView implements Screen, InputProcessor {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
                 , GameAssetManager.getGameAssetManager().getSkin(), this));
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            try {
-                menuController.nextTurn();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 

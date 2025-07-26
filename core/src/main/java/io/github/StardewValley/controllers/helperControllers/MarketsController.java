@@ -1,5 +1,6 @@
 package io.github.StardewValley.controllers.helperControllers;
 
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;

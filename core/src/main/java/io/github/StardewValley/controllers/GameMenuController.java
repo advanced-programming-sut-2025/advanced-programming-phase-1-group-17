@@ -2,6 +2,7 @@ package io.github.StardewValley.controllers;
 
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.controller.LightningController;
 import io.github.StardewValley.shared.models.NPCS.Gift;
 import io.github.StardewValley.shared.models.backpack.BackPack;
@@ -319,16 +320,6 @@ public class GameMenuController {
         App.setCurrentGame(null);
         //App.setCurrentMenu(Menu.MainMenu);
         return new Result(true, "Game saved successfully.you are now in main menu");
-    }
-
-    public Result removeCurrentGame() {
-        return new Result(false, "t");
-    }
-
-    public Result nextTurn() {
-        App.getCurrentGame().switchPlayer();
-        return new Result(true, "Switched to %s".formatted(App.getCurrentGame().
-            getCurrentPlayingPlayer().getUser().getUsername()));
     }
 
     public Result getTime() {

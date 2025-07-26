@@ -1,4 +1,7 @@
-package io.github.StardewValley.shared.models;
+package io.github.StardewValley.models;
+
+import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.UserDTO;
 
 public class App {
     private static UserDTO loggedInUser;

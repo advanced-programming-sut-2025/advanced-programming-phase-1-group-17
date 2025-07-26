@@ -1,13 +1,5 @@
 package io.github.StardewValley.controllers;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Timer;
-import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.enums.SignUpMenuCommands;
-import io.github.StardewValley.views.MainMenu;
 import io.github.StardewValley.views.ProfileMenu;
 
 public class ProfileMenuController {

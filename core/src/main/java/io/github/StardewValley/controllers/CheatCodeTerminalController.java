@@ -2,6 +2,7 @@ package io.github.StardewValley.controllers;
 
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.shared.controller.LightningController;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.animal.Animal;

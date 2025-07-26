@@ -10,9 +10,10 @@ import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.market.StoreManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Serializable {
     private Player creator;
     private Player currentPlayingPlayer;
     private TimeAndDate date = new TimeAndDate();
@@ -26,14 +27,25 @@ public class Game {
 
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3) {
-        App.getLoggedInUser().setActiveGame(this);
+        //App.getLoggedInUser().setActiveGame(this);
         user1.setActiveGame(this);
         user2.setActiveGame(this);
         user3.setActiveGame(this);
-        players.add(creator = new Player(App.getLoggedInUser(), false));
+        //players.add(creator = new Player(App.getLoggedInUser(), false));
         players.add(new Player(user1, user1.getUsername().startsWith("guest")));
         players.add(new Player(user2, user2.getUsername().startsWith("guest")));
         players.add(new Player(user3, user3.getUsername().startsWith("guest")));
+        initializeNPCs();
+        //App.setCurrentGame(this);
+        this.gameMap = new GameMap(players);
+        //App.getCurrentGame().setCurrentPlayingPlayer(creator);
+        this.storeManager.initializeStores();
+        //cooking recipes
+        giveInitialItems();
+    }
+
+
+    private void initializeNPCs() {
         addNPCs(new Abigail(true));
         addNPCs(new Harvey(true));
         addNPCs(new Lia(true));
@@ -77,12 +89,10 @@ public class Game {
                 players.get(3).addFriendShips(players.get(i), 0);
             }
         }
-        App.setCurrentGame(this);
-        this.gameMap = new GameMap(players);
-        App.getCurrentGame().setCurrentPlayingPlayer(creator);
-        this.storeManager.initializeStores();
-        //cooking recipes
-        for(Player player : App.getCurrentGame().getPlayers()){
+    }
+
+    private void giveInitialItems() {
+        for(Player player : players){
             player.getRecipes().add(new Recipe(FoodType.FriedEgg));
             player.getRecipes().add(new Recipe(FoodType.BakedFish));
             player.getRecipes().add(new Recipe(FoodType.Salad));
@@ -104,19 +114,6 @@ public class Game {
 
     public Player getCurrentPlayingPlayer() {
         return currentPlayingPlayer;
-    }
-
-    public void switchPlayer() {
-        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.isHasPassedOutToday());
-        if (currentPlayingPlayer.getEnergy() == Double.POSITIVE_INFINITY)
-            currentPlayingPlayer.setEnergy(currentPlayingPlayer.getMaxEnergy());
-        if (currentPlayingPlayer.equals(players.get(3))) {
-            date.increaseHour();
-            currentPlayingPlayer = players.get(0);
-            currentPlayingPlayerIndex = 0;
-        } else {
-            currentPlayingPlayer = players.get(++currentPlayingPlayerIndex);
-        }
     }
 
     public void setCurrentPlayingPlayer(Player currentPlayingPlayer) {
