@@ -28,6 +28,7 @@ public class AnimalPlace implements Placeable {
     private int capacity;
     private Stage uiStage = new Stage(new ScreenViewport());
     private Skin skin;
+    private boolean isOpen=true;
 
     public AnimalPlace(AnimalPlaceType animalPlaceType){
         this.animalPlaceType = animalPlaceType;
@@ -54,6 +55,7 @@ public class AnimalPlace implements Placeable {
 
     public ArrayList<Animal> getAnimals() {
         return animals;
+
     }
 
     public boolean isFull(){
@@ -113,5 +115,18 @@ public class AnimalPlace implements Placeable {
 
     public void setY(float y) {
         this.y = y;
+        for(int i=(int)x;i<x+this.animalPlaceType.getInventoryTexture().getWidth();i+=110){
+            for (int j=(int)y;j<y + animalPlaceType.getInventoryTexture().getHeight();j+=110){
+                Tile.getTileByClick(i,j).setWalkAble(false);
+            }
+        }
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 }

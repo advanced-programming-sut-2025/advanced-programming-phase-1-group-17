@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.crafting.CraftingItemType;
@@ -112,7 +113,6 @@ public class HUD {
         }
         dateFont.draw(batch, date.toString(), 1810, Gdx.graphics.getHeight() - 25);
         timeFont.draw(batch, time.toString(), 1800, Gdx.graphics.getHeight() - 92);
-
         batch.end();
     }
 

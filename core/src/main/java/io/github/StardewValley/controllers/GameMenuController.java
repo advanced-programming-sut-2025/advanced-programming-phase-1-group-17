@@ -1502,7 +1502,7 @@ public class GameMenuController {
             return new Result(false, "Invalid animal");
         }
 
-        Animal newAnimal = new Animal(name, animalType);
+        Animal newAnimal = new Animal(name, animalType,null);
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         double money = player.getBackPack().getCoin();
         if (money < animalType.getPrice()) {

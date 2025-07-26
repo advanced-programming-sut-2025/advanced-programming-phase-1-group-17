@@ -15,6 +15,7 @@ import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.enums.Direction;
+import io.github.StardewValley.models.map.Lake;
 import io.github.StardewValley.models.map.Tile;
 
 import java.util.*;
@@ -33,7 +34,7 @@ public class Animal implements Placeable {
     private boolean isPettedToday = false;
     private boolean isFedToday = false;
     private boolean isFedOutside = false;
-    private boolean isOutside=false;
+    private boolean isOutside=true;
     private Tile tile=null;
     private float x=100,y=100;
     private Direction direction = Up;
@@ -53,12 +54,21 @@ public class Animal implements Placeable {
     private Texture hayTexture;
     private Texture afterPetTexture;
     private TextureRegion[][] regions;
+    private List<Tile> path = new ArrayList<>();
+    private int currentPathIndex = 0;
+    private boolean followingPath = false;
+    private Tile animalHouseTile = null;
+
 
     private EnumMap<AnimalType,EnumMap<Direction,Animation<TextureRegion>>> animalsAnimationMap;
     private float speed = 100f;
     private int dayTillProduce=0;
     private int counter=0;
-    public Animal(String name, AnimalType animalType){
+    public Animal(String name, AnimalType animalType,AnimalPlace animalPlace){
+        this.animalPlace = animalPlace;
+        this.animalHouseTile = Tile.getTileFromPixel((int) (animalPlace.getX() + (float) animalPlace.getAnimalPlaceType().getInventoryTexture().getWidth() /2)
+            ,(int)animalPlace.getY());
+        animalHouseTile = Tile.getTile(animalHouseTile.getX(), animalHouseTile.getY()-1);
         this.hayTexture = new Texture("hay.png");
         this.loveTexture = new Texture("Heart/Marriage_Icon.png");
          regions= TextureRegion.split(new Texture("heart/Zero_Hearts.png"), 12, 9);
@@ -456,6 +466,34 @@ public class Animal implements Placeable {
     private float directionChangeInterval = MathUtils.random(1f,5f);
     public void update(float delta) {
         if(!this.isOutside)return;
+        if (followingPath && currentPathIndex < path.size()) {
+            Tile nextTile = path.get(currentPathIndex);
+            final float TILE_SIZE = 120.0f; // اندازه ثابت تایل‌های نقشه
+            float targetX = nextTile.getX() * TILE_SIZE;
+            float targetY = nextTile.getY() * TILE_SIZE;
+
+            Vector2 directionVec = new Vector2(targetX - x, targetY - y);
+            if (directionVec.len() < 2f) { // رسیدیم به تایل مقصد فعلی
+                currentPathIndex++;
+                if (currentPathIndex >= path.size()) {
+                    followingPath = false;
+                    direction = Down; // یا هر حالت استراحتی که داری
+                    isOutside = false;
+                }
+            } else {
+                directionVec.nor(); // نرمال‌سازی
+                x += directionVec.x * speed * delta;
+                y += directionVec.y * speed * delta;
+
+                // تعیین جهت برای انیمیشن
+                if (Math.abs(directionVec.x) > Math.abs(directionVec.y)) {
+                    direction = directionVec.x > 0 ? Direction.Right : Direction.Left;
+                } else {
+                    direction = directionVec.y > 0 ? Direction.Up : Direction.Down;
+                }
+            }
+        }
+
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
             Vector3 clickPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             App.getCamera().unproject(clickPos);
@@ -467,6 +505,7 @@ public class Animal implements Placeable {
             }
 
         }
+
 
 
         if (timeSinceLastDirectionChange >= directionChangeInterval) {
@@ -522,7 +561,7 @@ public class Animal implements Placeable {
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             App.getCamera().unproject(touchPos);
-            if(this.getHitBox().contains(touchPos.x,touchPos.y) ){
+            if(this.getHitBox().contains(touchPos.x,touchPos.y) && !showHeart ){
                 System.out.println(this.isPettedToday);
                 if(!this.isPettedToday){
                     this.setPettedToday(true);
@@ -612,5 +651,118 @@ public class Animal implements Placeable {
     }
     public Rectangle getHitBox(){
         return new Rectangle(x,y,this.animalType.getTexttureSize(),this.animalType.getTexttureSize());
+    }
+    public boolean noAnimalInWay(){
+        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()){
+            for(Animal animal:animalPlace.getAnimals()){
+                if(this.getHitBox().overlaps(animal.getHitBox())){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public static float TILE_SIZE=120f;
+    public void startPathTo(int targetPixelX, int targetPixelY) {
+        // تبدیل مرکز حیوان به پیکسل
+        int centerX = (int)(x + TILE_SIZE/2f);
+        int centerY = (int)(y + TILE_SIZE/2f);
+
+        // پیدا کردن تایل شروع و پایان با تابع جدید
+        Tile startTile = Tile.getTileFromPixel(centerX, centerY);
+        Tile endTile   = Tile.getTileFromPixel(targetPixelX, targetPixelY);
+
+        if(startTile == null){
+            System.out.println("startTile is null");
+        }
+        if(endTile == null){
+            System.out.println("endTile is null");
+        }
+        if(!endTile.isWalkAble()){
+            System.out.println("endTile is not walkable");
+        }
+
+        // نپذیرفتن مسیر 1 تایی (یعنی وقتی از قبل در مقصد ایستاده)
+        AStarPathfinder pathfinder = new AStarPathfinder(Tile.getTiles());
+        List<Tile> newPath = pathfinder.findPath(
+            startTile.getX(), startTile.getY(),
+            endTile.getX(),   endTile.getY()
+        );
+
+        if (newPath == null || newPath.isEmpty()) {
+            System.out.println("No path found!");
+            return;
+        }
+        if (newPath.size() == 1) {
+            System.out.println(animalType.getName() + " already at destination.");
+            return;
+        }
+
+        // مسیر معتبر
+        path = newPath;
+        currentPathIndex = 1;      // اندیس 0 = startTile، ما از قدم بعد شروع می‌کنیم
+        followingPath = true;
+        System.out.print("Path: ");
+        for (Tile tile : newPath) {
+            System.out.print("-> (" + tile.getX() + "," + tile.getY() + ")");
+        }
+        System.out.println();
+    }
+    public void startPathTo() {
+        // تبدیل مرکز حیوان به پیکسل
+        int centerX = (int)(x + TILE_SIZE/2f);
+        int centerY = (int)(y + TILE_SIZE/2f);
+
+        // پیدا کردن تایل شروع و پایان با تابع جدید
+        Tile startTile = Tile.getTileFromPixel(centerX, centerY);
+        Tile endTile   = this.animalHouseTile;
+
+        if(startTile == null){
+            System.out.println("startTile is null");
+        }
+        if(endTile == null){
+            System.out.println("endTile is null");
+        }
+        if(!endTile.isWalkAble()){
+            System.out.println("endTile is not walkable");
+        }
+
+        // نپذیرفتن مسیر 1 تایی (یعنی وقتی از قبل در مقصد ایستاده)
+        AStarPathfinder pathfinder = new AStarPathfinder(Tile.getTiles());
+        List<Tile> newPath = pathfinder.findPath(
+            startTile.getX(), startTile.getY(),
+            endTile.getX(),   endTile.getY()
+        );
+
+        if (newPath == null || newPath.isEmpty()) {
+            System.out.println("No path found!");
+            return;
+        }
+        if (newPath.size() == 1) {
+            System.out.println(animalType.getName() + " already at destination.");
+            return;
+        }
+
+        // مسیر معتبر
+        path = newPath;
+        currentPathIndex = 1;      // اندیس 0 = startTile، ما از قدم بعد شروع می‌کنیم
+        followingPath = true;
+        System.out.print("Path: ");
+        for (Tile tile : newPath) {
+            System.out.print("-> (" + tile.getX() + "," + tile.getY() + ")");
+        }
+        System.out.println();
+    }
+
+    public boolean isFollowingPath() {
+        return followingPath;
+    }
+
+    public Tile getAnimalHouseTile() {
+        return animalHouseTile;
+    }
+
+    public void setAnimalHouseTile(Tile animalHouseTile) {
+        this.animalHouseTile = animalHouseTile;
     }
 }

@@ -3,6 +3,7 @@ package io.github.StardewValley.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,8 +21,11 @@ import io.github.StardewValley.models.animal.AnimalPlace;
 import io.github.StardewValley.models.animal.AnimalPlaceType;
 import io.github.StardewValley.models.animal.AnimalType;
 import io.github.StardewValley.models.crafting.CraftingItem;
+import io.github.StardewValley.models.map.Lake;
+import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.market.StoreType;
 
+import java.awt.image.Kernel;
 import java.util.Map;
 
 import io.github.StardewValley.models.tools.Tool;
@@ -33,19 +37,12 @@ public class GameView implements Screen, InputProcessor {
     private final GameController controller;
     private final GameMenuController menuController;
     private HUD hud;
-    private AnimalPlace animalPlace;
-    private AnimalPlace animalPlace1;
+    private BitmapFont font;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
+        this.font = new BitmapFont();
         App.setGameView(this);
-        this.animalPlace = new AnimalPlace(AnimalPlaceType.BigBarn);
-        animalPlace.getAnimals().add(new Animal("test",Cow));
-        this.animalPlace1 = new AnimalPlace(AnimalPlaceType.Barn);
-        animalPlace1.setX(2000);
-        animalPlace1.setY(2000);
-//        App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace);
-//        App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace1);
         int i=0;
         for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
             AnimalPlace ap = new AnimalPlace(animalPlaceType);
@@ -53,7 +50,7 @@ public class GameView implements Screen, InputProcessor {
             ap.setY(1000+500*i);
             i++;
             App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
-            Animal animal = new Animal("test" + i,AnimalType.values()[i]);
+            Animal animal = new Animal("test" + i,AnimalType.values()[i],ap);
             animal.setX(100+20*i);
             animal.setY(100+20*i);
             ap.getAnimals().add(animal);
@@ -67,7 +64,7 @@ public class GameView implements Screen, InputProcessor {
 //        display.run(1,1,300);
         this.controller.setView(this);
         Main.setGameView(this);
-
+        Tile.getTileFromPixel(3000,1000).setPlaceable(new Lake());
 
 
     }
@@ -98,10 +95,12 @@ public class GameView implements Screen, InputProcessor {
                 animal.update(v);
             }
         }
+        //font.draw(Main.getBatch(),"hello",120,120);
 
         Main.getBatch().end();
 
         hud.render(Main.getBatch(),v);
+
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
