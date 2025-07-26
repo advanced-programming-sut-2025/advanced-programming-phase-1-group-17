@@ -152,10 +152,11 @@ public class GameController {
         }
         if(Gdx.input.isTouched()) {
             Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            Tile tile = Tile.getTile((int)vector3.x,(int)vector3.y);
+            App.getCamera().unproject(vector3);
+            Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
             if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
                 Main.getMain().getScreen().dispose();
-                //Main.getMain().setScreen(new FishingView(new FishingController()));
+                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(), view));
             }
 
         }
@@ -201,7 +202,7 @@ public class GameController {
             case Input.Keys.P:
                 for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
                     for(Animal animal:animalPlace.getAnimals()){
-                        animal.produce();
+                        if(!animal.isFollowingPath())animal.startPathTo();
                     }
                 }
 

@@ -57,9 +57,14 @@ public class AnimalPlaceShow implements Screen {
         }
 
         //label.setWrap(true);
-
-
-        table.add(label);
+        TextButton isOpenButton = new TextButton(animalPlace.isOpen()?"Open":"close", skin);
+        isOpenButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                animalPlace.setOpen(!animalPlace.isOpen());
+                isOpenButton.setText(animalPlace.isOpen()?"Open":"close");
+            }
+        });
+        table.add(isOpenButton);
         TextButton backButton = new TextButton("Back", skin);
         backButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
