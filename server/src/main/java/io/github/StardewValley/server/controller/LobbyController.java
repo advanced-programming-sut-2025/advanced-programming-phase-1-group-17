@@ -1,0 +1,69 @@
+package io.github.StardewValley.server.controller;
+
+import io.github.StardewValley.server.JwtService;
+import io.github.StardewValley.server.LobbyService;
+import io.github.StardewValley.shared.models.LobbyDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/lobbies")
+public class LobbyController {
+
+    private final LobbyService lobbyService;
+    private final JwtService jwtService;
+
+    @Autowired
+    public LobbyController(LobbyService lobbyService, JwtService jwtService) {
+        this.lobbyService = lobbyService;
+        this.jwtService = jwtService;
+    }
+
+    private String getUsernameFromToken(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
+        String token = authHeader.substring(7);
+        return jwtService.extractUsername(token);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<LobbyDto> createLobby(@RequestHeader("Authorization") String authHeader, @RequestBody LobbyDto req) {
+        String username = getUsernameFromToken(authHeader);
+        return ResponseEntity.ok(lobbyService.createLobby(req.getName(), req.isPrivate(), req.isVisible(), username));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<LobbyDto>> listLobbies() {
+        return ResponseEntity.ok(lobbyService.listLobbies());
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<LobbyDto> joinLobby(@RequestHeader("Authorization") String authHeader, @RequestParam String inviteCode) {
+        String username = getUsernameFromToken(authHeader);
+        Optional<LobbyDto> lobbyOpt = lobbyService.joinLobby(inviteCode, username);
+        return lobbyOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/leave")
+    public ResponseEntity<Void> leaveLobby(@RequestHeader("Authorization") String authHeader, @RequestParam Long lobbyId) {
+        String username = getUsernameFromToken(authHeader);
+        if (lobbyService.leaveLobby(lobbyId, username)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/start")
+    public ResponseEntity<Void> startGame(@RequestHeader("Authorization") String authHeader, @RequestParam Long lobbyId) {
+        String username = getUsernameFromToken(authHeader);
+        if (lobbyService.startGame(lobbyId, username)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(403).build();
+        }
+    }
+}
