@@ -5,10 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.views.GameMenu;
-import io.github.StardewValley.views.LoginMenu;
-import io.github.StardewValley.views.MainMenu;
-import io.github.StardewValley.views.ProfileMenu;
+import io.github.StardewValley.views.*;
 
 public class MainMenuController {
 
@@ -28,7 +25,8 @@ public class MainMenuController {
         view.getGameMenuButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new GameMenu(new GameMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+                Main.getMain().setScreen(new LobbyScreen(App.getJwt()));
+//                Main.getMain().setScreen(new GameMenu(new GameMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
             }
         });
         view.getLogoutAndGotoLoginMenuButton().addListener(

@@ -24,4 +24,8 @@ public class App {
     public static void setJwt(String token) {
         jwtToken = token;
     }
+    public static String getJwt() {
+        return jwtToken;
+    }
 }
+

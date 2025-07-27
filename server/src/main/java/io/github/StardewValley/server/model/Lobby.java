@@ -99,6 +99,5 @@ public class Lobby {
         this.playerUsernames = playerUsernames;
     }
 }
-}
 
 
