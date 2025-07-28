@@ -8,17 +8,17 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.models.Game;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.PlayerController;
+import io.github.StardewValley.models.animal.*;
+import io.github.StardewValley.models.map.Lake;
 import io.github.StardewValley.views.*;
 import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.animal.AnimalProduct;
-import io.github.StardewValley.models.animal.AnimalType;
 import io.github.StardewValley.models.cooking.BuffType;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.crafting.CraftingItemType;
@@ -71,7 +71,6 @@ public class GameController {
 
     public GameController(Game game) {
         this.game = game;
-
         for (Player player : game.getPlayers()) {
             PlayerController playerController = new PlayerController(player);
             this.game.getPlayerControllers().add(playerController);
@@ -89,6 +88,7 @@ public class GameController {
         this.mapHeightInPixels = worldController.getTileHeight();
 
         initializeStoreRectangles();
+        App.setCamera(this.camera);
     }
 
     public void setView(GameView gameView) {
@@ -167,6 +167,21 @@ public class GameController {
             lightningController.updateLightning(delta);
             lightningController.renderLightning(Main.getBatch());
         }
+        if(Gdx.input.isTouched()) {
+            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            App.getCamera().unproject(vector3);
+            Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
+            if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(), view));
+            }
+
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(),view));
+
+        }
     }
 
 
@@ -195,6 +210,16 @@ public class GameController {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
                 break;
+            case Input.Keys.P:
+                for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
+                    for(Animal animal:animalPlace.getAnimals()){
+                        if(!animal.isFollowingPath())animal.startPathTo();
+                    }
+                }
+
+
+
+
         }
     }
 

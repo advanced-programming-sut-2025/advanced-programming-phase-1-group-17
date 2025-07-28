@@ -162,6 +162,21 @@ public class Tile {
         this.crowImmunity = crowImmunity;
     }
 
+    public static Tile getTileByClick(int x,int y){
+        for(Tile tile : tiles){
+            if(tile.getX() == x/120 && tile.getY() == y/120){
+                return tile;
+            }
+        }
+        return null;
+    }
+    public static Tile getTileFromPixel(int px, int py) {
+        int tx = px / 120;
+        int ty = py / 120;
+        return getTile(tx, ty);
+    }
+
+
     public static ArrayList<Tile> getTreeTile() {
         return treeTile;
     }
