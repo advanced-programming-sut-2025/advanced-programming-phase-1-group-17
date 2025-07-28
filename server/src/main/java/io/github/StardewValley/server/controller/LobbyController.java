@@ -2,6 +2,8 @@ package io.github.StardewValley.server.controller;
 
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.LobbyService;
+import io.github.StardewValley.server.model.Lobby;
+import io.github.StardewValley.server.repository.LobbyRepository;
 import io.github.StardewValley.shared.models.LobbyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -65,5 +67,26 @@ public class LobbyController {
         } else {
             return ResponseEntity.status(403).build();
         }
+    }
+    @DeleteMapping("/deleteCode/{inviteCode}")
+    public ResponseEntity<Void> deleteByInviteCode(@PathVariable String inviteCode) {
+        lobbyService.deleteLobbyByCode(inviteCode);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        lobbyService.deleteLobbyById(id);
+        return ResponseEntity.noContent().build();
+    }
+    @DeleteMapping("/all")
+    public ResponseEntity<Void> deleteAllLobbies() {
+        lobbyService.deleteAllRepo();
+        return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/code/{inviteCode}")
+    public LobbyDto getLobbyByInviteCode(@PathVariable String inviteCode) {
+        Lobby lobby = lobbyService.getById(inviteCode);
+        return lobbyService.toDto(lobby);
     }
 }

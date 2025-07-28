@@ -1,5 +1,6 @@
 package io.github.StardewValley.server.model;
 
+import io.github.StardewValley.shared.models.LobbyStatus;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

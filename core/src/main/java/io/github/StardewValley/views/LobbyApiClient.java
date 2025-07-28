@@ -3,8 +3,6 @@ package io.github.StardewValley.views;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import io.github.StardewValley.shared.models.LobbyDto;
-
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,20 +30,29 @@ public class LobbyApiClient {
         JsonReader reader = new JsonReader();
         JsonValue json = reader.parse(response);
 
+
         List<LobbyDto> lobbies = new ArrayList<>();
         for (JsonValue lobbyJson : json) {
+            List<String> players = new ArrayList<>();
+            JsonValue playersJson = lobbyJson.get("playerUsernames");
+            if (playersJson != null) {
+                for (JsonValue playerJson : playersJson) {
+                    players.add(playerJson.asString());
+                }
+            }
             lobbies.add(new LobbyDto(
                 lobbyJson.getLong("id"),
                 lobbyJson.getString("name"),
                 lobbyJson.getString("inviteCode"),
-                lobbyJson.getBoolean("isPrivate"),
-                lobbyJson.getBoolean("isVisible"), // status null
+                lobbyJson.getBoolean("private"),
+                lobbyJson.getBoolean("visible"), null,
                 lobbyJson.getString("adminUsername"),
-                null // playerUsernames
+                players
             ));
         }
         return lobbies;
     }
+
     public LobbyDto createLobby(String name, boolean isPrivate, boolean isVisible) throws Exception {
         URL url = new URL(BASE_URL + "/create");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -56,29 +63,29 @@ public class LobbyApiClient {
 
         String json = String.format("{\"name\":\"%s\", \"private\":%b, \"visible\":%b}", name, isPrivate, isVisible);
         conn.getOutputStream().write(json.getBytes());
-        if (conn.getResponseCode() >= 400) {
-            InputStream errorStream = conn.getErrorStream();
-            Scanner scanner = new Scanner(errorStream).useDelimiter("\\A");
-            String errorResponse = scanner.hasNext() ? scanner.next() : "";
-            scanner.close();
-            throw new RuntimeException("Server error: " + conn.getResponseCode() + "\n" + errorResponse);
-        }
         Scanner scanner = new Scanner(conn.getInputStream());
 
         String response = scanner.useDelimiter("\\A").next();
         scanner.close();
-
         JsonValue lobbyJson = new JsonReader().parse(response);
+        List<String> players = new ArrayList<>();
+        JsonValue playersJson = lobbyJson.get("playerUsernames");
+        if (playersJson != null) {
+            for (JsonValue playerJson : playersJson) {
+                players.add(playerJson.asString());
+            }
+        }
+
 
         return new LobbyDto(
             lobbyJson.getLong("id"),
             lobbyJson.getString("name"),
             lobbyJson.getString("inviteCode"),
-            lobbyJson.getBoolean("isPrivate"),
-            lobbyJson.getBoolean("isVisible"),
-            //status null
+            lobbyJson.getBoolean("private"),
+            lobbyJson.getBoolean("visible"),
+            null,
             lobbyJson.getString("adminUsername"),
-            null
+            players
         );
     }
 
@@ -93,17 +100,26 @@ public class LobbyApiClient {
         scanner.close();
 
         JsonValue lobbyJson = new JsonReader().parse(response);
+        List<String> players = new ArrayList<>();
+        JsonValue playersJson = lobbyJson.get("playerUsernames");
+        if (playersJson != null) {
+            for (JsonValue playerJson : playersJson) {
+                players.add(playerJson.asString());
+            }
+        }
+
 
         return new LobbyDto(
             lobbyJson.getLong("id"),
             lobbyJson.getString("name"),
             lobbyJson.getString("inviteCode"),
-            lobbyJson.getBoolean("isPrivate"),
-            lobbyJson.getBoolean("isVisible"),//status null
+            lobbyJson.getBoolean("private"),
+            lobbyJson.getBoolean("visible"), null,
             lobbyJson.getString("adminUsername"),
-            null
+            players
         );
     }
+
     public void startGame(Long lobbyId) throws Exception {
         URL url = new URL(BASE_URL + "/start?lobbyId=" + lobbyId);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -114,6 +130,37 @@ public class LobbyApiClient {
         if (conn.getResponseCode() != 200) {
             throw new RuntimeException("Failed to start game. Code: " + conn.getResponseCode());
         }
+    }
+    public LobbyDto getLobbyById(String code) throws Exception {
+        URL url = new URL(BASE_URL + "/code/" + code);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        Scanner scanner = new Scanner(conn.getInputStream());
+        String response = scanner.useDelimiter("\\A").next();
+        scanner.close();
+
+        JsonValue lobbyJson = new JsonReader().parse(response);
+
+        List<String> players = new ArrayList<>();
+        JsonValue playersJson = lobbyJson.get("playerUsernames");
+        if (playersJson != null) {
+            for (JsonValue playerJson : playersJson) {
+                players.add(playerJson.asString());
+            }
+        }
+
+        return new LobbyDto(
+            lobbyJson.getLong("id"),
+            lobbyJson.getString("name"),
+            lobbyJson.getString("inviteCode"),
+            lobbyJson.getBoolean("private"),
+            lobbyJson.getBoolean("visible"),
+            null,
+            lobbyJson.getString("adminUsername"),
+            players
+        );
     }
 
 }
