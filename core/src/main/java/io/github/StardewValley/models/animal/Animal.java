@@ -566,7 +566,7 @@ public class Animal implements Placeable {
                 if(!this.isPettedToday){
                     this.setPettedToday(true);
                     showHeart = true;
-                    heartTimer = 0f;        // ریست زمان
+                    heartTimer = 0f;
                     heartMovement = 0f;
                 }
                 else {
