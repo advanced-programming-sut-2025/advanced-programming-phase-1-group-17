@@ -33,6 +33,7 @@ public class WorldController {
         this.backgroundTexture2 = GameAssetManager.getGameAssetManager().getBackgroundTexture2();
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
+        System.out.println(tileHeight + " " + tileWidth);
     }
 
     public void update() {
@@ -322,5 +323,9 @@ public class WorldController {
 
     public void setTileHeight(int tileHeight) {
         this.tileHeight = tileHeight;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
     }
 }

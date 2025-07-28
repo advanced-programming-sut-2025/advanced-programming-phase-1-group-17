@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,14 +26,23 @@ import io.github.StardewValley.models.Result;
 import io.github.StardewValley.models.enums.Gender;
 import io.github.StardewValley.controllers.StoreMenuController;
 import io.github.StardewValley.models.Player;
+import io.github.StardewValley.models.animal.Animal;
+import io.github.StardewValley.models.animal.AnimalPlace;
+import io.github.StardewValley.models.animal.AnimalPlaceType;
+import io.github.StardewValley.models.animal.AnimalType;
 import io.github.StardewValley.models.crafting.CraftingItem;
+import io.github.StardewValley.models.map.Lake;
+import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.models.market.StoreType;
 
 import java.util.ArrayList;
+import java.awt.image.Kernel;
 import java.util.Map;
 import java.util.Random;
 
 import io.github.StardewValley.models.tools.Tool;
+
+import static io.github.StardewValley.models.animal.AnimalType.*;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -53,9 +63,28 @@ public class GameView implements Screen, InputProcessor {
     private NPC currentNPC = null;
     private boolean dialogueActive = false;
     private Table dialogueTable;
+    private BitmapFont font;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
+        this.font = new BitmapFont();
+        App.setGameView(this);
+        int i=0;
+        for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
+            AnimalPlace ap = new AnimalPlace(animalPlaceType);
+            ap.setX(1000+500*i);
+            ap.setY(1000+500*i);
+            i++;
+            App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
+            Animal animal = new Animal("test" + i,AnimalType.values()[i],ap);
+            animal.setX(100+20*i);
+            animal.setY(100+20*i);
+            ap.getAnimals().add(animal);
+
+        }
+
+
+
         this.controller = controller;
         this.menuController = menuController;
         this.controller.setView(this);
@@ -217,6 +246,17 @@ public class GameView implements Screen, InputProcessor {
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
         controller.updateGame(delta);
+
+        controller.handlePlayerInput();
+        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
+            animalPlace.render(delta);
+            for(Animal animal:animalPlace.getAnimals()){
+                animal.render(Main.getBatch(),delta);
+                animal.update(delta);
+            }
+        }
+        //font.draw(Main.getBatch(),"hello",120,120);
+
         Main.getBatch().end();
         if (App.getCurrentGame().getCurrentPlayingPlayer().isNewMessage()) {
             error.setText("you have a new message");
@@ -227,7 +267,7 @@ public class GameView implements Screen, InputProcessor {
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
         stage.addActor(error);
-        hud.render(Main.getBatch());
+        hud.render(Main.getBatch(),delta);
         controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
@@ -275,7 +315,6 @@ public class GameView implements Screen, InputProcessor {
         if (targetPlayers.isEmpty()) {
             window.setVisible(false);
         }
-        hud.render(Main.getBatch());
 
         if (!targetPlayers.isEmpty()) {
             window.setVisible(true);
