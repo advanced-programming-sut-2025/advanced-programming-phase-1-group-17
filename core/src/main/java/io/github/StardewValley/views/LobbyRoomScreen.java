@@ -75,6 +75,7 @@ public class LobbyRoomScreen implements Screen {
             playersTable.row();
         }
 
+
         if (lobby.getAdminUsername().equals(currentUsername)) {
             TextButton startGameBtn = new TextButton("Start Game", skin);
             startGameBtn.addListener(new ClickListener() {
