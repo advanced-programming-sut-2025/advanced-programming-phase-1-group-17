@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface LobbyRepository extends JpaRepository<Lobby, Long> {
     Optional<Lobby> findByInviteCode(String code);
     List<Lobby> findByIsVisibleTrue();
+    void deleteByInviteCode(String inviteCode);
 }
 
 
