@@ -83,7 +83,7 @@ public class InventoryController {
     public void handleSocialMenu() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(new TalkView(new TalkController(),
-            GameAssetManager.getGameAssetManager().getSkin(), view.getGameView()));
+            GameAssetManager.getGameAssetManager().getSkin(), App.getGameView()));
     }
 
     public void handleMap() {
