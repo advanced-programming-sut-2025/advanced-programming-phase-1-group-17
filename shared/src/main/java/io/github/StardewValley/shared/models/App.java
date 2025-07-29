@@ -9,8 +9,8 @@ public class App {
         return currentGame;
     }
 
-    public static void setCurrentGame(Game currentGame) {
-        App.currentGame = currentGame;
+    public static void setCurrentGame(Game currentGame1) {
+        currentGame = currentGame1;
     }
 
     public static UserDTO getLoggedInUser() {

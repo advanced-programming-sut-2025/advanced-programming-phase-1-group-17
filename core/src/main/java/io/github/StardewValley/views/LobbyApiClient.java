@@ -3,6 +3,7 @@ package io.github.StardewValley.views;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.GameDTO;
 import io.github.StardewValley.shared.models.LobbyDto;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -121,16 +122,33 @@ public class LobbyApiClient {
         );
     }
 
-    public void startGame(Long lobbyId) throws Exception {
+    public GameDTO startGame(Long lobbyId) throws Exception {
         URL url = new URL(BASE_URL + "/start?lobbyId=" + lobbyId);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoInput(true);
         conn.connect();
 
         if (conn.getResponseCode() != 200) {
             throw new RuntimeException("Failed to start game. Code: " + conn.getResponseCode());
         }
+
+        Scanner scanner = new Scanner(conn.getInputStream());
+        String response = scanner.useDelimiter("\\A").next();
+        scanner.close();
+
+        JsonValue json = new JsonReader().parse(response);
+
+        GameDTO game = parseGameDto(json);
+        return game;
+    }
+    private GameDTO parseGameDto(JsonValue json) {
+        GameDTO dto = new GameDTO();
+
+        //TODO
+
+        return dto;
     }
     public LobbyDto getLobbyById(String code) throws Exception {
         URL url = new URL(BASE_URL + "/code/" + code);

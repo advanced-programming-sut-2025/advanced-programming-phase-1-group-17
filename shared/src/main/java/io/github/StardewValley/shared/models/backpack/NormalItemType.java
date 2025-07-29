@@ -41,13 +41,13 @@ public enum NormalItemType implements BackPackableType, Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         //TODO
         return null;
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         //TODO
         return null;
     }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.controllers.SkillMenuController;
 import io.github.StardewValley.shared.models.Player;
@@ -79,7 +80,7 @@ public class SkillMenu implements Screen {
         mainTable.setFillParent(true);
 
         mainTable.top().pad(20);
-        Label titleLabel = new Label("Skill Menu", GameAssetManager.getGameAssetManager().getSkin());
+        Label titleLabel = new Label("Skill Menu",   GameAssetManagerClient.getGameAssetManager().getSkin());
         titleLabel.setFontScale(2f);
         mainTable.add(titleLabel).center().padBottom(60).row();
         mainTable.add(farmingLabel).padBottom(50).row();

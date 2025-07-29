@@ -5,14 +5,14 @@ import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.map.Placeable;
 
 public class Fence implements Placeable {
-    private Texture fenceTexture = new Texture(GameAssetManager.getGameAssetManager().getFenceTexture());
-    private Texture fenceTexture2 = new Texture(GameAssetManager.getGameAssetManager().getFenceTexture2());
+    private String fenceTexture = GameAssetManager.getGameAssetManager().getFenceTexture();
+    private String fenceTexture2 = GameAssetManager.getGameAssetManager().getFenceTexture2();
     boolean isHorizontal;
     public Fence(boolean isHorizontal) {
         this.isHorizontal = isHorizontal;
     }
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         if (!isHorizontal)
             return fenceTexture;
         else

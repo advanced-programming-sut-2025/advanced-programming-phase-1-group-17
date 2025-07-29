@@ -11,11 +11,13 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.Gdx;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.ChooseMapController;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.GameDTO;
 import io.github.StardewValley.shared.models.LobbyDto;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 
@@ -32,7 +34,7 @@ public class LobbyRoomScreen implements Screen {
         this.lobby = lobby;
         this.apiClient = apiClient;
         this.currentUsername = currentUsername;
-        this.playersTable = new Table(GameAssetManager.getGameAssetManager().getSkin());
+        this.playersTable = new Table(  GameAssetManagerClient.getGameAssetManager().getSkin());
     }
 
     @Override
@@ -44,7 +46,7 @@ public class LobbyRoomScreen implements Screen {
             }
         }, 0, 2);
         Gdx.input.setInputProcessor(stage);
-        Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+        Skin skin =   GameAssetManagerClient.getGameAssetManager().getSkin();
         Table root = new Table(skin);
         root.setFillParent(true);
         playersTable.setFillParent(true);
@@ -80,11 +82,15 @@ public class LobbyRoomScreen implements Screen {
             TextButton startGameBtn = new TextButton("Start Game", skin);
             startGameBtn.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
+                    if (lobby.getPlayerUsernames().size() < 2) {
+                        return;
+                    }
                     try {
-                        apiClient.startGame(lobby.getId());
+                        GameDTO gameDTO =  apiClient.startGame(lobby.getId());
+                        //TODO
                         System.out.println("Game started!");
                         Main.getMain().getScreen().dispose();
-                        Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManager.getGameAssetManager().getSkin()));
+                        Main.getMain().setScreen(new chooseMap(new ChooseMapController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -136,11 +142,11 @@ public class LobbyRoomScreen implements Screen {
 
             playersTable.clearChildren();
 
-            playersTable.add(new Label("Players:", GameAssetManager.getGameAssetManager().getSkin())).left().padBottom(10).colspan(2);
+            playersTable.add(new Label("Players:",   GameAssetManagerClient.getGameAssetManager().getSkin())).left().padBottom(10).colspan(2);
             playersTable.row();
 
             for (String username : updatedLobby.getPlayerUsernames()) {
-                playersTable.add(new Label("- " + username, GameAssetManager.getGameAssetManager().getSkin())).left().colspan(2);
+                playersTable.add(new Label("- " + username,   GameAssetManagerClient.getGameAssetManager().getSkin())).left().colspan(2);
                 playersTable.row();
             }
         } catch (Exception e) {

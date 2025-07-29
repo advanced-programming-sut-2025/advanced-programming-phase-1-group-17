@@ -16,8 +16,8 @@ public class Robin extends NPC implements Placeable {
     private String job = "architect";
     private final HashMap<String, String> dialogue = new HashMap<>();
     private final HashMap<String, String> dialogue2 = new HashMap<>();
-    private Texture texture1 = new Texture("Robin.png");
-    private Texture texture2 =  new Texture("hut2.png");
+    private String texture1 = "Robin.png";
+    private String texture2 =  "hut2.png";
     //TODO
 
     public Robin(boolean isRobin) {
@@ -133,7 +133,7 @@ public class Robin extends NPC implements Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String  getTexture() {
         if (isNPC)
             return texture1;
         else

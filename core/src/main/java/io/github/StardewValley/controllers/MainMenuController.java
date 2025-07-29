@@ -2,6 +2,7 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
@@ -19,14 +20,14 @@ public class MainMenuController {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new ProfileMenu(new ProfileMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+                Main.getMain().setScreen(new ProfileMenu(new ProfileMenuController(),  GameAssetManagerClient.getGameAssetManager().getSkin()));
             }
         });
         view.getGameMenuButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new LobbyScreen(App.getJwt()));
-//                Main.getMain().setScreen(new GameMenu(new GameMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+//                Main.getMain().setScreen(new GameMenu(new GameMenuController(),  GameAssetManagerClient.getGameAssetManager().getSkin()));
             }
         });
         view.getLogoutAndGotoLoginMenuButton().addListener(
@@ -36,7 +37,7 @@ public class MainMenuController {
                     //TODO: change stay logged in logic
                     //SaveUser.clearStayLoggedInFile();
                     Main.getMain().getScreen().dispose();
-                    Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+                    Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),  GameAssetManagerClient.getGameAssetManager().getSkin()));
                 }
             }
         );

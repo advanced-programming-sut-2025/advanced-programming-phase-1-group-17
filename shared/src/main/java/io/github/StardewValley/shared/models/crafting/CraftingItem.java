@@ -29,8 +29,11 @@ public class CraftingItem implements BackPackable, Placeable {
     public CraftingItem(CraftingItemType targetItem, Player owner) {
         this.owner = owner;
         this.targetItem = targetItem;
-        this.width = targetItem.getInventoryTexture().getWidth();
-        this.height = targetItem.getInventoryTexture().getHeight();
+        //TODO
+        //this.width = targetItem.getInventoryTexture().getWidth();
+        //this.height = targetItem.getInventoryTexture().getHeight();
+        this.width =120;
+        this.height = 120;
 
         allCraftingItems.add(this);
     }
@@ -106,7 +109,7 @@ public class CraftingItem implements BackPackable, Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         return targetItem.getInventoryTexture();
     }
 

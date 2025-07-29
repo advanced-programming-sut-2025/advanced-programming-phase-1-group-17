@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -79,7 +80,7 @@ public class ArtisanCraftMenu implements Screen {
             if (count == 0) continue;
 
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
-            style.imageUp = new TextureRegionDrawable(new TextureRegion(item.getInventoryTexture()));
+            style.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexture())));
             ImageButton itemButton = new ImageButton(style);
 
             Label countLabel = new Label("x" + count, skin);
@@ -109,7 +110,7 @@ public class ArtisanCraftMenu implements Screen {
             BackPackableType item = entry.getKey();
             int count = entry.getValue().size();
 
-            Image image = new Image(new TextureRegionDrawable(new TextureRegion(item.getInventoryTexture())));
+            Image image = new Image(new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexture()))));
             Label nameLabel = new Label(item.getName(), skin);
             Label countLabel = new Label("x" + count, skin);
 

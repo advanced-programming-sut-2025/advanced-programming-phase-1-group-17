@@ -32,7 +32,7 @@ public class Player {
     private Buff buff;
     private float speed = 1000f;
     private transient Texture texture;
-    private transient Texture backgroundTexture;
+    private transient String backgroundTexture;
     private int coin = 550;
     private transient Animation<TextureRegion> walkUpAnimation;
     private transient Animation<TextureRegion> walkDownAnimation;
@@ -144,38 +144,38 @@ public class Player {
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
         this.buff = new Buff(BuffType.None, 0);
 
-
-        walkDownAnimation = new Animation<>(0.1f, new TextureRegion[]{
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex12.png" : "Emily/Emily12.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex13.png" : "Emily/Emily13.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex14.png" : "Emily/Emily14.png"))
-        });
-        walkDownAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        walkLeftAnimation = new Animation<>(0.1f, new TextureRegion[]{
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex41.png" : "Emily/Emily41.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex42.png" : "Emily/Emily42.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex43.png" : "Emily/Emily43.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex44.png" : "Emily/Emily44.png"))
-        });
-        walkLeftAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        walkRightAnimation = new Animation<>(0.1f, new TextureRegion[]{
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex21.png" : "Emily/Emily21.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex22.png" : "Emily/Emily22.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex23.png" : "Emily/Emily23.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex24.png" : "Emily/Emily24.png"))
-        });
-        walkRightAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        walkUpAnimation = new Animation<>(0.1f, new TextureRegion[]{
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex31.png" : "Emily/Emily31.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex32.png" : "Emily/Emily32.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex33.png" : "Emily/Emily33.png")),
-            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex34.png" : "Emily/Emily34.png"))
-        });
-        walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
-        currentFrame = walkDownAnimation.getKeyFrame(0);
-        this.texture = new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png");
+        //TODO Handle textures
+//        walkDownAnimation = new Animation<>(0.1f, new TextureRegion[]{
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex12.png" : "Emily/Emily12.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex13.png" : "Emily/Emily13.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex14.png" : "Emily/Emily14.png"))
+//        });
+//        walkDownAnimation.setPlayMode(Animation.PlayMode.LOOP);
+//        walkLeftAnimation = new Animation<>(0.1f, new TextureRegion[]{
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex41.png" : "Emily/Emily41.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex42.png" : "Emily/Emily42.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex43.png" : "Emily/Emily43.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex44.png" : "Emily/Emily44.png"))
+//        });
+//        walkLeftAnimation.setPlayMode(Animation.PlayMode.LOOP);
+//        walkRightAnimation = new Animation<>(0.1f, new TextureRegion[]{
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex21.png" : "Emily/Emily21.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex22.png" : "Emily/Emily22.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex23.png" : "Emily/Emily23.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex24.png" : "Emily/Emily24.png"))
+//        });
+//        walkRightAnimation.setPlayMode(Animation.PlayMode.LOOP);
+//        walkUpAnimation = new Animation<>(0.1f, new TextureRegion[]{
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex31.png" : "Emily/Emily31.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex32.png" : "Emily/Emily32.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex33.png" : "Emily/Emily33.png")),
+//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex34.png" : "Emily/Emily34.png"))
+//        });
+//        walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
+//        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
+//        currentFrame = walkDownAnimation.getKeyFrame(0);
+//        this.texture = new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png");
 
     }
 
@@ -212,7 +212,7 @@ public class Player {
     }
 
     public void setY(int y) {
-        this.y = y * backgroundTexture.getHeight();
+        this.y = y * (int)GameAssetManager.getGameAssetManager().getTileHeight();
     }
 
     public int getX() {
@@ -220,7 +220,7 @@ public class Player {
     }
 
     public void setX(int x) {
-        this.x = x * backgroundTexture.getWidth();
+        this.x = x *(int)GameAssetManager.getGameAssetManager().getTileWidth();
     }
 
     public PlayerMap getPlayerMap() {
@@ -542,14 +542,14 @@ public class Player {
         //TODO  Create movement restrictions
         boolean isOky = true;
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        int playerWidth = backgroundTexture.getWidth();
-        int playerHeight = backgroundTexture.getHeight();
+        int playerWidth = (int)GameAssetManager.getGameAssetManager().getTileWidth();;
+        int playerHeight = (int)GameAssetManager.getGameAssetManager().getTileHeight();;
         try {
             float centerX = newX + playerWidth / 2f;
             float centerY = newY + playerHeight / 2f;
 
-            int tileX = (int) (centerX / backgroundTexture.getWidth());
-            int tileY = (int) (centerY / backgroundTexture.getHeight());
+            int tileX = (int) (centerX / (int)GameAssetManager.getGameAssetManager().getTileWidth());
+            int tileY = (int) (centerY / (int)GameAssetManager.getGameAssetManager().getTileHeight());
 
             if (tileX == 0) tileX = 1;
             if (tileY == 0) tileY = 1;
@@ -565,8 +565,8 @@ public class Player {
                 }
                 if (isOky) {
                     moved = true;
-                    int mapWidth = backgroundTexture.getWidth() * 300;
-                    int mapHeight = backgroundTexture.getHeight() * 300;
+                    int mapWidth = (int)GameAssetManager.getGameAssetManager().getTileWidth() * 300;
+                    int mapHeight = (int)GameAssetManager.getGameAssetManager().getTileHeight() * 300;
 
 //                    x = tileX;
 //                    y = tileY;
@@ -591,8 +591,8 @@ public class Player {
                 new Texture(user.getGender().equals(Gender.Male) ? "Alex.png" : "Emily.png"),
                 getX() == 0 ? 1 : getX(),
                 getY() == 0 ? 1 : getY(),
-                backgroundTexture.getWidth() / 1.5f,
-                backgroundTexture.getHeight() / 1.5f
+                (int)GameAssetManager.getGameAssetManager().getTileWidth() / 1.5f,
+                (int)GameAssetManager.getGameAssetManager().getTileHeight() / 1.5f
             );
             return;
         }
@@ -652,17 +652,17 @@ public class Player {
     }
 
     public int getTileX() {
-        int playerWidth = backgroundTexture.getWidth();
+        int playerWidth = (int)GameAssetManager.getGameAssetManager().getTileWidth();;
         float centerX = x + playerWidth / 2f;
-        return (int) (centerX / backgroundTexture.getWidth());
+        return (int) (centerX / (int)GameAssetManager.getGameAssetManager().getTileHeight());
 
 
     }
 
     public int getTileY() {
-        int playerHeight = backgroundTexture.getHeight();
+        int playerHeight = (int)GameAssetManager.getGameAssetManager().getTileHeight();;
         float centerY = y + playerHeight / 2f;
-        return (int) (centerY / backgroundTexture.getHeight());
+        return (int) (centerY / (int)GameAssetManager.getGameAssetManager().getTileHeight());
 
     }
 
@@ -678,7 +678,7 @@ public class Player {
         this.coin = coin;
     }
 
-    public Texture getBackgroundTexture() {
+    public String getBackgroundTexture() {
         return backgroundTexture;
     }
 

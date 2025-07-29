@@ -2,6 +2,7 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
@@ -67,7 +68,7 @@ public class NPCMenuController {
                 if (targetNpc == null) return;
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(), null, gameView,targetNpc));
+                      GameAssetManagerClient.getGameAssetManager().getSkin(), null, gameView,targetNpc));
             }
         });
         view.getButton10().addListener(new ClickListener() {

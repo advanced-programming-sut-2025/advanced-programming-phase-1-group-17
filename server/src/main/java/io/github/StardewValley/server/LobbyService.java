@@ -71,11 +71,11 @@ public class LobbyService {
         return true;
     }
 
-    public boolean startGame(Long lobbyId, String adminUsername) {
+    public GameDTO startGame(Long lobbyId, String adminUsername) {
         Optional<Lobby> optionalLobby = lobbyRepository.findById(lobbyId);
-        if (optionalLobby.isEmpty()) return false;
+        if (optionalLobby.isEmpty()) return null;
         Lobby lobby = optionalLobby.get();
-        if (!lobby.getAdminUsername().equals(adminUsername)) return false;
+        if (!lobby.getAdminUsername().equals(adminUsername)) return null;
         lobby.setStatus(LobbyStatus.STARTED);
         lobbyRepository.save(lobby);
         List<String> playerUsernames = lobby.getPlayerUsernames();
@@ -85,12 +85,12 @@ public class LobbyService {
             i++;
         }
         User user1 = null,user2 = null,user3 = null,user4 = null;
-        for (int j =0 ; j < 4 ; j ++) {
+        user1 = userRepository.findByUsername(playerUsernames.get(0)).get();
+        user2 = userRepository.findByUsername(playerUsernames.get(1)).get();
+        for (int j =2 ; j < 4 ; j ++) {
             if (userRepository.existsByUsername(playerUsernames.get(j))) {
-                if (j == 0) user1 = userRepository.findByUsername(playerUsernames.get(0)).get();
-                else if (j == 1) user2 = userRepository.findByUsername(playerUsernames.get(1)).get();
-                else if (j == 2) user3 = userRepository.findByUsername(playerUsernames.get(2)).get();
-                else if (j == 3) user4 = userRepository.findByUsername(playerUsernames.get(3)).get();
+                if (j == 2 ) user3 = userRepository.findByUsername(playerUsernames.get(j)).get();
+                else user4 = userRepository.findByUsername(playerUsernames.get(j)).get();
             }
         }
 
@@ -100,6 +100,7 @@ public class LobbyService {
             }
             user3 = new User();
             user3.setUsername("guest1");
+            userRepository.save(user3);
         }
         if (user4 == null) {
             if (userRepository.existsByUsername("guest2")) {
@@ -107,19 +108,17 @@ public class LobbyService {
             }
             user4 = new User();
             user4.setUsername("guest2");
+            userRepository.save(user4);
         }
-        userRepository.save(user3);
-        userRepository.save(user4);
         Tile.getTiles().clear();
         Tile.getTreeTile().clear();
 
         NPC.setFatherPlayer(null);
         NPC.setFatherUser(null);
 
-        //TODO
         Game game = new Game(userDTO(user1),userDTO(user2), userDTO(user3), userDTO(user4));
-        App.setCurrentGame(game);
-        return true;
+
+        return toDto(game);
     }
 
     public LobbyDto toDto(Lobby lobby) {
@@ -161,5 +160,19 @@ public class LobbyService {
 
     public void deleteAllRepo() {
         lobbyRepository.deleteAll();
+    }
+    public static GameDTO toDto(Game game) {
+        //TODO
+        List<String> playerUsernames = game.getPlayers().stream()
+            .map(p -> p.getUser().getUsername())
+            .collect(Collectors.toList());
+
+        return new GameDTO(
+            game.getCreator().getUser().getUsername(),
+            playerUsernames,
+            game.getCurrentPlayingPlayerIndex(),
+            game.getCurrentPlayingPlayer().getUser().getUsername(),
+            game.getDate().toString()
+        );
     }
 }

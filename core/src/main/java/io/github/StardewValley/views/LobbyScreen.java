@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.App;
@@ -20,11 +21,11 @@ public class LobbyScreen implements Screen {
     private TextButton createLobbyBtn;
     private TextButton joinCodeBtn;
     private TextButton refreshButton;
-    private TextField lobbyNameField = new TextField("", GameAssetManager.getGameAssetManager().getSkin());
-    private TextField codeField = new TextField("", GameAssetManager.getGameAssetManager().getSkin());
-    private CheckBox privateBox = new CheckBox("Private", GameAssetManager.getGameAssetManager().getSkin());
-    private CheckBox visibleBox = new CheckBox("Visible", GameAssetManager.getGameAssetManager().getSkin());
-    private Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+    private TextField lobbyNameField = new TextField("",   GameAssetManagerClient.getGameAssetManager().getSkin());
+    private TextField codeField = new TextField("",   GameAssetManagerClient.getGameAssetManager().getSkin());
+    private CheckBox privateBox = new CheckBox("Private",   GameAssetManagerClient.getGameAssetManager().getSkin());
+    private CheckBox visibleBox = new CheckBox("Visible",   GameAssetManagerClient.getGameAssetManager().getSkin());
+    private Skin skin =   GameAssetManagerClient.getGameAssetManager().getSkin();
     private Stage stage;
     private final LobbyApiClient apiClient;
     private final Table lobbyTable;
@@ -153,7 +154,7 @@ public class LobbyScreen implements Screen {
     }
 
     private void setListeners() {
-        createLobbyBtn = new TextButton("➕ Create Lobby", GameAssetManager.getGameAssetManager().getSkin());
+        createLobbyBtn = new TextButton("➕ Create Lobby",   GameAssetManagerClient.getGameAssetManager().getSkin());
         createLobbyBtn.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 try {
@@ -165,21 +166,21 @@ public class LobbyScreen implements Screen {
                     System.out.println("Lobby created: " + newLobby.getInviteCode());
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new LobbyRoomScreen(newLobby, apiClient, App.getLoggedInUser().getUsername()));
-                    refreshLobbyList(GameAssetManager.getGameAssetManager().getSkin());
+                    refreshLobbyList(  GameAssetManagerClient.getGameAssetManager().getSkin());
                 } catch (Exception e) {
                     System.err.println("Error while creating lobby:");
                     e.printStackTrace();
                 }
             }
         });
-        joinCodeBtn = new TextButton("Join", GameAssetManager.getGameAssetManager().getSkin());
+        joinCodeBtn = new TextButton("Join",   GameAssetManagerClient.getGameAssetManager().getSkin());
         joinCodeBtn.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 if (!codeField.getText().isEmpty()) {
                     try {
                         LobbyDto joined = apiClient.joinLobbyByCode(codeField.getText());
                         System.out.println("Joined lobby: " + joined.getName());
-                        refreshLobbyList(GameAssetManager.getGameAssetManager().getSkin());
+                        refreshLobbyList(  GameAssetManagerClient.getGameAssetManager().getSkin());
                         Main.getMain().getScreen().dispose();
                         Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, App.getLoggedInUser().getUsername()));
                     } catch (Exception e) {

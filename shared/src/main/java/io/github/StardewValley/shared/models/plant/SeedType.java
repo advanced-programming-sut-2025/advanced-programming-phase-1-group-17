@@ -78,7 +78,7 @@ public enum SeedType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return CropAssetManager.getCropAssetManager().getSeedTexture(this);
     }
 }

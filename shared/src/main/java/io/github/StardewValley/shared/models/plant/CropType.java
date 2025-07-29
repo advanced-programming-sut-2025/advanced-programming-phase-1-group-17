@@ -301,7 +301,7 @@ public enum CropType implements BackPackableType {
 
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return CropAssetManager.getCropAssetManager().getInventoryTexture(this);
     }
 

@@ -54,7 +54,7 @@ public enum RecipeType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         //TODO
         return null;
     }

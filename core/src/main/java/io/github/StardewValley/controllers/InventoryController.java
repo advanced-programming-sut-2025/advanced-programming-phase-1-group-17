@@ -2,6 +2,7 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
@@ -80,13 +81,13 @@ public class InventoryController {
     public void handleSkillMenu() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(new SkillMenu(new SkillMenuController(),
-            GameAssetManager.getGameAssetManager().getSkin(), view.getPlayer(), Main.getGameView()));
+              GameAssetManagerClient.getGameAssetManager().getSkin(), view.getPlayer(), Main.getGameView()));
     }
 
     public void handleSocialMenu() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(new TalkView(new TalkController(),
-            GameAssetManager.getGameAssetManager().getSkin(), Main.getGameView()));
+              GameAssetManagerClient.getGameAssetManager().getSkin(), Main.getGameView()));
     }
 
     public void handleMap() {
@@ -114,7 +115,7 @@ public class InventoryController {
         this.view.getItemPickLabel().setText(result.toString());
         if (result.isSuccessful()) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+            Main.getMain().setScreen(new MainMenu(new MainMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
     }
 }

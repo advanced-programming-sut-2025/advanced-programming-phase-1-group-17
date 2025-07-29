@@ -28,7 +28,7 @@ public class Store implements Placeable {
 
 
     @Override
-    public Texture getTexture() {
+    public String  getTexture() {
         //handled else where
         return null;
     }
