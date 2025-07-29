@@ -45,7 +45,6 @@ public class Player {
     private Direction lastDirection = Direction.DOWN;
 
 
-
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
     }
@@ -177,6 +176,7 @@ public class Player {
         this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
         currentFrame = walkDownAnimation.getKeyFrame(0);
         this.texture = new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png");
+
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -187,7 +187,7 @@ public class Player {
         }
     }
 
-//    public void passOut() {
+    //    public void passOut() {
 //        isPassedOut = true;
 //        hasPassedOutToday = true;
 //        Main.getBatch().draw(new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex.png" : "Emily.png")), getX() == 0 ? 1 : getX(), getY() == 0 ? 1 : getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);

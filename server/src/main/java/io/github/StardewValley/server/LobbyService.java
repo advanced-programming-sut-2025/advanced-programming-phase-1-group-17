@@ -6,6 +6,7 @@ import io.github.StardewValley.server.model.User;
 import io.github.StardewValley.server.repository.LobbyRepository;
 import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.Main;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.map.Tile;
@@ -78,13 +79,21 @@ public class LobbyService {
         lobby.setStatus(LobbyStatus.STARTED);
         lobbyRepository.save(lobby);
         List<String> playerUsernames = lobby.getPlayerUsernames();
-        while (playerUsernames.size() == 4) {
-            playerUsernames.add("-");
+        int i = 1 ;
+        while (playerUsernames.size() < 4) {
+            playerUsernames.add("guest" + i);
+            i++;
         }
-        User user1 = userRepository.findByUsername(playerUsernames.get(0)).get();
-        User user2 =  userRepository.findByUsername(playerUsernames.get(1)).get();
-        User user3 =  userRepository.findByUsername(playerUsernames.get(2)).get();
-        User user4 =  userRepository.findByUsername(playerUsernames.get(3)).get();
+        User user1 = null,user2 = null,user3 = null,user4 = null;
+        for (int j =0 ; j < 4 ; j ++) {
+            if (userRepository.existsByUsername(playerUsernames.get(j))) {
+                if (j == 0) user1 = userRepository.findByUsername(playerUsernames.get(0)).get();
+                else if (j == 1) user2 = userRepository.findByUsername(playerUsernames.get(1)).get();
+                else if (j == 2) user3 = userRepository.findByUsername(playerUsernames.get(2)).get();
+                else if (j == 3) user4 = userRepository.findByUsername(playerUsernames.get(3)).get();
+            }
+        }
+
         if (user3 == null) {
             if (userRepository.existsByUsername("guest1")) {
                 userRepository.delete(userRepository.findByUsername("guest1").get());
@@ -106,11 +115,10 @@ public class LobbyService {
 
         NPC.setFatherPlayer(null);
         NPC.setFatherUser(null);
-        //TODO
-//        Game game = new Game(user1,user2, user3, user4);
-//        App.setCurrentGame(game);
-//        App.getGames().add(game);
 
+        //TODO
+        Game game = new Game(userDTO(user1),userDTO(user2), userDTO(user3), userDTO(user4));
+        App.setCurrentGame(game);
         return true;
     }
 
@@ -124,6 +132,15 @@ public class LobbyService {
             lobby.getStatus(),
             lobby.getAdminUsername(),
             lobby.getPlayerUsernames()
+        );
+    }
+    public UserDTO userDTO(User user) {
+        return  new UserDTO(
+            user.getUsername(),
+            user.getNickName(),
+            user.getGender(),
+            user.getSecurityQuestion(),
+            user.getSecurityAnswer()
         );
     }
 

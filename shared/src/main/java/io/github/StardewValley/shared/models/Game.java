@@ -25,15 +25,15 @@ public class Game {
     private ArrayList<NPC> NPCHuts = new ArrayList<>();
 
 
-    public Game(UserDTO user1, UserDTO user2, UserDTO user3) {
-        App.getLoggedInUser().setActiveGame(this);
+    public Game(UserDTO user1, UserDTO user2, UserDTO user3,UserDTO user4) {
         user1.setActiveGame(this);
         user2.setActiveGame(this);
         user3.setActiveGame(this);
-        players.add(creator = new Player(App.getLoggedInUser(), false));
-        players.add(new Player(user1, user1.getUsername().startsWith("guest")));
-        players.add(new Player(user2, user2.getUsername().startsWith("guest")));
-        players.add(new Player(user3, user3.getUsername().startsWith("guest")));
+        user4.setActiveGame(this);
+        players.add(creator = new Player(user1, false));
+        players.add(new Player(user2, user1.getUsername().startsWith("guest")));
+        players.add(new Player(user3, user2.getUsername().startsWith("guest")));
+        players.add(new Player(user4, user3.getUsername().startsWith("guest")));
         addNPCs(new Abigail(true));
         addNPCs(new Harvey(true));
         addNPCs(new Lia(true));
