@@ -453,7 +453,7 @@ public class ToolController {
 
     private void drawTool() {
         if (!isToolAnimating()) {
-            Texture texture = player.getCurrentTool().getType().getInventoryTexture();
+            Texture texture =new Texture(player.getCurrentTool().getType().getInventoryTexture());
             Main.getBatch().draw(texture, player.getX(), player.getY());
         } else {
             if (toolSprite == null) return;

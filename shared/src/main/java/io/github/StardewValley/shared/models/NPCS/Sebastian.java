@@ -15,8 +15,8 @@ public class Sebastian extends NPC implements Placeable {
     private String job = "cook";
     private final HashMap<String, String> dialogue = new HashMap<>();
     private final HashMap<String, String> dialogue2 = new HashMap<>();
-    private Texture texture1 = new Texture("Sebastian.png");
-    private Texture texture2 =  new Texture("hut2.png");
+    private String  texture1 ="Sebastian.png";
+    private String texture2 =  "hut2.png";
     //TODO
 
     public Sebastian(boolean isSebastian){
@@ -135,7 +135,7 @@ public class Sebastian extends NPC implements Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         if (isNPC)
             return texture1;
         else

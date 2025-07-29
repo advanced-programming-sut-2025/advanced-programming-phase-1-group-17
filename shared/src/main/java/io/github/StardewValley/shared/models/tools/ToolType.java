@@ -47,7 +47,7 @@ public enum ToolType implements BackPackableType  {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return ToolAssetManager.getToolAssetManager().getToolTexture(this);
     }
 }

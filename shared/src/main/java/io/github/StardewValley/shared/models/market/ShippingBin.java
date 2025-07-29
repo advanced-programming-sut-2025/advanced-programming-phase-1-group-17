@@ -62,7 +62,7 @@ public class ShippingBin implements Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         //TODO
         return null;
     }

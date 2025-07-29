@@ -78,7 +78,7 @@ public enum ForagingCropType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return CropAssetManager.getCropAssetManager().getInventoryTexture(cropType);
     }
 }

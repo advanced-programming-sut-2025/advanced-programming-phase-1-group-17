@@ -7,15 +7,15 @@ import java.util.HashMap;
 public class CropAssetManager {
     private static CropAssetManager cropAssetManager = null;
 
-    private final HashMap<CropType, ArrayList<Texture>> stageTextures = new HashMap<>();
-    private final HashMap<CropType, Texture> inventoryTextures = new HashMap<>();
-    private final HashMap<SeedType, Texture> seedTextures = new HashMap<>();
+    private final HashMap<CropType, ArrayList<String>> stageTextures = new HashMap<>();
+    private final HashMap<CropType, String> inventoryTextures = new HashMap<>();
+    private final HashMap<SeedType, String> seedTextures = new HashMap<>();
 
-    private final HashMap<FertilizerType, Texture> fertilizerTextures = new HashMap<>() {{
-        put(FertilizerType.SpeedGro, new Texture("Fertilizer/Speed-Gro.png"));
-        put(FertilizerType.BasicRetainingSoil, new Texture("Fertilizer/Basic_Retaining_Soil.png"));
-        put(FertilizerType.DeluxeRetainingSoil, new Texture("Fertilizer/Deluxe_Retaining_Soil.png"));
-        put(FertilizerType.QualityRetainingSoil, new Texture("Fertilizer/Quality_Retaining_Soil.png"));
+    private final HashMap<FertilizerType, String> fertilizerTextures = new HashMap<>() {{
+        put(FertilizerType.SpeedGro, "Fertilizer/Speed-Gro.png");
+        put(FertilizerType.BasicRetainingSoil,"Fertilizer/Basic_Retaining_Soil.png");
+        put(FertilizerType.DeluxeRetainingSoil, "Fertilizer/Deluxe_Retaining_Soil.png");
+        put(FertilizerType.QualityRetainingSoil, "Fertilizer/Quality_Retaining_Soil.png");
     }};
 
     private CropAssetManager() {
@@ -26,7 +26,7 @@ public class CropAssetManager {
 
     private void loadSeedTextures() {
         for (SeedType type : SeedType.values()) {
-            seedTextures.put(type, new Texture(type.getTexturePath()));
+            seedTextures.put(type, (type.getTexturePath()));
         }
     }
 
@@ -35,7 +35,7 @@ public class CropAssetManager {
             stageTextures.put(type, new ArrayList<>());
             for (String path : type.getStageTexturePaths()) {
                 if (path != null && !path.isEmpty()) {
-                    stageTextures.get(type).add(new Texture(path));
+                    stageTextures.get(type).add(path);
                 }
             }
         }
@@ -45,7 +45,7 @@ public class CropAssetManager {
         for (CropType type : CropType.values()) {
             String inventoryPath = type.getInventoryTexturePath();
             if (inventoryPath != null && !inventoryPath.isEmpty()) {
-                inventoryTextures.put(type, new Texture(inventoryPath));
+                inventoryTextures.put(type, inventoryPath);
             }
         }
     }
@@ -56,19 +56,19 @@ public class CropAssetManager {
         return cropAssetManager;
     }
 
-    public Texture getStageTexture(int currentStageIndex, CropType type) {
+    public String  getStageTexture(int currentStageIndex, CropType type) {
         return stageTextures.get(type).get(currentStageIndex);
     }
 
-    public Texture getInventoryTexture(CropType cropType) {
+    public String getInventoryTexture(CropType cropType) {
         return inventoryTextures.get(cropType);
     }
 
-    public Texture getSeedTexture(SeedType seedType) {
+    public String getSeedTexture(SeedType seedType) {
         return seedTextures.get(seedType);
     }
 
-    public Texture getFertilizerTexture(FertilizerType fertilizerType) {
+    public String getFertilizerTexture(FertilizerType fertilizerType) {
         return fertilizerTextures.get(fertilizerType);
     }
 }

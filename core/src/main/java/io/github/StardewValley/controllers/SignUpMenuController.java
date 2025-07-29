@@ -1,6 +1,7 @@
 package io.github.StardewValley.controllers;
 
 import com.google.gson.Gson;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
@@ -23,7 +24,7 @@ import java.util.List;
 public class SignUpMenuController {
     public void enterLoginMenu() {
         Main.getMain().getScreen().dispose();
-        Main.getMain().setScreen(new LoginMenu(new LoginMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+        Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
     }
 
     public Result register(String username,

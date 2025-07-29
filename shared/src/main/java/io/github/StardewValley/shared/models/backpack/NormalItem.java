@@ -26,7 +26,7 @@ public class NormalItem implements BackPackable, Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         return null;
     }
 }

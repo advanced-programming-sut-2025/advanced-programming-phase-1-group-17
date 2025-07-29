@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.MainMenuController;
@@ -38,9 +39,9 @@ public class WelcomeMenu implements Screen {
 
         if (timePassed > 3f) {
             if (!isLoggedInUser) {
-                Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+                Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
             }else {
-                Main.getMain().setScreen(new MainMenu(new MainMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+                Main.getMain().setScreen(new MainMenu(new MainMenuController(),  GameAssetManagerClient.getGameAssetManager().getSkin()));
             }
 
         }

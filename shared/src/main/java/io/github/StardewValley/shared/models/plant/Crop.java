@@ -294,7 +294,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.quality = quality;
     }
 
-    public Texture getTexture() {
+    public String getTexture() {
         if (isForaging)
             return type.getInventoryTexture();
         return CropAssetManager.getCropAssetManager().getStageTexture(this.currentStageIndex, type);

@@ -4,6 +4,7 @@ import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.LobbyService;
 import io.github.StardewValley.server.model.Lobby;
 import io.github.StardewValley.server.repository.LobbyRepository;
+import io.github.StardewValley.shared.models.GameDTO;
 import io.github.StardewValley.shared.models.LobbyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -60,13 +61,14 @@ public class LobbyController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<Void> startGame(
+    public ResponseEntity<GameDTO> startGame(
         @RequestHeader("Authorization") String authHeader,
         @RequestParam Long lobbyId
     ) {
         String username = getUsernameFromToken(authHeader);
-        if (lobbyService.startGame(lobbyId, username)) {
-            return ResponseEntity.ok().build();
+        GameDTO game = lobbyService.startGame(lobbyId, username);
+        if (game != null) {
+            return ResponseEntity.ok(game);
         } else {
             return ResponseEntity.status(403).build();
         }

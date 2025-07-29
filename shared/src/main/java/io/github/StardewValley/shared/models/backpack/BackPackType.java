@@ -31,7 +31,7 @@ public enum BackPackType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return GameAssetManager.getGameAssetManager().getBackPackTexture();
     }
 }

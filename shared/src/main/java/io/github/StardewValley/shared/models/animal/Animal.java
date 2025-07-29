@@ -256,7 +256,7 @@ public class Animal implements Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String  getTexture() {
         //TODO
         return null;
     }

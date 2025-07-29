@@ -20,7 +20,7 @@ public enum FlowerType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
-        return new Texture(this.texturePath);
+    public String getInventoryTexture() {
+        return this.texturePath;
     }
 }

@@ -140,4 +140,9 @@ public class AuthController {
 
         return result.toString();
     }
+    @DeleteMapping("/all")
+    public ResponseEntity<Void> deleteAllLobbies() {
+        userRepository.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
 }

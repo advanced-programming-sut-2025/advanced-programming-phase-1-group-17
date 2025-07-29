@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.SecurityQuestionMenuController;
@@ -116,7 +117,7 @@ public class SignUpMenu implements Screen {
                     //securityQuestionMenuController.setUser(App.getUserWithUsername(usernameField.getText()));
                     Main.getMain().setScreen(new SecurityQuestionMenu(
                         securityQuestionMenuController,
-                        GameAssetManager.getGameAssetManager().getSkin()));
+                          GameAssetManagerClient.getGameAssetManager().getSkin()));
                 }
                 errorLabel.setText(result.getMessage());
             }
@@ -159,7 +160,7 @@ public class SignUpMenu implements Screen {
         Table genderRow = new Table();
         genderRow.defaults().pad(4).fillX().expandX();
         for (Gender gender : Gender.values()) {
-            TextButton genderButton = new TextButton(gender.name(), GameAssetManager.getGameAssetManager().getSkin());
+            TextButton genderButton = new TextButton(gender.name(),   GameAssetManagerClient.getGameAssetManager().getSkin());
             genderButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {

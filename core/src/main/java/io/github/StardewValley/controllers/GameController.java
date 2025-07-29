@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.controller.LightningController;
@@ -159,11 +160,11 @@ public class GameController {
                 break;
             case Input.Keys.E:
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new CookingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CookingController()));
+                Main.getMain().setScreen(new CookingShow(  GameAssetManagerClient.getGameAssetManager().getSkin(), view,new CookingController()));
                 break;
             case Input.Keys.R:
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
+                Main.getMain().setScreen(new CraftingShow(  GameAssetManagerClient.getGameAssetManager().getSkin(), view,new CraftingController()));
                 break;
         }
     }
@@ -184,7 +185,7 @@ public class GameController {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
-            Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManager.getGameAssetManager().getSkin(), view));
+            Main.getMain().setScreen(new TalkView(new TalkController(),   GameAssetManagerClient.getGameAssetManager().getSkin(), view));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             try {
                 App.getCurrentGame().getDate().goToNextDay();
@@ -220,11 +221,11 @@ public class GameController {
 
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManager.getGameAssetManager().getSkin()));
+            Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new InventoryView(new InventoryController(),
-                GameAssetManager.getGameAssetManager().getSkin(),
+                  GameAssetManagerClient.getGameAssetManager().getSkin(),
                 game.getCurrentPlayingPlayer()));
         }
         //TODO handle input key

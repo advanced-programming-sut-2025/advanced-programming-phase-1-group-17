@@ -9,8 +9,8 @@ import java.util.HashMap;
 
 public class ToolAssetManager {
     private static ToolAssetManager toolAssetManager = null;
-    private final HashMap<ToolType, HashMap<ToolMaterial, Texture>> toolTextures = new HashMap<>();
-    private final HashMap<FishingPoleType, Texture> fishingPoleTextures = new HashMap<>();
+    private final HashMap<ToolType, HashMap<ToolMaterial, String>> toolTextures = new HashMap<>();
+    private final HashMap<FishingPoleType, String> fishingPoleTextures = new HashMap<>();
 
     private final HashMap<ToolType, HashMap<ToolMaterial, Sprite>> toolSprites = new HashMap<>();
 
@@ -36,7 +36,7 @@ public class ToolAssetManager {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "" : "%s_".formatted(material.name());
             Texture texture = new Texture("Hoe/%sHoe.png".formatted(materialName));
-            toolTextures.get(ToolType.Hoe).put(material, texture);
+            toolTextures.get(ToolType.Hoe).put(material, "Hoe/%sHoe.png".formatted(materialName));
             toolSprites.get(ToolType.Hoe).put(material, new Sprite(texture));
         }
     }
@@ -45,50 +45,49 @@ public class ToolAssetManager {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "" : "%s_".formatted(material.name());
             Texture texture = new Texture("Watering_Can/%sWatering_Can.png".formatted(materialName));
-            toolTextures.get(ToolType.WateringCan).put(material, texture);
+            toolTextures.get(ToolType.WateringCan).put(material, "Watering_Can/%sWatering_Can.png".formatted(materialName));
             toolSprites.get(ToolType.WateringCan).put(material, new Sprite(texture));
         }
     }
 
     private void loadFishingPoleTextures() {
-        fishingPoleTextures.put(FishingPoleType.IridiumFishingPole, new Texture("Fishing_Pole/Iridium_Rod.png"));
-        fishingPoleTextures.put(FishingPoleType.BambooFishingPole, new Texture("Fishing_Pole/Bamboo_Pole.png"));
-        fishingPoleTextures.put(FishingPoleType.TrainingFishingPole, new Texture("Fishing_Pole/Training_Rod.png"));
-        fishingPoleTextures.put(FishingPoleType.FiberglassFishingPole, new Texture("Fishing_Pole/Fiberglass_Rod.png"));;
+        fishingPoleTextures.put(FishingPoleType.IridiumFishingPole, "Fishing_Pole/Iridium_Rod.png");
+        fishingPoleTextures.put(FishingPoleType.BambooFishingPole,   "Fishing_Pole/Bamboo_Pole.png");
+        fishingPoleTextures.put(FishingPoleType.TrainingFishingPole,   "Fishing_Pole/Training_Rod.png");
+        fishingPoleTextures.put(FishingPoleType.FiberglassFishingPole,   "Fishing_Pole/Fiberglass_Rod.png");;
     }
 
     private void loadMilkPailTextures() {
-        Texture texture = new Texture("Tools/Milk_Pail.png");
-        toolTextures.get(ToolType.MilkPail).put(null, texture);
-        toolSprites.get(ToolType.MilkPail).put(null, new Sprite(texture));
+        toolTextures.get(ToolType.MilkPail).put(null, "Tools/Milk_Pail.png");
+        toolSprites.get(ToolType.MilkPail).put(null, new Sprite(new Texture("Tools/Milk_Pail.png")));
     }
 
     private void loadShearTextures() {
-        Texture texture = new Texture("Tools/Shears.png");
-        toolTextures.get(ToolType.Shear).put(null, texture);
+        Texture texture =   new Texture ("Tools/Shears.png");
+        toolTextures.get(ToolType.Shear).put(null, "Tools/Shears.png");
         toolSprites.get(ToolType.Shear).put(null, new Sprite(texture));
     }
 
     private void loadTrashCanTextures() {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "_Steel" : "_%s".formatted(material.name());
-            Texture texture = new Texture("Tools/Trash_Can%s.png".formatted(materialName));
-            toolTextures.get(ToolType.Axe).put(material, texture);
+            Texture texture =   new Texture ("Tools/Trash_Can%s.png".formatted(materialName));
+            toolTextures.get(ToolType.Axe).put(material, "Tools/Trash_Can%s.png".formatted(materialName));
             toolSprites.get(ToolType.Axe).put(material, new Sprite(texture));
         }
     }
 
     private void loadScytheTextures() {
-        Texture texture = new Texture("Tools/Scythe.png");
-        toolTextures.get(ToolType.Scythe).put(null, texture);
+        Texture texture =   new Texture ("Tools/Scythe.png");
+        toolTextures.get(ToolType.Scythe).put(null, "Tools/Scythe.png");
         toolSprites.get(ToolType.Scythe).put(null, new Sprite(texture));
     }
 
     private void loadAxeTextures() {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "" : "%s_".formatted(material.name());
-            Texture texture = new Texture("Tools/Axe/%sAxe.png".formatted(materialName));
-            toolTextures.get(ToolType.Axe).put(material, texture);
+            Texture texture =   new Texture ("Tools/Axe/%sAxe.png".formatted(materialName));
+            toolTextures.get(ToolType.Axe).put(material, "Tools/Axe/%sAxe.png".formatted(materialName));
             toolSprites.get(ToolType.Axe).put(material, new Sprite(texture));
         }
     }
@@ -96,8 +95,8 @@ public class ToolAssetManager {
     private void loadPickaxeTextures() {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "" : "%s_".formatted(material.name());
-            Texture texture = new Texture("Tools/Pickaxe/%sPickaxe.png".formatted(materialName));
-            toolTextures.get(ToolType.Pickaxe).put(material, texture);
+            Texture texture =   new Texture ("Tools/Pickaxe/%sPickaxe.png".formatted(materialName));
+            toolTextures.get(ToolType.Pickaxe).put(material, "Tools/Pickaxe/%sPickaxe.png".formatted(materialName));
             toolSprites.get(ToolType.Pickaxe).put(material, new Sprite(texture));
         }
     }
@@ -108,7 +107,7 @@ public class ToolAssetManager {
         return toolAssetManager;
     }
 
-    public Texture getToolTexture(ToolType toolType) {
+    public String getToolTexture(ToolType toolType) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         if (toolType.equals(ToolType.FishingPole)) {
             FishingPoleType material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).getFirst()).getFishingPoleMaterial();

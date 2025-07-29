@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
@@ -89,7 +90,7 @@ public class ArtisanCraftMenuController {
                 (product, new ArrayList<>(view.getSelectedItems().keySet())));
             artisan.setArtisanProductInProgress(artisanProduct);
 
-            Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+            Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
 
             ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
             style.background = skin.newDrawable("white", Color.DARK_GRAY);  // Replace "white" with a texture name in your atlas
