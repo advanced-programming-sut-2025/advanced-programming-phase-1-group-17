@@ -60,7 +60,10 @@ public class LobbyController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<Void> startGame(@RequestHeader("Authorization") String authHeader, @RequestParam Long lobbyId) {
+    public ResponseEntity<Void> startGame(
+        @RequestHeader("Authorization") String authHeader,
+        @RequestParam Long lobbyId
+    ) {
         String username = getUsernameFromToken(authHeader);
         if (lobbyService.startGame(lobbyId, username)) {
             return ResponseEntity.ok().build();

@@ -28,9 +28,11 @@ public class LobbyScreen implements Screen {
     private Stage stage;
     private final LobbyApiClient apiClient;
     private final Table lobbyTable;
+    private final Table ScrollPane2;
 
     public LobbyScreen(String jwtToken) {
         this.apiClient = new LobbyApiClient(jwtToken);
+        this.ScrollPane2 = new Table(skin);
         this.lobbyTable = new Table(skin);
         setListeners();
     }
@@ -40,10 +42,11 @@ public class LobbyScreen implements Screen {
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         lobbyTable.setFillParent(true);
-        lobbyTable.left();
+        ScrollPane2.setFillParent(true);
+        ScrollPane2.left();
         Table root = new Table(skin);
         root.setFillParent(true);
-        root.right();
+        root.center();
         root.add(new Label("Lobby System", skin, "title")).colspan(2).center();
         root.row();
         root.add(refreshButton).colspan(2).center().padBottom(100);
@@ -66,15 +69,14 @@ public class LobbyScreen implements Screen {
         codeField.setMessageText("code");
         root.add(codeField).width(200).colspan(2).center();
         root.row();
-        root.add(joinCodeBtn).colspan(2).center().padBottom(50);
+        root.add(joinCodeBtn).colspan(2).center();
         root.row();
         ScrollPane scrollPane = new ScrollPane(lobbyTable, skin);
         scrollPane.setFadeScrollBars(false);
         lobbyTable.add(new Label("Available Lobbies", skin)).colspan(2);
-        root.row();
-        root.add(scrollPane).colspan(2).expand().fill().height(300);
+        ScrollPane2.add(scrollPane);
         stage.addActor(root);
-        stage.addActor(lobbyTable);
+        stage.addActor(ScrollPane2);
         refreshLobbyList(skin);
     }
 
