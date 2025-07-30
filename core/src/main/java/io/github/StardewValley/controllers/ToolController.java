@@ -74,10 +74,9 @@ public class ToolController {
     }
 
 
-    public void toolUse(int dx, int dy) {
+    public Result toolUse(int dx, int dy) {
         leverage = App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
         player = App.getCurrentGame().getCurrentPlayingPlayer();
-        //TODO: direction
         int x = player.getTileX() + dx;
         int y = player.getTileY() + dy;
 
@@ -85,32 +84,33 @@ public class ToolController {
         tile = Tile.getTile(x, y);
 
         if (tile == null) {
-            //TODO: maybe graphical error
-            return;
+            return new Result(false, "Invalid Tile");
         }
+        Result result = null;
 
         if (tool.getToolType().equals(ToolType.Hoe)) {
-            useHoe();
+            result = useHoe();
         } else if (tool.getToolType().equals(ToolType.Pickaxe)) {
-            usePickAxe();
+            result = usePickAxe();
         } else if (tool.getToolType().equals(ToolType.Axe)) {
-            useAxe();
+            result = useAxe();
         } else if (tool.getToolType().equals(ToolType.WateringCan)) {
-            useWateringCan();
+            result = useWateringCan();
         } else if (tool.getToolType().equals(ToolType.Scythe)) {
-            useScythe();
+            result = useScythe();
         } else if (tool.getToolType().equals(ToolType.MilkPail)) {
-            useMilkPail();
+            result = useMilkPail();
         } else if (tool.getToolType().equals(ToolType.Shear)) {
-            useShear();
+            result = useShear();
         } else if (tool.getToolType().equals(ToolType.FishingPole)) {
-            useFishingPole();
+            result =  useFishingPole();
         }
         startToolAnimation();
+        return result;
     }
 
 
-    private void useHoe() {
+    private Result useHoe() {
         double energy = ToolType.Hoe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getFarmingLevel() == 4) {
             energy--;
@@ -123,12 +123,14 @@ public class ToolController {
             tile.setPlowed(true);
             player.setEnergy(player.getEnergy() - energy * leverage);
             player.getAbilities().increaseFarmingAbility();
+            return new Result(true, "Plowed successfully");
         }
         player.setEnergy(player.getEnergy() - energy * leverage);
+        return new Result(false, "Hoe used but incorrectly");
     }
 
 
-    private void usePickAxe() {
+    private Result usePickAxe() {
         double energy = ToolType.Pickaxe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getMiningLevel() == 4) {
             energy--;
@@ -142,9 +144,10 @@ public class ToolController {
                 energy--;
                 energy = Math.max(energy, 0);
                 player.setEnergy(player.getEnergy() - energy * leverage);
-                return;
-                //TODO: maybe graphical error
-                //return new Result(false, "this type of pickaxe cannot break this mineral");
+                return new Result(false, "This type of pickaxe(%s) cannot break this mineral(%s)".formatted(
+                    tool.getMaterial(),
+                    mineral.getType().name()
+                    ));
             }
             player.getAbilities().increaseMiningAbility();
 
@@ -158,27 +161,27 @@ public class ToolController {
 
             if (player.getAbilities().getMiningLevel() >= 2) {
                 player.getBackPack().addItemToInventory(mineral);
-                //TODO: maybe graphical message
-                //return new Result(true, "stone broke successfully and you also got 1 more because of mining level");
+                return new Result(true, "stone broke successfully and you also got 1 more because of mining level");
             }
 
         } else if (tile.isPlowed()) {
             tile.setPlowed(false);
             energy = Math.max(energy, 0);
             player.setEnergy(player.getEnergy() - energy * leverage);
+            return new Result(true, "unplowed successfully");
         } else if (tile.getPlaceable() instanceof BackPackable item) {
             tile.setPlaceable(null);
             energy = Math.max(energy, 0);
             player.setEnergy(player.getEnergy() - energy * leverage);
-            //TODO: maybe graphical message
-            //return new Result(true, item.getName() + " destroyed successfully");
+            return new Result(true, item.getName() + " destroyed successfully");
         }
         energy = Math.max(energy - 1, 0);
         player.setEnergy(player.getEnergy() - energy * leverage);
+        return new Result(true, "you used pickaxe but incorrectly");
     }
 
 
-    private void useAxe() {
+    private Result useAxe() {
         double energy = ToolType.Axe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getForagingLevel() == 4) {
             energy--;
@@ -190,27 +193,24 @@ public class ToolController {
             player.getAbilities().increaseForagingAbility();
             tile.setPlaceable(new NormalItem(NormalItemType.Wood));
             player.setEnergy(player.getEnergy() - energy * leverage);
-            return;
-            //TODO: maybe graphical message
-            //return new Result(true, "you broke tree successfully");
+            return new Result(true, "you broke tree successfully");
         }
         if (tile.getPlaceable() instanceof NormalItem normalItem) {
             if (normalItem.getType().equals(NormalItemType.Wood)) {
                 tile.setPlaceable(null);
                 player.getAbilities().increaseForagingAbility();
                 player.setEnergy(player.getEnergy() - energy * leverage);
-                return;
-                //TODO: maybe graphical message
-                //return new Result(true, "you destroyed wood");
+                return new Result(true, "you destroyed wood");
             }
         }
         energy--;
         energy = Math.max(energy, 0);
         player.setEnergy(player.getEnergy() - energy * leverage);
+        return new Result(true, "you used axe but incorrectly");
     }
 
 
-    private void useWateringCan() {
+    private Result useWateringCan() {
         double energy = ToolType.WateringCan.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getForagingLevel() == 4) {
             energy--;
@@ -223,15 +223,19 @@ public class ToolController {
                 plant.wateringPlant();
                 tool.setWateringCanStorage(tool.getWateringCanStorage() - 1);
                 player.getAbilities().increaseForagingAbility();
+                return new Result(true, "plant watered sucessfully");
             }
         } else if (tile.isWater()) {
             player.setEnergy(player.getEnergy() - energy * leverage);
+            if (tool.isWateringCanFull())
+                return new Result(true, "watering can is already full");
             tool.handleWateringCanStorage();
         }
+        return new Result(true, "watering can is now full of water");
     }
 
 
-    private void useScythe() {
+    private Result useScythe() {
         player.setEnergy(player.getEnergy() - 2 * leverage);
         if (tile.getPlaceable() instanceof NormalItem normalItem) {
             if (normalItem.getType().equals(NormalItemType.Grass))
@@ -254,10 +258,11 @@ public class ToolController {
                 crop.harvest();
             }
         }
+        return new Result(true, "");
     }
 
 
-    private void useMilkPail() {
+    private Result useMilkPail() {
         player.setEnergy(player.getEnergy() - 4 * leverage);
         if (tile.getPlaceable() instanceof Animal animal) {
             if (animal.getAnimalType().equals(AnimalType.Cow)) {
@@ -272,10 +277,8 @@ public class ToolController {
                             sb.append(entry.getKey().getAnimalProductType().name()).append(" : ")
                                 .append(entry.getValue()).append("\n");
                         }
-                        return;
-                        //TODO: maybe graphical message
-//                        return new Result(false, "backpack gets full , you collect these -> \n"
-//                            + sb.toString());
+                        return new Result(false, "backpack gets full , you collect these -> \n"
+                            + sb.toString());
                     }
                 }
                 StringBuilder sb = new StringBuilder();
@@ -284,22 +287,20 @@ public class ToolController {
                         .append(entry.getValue()).append("\n");
                 }
                 animal.getAnimalProducts().removeAll(toRemoved);
-//TODO: maybe graphical message
-                //                return new Result(true, "you collected all product -> \n " +
-//                    sb.toString());
+                return new Result(true, "you collected all product -> \n " +
+                    sb.toString());
             }
         }
+        return new Result(true, "");
     }
 
 
-    private void useShear() {
+    private Result useShear() {
         player.setEnergy(player.getEnergy() - 4 * leverage);
         if (tile.getPlaceable() instanceof Animal animal) {
             if (animal.getAnimalType().equals(AnimalType.Sheep)) {
                 if (animal.getAnimalProducts().isEmpty()) {
-                    return;
-                    //TODO: maybe graphical message
-                    //return new Result(false, "this sheep has no product");
+                    return new Result(false, "this sheep has no product");
                 }
                 ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
                 for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
@@ -307,26 +308,21 @@ public class ToolController {
                     toRemoved.add(animalProduct);
                     if (player.getBackPack().isBackPackFull()) {
                         animal.getAnimalProducts().removeAll(toRemoved);
-                        return;
-                        //TODO: maybe graphical message
-//                        return new Result(false, "back pack gets full , you collected these -> \n" +
-//                            animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size());
+                        return new Result(false, "back pack gets full , you collected these -> \n" +
+                            animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size());
                     }
                 }
                 animal.getAnimalProducts().removeAll(toRemoved);
-                return;
-                //TODO: maybe graphical message
-                //return new Result(true, "you collected all " + toRemoved.size() + " wools of " + animal.getName());
+                return new Result(true, "you collected all " + toRemoved.size() + " wools of " + animal.getName());
             }
         }
+        return new Result(true, "");
     }
 
 
-    private void useFishingPole() {
+    private Result useFishingPole() {
         if (!tile.isWater()) {
-            return;
-            //TODO: maybe graphical error
-            //return new Result(false, "you should catch fish near water and lakes , here is not water");
+            return new Result(false, "you should catch fish near water and lakes , here is not water");
         }
         double energy = 2;
         switch (tool.getFishingPoleMaterial()) {
@@ -342,36 +338,27 @@ public class ToolController {
             energy--;
         }
         player.setEnergy(player.getEnergy() - energy * leverage);
-        //System.out.println(fishing(tool.getFishingPoleMaterial().name()));
-        fishing(tool.getFishingPoleMaterial().name());
+        return fishing(tool.getFishingPoleMaterial().name());
     }
 
 
-    public void fishing(String fishingPole) {
+    public Result fishing(String fishingPole) {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
 
         if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
-            //TODO: maybe graphical error
-            return;
-            //return new Result(false, "first go near water");
+            return new Result(false, "first go near water");
         }
         if (player.getBackPack().isBackPackFull()) {
-            //TODO: maybe graphical error
-            return;
-            //return new Result(false, "your backpack is full");
+            return new Result(false, "your backpack is full");
         }
         FishingPoleType fishingPoleType;
         try {
             fishingPoleType = FishingPoleType.valueOf(fishingPole);
         } catch (Exception e) {
-            //TODO: maybe graphical error
-            return;
-            //return new Result(false, "invalid fishing pole");
+            return new Result(false, "invalid fishing pole");
         }
         if (!player.getBackPack().getBackPackItems().containsKey(fishingPoleType)) {
-            //TODO: maybe graphical error
-            return;
-            //return new Result(false, "you dont have this fishing pole in your backpack");
+            return new Result(false, "you dont have this fishing pole in your backpack");
         }
 
 
@@ -428,8 +415,7 @@ public class ToolController {
             player.getBackPack().addItemToInventory(fish);
         }
         player.getAbilities().increaseFishingAbility();
-        //TODO: maybe graphical error
-        //return new Result(true, count + " " + fish.getFishType().getName() + " got caught successfully");
+        return new Result(true, count + " " + fish.getFishType().getName() + " got caught successfully");
     }
 
 

@@ -208,31 +208,6 @@ public class GameMenu implements AppMenu, Screen {
             ));
         }
 
-        //For Plants
-        else if ((matcher = GameMenuCommands.CraftInfo.getMatcher(command)) != null) {
-            System.out.println(controller.craftInfo(
-                matcher.group("craftName")
-            ));
-        } else if ((matcher = GameMenuCommands.Plant.getMatcher(command)) != null) {
-            System.out.println(controller.plantSeed(
-                matcher.group("seed"),
-                matcher.group("direction")
-            ));
-        } else if ((matcher = GameMenuCommands.ShowPlant.getMatcher(command)) != null) {
-            System.out.println(controller.showPlant(
-                matcher.group("x"),
-                matcher.group("y")
-            ));
-        } else if ((matcher = GameMenuCommands.Fertilize.getMatcher(command)) != null) {
-            System.out.println(controller.fertilize(
-                matcher.group("fertilizer"),
-                matcher.group("direction")
-            ));
-        } else if ((matcher = GameMenuCommands.HowMuchWater.getMatcher(command)) != null) {
-            System.out.println(controller.howMuchWater());
-        }
-
-
         //For crafting
         else if ((matcher = GameMenuCommands.CraftingShowRecipes.getMatcher(command)) != null) {
             System.out.println(controller.craftingShowRecipes());

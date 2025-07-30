@@ -16,15 +16,6 @@ public enum FertilizerType implements BackPackableType {
         return name();
     }
 
-    public static FertilizerType getFertilizerTypeByName(String name) {
-        for (FertilizerType value : FertilizerType.values()) {
-            if (value.name().equalsIgnoreCase(name)) {
-                return value;
-            }
-        }
-        return null;
-    }
-
     @Override
     public Texture getInventoryTexture() {
         return CropAssetManager.getCropAssetManager().getFertilizerTexture(this);

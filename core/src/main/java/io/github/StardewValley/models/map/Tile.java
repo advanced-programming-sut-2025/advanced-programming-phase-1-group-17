@@ -34,16 +34,6 @@ public class Tile {
         return tiles;
     }
 
-//    public static void resetTiles() {
-//        for (Tile[] tileColumn : tiles) {
-//            tileColumn = new Tile[PlayerMap.getLength()];
-//        }
-//    }
-
-    public void plant(String plantName) {
-        isPlowed = false;
-    }
-
     public int getY() {
         return y;
     }

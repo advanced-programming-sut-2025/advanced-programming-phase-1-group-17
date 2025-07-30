@@ -15,6 +15,7 @@ import java.util.Random;
 public class Crop extends Plant implements BackPackable, Placeable {
     private CropType type;
     private boolean isGiant = false;
+    private boolean isLeftBottomTileOfGiant = false;
     private ItemQuality quality = ItemQuality.Regular;
 
     ArrayList<Crop> neighborGiantTiles = new ArrayList<>();
@@ -66,6 +67,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
     public void makeGiant(Tile t1, Tile t2, Tile t3, Tile t4,
                           Crop c1, Crop c2, Crop c3, Crop c4) {
         // Mark all as part of a giant crop (you may want to remove 3 and replace with one big one)
+        setGiantLeftBottomCorner(t1, t2, t3, t4, c1, c2, c3, c4);
         c1.setGiant(true);
         c2.setGiant(true);
         c3.setGiant(true);
@@ -133,6 +135,18 @@ public class Crop extends Plant implements BackPackable, Placeable {
         c4.setCurrentStageIndex(maxStage);
         c4.setWhichDayOfStage(maxGrowedCrop.whichDayOfStage);
         c4.neighborGiantTiles = new ArrayList<>(List.of(c2, c3, c1));
+    }
+
+    private void setGiantLeftBottomCorner(Tile t1, Tile t2, Tile t3, Tile t4,
+                                          Crop c1, Crop c2, Crop c3, Crop c4) {
+        Tile leftBottom = t1;
+        Tile[] tiles = {t2, t3, t4};
+
+        for (Tile tile : tiles) {
+            if (tile.getX() < t1.getX() || tile.getY() < t1.getY())
+                leftBottom = tile;
+        }
+        ((Crop)leftBottom.getPlaceable()).setLeftBottomTileOfGiant(true);
     }
 
     public int getDaysTillFullGrowth() {
@@ -228,12 +242,15 @@ public class Crop extends Plant implements BackPackable, Placeable {
             player.getAbilities().increaseForagingAbility();
 
         if (type.isOneTime()) {
+            tile.setWalkAble(true);
             if (isGiant) {
                 for (int i = 0; i < 10; i++) {
                     player.getBackPack().addItemToInventory(this);
                 }
                 for (Crop neighborGiantTile : neighborGiantTiles) {
+                    neighborGiantTile.tile.setWalkAble(true);
                     neighborGiantTile.getTile().setPlaceable(null);
+                    neighborGiantTile.isLeftBottomTileOfGiant = false;
                 }
             } else {
                 player.getBackPack().addItemToInventory(this);
@@ -295,8 +312,18 @@ public class Crop extends Plant implements BackPackable, Placeable {
     }
 
     public Texture getTexture() {
+        if (isGiant)
+            return CropAssetManager.getCropAssetManager().getGiantTexture(type);
         if (isForaging)
             return type.getInventoryTexture();
         return CropAssetManager.getCropAssetManager().getStageTexture(this.currentStageIndex, type);
+    }
+
+    public boolean isLeftBottomTileOfGiant() {
+        return isLeftBottomTileOfGiant;
+    }
+
+    public void setLeftBottomTileOfGiant(boolean leftBottomTileOfGiant) {
+        isLeftBottomTileOfGiant = leftBottomTileOfGiant;
     }
 }

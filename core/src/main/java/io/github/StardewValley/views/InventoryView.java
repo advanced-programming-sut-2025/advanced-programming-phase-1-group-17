@@ -47,7 +47,7 @@ public class InventoryView implements Screen {
         this.controller.setView(this);
         this.mainTable = new Table();
 
-        this.titleLabel = new Label("Journal", skin);
+        this.titleLabel = new Label("Inventory", skin);
         this.player = player;
         this.backPack = player.getBackPack();
 
@@ -151,17 +151,26 @@ public class InventoryView implements Screen {
         mainTable.setFillParent(true);
         mainTable.top().pad(10);
 
-        // Example layout:
-        mainTable.add(titleLabel).colspan(4).center().row();
-        mainTable.add(inventoryLabel).left().row();
-        mainTable.add(itemsPane).height(300).width(500).row();
-        mainTable.add(itemPickLabel).left().row();
-        mainTable.add(trashButton).left().padTop(10).row();
-        mainTable.add(skillMenuButton).left().padTop(10).row();
-        mainTable.add(socialMenuButton).left().padTop(10).row();
-        mainTable.add(mapButton).left().padTop(10).row();
-        mainTable.add(exitButton).left().row();
-        mainTable.add(saveanndexitButton).left().row();
+        // Outer table layout: 3 columns -> [Left Buttons] [Inventory] [Right Buttons]
+        Table leftButtonTable = new Table();
+        leftButtonTable.add(trashButton).pad(5).row();
+        leftButtonTable.add(skillMenuButton).pad(5).row();
+        leftButtonTable.add(socialMenuButton).pad(5).row();
+
+        Table rightButtonTable = new Table();
+        rightButtonTable.add(mapButton).pad(5).row();
+        rightButtonTable.add(exitButton).pad(5).row();
+        rightButtonTable.add(saveanndexitButton).pad(5).row();
+
+        Table inventoryTable = new Table();
+        inventoryTable.add(titleLabel).padBottom(10).row();
+        inventoryTable.add(inventoryLabel).padBottom(5).row();
+        inventoryTable.add(itemsPane).width(500).height(300).row();
+        inventoryTable.add(itemPickLabel).padTop(5).left();
+
+        mainTable.add(leftButtonTable).top().padRight(20);
+        mainTable.add(inventoryTable).top().expandX();
+        mainTable.add(rightButtonTable).top().padLeft(20);
 
         stage.addActor(mainTable);
     }

@@ -3,51 +3,31 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.models.Game;
 import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.PlayerController;
 import io.github.StardewValley.models.animal.*;
+import io.github.StardewValley.models.foraging.ForagingTree;
 import io.github.StardewValley.models.map.Lake;
+import io.github.StardewValley.models.plant.*;
 import io.github.StardewValley.views.*;
 import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.cooking.BuffType;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.crafting.CraftingItemType;
-import io.github.StardewValley.models.enums.FishType;
-import io.github.StardewValley.models.foraging.ForagingController;
-import io.github.StardewValley.models.foraging.Mineral;
-import io.github.StardewValley.models.map.GreenHouse;
 import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.models.market.Fish;
-import io.github.StardewValley.models.market.ItemQuality;
 import io.github.StardewValley.models.market.Store;
 import io.github.StardewValley.models.market.StoreType;
-import io.github.StardewValley.views.GameMenu;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.InventoryView;
 import io.github.StardewValley.views.MapView;
-import io.github.StardewValley.models.plant.Crop;
-import io.github.StardewValley.models.plant.Fruit;
-import io.github.StardewValley.models.plant.Plant;
-import io.github.StardewValley.models.plant.Tree;
-import io.github.StardewValley.models.tools.FishingPoleType;
 import io.github.StardewValley.models.tools.Tool;
-import io.github.StardewValley.models.tools.ToolType;
-import io.github.StardewValley.views.*;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.*;
 
 public class GameController {
     public GameView view;
@@ -56,11 +36,11 @@ public class GameController {
     int mapHeightInPixels;
     private final Game game;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
-    private final GameMenuController gameMenuController = new GameMenuController();
 
     private final WorldController worldController;
     private final ToolController toolController;
     private final LightningController lightningController;
+    private final FarmingController farmingController;
 
     private Player player;
 
@@ -71,10 +51,6 @@ public class GameController {
 
     public GameController(Game game) {
         this.game = game;
-        for (Player player : game.getPlayers()) {
-            PlayerController playerController = new PlayerController(player);
-            this.game.getPlayerControllers().add(playerController);
-        }
         Player player = game.getCurrentPlayingPlayer();
         this.camera.position.set(player.getX() , player.getY(), 0);
 
@@ -87,6 +63,7 @@ public class GameController {
         this.mapWidthInPixels = worldController.getTileWidth();
         this.mapHeightInPixels = worldController.getTileHeight();
 
+        this.farmingController = new FarmingController();
         initializeStoreRectangles();
         App.setCamera(this.camera);
     }
@@ -216,10 +193,6 @@ public class GameController {
                         if(!animal.isFollowingPath())animal.startPathTo();
                     }
                 }
-
-
-
-
         }
     }
 
@@ -232,6 +205,23 @@ public class GameController {
     }
 
     public void handlePlayerInput() {
+        player = App.getCurrentGame().getCurrentPlayingPlayer();
+        int dx = 0, dy = 0;
+        switch (player.getLastDirection()) {
+            case UP:
+                dy = 1;
+                break;
+            case RIGHT:
+                dx = 1;
+                break;
+            case DOWN:
+                dy = -1;
+                break;
+            case LEFT:
+                dx = -1;
+                break;
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new MapView(new MapViewController(), view));
@@ -247,31 +237,20 @@ public class GameController {
                 e.printStackTrace();
             }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-            int dx = 0, dy = 0;
-            switch (player.getCurrentDirection()) {
-                case UP:
-                    dy = 1;
-                    break;
-                case RIGHT:
-                    dx = 1;
-                    break;
-                case DOWN:
-                    dy = -1;
-                    break;
-                case LEFT:
-                    dx = -1;
-                    break;
-                case IDLE:
-                    //return;
-                    break;
-            }
-
+            Result result = null;
             if (player.getEquippedItem() instanceof Tool)
-                toolController.toolUse(dx, dy);
+                result = toolController.toolUse(dx, dy);
             else if (player.getEquippedItem() instanceof CraftingItem)
-                //placeItem(dx, dy);
-                placeItem(0, -1);
+                result = placeItem(dx, dy);
+            else if (player.getEquippedItem() instanceof Seed seed)
+                result = farmingController.plantSeed(seed, dx, dy);
+            else if (player.getEquippedItem() instanceof Sapling sapling)
+                result = farmingController.plantSapling(sapling, dx, dy);
+            else if (player.getEquippedItem() instanceof Fertilizer fertilizer) {
+                result = farmingController.fertilize(fertilizer, dx, dy);
+            }
+            if (result != null && !result.isSuccessful())
+                view.showNotification(result.getMessage());
 
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
@@ -281,12 +260,32 @@ public class GameController {
             Main.getMain().setScreen(new InventoryView(new InventoryController(),
                 GameAssetManager.getGameAssetManager().getSkin(),
                 game.getCurrentPlayingPlayer()));
-        }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManager.getGameAssetManager().getSkin()));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
+            pickForaging(dx, dy);
         //TODO handle input key
     }
 
+    private void pickForaging(int dx, int dy) {
+        player = App.getCurrentGame().getCurrentPlayingPlayer();
+        int x = player.getX() / worldController.getTileWidth() + dx;
+        int y = player.getY() / worldController.getTileHeight() + dy;
+        Tile tile = Tile.getTile(x, y);
 
-    public void placeItem(int dx, int dy) {
+        Placeable placeable = tile.getPlaceable();
+        if (placeable instanceof Crop crop) {
+            if (crop.isForaging()) {
+                player.getBackPack().addItemToInventory(crop);
+                tile.setPlaceable(null);
+                tile.setWalkAble(true);
+            }
+        }
+    }
+
+
+    public Result placeItem(int dx, int dy) {
         player = App.getCurrentGame().getCurrentPlayingPlayer();
         CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
 
@@ -295,9 +294,7 @@ public class GameController {
         Tile tile = Tile.getTile(x, y);
 
         if (tile.getPlaceable() != null) {
-            //TODO: maybe graphical error
-            return;
-            //return new Result(false, "tile is full");
+            return new Result(false, "tile is full");
         }
 
         App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(craftingItemType);
@@ -452,6 +449,7 @@ public class GameController {
 
             }
         }
+        return new Result(true, "Item placed Successfully.");
     }
 
     public WorldController getWorldController() {
@@ -461,6 +459,4 @@ public class GameController {
     public ToolController getToolController() {
         return toolController;
     }
-
-
 }

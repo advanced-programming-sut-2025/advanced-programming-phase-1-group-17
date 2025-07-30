@@ -59,10 +59,12 @@ public abstract class ForagingController {
 
     private static void setWoodForaging(Tile tile) {
         tile.setPlaceable(new NormalItem(NormalItemType.Wood));
+        tile.setWalkAble(false);
     }
 
     private static void setStoneForaging(Tile tile) {
         tile.setPlaceable(new Mineral(MineralType.Stone, true));
+        tile.setWalkAble(false);
     }
 
     public static void setMineralForaging(Tile tile) {
