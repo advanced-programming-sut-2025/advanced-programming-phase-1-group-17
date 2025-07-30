@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import io.github.StardewValley.models.NormalItemType;
 import io.github.StardewValley.models.enums.Season;
 import io.github.StardewValley.models.market.StoreType;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager;
-    private final Skin skin = new Skin(Gdx.files.internal("skin/star-soldier-ui.json"));
+    private final Skin skin = new Skin(Gdx.files.internal("Skin/StardewSkin.json"));
 
     private final Texture backgroundTexture1 = new Texture("Flooring/Flooring_44.png");
     private final Texture backgroundTexture2 = new Texture("Flooring/Flooring_50.png");
@@ -32,9 +33,18 @@ public class GameAssetManager {
 
     private final HashMap<Season, Texture> seasonalMapTextures = new HashMap<>();
     private final HashMap<StoreType, HashMap<Season, TextureRegion>> storeTextures = new HashMap<>();
+    private final HashMap<String, Texture> abilityTextures = new HashMap<>() {{
+        put("Farming", new Texture("Skill/Farming_Skill_Icon.png"));
+        put("Fishing", new Texture("Skill/Fishing_Skill_Icon.png"));
+        put("Foraging", new Texture("Skill/Foraging_Skill_Icon.png"));
+        put("Mining", new Texture("Skill/Mining_Skill_Icon.png"));
+    }};
+
+    private final HashMap<NormalItemType, Texture> normalItemTextures = new HashMap<>();
 
     private GameAssetManager() {
         loadStoreTextures();
+        loadNormalItemTextures();
     }
 
     public static GameAssetManager getGameAssetManager() {
@@ -96,6 +106,14 @@ public class GameAssetManager {
     }
 
 
+    private void loadNormalItemTextures() {
+        for (NormalItemType normalItemType : NormalItemType.values()) {
+            if (normalItemType.equals(NormalItemType.Well) || normalItemType.equals(NormalItemType.ShippingBin)) {
+                continue;
+            }
+            normalItemTextures.put(normalItemType, new Texture(normalItemType.getTexturePath()));
+        }
+    }
 
 
     private void loadStoreTextures() {
@@ -131,5 +149,13 @@ public class GameAssetManager {
 
     public TextureRegion getStoreTexture(Season season, StoreType type) {
         return storeTextures.get(type).get(season);
+    }
+
+    public Texture getAbilityTextures(String abilityName) {
+        return abilityTextures.get(abilityName);
+    }
+
+    public Texture getNormalItemTexture(NormalItemType normalItemType) {
+        return normalItemTextures.get(normalItemType);
     }
 }

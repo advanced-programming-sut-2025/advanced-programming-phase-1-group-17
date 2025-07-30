@@ -145,4 +145,7 @@ public abstract class Plant implements Placeable {
 
     public abstract Texture getTexture();
 
+    public boolean hasFruit() {
+        return hasFruit;
+    }
 }

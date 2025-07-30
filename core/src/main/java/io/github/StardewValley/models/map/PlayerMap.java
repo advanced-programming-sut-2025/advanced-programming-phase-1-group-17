@@ -1,6 +1,8 @@
 package io.github.StardewValley.models.map;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.models.Fence;
 import io.github.StardewValley.models.GreenHouseLake;
 import io.github.StardewValley.models.animal.Animal;

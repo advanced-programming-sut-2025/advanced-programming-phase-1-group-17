@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.artisan;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.animal.AnimalProductType;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public enum IngredientGroup {
+public enum IngredientGroup implements BackPackableType{
     AnyMushroom(Set.of(CropType.RedMushroom, CropType.Morel, CropType.CommonMushroom, CropType.Chanterelle, CropType.PurpleMushroom)),
     AnyFruit(Set.of(FruitType.values())),
     AnyVegetable(Set.of(CropType.Carrot, CropType.Potato, CropType.Tomato)), // example subset
@@ -63,4 +64,18 @@ public enum IngredientGroup {
         }
     }
 
+    @Override
+    public String getName() {
+        return name();
+    }
+
+    @Override
+    public double getPrice() {
+        return 0;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return null;
+    }
 }

@@ -11,7 +11,6 @@ import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.animal.*;
 import io.github.StardewValley.models.NPCS.NPC;
 import io.github.StardewValley.models.NPCS.Quest;
-import io.github.StardewValley.models.artisan.ArtisanProduct;
 import io.github.StardewValley.models.artisan.ArtisanProductType;
 import io.github.StardewValley.models.cooking.*;
 import io.github.StardewValley.models.crafting.CraftingItem;
@@ -999,27 +998,6 @@ public class GameMenuController {
 //        }
 //        return new Result(true, "Tool used.");
 //    }
-
-
-    public Result craftInfo(String name) {
-        return farmingController.craftInfo(name);
-    }
-
-    public Result plantSeed(String source, String direction) {
-        return farmingController.plantSeed(source, direction);
-    }
-
-    public Result showPlant(String x, String y) {
-        return farmingController.showPlant(x, y);
-    }
-
-    public Result fertilize(String fertilizer, String direction) {
-        return farmingController.fertilize(fertilizer, direction);
-    }
-
-    public Result howMuchWater() {
-        return farmingController.howMuchWater();
-    }
 
     public Result craftingShowRecipes() {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();

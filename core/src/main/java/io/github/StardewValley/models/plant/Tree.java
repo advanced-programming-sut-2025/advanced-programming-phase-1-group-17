@@ -1,6 +1,7 @@
 package io.github.StardewValley.models.plant;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.map.Tile;
 
@@ -81,8 +82,13 @@ public class Tree extends Plant implements Placeable {
     }
 
     public Texture getTexture() {
-        if (hasFruit) {
-            return TreeAssetManager.getTreeAssetManager().getHasFruitTexture(type);
+        if (isFullyGrown) {
+            if (hasFruit) {
+                return TreeAssetManager.getTreeAssetManager().getHasFruitTexture(type);
+            }
+            if (type.equals(TreeType.MushroomTree))
+                return TreeAssetManager.getTreeAssetManager().getStageTexture(type, 3);
+            return null; //for fully Grown
         }
         return TreeAssetManager.getTreeAssetManager().getStageTexture(type, currentStageIndex);
     }

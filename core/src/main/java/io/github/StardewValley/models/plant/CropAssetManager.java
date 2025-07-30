@@ -10,6 +10,7 @@ public class CropAssetManager {
     private final HashMap<CropType, ArrayList<Texture>> stageTextures = new HashMap<>();
     private final HashMap<CropType, Texture> inventoryTextures = new HashMap<>();
     private final HashMap<SeedType, Texture> seedTextures = new HashMap<>();
+    private final HashMap<CropType, Texture> giantTextures = new HashMap<>();
 
     private final HashMap<FertilizerType, Texture> fertilizerTextures = new HashMap<>() {{
         put(FertilizerType.SpeedGro, new Texture("Fertilizer/Speed-Gro.png"));
@@ -22,6 +23,14 @@ public class CropAssetManager {
         loadStageTextures();
         loadInventoryTextures();
         loadSeedTextures();
+        loadGiantTextures();
+    }
+
+    private void loadGiantTextures() {
+        giantTextures.put(CropType.Cauliflower, new Texture("Crops/Giant_Cauliflower.png"));
+        giantTextures.put(CropType.Melon, new Texture("Crops/Giant_Melon.png"));
+        giantTextures.put(CropType.Powdermelon, new Texture("Crops/Giant_Powdermelon.png"));
+        giantTextures.put(CropType.Pumpkin, new Texture("Crops/Giant_Pumpkin.png"));
     }
 
     private void loadSeedTextures() {
@@ -70,5 +79,9 @@ public class CropAssetManager {
 
     public Texture getFertilizerTexture(FertilizerType fertilizerType) {
         return fertilizerTextures.get(fertilizerType);
+    }
+
+    public Texture getGiantTexture(CropType type) {
+        return giantTextures.get(type);
     }
 }

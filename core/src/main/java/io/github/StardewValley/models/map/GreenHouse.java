@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.map;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.GreenHouseLake;
@@ -7,6 +8,7 @@ import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GreenHouse implements Placeable {
     //TODO: handle sprinkler
@@ -17,9 +19,12 @@ public class GreenHouse implements Placeable {
     private int height;
     private int starting_x;
     private int starting_y;
+    private Player owner;
+
+    private static HashMap<GreenHouse, Rectangle> greenHouseBounds = new HashMap<>();
 
 
-    public GreenHouse(Player player, int width, int height, int starting_x, int starting_y, GreenHouseLake lake) {
+    public GreenHouse(Player owner, int width, int height, int starting_x, int starting_y, GreenHouseLake lake) {
         this.fence = new GreenHouseFence();
         this.isActive = false;
         this.width = width;
@@ -27,7 +32,20 @@ public class GreenHouse implements Placeable {
         this.starting_x = starting_x;
         this.starting_y = starting_y;
         this.lake = lake;
+        this.owner = owner;
         App.getCurrentGame().addGreenHouses(this);
+        addBound();
+    }
+
+    private void addBound() {
+        float tileWidth = GameAssetManager.getGameAssetManager().getTileWidth();
+        float tileHeight = GameAssetManager.getGameAssetManager().getTileHeight();
+        greenHouseBounds.put(this, new Rectangle(
+            starting_x * tileWidth,
+            starting_y * tileHeight,
+            width * tileWidth,
+            height * tileHeight
+        ));
     }
 
     public GreenHouseFence getFence() {
@@ -69,5 +87,13 @@ public class GreenHouse implements Placeable {
 
     public GreenHouseLake getLake() {
         return lake;
+    }
+
+    public static HashMap<GreenHouse, Rectangle> getGreenHouseBounds() {
+        return greenHouseBounds;
+    }
+
+    public Player getOwner() {
+        return owner;
     }
 }

@@ -19,7 +19,6 @@ public class Game {
     private TimeAndDate date = new TimeAndDate();
     private int currentPlayingPlayerIndex = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
-    private ArrayList<PlayerController> playerControllers = new ArrayList<>();
     private GameMap gameMap;
     private ArrayList<NPC> NPCs = new ArrayList<>();
     private StoreManager storeManager = new StoreManager();
@@ -197,11 +196,4 @@ public class Game {
     public void addGreenHouses(GreenHouse greenHouse) {
         GreenHouses.add(greenHouse);
     }
-
-    public ArrayList<PlayerController> getPlayerControllers() {
-        return playerControllers;
-    }
-
-
-
 }

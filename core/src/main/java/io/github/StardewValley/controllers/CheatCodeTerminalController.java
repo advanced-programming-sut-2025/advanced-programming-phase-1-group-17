@@ -117,7 +117,9 @@ public class CheatCodeTerminalController {
     }
 
     private String energyUnlimited() {
+        App.getCurrentGame().getCurrentPlayingPlayer().setMaxEnergy(Double.POSITIVE_INFINITY);
         App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(Double.POSITIVE_INFINITY);
+        App.getCurrentGame().getCurrentPlayingPlayer().setEnergyUnlimited(true);
         return "Energy successfully set to infinity";
     }
 

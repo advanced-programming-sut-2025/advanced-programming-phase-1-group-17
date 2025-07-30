@@ -1,32 +1,28 @@
 package io.github.StardewValley.models;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.GameAssetManager;
 
-public enum NormalItemType implements BackPackableType,Placeable{
-    //    CopperBar(50),
-//    IronBar(100),
-//    GoldBar(250),
-//    IridiumBar(1000),
-    Wood(10),
-    Fiber(0),
-    Hay(50),
-    Well(500),
-    ShippingBin(125),
-    JojaCola(37.5),
-    GrassStarter(62.5),
-    Sugar(50),
-    WheatFlour(50),
-    Rice(100),
-    TroutSoup(125),
-    AnyFish(0),
-    Grass(0); //TODO: Make sure it is never added to backpack
-
-
+public enum NormalItemType implements BackPackableType{
+    Wood(10, "Resource/Wood.png"),
+    Fiber(0, "Resource/Fiber.png"),
+    Hay(50, "Hay.png"),
+    Well(500, ""),
+    ShippingBin(125, ""),
+    JojaCola(37.5, "Concessions/Joja_Cola_%28large%29.png"),
+    GrassStarter(62.5, "Crafting/Grass_Starter.png"),
+    Sugar(50, "Ingredient/Sugar.png"),
+    WheatFlour(50, "Ingredient/Wheat_Flour.png"),
+    Rice(100, "Ingredient/Rice.png"),
+    TroutSoup(125, "Recipe/Trout_Soup.png"),
+    Grass(0, "sprites/Grass.png"); //TODO: Make sure it is never added to backpack
 
     private final double price;
+    private final String texturePath;
 
-    NormalItemType(double price) {
+    NormalItemType(double price, String texturePath) {
         this.price = price;
+        this.texturePath = texturePath;
     }
 
     @Override
@@ -39,15 +35,12 @@ public enum NormalItemType implements BackPackableType,Placeable{
         return name();
     }
 
-    @Override
-    public Texture getTexture() {
-        //TODO
-        return null;
+    public String getTexturePath() {
+        return texturePath;
     }
 
     @Override
     public Texture getInventoryTexture() {
-        //TODO
-        return null;
+        return GameAssetManager.getGameAssetManager().getNormalItemTexture(this);
     }
 }

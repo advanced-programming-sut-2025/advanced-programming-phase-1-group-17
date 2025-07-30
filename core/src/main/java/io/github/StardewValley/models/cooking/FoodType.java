@@ -11,6 +11,8 @@ import static io.github.StardewValley.models.artisan.ArtisanProductType.*;
 import static io.github.StardewValley.models.enums.FishType.*;
 import static io.github.StardewValley.models.plant.CropType.*;
 import static io.github.StardewValley.models.plant.FruitType.*;
+
+import io.github.StardewValley.models.artisan.IngredientGroup;
 import io.github.StardewValley.models.plant.CropType;
 
 public enum FoodType implements BackPackableType {
@@ -22,7 +24,7 @@ public enum FoodType implements BackPackableType {
     Spaghetti(Map.of(WheatFlour, 1, Tomato, 1), 75, 120, new Texture("Recipe/Spaghetti.png")),
     Pizza(Map.of(WheatFlour, 1, Tomato, 1, Cheese, 1), 150, 300, new Texture("Recipe/Pizza.png")),
     Tortilla(Map.of(Corn, 1), 50, 50, new Texture("Recipe/Tortilla.png")),
-    MakiRoll(Map.of(AnyFish, 1, Rice, 1, Fiber, 1), 100, 220, new Texture("Recipe/Maki_Roll.png")),
+    MakiRoll(Map.of(IngredientGroup.AnyFish, 1, Rice, 1, Fiber, 1), 100, 220, new Texture("Recipe/Maki_Roll.png")),
     TripleShotEspresso(Map.of(Coffee, 3), 200, 450, new Texture("Recipe/Triple_Shot_Espresso.png")),
     Cookie(Map.of(WheatFlour, 1, Sugar, 1, Egg, 1), 90, 140, new Texture("Recipe/Cookie.png")),
     HashBrowns(Map.of(Potato, 1, Oil, 1), 90, 120, new Texture("Recipe/Hashbrowns.png")),

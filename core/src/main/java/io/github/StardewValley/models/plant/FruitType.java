@@ -14,7 +14,7 @@ public enum FruitType implements BackPackableType {
     Pomegranate(true, 38, 140),
     Oak_Resin(false, 0, 150),
     Maple_Syrup(false, 0, 200),
-    Pine_Tar(false, 0, 100),
+    Pine_Cone(false, 0, 100),
     Sap(true, -2, 2),
     Common_Mushroom(true, 38, 40),
     Mystic_Syrup(true, 500, 1000);

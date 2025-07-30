@@ -69,9 +69,9 @@ public class Animal implements Placeable {
         this.animalHouseTile = Tile.getTileFromPixel((int) (animalPlace.getX() + (float) animalPlace.getAnimalPlaceType().getInventoryTexture().getWidth() /2)
             ,(int)animalPlace.getY());
         animalHouseTile = Tile.getTile(animalHouseTile.getX(), animalHouseTile.getY()-1);
-        this.hayTexture = new Texture("hay.png");
+        this.hayTexture = new Texture("Hay.png");
         this.loveTexture = new Texture("Heart/Marriage_Icon.png");
-         regions= TextureRegion.split(new Texture("heart/Zero_Hearts.png"), 12, 9);
+         regions= TextureRegion.split(new Texture("Heart/Zero_Hearts.png"), 12, 9);
         afterPetTexture = new Texture("icons8-pixel-heart-24.png");
         this.vector2 = new Vector2();
         this.chickenMap = new EnumMap<>(Direction.class);
