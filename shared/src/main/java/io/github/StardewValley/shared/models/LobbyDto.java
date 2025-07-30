@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LobbyDto {
     private Long id;
+    private String password;
     private String name;
     private String inviteCode;
     private boolean isPrivate;
@@ -17,7 +18,7 @@ public class LobbyDto {
     public LobbyDto() {}
 
     public LobbyDto(Long id, String name, String inviteCode, boolean isPrivate, boolean isVisible,
-                    LobbyStatus status, String adminUsername, List<String> playerUsernames) {
+                    LobbyStatus status, String adminUsername, List<String> playerUsernames, String password) {
         this.id = id;
         this.name = name;
         this.inviteCode = inviteCode;
@@ -26,6 +27,7 @@ public class LobbyDto {
         this.status = status;
         this.adminUsername = adminUsername;
         this.playerUsernames = playerUsernames;
+        this.password = password;
     }
 
     public Long getId() {
@@ -93,6 +95,14 @@ public class LobbyDto {
     }
     public void addPlayerUsername(String playerUsername) {
         this.playerUsernames.add(playerUsername);
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 
