@@ -35,7 +35,7 @@ public class LobbyController {
     @PostMapping("/create")
     public ResponseEntity<LobbyDto> createLobby(@RequestHeader("Authorization") String authHeader, @RequestBody LobbyDto req) {
         String username = getUsernameFromToken(authHeader);
-        return ResponseEntity.ok(lobbyService.createLobby(req.getName(), req.isPrivate(), req.isVisible(), username));
+        return ResponseEntity.ok(lobbyService.createLobby(req.getName(), req.isPrivate(), req.isVisible(), username,req.getPassword()));
     }
 
     @GetMapping("/list")
@@ -54,6 +54,14 @@ public class LobbyController {
     public ResponseEntity<Void> leaveLobby(@RequestHeader("Authorization") String authHeader, @RequestParam Long lobbyId) {
         String username = getUsernameFromToken(authHeader);
         if (lobbyService.leaveLobby(lobbyId, username)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PostMapping("/changeAdmin")
+    public ResponseEntity<Void> changeAdminUserName(@RequestHeader("Authorization") String authHeader, @RequestParam Long lobbyId) {
+        if (lobbyService.changeAdminUserName(lobbyId)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -89,9 +97,9 @@ public class LobbyController {
         lobbyService.deleteAllRepo();
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/code/{inviteCode}")
-    public LobbyDto getLobbyByInviteCode(@PathVariable String inviteCode) {
-        Lobby lobby = lobbyService.getById(inviteCode);
+    @GetMapping("/code/{Id}")
+    public LobbyDto getById(@PathVariable Long Id) {
+        Lobby lobby = lobbyService.getById(Id);
         return lobbyService.toDto(lobby);
     }
 }

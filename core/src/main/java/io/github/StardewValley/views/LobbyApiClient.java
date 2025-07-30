@@ -49,13 +49,15 @@ public class LobbyApiClient {
                 lobbyJson.getBoolean("private"),
                 lobbyJson.getBoolean("visible"), null,
                 lobbyJson.getString("adminUsername"),
-                players
+                players,
+                lobbyJson.getString("password")
             ));
+
         }
         return lobbies;
     }
 
-    public LobbyDto createLobby(String name, boolean isPrivate, boolean isVisible) throws Exception {
+    public LobbyDto createLobby(String name, boolean isPrivate, boolean isVisible,String password) throws Exception {
         URL url = new URL(BASE_URL + "/create");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
@@ -63,7 +65,7 @@ public class LobbyApiClient {
         conn.setRequestProperty("Authorization", "Bearer " + token);
         conn.setDoOutput(true);
 
-        String json = String.format("{\"name\":\"%s\", \"private\":%b, \"visible\":%b}", name, isPrivate, isVisible);
+        String json = String.format("{\"name\":\"%s\", \"private\":%b, \"visible\":%b, \"password\":\"%s\"}", name, isPrivate, isVisible,password);
         conn.getOutputStream().write(json.getBytes());
         Scanner scanner = new Scanner(conn.getInputStream());
 
@@ -87,7 +89,8 @@ public class LobbyApiClient {
             lobbyJson.getBoolean("visible"),
             null,
             lobbyJson.getString("adminUsername"),
-            players
+            players,
+            lobbyJson.getString("password")
         );
     }
 
@@ -118,7 +121,8 @@ public class LobbyApiClient {
             lobbyJson.getBoolean("private"),
             lobbyJson.getBoolean("visible"), null,
             lobbyJson.getString("adminUsername"),
-            players
+            players,
+            lobbyJson.getString("password")
         );
     }
 
@@ -150,8 +154,8 @@ public class LobbyApiClient {
 
         return dto;
     }
-    public LobbyDto getLobbyById(String code) throws Exception {
-        URL url = new URL(BASE_URL + "/code/" + code);
+    public LobbyDto getLobbyByInviteCode(Long Id) throws Exception {
+        URL url = new URL(BASE_URL + "/code/" + Id);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", "Bearer " + token);
@@ -178,8 +182,43 @@ public class LobbyApiClient {
             lobbyJson.getBoolean("visible"),
             null,
             lobbyJson.getString("adminUsername"),
-            players
+            players,
+            lobbyJson.getString("password")
         );
+    }
+    public void leaveLobby(Long lobbyId) throws Exception {
+        String urlStr = BASE_URL + "/leave?lobbyId=" + lobbyId;
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true);
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) {
+            throw new RuntimeException("Failed to leave lobby. HTTP code: " + responseCode);
+        }
+
+        conn.disconnect();
+    }
+    public void changeAdmin(Long lobbyId) throws Exception {
+        String urlStr = BASE_URL + "/changeAdmin?lobbyId=" + lobbyId;
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true);
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) {
+            throw new RuntimeException("Failed to leave lobby. HTTP code: " + responseCode);
+        }
+
+        conn.disconnect();
     }
 
 }

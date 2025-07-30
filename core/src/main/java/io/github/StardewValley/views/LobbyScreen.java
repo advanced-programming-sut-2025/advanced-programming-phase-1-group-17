@@ -21,15 +21,16 @@ public class LobbyScreen implements Screen {
     private TextButton createLobbyBtn;
     private TextButton joinCodeBtn;
     private TextButton refreshButton;
-    private TextField lobbyNameField = new TextField("",   GameAssetManagerClient.getGameAssetManager().getSkin());
-    private TextField codeField = new TextField("",   GameAssetManagerClient.getGameAssetManager().getSkin());
-    private CheckBox privateBox = new CheckBox("Private",   GameAssetManagerClient.getGameAssetManager().getSkin());
-    private CheckBox visibleBox = new CheckBox("Visible",   GameAssetManagerClient.getGameAssetManager().getSkin());
-    private Skin skin =   GameAssetManagerClient.getGameAssetManager().getSkin();
+    private TextField lobbyNameField = new TextField("", GameAssetManagerClient.getGameAssetManager().getSkin());
+    private TextField codeField = new TextField("", GameAssetManagerClient.getGameAssetManager().getSkin());
+    private CheckBox privateBox = new CheckBox("Private", GameAssetManagerClient.getGameAssetManager().getSkin());
+    private CheckBox visibleBox = new CheckBox("Visible", GameAssetManagerClient.getGameAssetManager().getSkin());
+    private Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
     private Stage stage;
     private final LobbyApiClient apiClient;
     private final Table lobbyTable;
     private final Table ScrollPane2;
+    private final TextField passwordField = new TextField("", GameAssetManagerClient.getGameAssetManager().getSkin());
 
     public LobbyScreen(String jwtToken) {
         this.apiClient = new LobbyApiClient(jwtToken);
@@ -56,6 +57,10 @@ public class LobbyScreen implements Screen {
         root.row();
         lobbyNameField.setMessageText("name");
         root.add(lobbyNameField).width(200).colspan(2).center().padBottom(20);
+        root.row();
+        passwordField.setMessageText("password");
+        passwordField.setVisible(false);
+        root.add(passwordField).width(200).colspan(2).center().padBottom(20);
         root.row();
         visibleBox.setChecked(true);
         root.add(privateBox).colspan(2).center();
@@ -91,19 +96,36 @@ public class LobbyScreen implements Screen {
             for (LobbyDto lobby : lobbies) {
                 if (!lobby.isVisible()) continue;
                 Label nameLabel = new Label("Lobby: " + lobby.getName(), skin);
-                Label codeLabel = new Label("Id: " + lobby.getId(), skin);
+                Label codeLabel = new Label(lobby.getPlayerUsernames().size() + "player", skin);
+                Label playersLabel = new Label("", skin);
+                StringBuilder s = new StringBuilder();
+                s.append("Players: ");
+                for (int i = 0; i < lobby.getPlayerUsernames().size(); i++) {
+                    s.append("\"" + lobby.getPlayerUsernames().get(i) + "\"");
+                }
+                playersLabel.setText(s);
                 TextButton joinButton = new TextButton("Join", skin);
+                TextField pass = new TextField("", skin);
+                pass.setMessageText("pass");
+                pass.setWidth(100);
 
                 joinButton.addListener(new ClickListener() {
                     public void clicked(InputEvent event, float x, float y) {
                         try {
                             if (lobby.isPrivate()) {
-                                return;
+                                if (pass.getText().equals(lobby.getPassword())){
+                                    LobbyDto joined = apiClient.joinLobbyByCode(lobby.getInviteCode());
+                                    System.out.println("Joined lobby: " + joined.getName());
+                                    Main.getMain().getScreen().dispose();
+                                    Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, App.getLoggedInUser().getUsername()));
+                                }
                             }
-                            LobbyDto joined = apiClient.joinLobbyByCode(lobby.getInviteCode());
-                            System.out.println("Joined lobby: " + joined.getName());
-                            Main.getMain().getScreen().dispose();
-                            Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, App.getLoggedInUser().getUsername()));
+                            else {
+                                LobbyDto joined = apiClient.joinLobbyByCode(lobby.getInviteCode());
+                                System.out.println("Joined lobby: " + joined.getName());
+                                Main.getMain().getScreen().dispose();
+                                Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, App.getLoggedInUser().getUsername()));
+                            }
                         } catch (Exception e) {
                             System.err.println("Error joining lobby:");
                             e.printStackTrace();
@@ -112,8 +134,14 @@ public class LobbyScreen implements Screen {
                 });
 
                 lobbyTable.add(nameLabel).left().pad(5);
-                lobbyTable.add(codeLabel).left().pad(5);
-                lobbyTable.add(joinButton).pad(5);
+                lobbyTable.add(codeLabel).left().pad(1);
+                lobbyTable.row();
+                lobbyTable.add(playersLabel).left().pad(5);
+                lobbyTable.row();
+                if (lobby.isPrivate()) {
+                    lobbyTable.add(pass).left();
+                }
+                lobbyTable.add(joinButton);
                 lobbyTable.row();
             }
 
@@ -128,6 +156,11 @@ public class LobbyScreen implements Screen {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (privateBox.isChecked()) {
+            passwordField.setVisible(true);
+        } else {
+            passwordField.setVisible(false);
+        }
         stage.act(delta);
         stage.draw();
     }
@@ -154,33 +187,34 @@ public class LobbyScreen implements Screen {
     }
 
     private void setListeners() {
-        createLobbyBtn = new TextButton("➕ Create Lobby",   GameAssetManagerClient.getGameAssetManager().getSkin());
+        createLobbyBtn = new TextButton("➕ Create Lobby", GameAssetManagerClient.getGameAssetManager().getSkin());
         createLobbyBtn.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 try {
                     LobbyDto newLobby = apiClient.createLobby(
                         lobbyNameField.getText(),
                         privateBox.isChecked(),
-                        visibleBox.isChecked()
+                        visibleBox.isChecked(),
+                        passwordField.getText()
                     );
                     System.out.println("Lobby created: " + newLobby.getInviteCode());
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new LobbyRoomScreen(newLobby, apiClient, App.getLoggedInUser().getUsername()));
-                    refreshLobbyList(  GameAssetManagerClient.getGameAssetManager().getSkin());
+                    refreshLobbyList(GameAssetManagerClient.getGameAssetManager().getSkin());
                 } catch (Exception e) {
                     System.err.println("Error while creating lobby:");
                     e.printStackTrace();
                 }
             }
         });
-        joinCodeBtn = new TextButton("Join",   GameAssetManagerClient.getGameAssetManager().getSkin());
+        joinCodeBtn = new TextButton("Join", GameAssetManagerClient.getGameAssetManager().getSkin());
         joinCodeBtn.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 if (!codeField.getText().isEmpty()) {
                     try {
                         LobbyDto joined = apiClient.joinLobbyByCode(codeField.getText());
                         System.out.println("Joined lobby: " + joined.getName());
-                        refreshLobbyList(  GameAssetManagerClient.getGameAssetManager().getSkin());
+                        refreshLobbyList(GameAssetManagerClient.getGameAssetManager().getSkin());
                         Main.getMain().getScreen().dispose();
                         Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, App.getLoggedInUser().getUsername()));
                     } catch (Exception e) {

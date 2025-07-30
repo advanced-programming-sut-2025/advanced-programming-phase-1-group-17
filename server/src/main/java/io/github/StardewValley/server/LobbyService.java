@@ -30,14 +30,14 @@ public class LobbyService {
         this.userRepository = userRepository;
     }
 
-    public Lobby getById(String inviteCode) {
-        Optional<Lobby> lobby = lobbyRepository.findByInviteCode(inviteCode);
+    public Lobby getById(Long Id) {
+        Optional<Lobby> lobby = lobbyRepository.findById(Id);
         return lobby.orElse(null);
     }
 
-    public LobbyDto createLobby(String name, boolean isPrivate, boolean isVisible, String adminUsername) {
+    public LobbyDto createLobby(String name, boolean isPrivate, boolean isVisible, String adminUsername,String password) {
         String inviteCode = UUID.randomUUID().toString().substring(0, 6);
-        Lobby lobby = new Lobby(name, inviteCode, isPrivate, isVisible, adminUsername);
+        Lobby lobby = new Lobby(name, inviteCode, isPrivate, isVisible, adminUsername,password);
         lobby.getPlayerUsernames().add(adminUsername);
         lobbyRepository.save(lobby);
         return toDto(lobby);
@@ -63,6 +63,18 @@ public class LobbyService {
         if (optionalLobby.isEmpty()) return false;
         Lobby lobby = optionalLobby.get();
         lobby.getPlayerUsernames().remove(username);
+        if (lobby.getPlayerUsernames().isEmpty()) {
+            lobbyRepository.delete(lobby);
+        } else {
+            lobbyRepository.save(lobby);
+        }
+        return true;
+    }
+    public boolean changeAdminUserName(Long lobbyId) {
+        Optional<Lobby> optionalLobby = lobbyRepository.findById(lobbyId);
+        if (optionalLobby.isEmpty()) return false;
+        Lobby lobby = optionalLobby.get();
+        lobby.setAdminUsername(lobby.getPlayerUsernames().get(1));
         if (lobby.getPlayerUsernames().isEmpty()) {
             lobbyRepository.delete(lobby);
         } else {
@@ -130,7 +142,8 @@ public class LobbyService {
             lobby.isVisible(),
             lobby.getStatus(),
             lobby.getAdminUsername(),
-            lobby.getPlayerUsernames()
+            lobby.getPlayerUsernames(),
+            lobby.getPassword()
         );
     }
     public UserDTO userDTO(User user) {
@@ -175,4 +188,5 @@ public class LobbyService {
             game.getDate().toString()
         );
     }
+
 }

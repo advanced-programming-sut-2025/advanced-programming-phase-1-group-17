@@ -15,6 +15,7 @@ public class Lobby {
 
     private String name;
     private String inviteCode;
+    private String password;
     private boolean isPrivate;
     private boolean isVisible;
 
@@ -26,14 +27,16 @@ public class Lobby {
     @ElementCollection
     private List<String> playerUsernames = new ArrayList<>();
 
-    public Lobby() {}
+    public Lobby() {
+    }
 
-    public Lobby(String name, String inviteCode, boolean isPrivate, boolean isVisible, String adminUsername) {
+    public Lobby(String name, String inviteCode, boolean isPrivate, boolean isVisible, String adminUsername, String password) {
         this.name = name;
         this.inviteCode = inviteCode;
         this.isPrivate = isPrivate;
         this.isVisible = isVisible;
         this.adminUsername = adminUsername;
+        this.password = password;
     }
 
     public Long getId() {
@@ -98,6 +101,14 @@ public class Lobby {
 
     public void setPlayerUsernames(List<String> playerUsernames) {
         this.playerUsernames = playerUsernames;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 
