@@ -8,57 +8,57 @@ public enum TreeType {
     ApricotTree(SaplingType.ApricotSapling, List.of(7, 7, 7, 7), 28, FruitType.Apricot, 1, List.of(Season.Spring),
         new String[] {
             //"assets/Trees/Apricot_Stage_1.png",
-            "assets/Trees/Apricot_Stage_2.png", "assets/Trees/Apricot_Stage_3.png",
-            "assets/Trees/Apricot_Stage_4.png", "assets/Trees/Apricot_Stage_5.png"
+            "assets/Trees/Apricot_Stage_1.png", "assets/Trees/Apricot_Stage_2.png",
+            "assets/Trees/Apricot_Stage_3.png", "assets/Trees/Apricot_Stage_4.png"
         },
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
     CherryTree(SaplingType.CherrySapling, List.of(7, 7, 7, 7), 28, FruitType.Cherry, 1, List.of(Season.Spring),
         new String[] {
             //"assets/Trees/Cherry_Stage_1.png",
-            "assets/Trees/Cherry_Stage_2.png", "assets/Trees/Cherry_Stage_3.png",
-            "assets/Trees/Cherry_Stage_4.png", "assets/Trees/Cherry_Stage_5.png"
+            "assets/Trees/Cherry_Stage_1.png", "assets/Trees/Cherry_Stage_2.png",
+            "assets/Trees/Cherry_Stage_3.png", "assets/Trees/Cherry_Stage_4.png"
         },
         "assets/Trees/Cherry_Stage_5_Fruit.png"),
     BananaTree(SaplingType.BananaSapling, List.of(7, 7, 7, 7), 28, FruitType.Banana, 1, List.of(Season.Summer),
         new String[] {
             //"assets/Trees/Banana_Stage_1.png",
-            "assets/Trees/Banana_Stage_2.png", "assets/Trees/Banana_Stage_3.png",
-            "assets/Trees/Banana_Stage_4.png", "assets/Trees/Banana_Stage_5.png"
+            "assets/Trees/Banana_Stage_1.png", "assets/Trees/Banana_Stage_2.png",
+            "assets/Trees/Banana_Stage_3.png", "assets/Trees/Banana_Stage_4.png"
         },
         "assets/Trees/Banana_Stage_5_Fruit.png"),
     MangoTree(SaplingType.MangoSapling, List.of(7, 7, 7, 7), 28, FruitType.Mango, 1, List.of(Season.Summer),
         new String[] {
             //"assets/Trees/Mango_Stage_1.png",
-            "assets/Trees/Mango_Stage_2.png", "assets/Trees/Mango_Stage_3.png",
-            "assets/Trees/Mango_Stage_4.png", "assets/Trees/Mango_Stage_5.png"
+            "assets/Trees/Mango_Stage_1.png", "assets/Trees/Mango_Stage_2.png",
+            "assets/Trees/Mango_Stage_3.png", "assets/Trees/Mango_Stage_4.png"
         },
         "assets/Trees/Mango_Stage_5_Fruit.png"),
     OrangeTree(SaplingType.OrangeSapling, List.of(7, 7, 7, 7), 28, FruitType.Orange, 1, List.of(Season.Summer),
         new String[] {
             //"assets/Trees/Orange_Stage_1.png",
-            "assets/Trees/Orange_Stage_2.png", "assets/Trees/Orange_Stage_3.png",
-            "assets/Trees/Orange_Stage_4.png", "assets/Trees/Orange_Stage_5.png"
+            "assets/Trees/Orange_Stage_1.png", "assets/Trees/Orange_Stage_2.png",
+            "assets/Trees/Orange_Stage_3.png", "assets/Trees/Orange_Stage_4.png"
         },
         "assets/Trees/Orange_Stage_5_Fruit.png"),
     PeachTree(SaplingType.PeachSapling, List.of(7, 7, 7, 7), 28, FruitType.Peach, 1, List.of(Season.Summer),
         new String[] {
             //"assets/Trees/Peach_Stage_1.png",
-            "assets/Trees/Peach_Stage_2.png", "assets/Trees/Peach_Stage_3.png",
-            "assets/Trees/Peach_Stage_4.png", "assets/Trees/Peach_Stage_5.png"
+            "assets/Trees/Peach_Stage_1.png", "assets/Trees/Peach_Stage_2.png",
+            "assets/Trees/Peach_Stage_3.png", "assets/Trees/Peach_Stage_4.png"
         },
         "assets/Trees/Peach_Stage_5_Fruit.png"),
     AppleTree(SaplingType.AppleSapling, List.of(7, 7, 7, 7), 28, FruitType.Apple, 1, List.of(Season.Fall),
         new String[] {
             //"assets/Trees/Apple_Stage_1.png",
-            "assets/Trees/Apple_Stage_2.png", "assets/Trees/Apple_Stage_3.png",
-            "assets/Trees/Apple_Stage_4.png", "assets/Trees/Apple_Stage_5.png"
+            "assets/Trees/Apple_Stage_1.png", "assets/Trees/Apple_Stage_2.png",
+            "assets/Trees/Apple_Stage_3.png", "assets/Trees/Apple_Stage_4.png"
         },
         "assets/Trees/Apple_Stage_5_Fruit.png"),
     PomegranateTree(SaplingType.PomegranateSapling, List.of(7, 7, 7, 7), 28, FruitType.Pomegranate, 1, List.of(Season.Fall),
         new String[] {
             //"assets/Trees/Pomegranate_Stage_1.png",
-            "assets/Trees/Pomegranate_Stage_2.png", "assets/Trees/Pomegranate_Stage_3.png",
-            "assets/Trees/Pomegranate_Stage_4.png", "assets/Trees/Pomegranate_Stage_5.png"
+            "assets/Trees/Pomegranate_Stage_1.png", "assets/Trees/Pomegranate_Stage_2.png",
+            "assets/Trees/Pomegranate_Stage_3.png", "assets/Trees/Pomegranate_Stage_4.png"
         },
         "assets/Trees/Pomegranate_Stage_5_Fruit.png"),
 
@@ -66,8 +66,8 @@ public enum TreeType {
     OakTree(SaplingType.Acorns, List.of(7, 7, 7, 7), 28, FruitType.Oak_Resin, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             //"assets/Trees/Oak_Stage_1.png",
-            "assets/Trees/Oak_Stage_2.png", "assets/Trees/Oak_Stage_3.png",
-            "assets/Trees/Oak_Stage_4.png", "assets/Trees/Oak_Stage_5.png"
+            "assets/Trees/Oak_Stage_1.png", "assets/Trees/Oak_Stage_2.png",
+            "assets/Trees/Oak_Stage_3.png", "assets/Trees/Oak_Stage_4.png"
         },
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
 
@@ -75,8 +75,8 @@ public enum TreeType {
     MapleTree(SaplingType.MapleSeeds, List.of(7, 7, 7, 7), 28, FruitType.Maple_Syrup, 9, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             //"assets/Trees/Maple_Stage_1.png",
-            "assets/Trees/Maple_Stage_2.png", "assets/Trees/Maple_Stage_3.png",
-            "assets/Trees/Maple_Stage_4.png", "assets/Trees/Maple_Stage_5.png"
+            "assets/Trees/Maple_Stage_1.png", "assets/Trees/Maple_Stage_2.png",
+            "assets/Trees/Maple_Stage_3.png", "assets/Trees/Maple_Stage_4.png"
         },
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
 
@@ -84,8 +84,8 @@ public enum TreeType {
     PineTree(SaplingType.PineCones, List.of(7, 7, 7, 7), 28, FruitType.Pine_Cone, 5, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             //"assets/Trees/Pine_Stage_1.png",
-            "assets/Trees/Pine_Stage_2.png", "assets/Trees/Pine_Stage_3.png",
-            "assets/Trees/Pine_Stage_4.png", "assets/Trees/Pine_Stage_5.png"
+            "assets/Trees/Pine_Stage_1.png", "assets/Trees/Pine_Stage_2.png",
+            "assets/Trees/Pine_Stage_3.png", "assets/Trees/Pine_Stage_4.png"
         },
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
 
@@ -93,8 +93,8 @@ public enum TreeType {
     MahoganyTree(SaplingType.MahoganySeeds, List.of(7, 7, 7, 7), 28, FruitType.Sap, 1, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             //"assets/Trees/Mahogany_Stage_1.png",
-            "assets/Trees/Mahogany_Stage_2.png", "assets/Trees/Mahogany_Stage_3.png",
-            "assets/Trees/Mahogany_Stage_4.png", "assets/Trees/Mahogany_Stage_5.png"
+            "assets/Trees/Mahogany_Stage_1.png", "assets/Trees/Mahogany_Stage_2.png",
+            "assets/Trees/Mahogany_Stage_3.png", "assets/Trees/Mahogany_Stage_4.png"
         },
         "assets/Trees/Apricot_Stage_5_Fruit.png"),
 
@@ -111,8 +111,8 @@ public enum TreeType {
     MysticTree(SaplingType.MysticTreeSeeds, List.of(7, 7, 7, 7), 28, FruitType.Mystic_Syrup, 7, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter),
         new String[] {
             //"assets/Trees/Mystic_Tree_Stage_1.png",
-            "assets/Trees/Mystic_Tree_Stage_2.png", "assets/Trees/Mystic_Tree_Stage_3.png",
-            "assets/Trees/Mystic_Tree_Stage_4.png", "assets/Trees/Mystic_Tree_Stage_5.png"
+            "assets/Trees/Mystic_Tree_Stage_1.png", "assets/Trees/Mystic_Tree_Stage_2.png",
+            "assets/Trees/Mystic_Tree_Stage_3.png", "assets/Trees/Mystic_Tree_Stage_4.png"
         },
         "assets/Trees/Apricot_Stage_5_Fruit.png");
 
