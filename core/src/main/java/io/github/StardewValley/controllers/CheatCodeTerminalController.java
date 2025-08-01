@@ -1,5 +1,7 @@
 package io.github.StardewValley.controllers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
 import io.github.StardewValley.models.*;
@@ -20,6 +22,13 @@ public class CheatCodeTerminalController {
 
     public void setView(CheatCodeTerminal cheatCodeTerminal) {
         this.view = cheatCodeTerminal;
+    }
+
+    public void handlePlayerInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(Main.getGameView());
+        }
     }
 
     public void handleCommand(String command) {

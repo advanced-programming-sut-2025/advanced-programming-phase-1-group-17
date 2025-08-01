@@ -379,33 +379,33 @@ public class PlayerMap {
     }
 
     private void createShippingBins() {
-        if (Tile.getTile(30, 30).getPlaceable() == null) {
-            Tile.getTile(30, 30).setPlaceable(new ShippingBin());
+        if (Tile.getTile(10, 5).getPlaceable() == null) {
+            Tile.getTile(10, 5).setPlaceable(new ShippingBin(10, 5));
         }
-        if (Tile.getTile(30, 130).getPlaceable() == null) {
-            Tile.getTile(30, 130).setPlaceable(new ShippingBin());
+        if (Tile.getTile(30, 230).getPlaceable() == null) {
+            Tile.getTile(30, 230).setPlaceable(new ShippingBin(30, 230));
         }
-        if (Tile.getTile(180, 30).getPlaceable() == null) {
-            Tile.getTile(180, 30).setPlaceable(new ShippingBin());
+        if (Tile.getTile(280, 30).getPlaceable() == null) {
+            Tile.getTile(280, 30).setPlaceable(new ShippingBin(280, 30));
         }
         if (Tile.getTile(180, 130).getPlaceable() == null) {
-            Tile.getTile(180, 130).setPlaceable(new ShippingBin());
+            Tile.getTile(180, 130).setPlaceable(new ShippingBin(180, 130));
         }
         if (Tile.getTile(70, 50).getPlaceable() == null) {
-            Tile.getTile(70, 50).setPlaceable(new ShippingBin());
+            Tile.getTile(70, 50).setPlaceable(new ShippingBin(70, 50));
 
         }
-        if (Tile.getTile(70, 50).getPlaceable() == null) {
-            Tile.getTile(70, 50).setPlaceable(new ShippingBin());
+        if (Tile.getTile(70, 250).getPlaceable() == null) {
+            Tile.getTile(70, 250).setPlaceable(new ShippingBin(70, 250));
         }
         if (Tile.getTile(100, 105).getPlaceable() == null) {
-            Tile.getTile(100, 105).setPlaceable(new ShippingBin());
+            Tile.getTile(100, 105).setPlaceable(new ShippingBin(100, 105));
         }
-        if (Tile.getTile(120, 50).getPlaceable() == null) {
-            Tile.getTile(120, 50).setPlaceable(new ShippingBin());
+        if (Tile.getTile(220, 50).getPlaceable() == null) {
+            Tile.getTile(220, 50).setPlaceable(new ShippingBin(220, 50));
         }
-        if (Tile.getTile(120, 150).getPlaceable() == null) {
-            Tile.getTile(120, 150).setPlaceable(new ShippingBin());
+        if (Tile.getTile(220, 250).getPlaceable() == null) {
+            Tile.getTile(220, 250).setPlaceable(new ShippingBin(220, 250));
         }
     }
 

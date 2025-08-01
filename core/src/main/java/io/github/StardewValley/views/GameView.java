@@ -32,6 +32,7 @@ import io.github.StardewValley.models.animal.AnimalPlaceType;
 import io.github.StardewValley.models.animal.AnimalType;
 import io.github.StardewValley.models.crafting.CraftingItem;
 import io.github.StardewValley.models.map.GreenHouse;
+import io.github.StardewValley.models.market.ShippingBin;
 import io.github.StardewValley.models.market.StoreType;
 
 import java.util.ArrayList;
@@ -372,6 +373,9 @@ public class GameView implements Screen, InputProcessor {
             return true;
         if(handleToolUse(worldCoordinates))
             return true;
+        if (handleShippingBin(worldCoordinates)) {
+            return true;
+        }
         return checkStoreBounds(worldCoordinates);
     }
 
@@ -515,13 +519,37 @@ public class GameView implements Screen, InputProcessor {
             if (bounds.get(greenHouse).contains(worldCoordinates.x, worldCoordinates.y)) {
                 if (greenHouse.isActive()) {
                     GreenHouse.getGreenHouseBounds().remove(greenHouse);
-                    continue;
+                    return true;
                 }
-                if (!greenHouse.getOwner().equals(App.getCurrentGame().getCurrentPlayingPlayer()))
-                    continue;
+                if (!greenHouse.getOwner().equals(App.getCurrentGame().getCurrentPlayingPlayer())) {
+                    showNotification("This greenhouse is not yours.");
+                    return true;
+                }
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new GreenHouseBuildScreen(
                     new GreenHouseBuildController(),
+                    GameAssetManager.getGameAssetManager().getSkin()
+                ));
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean handleShippingBin(Vector3 worldCoordinates) {
+        HashMap<ShippingBin, Rectangle> bounds = ShippingBin.getShippingBinBounds();
+        for (ShippingBin shippingBin : bounds.keySet()) {
+            if (bounds.get(shippingBin).contains(worldCoordinates.x, worldCoordinates.y)) {
+                if (shippingBin.getTodayItemOwner() != null && !shippingBin.getTodayItemOwner().equals(App.getCurrentGame().getCurrentPlayingPlayer())) {
+                    showNotification("Player %s has put some items inside this shipping Bin today.\n Try using another shipping Bin."
+                        .formatted(shippingBin.getTodayItemOwner().getUser().getUsername()));
+                    return true;
+                }
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new ShippingBinScreen(
+                    shippingBin,
+                    new ShippingBinScreenController(),
                     GameAssetManager.getGameAssetManager().getSkin()
                 ));
                 return true;
@@ -540,5 +568,9 @@ public class GameView implements Screen, InputProcessor {
             System.out.println("Notification dismissed!");
         });
         stage.addActor(window); // Add to current stage
+    }
+
+    public HUD getHud() {
+        return hud;
     }
 }

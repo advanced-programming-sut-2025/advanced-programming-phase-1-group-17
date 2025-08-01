@@ -1,5 +1,6 @@
 package io.github.StardewValley.models.map;
 
+import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.LightningController;
 import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.NPCS.NPC;
@@ -136,11 +137,17 @@ public class Tile {
     public void lightningStrike() {
         LightningController.getLightningController().triggerLightning();
         if (placeable instanceof Tree tree) {
-            if (!tree.isInsideGreenhouse())
+            if (!tree.isInsideGreenhouse()) {
                 placeable = new Mineral(MineralType.Coal, false);
+                Main.getGameView().showNotification("Tree (%s) in tile (%d, %d) was lightninged."
+                    .formatted(tree.getType().name(), tree.getTile().getX(), tree.getTile().getY()));
+            }
         } else if (placeable instanceof Crop crop) {
-            if (!crop.isInsideGreenhouse())
+            if (!crop.isInsideGreenhouse()) {
                 crop.getTile().setPlaceable(null);
+                Main.getGameView().showNotification("Tree (%s) in tile (%d, %d) was lightninged."
+                    .formatted(crop.getType().name(), crop.getTile().getX(), crop.getTile().getY()));
+            }
         }
     }
 

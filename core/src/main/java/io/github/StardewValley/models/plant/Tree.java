@@ -13,7 +13,7 @@ public class Tree extends Plant implements Placeable {
     public Tree(boolean isForaging, TreeType treeType, Tile tile, boolean isInsideGreenHouse) {
         super(isForaging, tile, isInsideGreenHouse);
         this.type = treeType;
-        this.daysTillNextHarvest = 0;
+        this.daysTillNextHarvest = type.getFruitHarvestCycle();
 
         String[] paths = type.getStageTexturePaths();
         this.textures = new Texture[paths.length];
@@ -43,7 +43,7 @@ public class Tree extends Plant implements Placeable {
 
     void handleStages() {
         this.whichDayOfStage++;
-        if (getDaysTillFullGrowth() == 0) {
+        if (getDaysTillFullGrowth() <= 0) {
             this.isFullyGrown = true;
             return;
         }
@@ -61,8 +61,10 @@ public class Tree extends Plant implements Placeable {
         if (daysTillNextHarvest == 0) {
             daysTillNextHarvest = type.getFruitHarvestCycle();
             hasFruit = true;
-        } else
-            daysTillNextHarvest--;
+        } else {
+            if (!hasFruit)
+                daysTillNextHarvest--;
+        }
     }
 
     public TreeType getType() {
@@ -75,7 +77,7 @@ public class Tree extends Plant implements Placeable {
 
     @Override
     public void harvest() {
-        if(!hasFruit)
+        if(!hasFruit || !isFullyGrown)
             return;
         daysTillNextHarvest = type.getFruitHarvestCycle();
         this.hasFruit = false;

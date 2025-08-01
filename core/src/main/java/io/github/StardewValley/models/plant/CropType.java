@@ -17,7 +17,7 @@ public enum CropType implements BackPackableType {
     Cauliflower(SeedType.CauliflowerSeeds, List.of(1, 2, 4, 4, 1), 12, true, -1, 175, true, 75, List.of(Season.Spring), true,
         new String[] {"Crops/Cauliflower_Stage_1.png", "Crops/Cauliflower_Stage_2.png", "Crops/Cauliflower_Stage_3.png", "Crops/Cauliflower_Stage_4.png", "Crops/Cauliflower_Stage_5.png"}, "Crops/Cauliflower.png"),
     CoffeeBean(SeedType.CoffeeBean, List.of(1, 2, 2, 3, 2), 10, false, 2, 15, false, -1, List.of(Season.Spring, Season.Summer), false,
-        new String[] {"Crops/Coffee_Stage_1.png", "Crops/Coffee_Stage_2.png", "Crops/Coffee_Stage_3.png", "Crops/Coffee_Stage_4.png", "Crops/Coffee_Stage_5.png"}, "Crops/Coffee_Bean.png"),
+        new String[] {"Crops/Coffee_Stage_1.png", "Crops/Coffee_Stage_2.png", "Crops/Coffee_Stage_3.png", "Crops/Coffee_Stage_4.png", "Crops/Coffee_Stage_5.png"}, "Crops/Coffee_Stage_7.png"),
     Garlic(SeedType.GarlicSeeds, List.of(1, 1, 1, 1), 4, true, -1, 60, true, 20, List.of(Season.Spring), false,
         new String[] {"Crops/Garlic_Stage_1.png", "Crops/Garlic_Stage_2.png", "Crops/Garlic_Stage_3.png", "Crops/Garlic_Stage_4.png", "Crops/Garlic_Stage_5.png"}, "Crops/Garlic.png"),
     Kale(SeedType.KaleSeeds, List.of(1, 2, 2, 1), 6, true, -1, 110, true, 50, List.of(Season.Spring), false,
@@ -309,3 +309,5 @@ public enum CropType implements BackPackableType {
         return inventoryTexturePath;
     }
 }
+//cheat advance date 1d
+//cheat weather set Rainy

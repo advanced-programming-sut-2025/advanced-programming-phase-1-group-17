@@ -1,6 +1,9 @@
 package io.github.StardewValley.models.market;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.models.BackPackable;
 import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.Placeable;
@@ -15,14 +18,20 @@ import io.github.StardewValley.models.plant.Fruit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ShippingBin implements Placeable {
-    private static ArrayList<ShippingBin> allShippingBins = new ArrayList<>();
+public class ShippingBin implements Placeable, BackPackable {
+    private ShippingBinType type = ShippingBinType.Basic;
+    private static HashMap<ShippingBin, Rectangle> shippingBinBounds = new HashMap<>();
     private ArrayList<BackPackable> items = new ArrayList<>();
     //only one player can have items in a shipping bin each day
     private Player todayItemOwner = null;
 
-    public ShippingBin() {
-        allShippingBins.add(this);
+    public ShippingBin(int x, int y) {
+        shippingBinBounds.put(this, new Rectangle(
+                x * GameAssetManager.getGameAssetManager().getTileWidth(),
+                y * GameAssetManager.getGameAssetManager().getTileHeight(),
+                GameAssetManager.getGameAssetManager().getTileWidth(),
+                GameAssetManager.getGameAssetManager().getTileHeight())
+        );
     }
 
     public void addItem(BackPackable backPackable) {
@@ -30,7 +39,7 @@ public class ShippingBin implements Placeable {
     }
 
     public static void goToNextDay() {
-        for (ShippingBin shippingBin : allShippingBins) {
+        for (ShippingBin shippingBin : shippingBinBounds.keySet()) {
             double total = 0;
             for (BackPackable item : shippingBin.items) {
                 if (item.getClass().equals(Crop.class)) {
@@ -51,6 +60,8 @@ public class ShippingBin implements Placeable {
             if (shippingBin.todayItemOwner == null)
                 continue;
 
+            Main.getGameView().showNotification("Player %s earned %.0f coins from selling the items from shipping bin."
+                .formatted(shippingBin.todayItemOwner.getUser().getUsername(), total));
             shippingBin.todayItemOwner.getBackPack().addCoin(
                 Math.floor(total));
             shippingBin.items = new ArrayList<>();
@@ -68,7 +79,25 @@ public class ShippingBin implements Placeable {
 
     @Override
     public Texture getTexture() {
-        //TODO
-        return null;
+        return GameAssetManager.getGameAssetManager().getShippingBinTexture();
+    }
+
+    @Override
+    public String getName() {
+        return type.getName();
+    }
+
+    @Override
+    public double getPrice() {
+        return 125;
+    }
+
+    @Override
+    public BackPackableType getType() {
+        return type;
+    }
+
+    public static HashMap<ShippingBin, Rectangle> getShippingBinBounds() {
+        return shippingBinBounds;
     }
 }

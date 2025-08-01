@@ -55,6 +55,7 @@ public abstract class ForagingController {
             tile.setPlaceable(new NormalItem(NormalItemType.Fiber));
         else
             tile.setPlaceable(new NormalItem(NormalItemType.Grass));
+        tile.setWalkAble(false);
     }
 
     private static void setWoodForaging(Tile tile) {
