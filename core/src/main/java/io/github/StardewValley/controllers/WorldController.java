@@ -17,7 +17,6 @@ import io.github.StardewValley.models.market.Store;
 import io.github.StardewValley.models.market.StoreType;
 import io.github.StardewValley.models.plant.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class WorldController {
@@ -27,6 +26,7 @@ public class WorldController {
     private transient Texture backgroundTexture2;
     private int tileWidth;
     private int tileHeight;
+    private final int printPad = 30;
     private HashMap<Tree, float[]> treesInThisFrame = new HashMap<>();
     private HashMap<Crop, float[]> giantCropsInThisFrame = new HashMap<>();
 
@@ -73,9 +73,6 @@ public class WorldController {
                     Main.getBatch().draw(GameAssetManager.getGameAssetManager().getPlowedTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
                 if (tile.getPlaceable() == null)
                     continue;
-                    //TODO: will be deleted
-//                if (tile.getPlaceable().getTexture() == null)
-//                    continue;
                 printTileTexture(tile);
             }
         }
@@ -85,7 +82,6 @@ public class WorldController {
         drawStores();
         drawTrees();
         drawGiantCrops();
-        Main.getBatch().draw(TreeAssetManager.getTreeAssetManager().getFullyGrownTexture(TreeType.ApricotTree, Season.Spring), 0, 0);
     }
 
     private void drawGiantCrops() {
@@ -115,14 +111,9 @@ public class WorldController {
     }
 
     private void printTileTexture(Tile tile) {
-        Texture texture = null;
-        float printX = 0, printY = 0;
-        if (tile.getPlaceable().getTexture() != null) {
-            texture = tile.getPlaceable().getTexture();
-            printX = (tile.getX() * tileWidth) +
-                ((tileWidth - texture.getWidth()) / 2f);
-            printY = (tile.getY() * tileHeight) + 10;
-        }
+        Texture texture = tile.getPlaceable().getTexture();
+        float printX = tile.getX() * tileWidth + printPad, printY = tile.getY() * tileHeight + 20;
+        float printWidth = tileWidth - 2 * printPad, printHeight = tileHeight - 2 * printPad;
 
         if (tile.getPlaceable() instanceof Crop crop) {
             if (crop.isGiant()) {
@@ -151,7 +142,14 @@ public class WorldController {
             }
             case NPC npc when npc.isNPC() ->
                 Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-            case null, default -> Main.getBatch().draw(texture, printX, printY);
+            case NormalItem normalItem when normalItem.getType().equals(NormalItemType.Grass) ->
+                Main.getBatch().draw(normalItem.getGrassTextureRegion(),
+                    printX, printY,
+                    printWidth, printHeight);
+            case Lake lake -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+            case null, default -> Main.getBatch().draw(texture,
+                printX,  printY,
+                printWidth, printHeight);
         }
     }
 

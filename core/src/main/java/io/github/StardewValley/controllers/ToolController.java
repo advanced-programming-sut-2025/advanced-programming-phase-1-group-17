@@ -144,7 +144,7 @@ public class ToolController {
                 energy--;
                 energy = Math.max(energy, 0);
                 player.setEnergy(player.getEnergy() - energy * leverage);
-                return new Result(false, "This type of pickaxe(%s) cannot break this mineral(%s)".formatted(
+                return new Result(false, "This type of Pickaxe (%s) cannot break this mineral (%s)".formatted(
                     tool.getMaterial(),
                     mineral.getType().name()
                     ));
@@ -161,7 +161,8 @@ public class ToolController {
 
             if (player.getAbilities().getMiningLevel() >= 2) {
                 player.getBackPack().addItemToInventory(mineral);
-                return new Result(true, "stone broke successfully and you also got 1 more because of mining level");
+                tile.setWalkAble(true);
+                return new Result(false, "stone broke successfully and you also got 1 more because of mining level");
             }
 
         } else if (tile.isPlowed()) {
@@ -171,6 +172,7 @@ public class ToolController {
             return new Result(true, "unplowed successfully");
         } else if (tile.getPlaceable() instanceof BackPackable item) {
             tile.setPlaceable(null);
+            tile.setWalkAble(true);
             energy = Math.max(energy, 0);
             player.setEnergy(player.getEnergy() - energy * leverage);
             return new Result(true, item.getName() + " destroyed successfully");
@@ -200,13 +202,14 @@ public class ToolController {
                 tile.setPlaceable(null);
                 player.getAbilities().increaseForagingAbility();
                 player.setEnergy(player.getEnergy() - energy * leverage);
-                return new Result(true, "you destroyed wood");
+                tile.setWalkAble(true);
+                return new Result(false, "You destroyed Wood");
             }
         }
         energy--;
         energy = Math.max(energy, 0);
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return new Result(true, "you used axe but incorrectly");
+        return new Result(false, "You used Axe but incorrectly");
     }
 
 
@@ -238,23 +241,41 @@ public class ToolController {
     private Result useScythe() {
         player.setEnergy(player.getEnergy() - 2 * leverage);
         if (tile.getPlaceable() instanceof NormalItem normalItem) {
-            if (normalItem.getType().equals(NormalItemType.Grass))
+            if (normalItem.getType().equals(NormalItemType.Grass)) {
                 tile.setPlaceable(null);
+                tile.setWalkAble(true);
+            }
             else if (normalItem.getType().equals(NormalItemType.Fiber)) {
                 tile.setPlaceable(null);
-                player.getBackPack().addItemToInventory(new NormalItem(NormalItemType.Fiber));
+                tile.setWalkAble(true);
+                player.getBackPack().addItemToInventory(normalItem);
             }
         } else if (tile.getPlaceable() instanceof Plant plant) {
             player.getAbilities().increaseFarmingAbility();
             if (plant instanceof Tree tree) {
+                if (!tree.isFullyGrown()) {
+                    return new Result(false, "Tree (%s) is not Fully Grown Yet\n(Days till Fully Growth: %d)"
+                        .formatted(tree.getType().name(), tree.getDaysTillFullGrowth()));
+                }
+                else if (!tree.hasFruit()) {
+                    return new Result(false, "Tree (%s) is Fully Grown but doesn't have fruit today\n(Days till next harvest time: %d)"
+                        .formatted(tree.getType().name(), tree.getDaysTillNextHarvest()));
+                }
                 tree.harvest();
                 Fruit fruit = new Fruit(tree.getType().getFruitType());
                 fruit.setItemQuality();
-                player.getBackPack().addItemToInventory(
-                    fruit);
+                player.getBackPack().addItemToInventory(fruit);
                 if (tree.isForaging())
                     player.getAbilities().increaseForagingAbility();
             } else if (plant instanceof Crop crop) {
+                if (!crop.isFullyGrown()) {
+                    return new Result(false, "Crop (%s) is not Fully Grown Yet\n(Days till Fully Growth: %d)"
+                        .formatted(crop.getName(), crop.getDaysTillFullGrowth()));
+                }
+                else if (!crop.hasFruit()) {
+                    return new Result(false, "Crop (%s) is Fully Grown but doesn't have fruit today\n(Days till next harvest time: %d)"
+                        .formatted(crop.getName(), crop.getDaysTillNextHarvest()));
+                }
                 crop.harvest();
             }
         }

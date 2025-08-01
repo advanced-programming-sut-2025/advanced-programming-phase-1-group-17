@@ -8,7 +8,6 @@ public enum NormalItemType implements BackPackableType{
     Fiber(0, "Resource/Fiber.png"),
     Hay(50, "Hay.png"),
     Well(500, ""),
-    ShippingBin(125, ""),
     JojaCola(37.5, "Concessions/Joja_Cola_%28large%29.png"),
     GrassStarter(62.5, "Crafting/Grass_Starter.png"),
     Sugar(50, "Ingredient/Sugar.png"),

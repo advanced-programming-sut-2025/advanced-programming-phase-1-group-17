@@ -8,6 +8,7 @@ import io.github.StardewValley.models.NormalItemType;
 import io.github.StardewValley.models.enums.Season;
 import io.github.StardewValley.models.market.StoreType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -33,6 +34,8 @@ public class GameAssetManager {
 
     private final HashMap<Season, Texture> seasonalMapTextures = new HashMap<>();
     private final HashMap<StoreType, HashMap<Season, TextureRegion>> storeTextures = new HashMap<>();
+    private final Texture shippingBinTexture = new Texture("Chest/ChestOrange.png");
+
     private final HashMap<String, Texture> abilityTextures = new HashMap<>() {{
         put("Farming", new Texture("Skill/Farming_Skill_Icon.png"));
         put("Fishing", new Texture("Skill/Fishing_Skill_Icon.png"));
@@ -41,10 +44,30 @@ public class GameAssetManager {
     }};
 
     private final HashMap<NormalItemType, Texture> normalItemTextures = new HashMap<>();
+    private final ArrayList<TextureRegion> grassTextures = new ArrayList<>();
 
     private GameAssetManager() {
         loadStoreTextures();
         loadNormalItemTextures();
+        loadGrassTextures();
+    }
+
+    private void loadGrassTextures() {
+        Texture texture = new Texture("sprites/Grass.png");
+        int grassHeight = texture.getHeight() / 12;
+        for (int row = 0; row < 12; row++) {
+            if (row == 7)
+                continue;
+            for (int column = 0; column < 3; column++) {
+                grassTextures.add(new TextureRegion(
+                    texture,
+                    12 * column,
+                    grassHeight * row,
+                    12,
+                    grassHeight
+                ));
+            }
+        }
     }
 
     public static GameAssetManager getGameAssetManager() {
@@ -108,7 +131,7 @@ public class GameAssetManager {
 
     private void loadNormalItemTextures() {
         for (NormalItemType normalItemType : NormalItemType.values()) {
-            if (normalItemType.equals(NormalItemType.Well) || normalItemType.equals(NormalItemType.ShippingBin)) {
+            if (normalItemType.equals(NormalItemType.Well)) {
                 continue;
             }
             normalItemTextures.put(normalItemType, new Texture(normalItemType.getTexturePath()));
@@ -157,5 +180,13 @@ public class GameAssetManager {
 
     public Texture getNormalItemTexture(NormalItemType normalItemType) {
         return normalItemTextures.get(normalItemType);
+    }
+
+    public ArrayList<TextureRegion> getGrassTextures() {
+        return grassTextures;
+    }
+
+    public Texture getShippingBinTexture() {
+        return shippingBinTexture;
     }
 }

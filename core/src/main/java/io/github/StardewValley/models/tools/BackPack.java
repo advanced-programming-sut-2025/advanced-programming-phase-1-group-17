@@ -8,6 +8,8 @@ import io.github.StardewValley.models.enums.BackPackType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BackPack {
     //Attention: It seems there is only one backpack of each type in the whole game

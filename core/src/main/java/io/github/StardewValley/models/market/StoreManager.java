@@ -286,7 +286,7 @@ public class StoreManager {
         ));
 
         carpenterInventory.addItem(new ShopItem(
-            NormalItemType.ShippingBin,
+            ShippingBinType.Basic,
             250,
             new HashMap<>(Map.of(
                 NormalItemType.Wood, 150

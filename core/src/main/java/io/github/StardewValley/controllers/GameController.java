@@ -12,7 +12,6 @@ import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.models.Game;
 import io.github.StardewValley.models.Player;
 import io.github.StardewValley.models.animal.*;
-import io.github.StardewValley.models.foraging.ForagingTree;
 import io.github.StardewValley.models.map.Lake;
 import io.github.StardewValley.models.plant.*;
 import io.github.StardewValley.views.*;
@@ -41,6 +40,7 @@ public class GameController {
     private final ToolController toolController;
     private final LightningController lightningController;
     private final FarmingController farmingController;
+    private final CrowAttackEffect crowAttackEffect;
 
     private Player player;
 
@@ -64,6 +64,7 @@ public class GameController {
         this.mapHeightInPixels = worldController.getTileHeight();
 
         this.farmingController = new FarmingController();
+        this.crowAttackEffect = new CrowAttackEffect();
         initializeStoreRectangles();
         App.setCamera(this.camera);
     }
@@ -143,21 +144,10 @@ public class GameController {
 
             lightningController.updateLightning(delta);
             lightningController.renderLightning(Main.getBatch());
-        }
-        if(Gdx.input.isTouched()) {
-            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            App.getCamera().unproject(vector3);
-            Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
-            if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(), view));
-            }
 
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(),view));
-
+            crowAttackEffect.update(delta);
+            crowAttackEffect.render(Main.getBatch());
+            view.getHud().handleInventoryInput();
         }
     }
 
@@ -265,7 +255,18 @@ public class GameController {
             Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManager.getGameAssetManager().getSkin()));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
             pickForaging(dx, dy);
-        //TODO handle input key
+        else if(Gdx.input.isTouched()) {
+            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            App.getCamera().unproject(vector3);
+            Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
+            if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(), view));
+            }
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(),view));
+        }
     }
 
     private void pickForaging(int dx, int dy) {
@@ -278,6 +279,12 @@ public class GameController {
         if (placeable instanceof Crop crop) {
             if (crop.isForaging()) {
                 player.getBackPack().addItemToInventory(crop);
+                tile.setPlaceable(null);
+                tile.setWalkAble(true);
+            }
+        } else if (placeable instanceof NormalItem normalItem) {
+            if (normalItem.getType().equals(NormalItemType.Wood)) {
+                player.getBackPack().addItemToInventory(normalItem);
                 tile.setPlaceable(null);
                 tile.setWalkAble(true);
             }
@@ -458,5 +465,9 @@ public class GameController {
 
     public ToolController getToolController() {
         return toolController;
+    }
+
+    public CrowAttackEffect getCrowAttackEffect() {
+        return crowAttackEffect;
     }
 }

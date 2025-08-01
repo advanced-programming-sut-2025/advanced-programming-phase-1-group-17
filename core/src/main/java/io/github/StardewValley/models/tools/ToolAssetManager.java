@@ -73,8 +73,8 @@ public class ToolAssetManager {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "_Steel" : "_%s".formatted(material.name());
             Texture texture = new Texture("Tools/Trash_Can%s.png".formatted(materialName));
-            toolTextures.get(ToolType.Axe).put(material, texture);
-            toolSprites.get(ToolType.Axe).put(material, new Sprite(texture));
+            toolTextures.get(ToolType.TrashCan).put(material, texture);
+            toolSprites.get(ToolType.TrashCan).put(material, new Sprite(texture));
         }
     }
 

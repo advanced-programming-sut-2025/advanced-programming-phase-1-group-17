@@ -148,4 +148,8 @@ public abstract class Plant implements Placeable {
     public boolean hasFruit() {
         return hasFruit;
     }
+
+    public int getDaysTillNextHarvest() {
+        return daysTillNextHarvest;
+    }
 }

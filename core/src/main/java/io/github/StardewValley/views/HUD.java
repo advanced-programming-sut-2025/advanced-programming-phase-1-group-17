@@ -9,7 +9,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.models.App;
+import io.github.StardewValley.models.BackPackable;
+import io.github.StardewValley.models.BackPackableType;
 import io.github.StardewValley.models.Player;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HUD {
     private Texture clock;
@@ -31,6 +37,12 @@ public class HUD {
     private Rectangle energyBarBounds;
     private ShapeRenderer shapeRenderer;
     private BitmapFont tooltipFont;
+
+    private int inventoryStartIndex = 0;
+    private int chosenItemIndex = 0;
+    private int inventoryVisibleSlots = 10;
+    private int selectedItemIndex = 0;
+
 
     public HUD() {
         clock = new Texture("Clock.png");
@@ -122,6 +134,7 @@ public class HUD {
         batch.end();
 
         renderEnergyBar(batch);
+        renderInventoryBar(batch);
     }
 
     private void renderEnergyBar(SpriteBatch batch) {
@@ -167,6 +180,103 @@ public class HUD {
         }
         batch.end();
     }
+
+    public void renderInventoryBar(SpriteBatch batch) {
+        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        Map<BackPackableType, ArrayList<BackPackable>> itemTypeCounts = player.getBackPack().getBackPackItems();
+        ArrayList<BackPackableType> itemTypes = new ArrayList<>(itemTypeCounts.keySet());
+
+        int slotSize = 64;
+        int spacing = 10;
+        int totalWidth = inventoryVisibleSlots * slotSize + (inventoryVisibleSlots - 1) * spacing;
+        int startX = (Gdx.graphics.getWidth() - totalWidth) / 2;
+        int y = 10;
+
+        shapeRenderer.setProjectionMatrix(hudCamera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        for (int i = 0; i < inventoryVisibleSlots; i++) {
+            int x = startX + i * (slotSize + spacing);
+
+            // Background slot
+            shapeRenderer.setColor(0.1f, 0.1f, 0.1f, 0.8f);
+            shapeRenderer.rect(x, y, slotSize, slotSize);
+
+            // Selected highlight
+            if (i == selectedItemIndex) {
+                shapeRenderer.setColor(0.2f, 0.8f, 0.2f, 1);
+                shapeRenderer.rect(x - 2, y - 2, slotSize + 4, slotSize + 4);
+            }
+
+            // Item present highlight
+            if (i < itemTypes.size()) {
+                shapeRenderer.setColor(0.8f, 0.8f, 0.2f, 1f);
+                shapeRenderer.rect(x + 4, y + 4, slotSize - 8, slotSize - 8);
+            }
+        }
+
+        shapeRenderer.end();
+
+        // Draw item type name and count
+        batch.begin();
+        BitmapFont itemFont = new BitmapFont();
+        itemFont.getData().setScale(1.2f);
+        itemFont.setColor(1, 1, 1, 1);
+
+        for (int i = 0; i < inventoryVisibleSlots; i++) {
+            if (i < itemTypes.size()) {
+                int x = startX + i * (slotSize + spacing);
+                BackPackableType type = itemTypes.get(i);
+                int count = itemTypeCounts.get(type).size();
+
+                String label = type.toString(); // or type.name() or type.getDisplayName()
+                itemFont.draw(batch, label, x + 5, y + slotSize - 8);
+                itemFont.draw(batch, "x" + count, x + 5, y + 20);
+            }
+        }
+
+        batch.end();
+    }
+
+
+    public void handleInventoryInput() {
+        // Scroll
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
+            selectedItemIndex = (selectedItemIndex + 1) % inventoryVisibleSlots;
+        }
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
+            selectedItemIndex = (selectedItemIndex - 1 + inventoryVisibleSlots) % inventoryVisibleSlots;
+        }
+
+        // Number keys (0–9)
+        for (int i = 0; i < inventoryVisibleSlots; i++) {
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.NUM_0 + i)) {
+                selectedItemIndex = i;
+            }
+        }
+
+        // Mouse click
+        if (Gdx.input.justTouched()) {
+            int mouseX = Gdx.input.getX();
+            int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // flip Y
+
+            int slotSize = 64;
+            int spacing = 10;
+            int totalWidth = inventoryVisibleSlots * slotSize + (inventoryVisibleSlots - 1) * spacing;
+            int startX = (Gdx.graphics.getWidth() - totalWidth) / 2;
+            int y = 10;
+
+            for (int i = 0; i < inventoryVisibleSlots; i++) {
+                int x = startX + i * (slotSize + spacing);
+                Rectangle rect = new Rectangle(x, y, slotSize, slotSize);
+                if (rect.contains(mouseX, mouseY)) {
+                    selectedItemIndex = i;
+                    break;
+                }
+            }
+        }
+    }
+
 
     public void resize(int width, int height) {
         hudCamera.setToOrtho(false, width, height);
