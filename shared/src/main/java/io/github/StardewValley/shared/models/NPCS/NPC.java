@@ -108,7 +108,7 @@ abstract public class NPC {
     public int getY_start() {
         return y_start;
     }
-    public Texture getTexture(){
+    public String getTexture(){
         return null;
     }
     public String getDialogueText(){

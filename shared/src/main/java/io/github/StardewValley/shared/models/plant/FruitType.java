@@ -60,7 +60,7 @@ public enum FruitType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return TreeAssetManager.getTreeAssetManager().getFruitTexture(this);
     }
 }

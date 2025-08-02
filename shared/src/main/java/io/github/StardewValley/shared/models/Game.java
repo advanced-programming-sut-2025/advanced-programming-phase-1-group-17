@@ -26,26 +26,15 @@ public class Game implements Serializable {
     private ArrayList<NPC> NPCHuts = new ArrayList<>();
 
 
-    public Game(UserDTO user1, UserDTO user2, UserDTO user3) {
-        //App.getLoggedInUser().setActiveGame(this);
+    public Game(UserDTO user1, UserDTO user2, UserDTO user3,UserDTO user4) {
         user1.setActiveGame(this);
         user2.setActiveGame(this);
         user3.setActiveGame(this);
-        //players.add(creator = new Player(App.getLoggedInUser(), false));
-        players.add(new Player(user1, user1.getUsername().startsWith("guest")));
-        players.add(new Player(user2, user2.getUsername().startsWith("guest")));
-        players.add(new Player(user3, user3.getUsername().startsWith("guest")));
-        initializeNPCs();
-        //App.setCurrentGame(this);
-        this.gameMap = new GameMap(players);
-        //App.getCurrentGame().setCurrentPlayingPlayer(creator);
-        this.storeManager.initializeStores();
-        //cooking recipes
-        giveInitialItems();
-    }
-
-
-    private void initializeNPCs() {
+        user4.setActiveGame(this);
+        players.add(creator = new Player(user1, false));
+        players.add(new Player(user2, user1.getUsername().startsWith("guest")));
+        players.add(new Player(user3, user2.getUsername().startsWith("guest")));
+        players.add(new Player(user4, user3.getUsername().startsWith("guest")));
         addNPCs(new Abigail(true));
         addNPCs(new Harvey(true));
         addNPCs(new Lia(true));
@@ -114,6 +103,19 @@ public class Game implements Serializable {
 
     public Player getCurrentPlayingPlayer() {
         return currentPlayingPlayer;
+    }
+
+    public void switchPlayer() {
+        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.isHasPassedOutToday());
+        if (currentPlayingPlayer.getEnergy() == Double.POSITIVE_INFINITY)
+            currentPlayingPlayer.setEnergy(currentPlayingPlayer.getMaxEnergy());
+        if (currentPlayingPlayer.equals(players.get(3))) {
+            date.increaseHour();
+            currentPlayingPlayer = players.get(0);
+            currentPlayingPlayerIndex = 0;
+        } else {
+            currentPlayingPlayer = players.get(++currentPlayingPlayerIndex);
+        }
     }
 
     public void setCurrentPlayingPlayer(Player currentPlayingPlayer) {

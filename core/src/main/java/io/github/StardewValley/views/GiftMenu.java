@@ -58,7 +58,7 @@ public class GiftMenu implements Screen {
             if (backPackableType.getInventoryTexture() == null)
                 continue;
 
-            Texture itemTexture = backPackableType.getInventoryTexture();
+            Texture itemTexture =new Texture (backPackableType.getInventoryTexture());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 

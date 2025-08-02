@@ -39,7 +39,7 @@ public enum NormalItemType implements BackPackableType{
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return GameAssetManager.getGameAssetManager().getNormalItemTexture(this);
     }
 }

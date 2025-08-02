@@ -85,4 +85,72 @@ public class User {
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public int getNumOfPlay() {
+        return numOfPlay;
+    }
+
+    public void setNumOfPlay(int numOfPlay) {
+        this.numOfPlay = numOfPlay;
+    }
+
+    public double getTheMostMoneyInGame() {
+        return theMostMoneyInGame;
+    }
+
+    public void setTheMostMoneyInGame(double theMostMoneyInGame) {
+        this.theMostMoneyInGame = theMostMoneyInGame;
+    }
+
+    public Game getActiveGame() {
+        return activeGame;
+    }
+
+    public void setActiveGame(Game activeGame) {
+        this.activeGame = activeGame;
+    }
+
+    public Game getLastGame() {
+        return lastGame;
+    }
+
+    public void setLastGame(Game lastGame) {
+        this.lastGame = lastGame;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

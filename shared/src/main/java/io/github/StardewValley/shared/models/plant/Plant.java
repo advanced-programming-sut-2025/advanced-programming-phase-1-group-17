@@ -143,7 +143,7 @@ public abstract class Plant implements Placeable {
     public abstract void harvest();
     //TODO: quality when harvesting
 
-    public abstract Texture getTexture();
+    public abstract String getTexture();
 
     public boolean hasFruit() {
         return hasFruit;

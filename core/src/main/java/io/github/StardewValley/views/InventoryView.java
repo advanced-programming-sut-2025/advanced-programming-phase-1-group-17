@@ -60,7 +60,7 @@ public class InventoryView implements Screen {
             if (backPackableType.getInventoryTexture() == null)
                 continue;
 
-            Texture itemTexture = backPackableType.getInventoryTexture();
+            Texture itemTexture =new Texture(backPackableType.getInventoryTexture());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 
@@ -226,7 +226,7 @@ public class InventoryView implements Screen {
             if (backPackableType.getInventoryTexture() == null) continue;
             if (backPack.getBackPackItems().get(backPackableType).isEmpty()) continue;
 
-            Texture itemTexture = backPackableType.getInventoryTexture();
+            Texture itemTexture = new Texture(backPackableType.getInventoryTexture());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 
@@ -265,7 +265,7 @@ public class InventoryView implements Screen {
             if (!(backPackableType instanceof ToolType)) continue;
             if (backPack.getBackPackItems().get(backPackableType).isEmpty()) continue;
 
-            Texture itemTexture = backPackableType.getInventoryTexture();
+            Texture itemTexture =new Texture( backPackableType.getInventoryTexture());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 

@@ -63,7 +63,7 @@ public class GreenHouse implements Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         return GameAssetManager.getGameAssetManager().getGreenHouseTexture();
     }
 

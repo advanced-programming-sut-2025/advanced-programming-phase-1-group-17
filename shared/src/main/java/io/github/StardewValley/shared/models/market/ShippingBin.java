@@ -75,7 +75,7 @@ public class ShippingBin implements Placeable, BackPackable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         return GameAssetManager.getGameAssetManager().getShippingBinTexture();
     }
 

@@ -86,10 +86,6 @@ public class AnimalPlace implements Placeable {
         animals.add(animal);
     }
 
-    @Override
-    public Texture getTexture() {
-        return this.animalPlaceType.getInventoryTexture();
-    }
     public Rectangle getHitBox(){
         return new Rectangle(x,y,this.animalPlaceType.getInventoryTexture().getWidth(),this.animalPlaceType.getInventoryTexture().getHeight());
     }
@@ -121,5 +117,8 @@ public class AnimalPlace implements Placeable {
 
     public void setOpen(boolean open) {
         isOpen = open;
+    public String getTexture() {
+        //TODO
+        return null;
     }
 }

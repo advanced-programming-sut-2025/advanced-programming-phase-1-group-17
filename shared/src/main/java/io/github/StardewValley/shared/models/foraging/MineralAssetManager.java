@@ -7,11 +7,11 @@ import java.util.HashMap;
 public class MineralAssetManager {
     private static MineralAssetManager mineralAssetManager = null;
 
-    private final HashMap<MineralType, Texture> mineralTextures = new HashMap<>();
+    private final HashMap<MineralType, String> mineralTextures = new HashMap<>();
 
     private MineralAssetManager() {
         for (MineralType type : MineralType.values()) {
-            mineralTextures.put(type, new Texture(type.getTexturePath()));
+            mineralTextures.put(type, type.getTexturePath());
         }
     }
 
@@ -21,7 +21,7 @@ public class MineralAssetManager {
         return mineralAssetManager;
     }
 
-    public Texture getTexture(MineralType mineralType) {
+    public String getTexture(MineralType mineralType) {
         return mineralTextures.get(mineralType);
     }
 }

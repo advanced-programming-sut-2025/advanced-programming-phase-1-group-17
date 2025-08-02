@@ -4,16 +4,16 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum AnimalPlaceType implements BackPackableType {
-    Coop(4,4000,new Texture("animalplace/Coop.png")),
-    BigCoop(8,10000,new Texture("animalplace/Big_Coop.png")),
-    DeluxeCoop(12,20000,new Texture("animalplace/Deluxe_Coop.png")),
-    Barn(4,6000,new Texture("animalplace/Barn.png")),
-    BigBarn(8,12000,new Texture("animalplace/Big_Barn.png")),
-    DeluxeBarn(12,25000,new Texture("animalplace/Deluxe_Barn.png"));
+    Coop(4,4000,("animalplace/Coop.png")),
+    BigCoop(8,10000,("animalplace/Big_Coop.png")),
+    DeluxeCoop(12,20000,("animalplace/Deluxe_Coop.png")),
+    Barn(4,6000,("animalplace/Barn.png")),
+    BigBarn(8,12000,("animalplace/Big_Barn.png")),
+    DeluxeBarn(12,25000,("animalplace/Deluxe_Barn.png"));
     private final int capacity;
     private final int price;
-    private final Texture texture;
-    AnimalPlaceType(int capacity, int price,Texture texture) {
+    private final String texture;
+    AnimalPlaceType(int capacity, int price,String texture) {
         this.capacity = capacity;
         this.price = price;
         this.texture = texture;
@@ -33,7 +33,7 @@ public enum AnimalPlaceType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return texture;
     }
 }
