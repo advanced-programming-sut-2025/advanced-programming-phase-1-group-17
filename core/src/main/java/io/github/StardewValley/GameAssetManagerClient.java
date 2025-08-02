@@ -1,11 +1,14 @@
 package io.github.StardewValley;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class GameAssetManagerClient {
     private static GameAssetManagerClient gameAssetManager;
-    private Skin skin =  new Skin(Gdx.files.internal("skin/star-soldier-ui.json"));
+    private final Texture  plowedTexture =new Texture("Flooring/Flooring_57.png");
+
+    private Skin skin =  new Skin(Gdx.files.internal("skin/StardewSkin.json"));
 
     public static GameAssetManagerClient getGameAssetManager() {
         if (gameAssetManager == null) {
@@ -23,5 +26,8 @@ public class GameAssetManagerClient {
         this.skin = skin;
     }
 
+    public Texture getPlowedTexture() {
+        return plowedTexture;
+    }
 
 }

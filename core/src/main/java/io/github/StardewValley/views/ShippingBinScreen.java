@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.controllers.ShippingBinScreenController;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.GameAssetManager;
@@ -54,7 +55,7 @@ public class ShippingBinScreen implements Screen {
 
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         BackPack backPack = player.getBackPack();
-        Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+        Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
 
         quantityToSell = 0;
 
@@ -65,8 +66,8 @@ public class ShippingBinScreen implements Screen {
         for (BackPackableType itemType : backPack.getBackPackItems().keySet()) {
             int available = backPack.getBackPackItems().get(itemType).size();
             if (itemType.getInventoryTexture() == null) continue;
-
-            Texture texture = itemType.getInventoryTexture();
+            //TODO remove new Texture
+            Texture texture = new Texture(itemType.getInventoryTexture());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(texture));
             ImageButton itemButton = new ImageButton(style);

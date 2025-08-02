@@ -26,7 +26,7 @@ public class MainMenuController {
         view.getGameMenuButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new LobbyScreen(App.getJwt()));
+                Main.getMain().setScreen(new LobbyScreen(Main.getJwtToken()));
 //                Main.getMain().setScreen(new GameMenu(new GameMenuController(),  GameAssetManagerClient.getGameAssetManager().getSkin()));
             }
         });

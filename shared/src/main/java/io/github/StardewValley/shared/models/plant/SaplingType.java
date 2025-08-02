@@ -48,7 +48,7 @@ public enum SaplingType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return TreeAssetManager.getTreeAssetManager().getSaplingTexture(this);
     }
 }

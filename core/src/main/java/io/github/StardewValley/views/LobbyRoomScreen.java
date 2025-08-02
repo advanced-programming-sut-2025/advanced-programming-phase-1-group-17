@@ -89,7 +89,7 @@ public class LobbyRoomScreen implements Screen {
                     }
                     apiClient.leaveLobby(lobby.getId());
                     Main.getMain().getScreen().dispose();
-                    Main.getMain().setScreen(new LobbyScreen(App.getJwt()));
+                    Main.getMain().setScreen(new LobbyScreen(Main.getJwtToken()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

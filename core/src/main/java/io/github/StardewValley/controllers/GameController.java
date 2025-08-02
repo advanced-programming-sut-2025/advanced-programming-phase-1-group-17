@@ -261,7 +261,7 @@ public class GameController {
                 game.getCurrentPlayingPlayer()));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManager.getGameAssetManager().getSkin()));
+            Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
             pickForaging(dx, dy);
         else if(Gdx.input.isTouched()) {
@@ -270,11 +270,11 @@ public class GameController {
             Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
             if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin()));
+                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
             }
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin()));
+            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
     }
 

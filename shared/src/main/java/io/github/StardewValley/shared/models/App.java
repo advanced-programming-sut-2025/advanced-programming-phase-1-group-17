@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class App {
     private static Game currentGame;
+//    private static String jwtToken;
+    private static UserDTO LoggedInUser;
+
+
 
 
     public static Game getCurrentGame() {
@@ -24,14 +28,18 @@ public class App {
     }
 
     public static UserDTO getLoggedInUser() {
-        return null;
+        return LoggedInUser;
     }
+
 
     public static void setLoggedInUser(UserDTO userDTO) {
-
+        LoggedInUser = userDTO;
     }
-    public static String getJwt() {
-        return jwtToken;
-    }
+//    public static String getJwt() {
+//        return jwtToken;
+//    }
+//    public static void setJwt(String jwtToken) {
+//        App.jwtToken = jwtToken;
+//    }
 }
 

@@ -49,7 +49,7 @@ public class LobbyScreen implements Screen {
         Table root = new Table(skin);
         root.setFillParent(true);
         root.center();
-        root.add(new Label("Lobby System", skin, "title")).colspan(2).center();
+        root.add(new Label("Lobby System", skin)).colspan(2).center();
         root.row();
         root.add(refreshButton).colspan(2).center().padBottom(100);
         root.row();

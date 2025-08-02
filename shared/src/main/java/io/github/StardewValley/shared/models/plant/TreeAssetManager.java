@@ -16,10 +16,12 @@ public class TreeAssetManager {
     private final HashMap<FruitType, String> fruitTypeTextureHashMap = new HashMap<>();
     private final HashMap<TreeType, ArrayList<String>> stageTextures = new HashMap<>();
     private final HashMap<TreeType, String > hasFruitTexture = new HashMap<>();
-    private final HashMap<FruitType, String> fruitTypeTextureHashMap = new HashMap<>();
-    private final HashMap<TreeType, ArrayList<String>> stageTextures = new HashMap<>();
+    //TODO
+//    private final HashMap<FruitType, String> fruitTypeTextureHashMap = new HashMap<>();
+//    private final HashMap<TreeType, ArrayList<String>> stageTextures = new HashMap<>();
+//    private final HashMap<TreeType, String> hasFruitTexture = new HashMap<>();
+
     private final HashMap<TreeType, HashMap<Season, TextureRegion>> fullyGrownTextures = new HashMap<>();
-    private final HashMap<TreeType, String> hasFruitTexture = new HashMap<>();
     private final HashMap<SaplingType, String > saplingTextures = new HashMap<>();
 
     private TreeAssetManager() {
@@ -33,7 +35,7 @@ public class TreeAssetManager {
 
     private void loadSaplingTextures() {
         for (SaplingType saplingType : SaplingType.values()) {
-            saplingTextures.put(saplingType, new Texture(saplingType.getTexturePath()));
+            saplingTextures.put(saplingType, (saplingType.getTexturePath()));
         }
     }
 

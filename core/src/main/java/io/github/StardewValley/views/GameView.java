@@ -520,7 +520,7 @@ public class GameView implements Screen, InputProcessor {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new GreenHouseBuildScreen(
                     new GreenHouseBuildController(),
-                    GameAssetManager.getGameAssetManager().getSkin()
+                    GameAssetManagerClient.getGameAssetManager().getSkin()
                 ));
                 return true;
             }
@@ -542,7 +542,7 @@ public class GameView implements Screen, InputProcessor {
                 Main.getMain().setScreen(new ShippingBinScreen(
                     shippingBin,
                     new ShippingBinScreenController(),
-                    GameAssetManager.getGameAssetManager().getSkin()
+                    GameAssetManagerClient.getGameAssetManager().getSkin()
                 ));
                 return true;
             }
