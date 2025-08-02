@@ -105,8 +105,9 @@ public class WorldController {
         }
 
         drawCraftingItemsProgressBars();
-        drawBigTextures();
-        drawStores();
+        //TODO handle app.get...
+//        drawBigTextures();
+//        drawStores();
         drawTrees();
         drawGiantCrops();
     }
@@ -128,12 +129,13 @@ public class WorldController {
             Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture((tree.getTexture()));
             if (texture != null)
                 Main.getBatch().draw(texture, coordinates[0], coordinates[1]);
-            else
-                Main.getBatch().draw(
-                    TreeAssetManager.getTreeAssetManager().getFullyGrownTexture(tree.getType(), App.getCurrentGame().getDate().getSeason()),
-                    coordinates[0],
-                    coordinates[1]
-                );
+            //TODO handle app.get..
+//            else
+//                Main.getBatch().draw(
+//                    TreeAssetManager.getTreeAssetManager().getFullyGrownTexture(tree.getType(), App.getCurrentGame().getDate().getSeason()),
+//                    coordinates[0],
+//                    coordinates[1]
+//                );
         });
     }
 

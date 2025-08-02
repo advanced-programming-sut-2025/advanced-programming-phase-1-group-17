@@ -29,6 +29,7 @@ public class Tile {
         this.y = y;
         this.owner = owner;
         tiles.add(this);
+        App.getCurrentGame().getTiles().add(this);
     }
 
     public static ArrayList<Tile> getTiles() {

@@ -15,7 +15,7 @@ public class PlayerDto {
     private float animationTimer = 0f;
     private float passOutTimer = 0f;
 
-
+    public PlayerDto() {}
     public PlayerDto(boolean isPassedOut
         , double energy
         , double maxEnergy
@@ -144,4 +144,5 @@ public class PlayerDto {
     public void setPassOutTimer(float passOutTimer) {
         this.passOutTimer = passOutTimer;
     }
+
 }

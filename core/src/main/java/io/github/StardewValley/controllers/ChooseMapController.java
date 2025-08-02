@@ -45,10 +45,9 @@ public class ChooseMapController {
                         e.printStackTrace();
                     }
                 }else {
-                    System.out.println("dksjfhrdfhdbvhjbvhfdbvhgvbdfvdfvbjhvbdhvbjhhvbjhvuvbjvbuevbehvefbehvdfvbhvbjh");
                     Main.getMain().getScreen().dispose();
                     //TODO handle game
-                    Main.getMain().setScreen(new GameView(new GameController(App.getCurrentGame()),new GameMenuController()));
+                    Main.getMain().setScreen(new GameView(new GameController(),new GameMenuController()));
                 }
             }
         });

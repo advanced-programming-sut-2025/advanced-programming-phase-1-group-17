@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.models.enums.Gender;
 
 public class UserDTO {
@@ -16,9 +17,13 @@ public class UserDTO {
     private String securityAnswer;
     private int numOfPlay = 0;
     private double theMostMoneyInGame;
+    @JsonIgnore
     private transient Game activeGame;
+    @JsonIgnore
     private transient Game lastGame;
     private String avatar = "avatar/avatar7.jpg";
+
+    public UserDTO() {}
 
     public UserDTO(String username, String nickname, Gender gender) {
         this.username = username;
@@ -50,9 +55,7 @@ public class UserDTO {
         this.nickname = nickname;
     }
 
-    public Gender getGender() {
-        return gender;
-    }
+    public Gender getGender() {return gender;}
 
     public void setGender(Gender gender) {
         this.gender = gender;

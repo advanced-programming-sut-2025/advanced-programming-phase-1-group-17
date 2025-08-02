@@ -41,16 +41,15 @@ public class GameController {
     private OrthographicCamera camera;
     int mapWidthInPixels;
     int mapHeightInPixels;
-    private final Game game;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
     public static GameStateApiClient gameStateApiClient = new GameStateApiClient(Main.getJwtToken());
     private static GameClient gameClient = new GameClient();
 
-    private final WorldController worldController;
-    private final ToolController toolController;
-    private final LightningController lightningController;
-    private final FarmingController farmingController;
-    private final CrowAttackEffect crowAttackEffect;
+    private  WorldController worldController;
+    private  ToolController toolController;
+    private  LightningController lightningController;
+    private  FarmingController farmingController;
+    private  CrowAttackEffect crowAttackEffect;
 
     private Player player;
 
@@ -59,24 +58,31 @@ public class GameController {
     }
 
 
-    public GameController(Game game) {
-        this.game = game;
-        Player player = game.getCurrentPlayingPlayer();
-        this.camera.position.set(player.getX() , player.getY(), 0);
+    public GameController() {
+        try {
+            GameClient.setPlayer(new PlayerClient(gameStateApiClient.getUserWithUserDTO()));
+            PlayerDto player = gameStateApiClient.updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
+            playerUpdate(player);
+            this.camera.position.set(player.getX() , player.getY(), 0);
 
-        this.worldController = new WorldController(this.camera);
-        this.worldController.initTransients();
+            this.worldController = new WorldController(this.camera);
+            this.worldController.initTransients();
+            //TODO
+//            this.toolController = new ToolController(player);
+//            this.lightningController = LightningController.getLightningController();
 
-        this.toolController = new ToolController(player);
-        this.lightningController = LightningController.getLightningController();
+            this.mapWidthInPixels = worldController.getTileWidth();
+            this.mapHeightInPixels = worldController.getTileHeight();
 
-        this.mapWidthInPixels = worldController.getTileWidth();
-        this.mapHeightInPixels = worldController.getTileHeight();
+            this.farmingController = new FarmingController();
+            this.crowAttackEffect = new CrowAttackEffect();
+            //TODO
+//            initializeStoreRectangles();
 
-        this.farmingController = new FarmingController();
-        this.crowAttackEffect = new CrowAttackEffect();
-        initializeStoreRectangles();
-        App.setCamera(this.camera);
+            App.setCamera(this.camera);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setView(GameView gameView) {
@@ -153,16 +159,17 @@ public class GameController {
                 e.printStackTrace();
             }
 
-            game.getCurrentPlayingPlayer().draw(Main.getBatch());
+            GameClient.getPlayer().draw(Main.getBatch());
 
             //TODO handle connection to server
-            toolController.update(delta, player);
+//            toolController.update(delta, player);
 
-            lightningController.updateLightning(delta);
-            lightningController.renderLightning(Main.getBatch());
-
-            crowAttackEffect.update(delta);
-            crowAttackEffect.render(Main.getBatch());
+            //TODO
+//            lightningController.updateLightning(delta);
+//            lightningController.renderLightning(Main.getBatch());
+//
+//            crowAttackEffect.update(delta);
+//            crowAttackEffect.render(Main.getBatch());
             view.getHud().handleInventoryInput();
         }
     }
@@ -277,12 +284,15 @@ public class GameController {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new InventoryView(new InventoryController(),
-                  GameAssetManagerClient.getGameAssetManager().getSkin(),
-                game.getCurrentPlayingPlayer()));
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+        }
+        //TODO handle player
+//        else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+//            Main.getMain().getScreen().dispose();
+//            Main.getMain().setScreen(new InventoryView(new InventoryController(),
+//                  GameAssetManagerClient.getGameAssetManager().getSkin(),
+//                GameClient.getPlayer()));
+//        }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.X))

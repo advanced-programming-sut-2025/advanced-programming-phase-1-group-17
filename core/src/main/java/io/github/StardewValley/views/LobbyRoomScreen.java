@@ -106,6 +106,7 @@ public class LobbyRoomScreen implements Screen {
                 }
                 try {
                     GameDTO gameDTO = apiClient.startGame(lobby.getId());
+                    refreshPlayerList();
                     //TODO
                     System.out.println("Game started!");
                     Main.getMain().getScreen().dispose();
@@ -171,6 +172,7 @@ public class LobbyRoomScreen implements Screen {
             LobbyDto updatedLobby = apiClient.getLobbyByInviteCode(lobby.getId());
             lobby.setPlayerUsernames(updatedLobby.getPlayerUsernames());
             lobby.setAdminUsername(updatedLobby.getAdminUsername());
+            lobby.setStatus(updatedLobby.getStatus());
 
             playersTable.clearChildren();
 

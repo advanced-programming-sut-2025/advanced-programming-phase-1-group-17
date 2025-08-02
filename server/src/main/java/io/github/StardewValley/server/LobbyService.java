@@ -129,6 +129,7 @@ public class LobbyService {
         NPC.setFatherUser(null);
 
         Game game = new Game(userDTO(user1),userDTO(user2), userDTO(user3), userDTO(user4));
+        AppServer.setCurrentGame(game);
         return toDto(game);
     }
 
@@ -146,7 +147,7 @@ public class LobbyService {
         );
     }
     public UserDTO userDTO(User user) {
-        return  new UserDTO(
+        return new UserDTO(
             user.getUsername(),
             user.getNickName(),
             user.getGender(),

@@ -1,7 +1,10 @@
 package io.github.StardewValley.server.controller;
 
 
+import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
+import io.github.StardewValley.server.model.User;
+import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.map.Tile;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +32,9 @@ public class GameStateController {
         List<TileDTO> tileDTOs = new ArrayList<>();
         for (int i = minX - 1; i < maxX; i++) {
             for (int j = minY - 1; j < maxY; j++) {
+                if (Tile.getTile(i + 1, j + 1) == null) {
+                    System.out.println("**********************************************************---i----j----***********8");
+                }
                 tileDTOs.add(new TileDTO(Objects.requireNonNull(Tile.getTile(i + 1, j + 1))));
             }
         }
@@ -48,7 +54,7 @@ public class GameStateController {
         boolean left = (Boolean) body.get("leftPressed");
         boolean right = (Boolean) body.get("rightPressed");
         Player player = null;
-        for (Player p : App.getCurrentGame().getPlayers()) {
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
             if (p.getUser().getUsername().equals(username)) {
                 player = p;
                 break;
@@ -57,37 +63,37 @@ public class GameStateController {
         if (player != null)
             player.update(delta, up, down, left, right);
 
-        PlayerDto pd  = new PlayerDto(player.isPassedOut()
-        , player.getEnergy()
-        , player.getMaxEnergy()
-        , player.isEnergyUnlimited()
-        , player.isHasPassedOutToday()
-        , player.getX(), player.getY(), player.getCurrentDirection()
-        , player.getSpeed(), player.getLastDirection()
-        ,player.getCoin(), player.getAnimationTimer()
-        , player.getPassOutTimer());
+        PlayerDto pd = new PlayerDto(player.isPassedOut()
+            , player.getEnergy()
+            , player.getMaxEnergy()
+            , player.isEnergyUnlimited()
+            , player.isHasPassedOutToday()
+            , player.getX(), player.getY(), player.getCurrentDirection()
+            , player.getSpeed(), player.getLastDirection()
+            , player.getCoin(), player.getAnimationTimer()
+            , player.getPassOutTimer());
 
         return ResponseEntity.ok(pd);
     }
+
     @PostMapping("/selectMap")
     public ResponseEntity<Void> selectMap(@RequestHeader("Authorization") String authHeader, @RequestParam int type) {
         String token = authHeader.substring(7);
-       for (Player p : App.getCurrentGame().getPlayers()) {
-           if (p.getUser().getUsername().equals(jwtService.extractUsername(token))) {
-               p.getPlayerMap().setType(type);
-               break;
-           }
-       }
-       return ResponseEntity.ok().build();
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(jwtService.extractUsername(token))) {
+                p.getPlayerMap().setType(type);
+                break;
+            }
+        }
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/getUserNameByToken")
-    public ResponseEntity<String> getUserNameByToken(@RequestHeader("Authorization")String authHeader) {
+    public ResponseEntity<String> getUserNameByToken(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(username);
     }
-
 
 
 }
