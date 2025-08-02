@@ -8,13 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.GameAssetManager;
-import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.ItemMenuController;
 import io.github.StardewValley.controllers.StoreMenuController;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.enums.Season;
-import io.github.StardewValley.models.market.*;
+import io.github.StardewValley.shared.models.market.StoreType;
 
 public class StoreMenu implements Screen {
     private Stage stage;

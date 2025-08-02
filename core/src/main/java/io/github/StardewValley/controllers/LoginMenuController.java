@@ -3,16 +3,19 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import io.github.StardewValley.GameAssetManager;
+import com.google.gson.Gson;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 
-import io.github.StardewValley.PasswordUtil;
-import io.github.StardewValley.SaveUser;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.User;
+import io.github.StardewValley.shared.dto.*;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.enums.NetworkRequests;
 import io.github.StardewValley.views.LoginMenu;
 import io.github.StardewValley.views.MainMenu;
 import io.github.StardewValley.views.SignUpMenu;
+import okhttp3.*;
+
+import java.io.IOException;
 
 
 public class LoginMenuController {
@@ -27,7 +30,6 @@ public class LoginMenuController {
         view.getBackButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                Sfx_Controller.getInstance().playClick();
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
             }
@@ -52,28 +54,14 @@ public class LoginMenuController {
                     view.setError("Please enter a username");
                     return;
                 }
-                if (App.getUserWithUsername(view.getUserName().getText()) == null) {
-                    view.setError("Username not found");
+
+                DoesUserExistResponse doesUserExistResponse = doesUserExistRequest(view.getUserName().getText());
+                if (!doesUserExistResponse.getResult()) {
+                    view.setError(doesUserExistResponse.getMessage());
                     return;
                 }
-                User user = App.getUserWithUsername(view.getUserName().getText());
-                if (view.getError().getText().toString().isEmpty()) {
-                    view.setError(user.getSecurityQuestion());
-                    return;
-                }
-                String answer = view.getAnswer().getText();
-                if (answer.equals(user.getSecurityAnswer())) {
-                    SignUpMenuController controller = new SignUpMenuController();
-                    String newPass = controller.generateStrongPassword(12);
-                    user.setPasswordHash(PasswordUtil.hashPassword(newPass));
-                    view.setError("your new pass is : " + newPass + "\n you can change this pass on ProfileMenu");
-                    SaveUser.saveUser(App.getUsers());
-                } else {
-                    view.setError("Wrong answer");
 
-                }
-
-
+                forgotPassword(view.getUserName().getText(), view.getAnswer().getText());
             }
         });
         view.getLoginButton().addListener(new ClickListener() {
@@ -84,28 +72,116 @@ public class LoginMenuController {
                     view.setError("Username and Password are required");
                     return;
                 }
-                if (App.getUserWithUsername(username) != null) {
-                    User user = App.getUserWithUsername(username);
-                    String hashedInput = PasswordUtil.hashPassword(password);
-                    if (user.getPasswordHash().equals(hashedInput)) {
-                        App.setLoggedInUser(user);
-                        Main.getMain().getScreen().dispose();
-                        if (view.getCheckBox().isChecked()) {
-                            SaveUser.saveLoggedInUser(user);
-                        }
-                        view.getCheckBox().setChecked(false);
-                        Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
-                    } else {
-                        view.setError("invalid password");
-                    }
-                } else {
-                    view.setError("username not found");
+                DoesUserExistResponse doesUserExistResponse = doesUserExistRequest(username);
+                if (!doesUserExistResponse.getResult()) {
+                    view.setError(doesUserExistResponse.getMessage());
+                    return;
                 }
 
-
+                login(username, password);
             }
         });
     }
 
+    private void forgotPassword(String username, String securityAnswer) {
+        OkHttpClient client = new OkHttpClient();
+        Gson gson = new Gson();
+        ForgotPasswordRequest requestObj = new ForgotPasswordRequest(username, securityAnswer);
+        String json = gson.toJson(requestObj);
 
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+        Request request = new Request.Builder()
+            .url("http://%s:%d/api/auth/%s".formatted(
+                Main.getServerIP(),
+                Main.getServerPort(),
+                NetworkRequests.ForgotPasswordRequest.getMessage()
+            ))
+            .post(body)
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                view.setError("Server error: " + response.code());
+                return;
+            }
+
+            String responseJson = response.body().string();
+            ForgotPasswordResponse forgotPasswordResponse = gson.fromJson(responseJson, ForgotPasswordResponse.class);
+            if (!forgotPasswordResponse.isMatch()) {
+                view.setError(forgotPasswordResponse.getMessage());
+                return;
+            }
+            view.setError("Your new password is %s".formatted(forgotPasswordResponse.getMessage()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            view.setError("Could not connect to the server");
+        }
+    }
+
+
+    private void login(String username, String password) {
+        OkHttpClient client = new OkHttpClient();
+        Gson gson = new Gson();
+        LoginRequest requestObj = new LoginRequest(username, password);
+        String json = gson.toJson(requestObj);
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+        Request request = new Request.Builder()
+            .url("http://%s:%d/api/auth/%s".formatted(
+                Main.getServerIP(),
+                Main.getServerPort(),
+                NetworkRequests.LoginRequest.getMessage()
+            ))
+            .post(body)
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                view.setError("Server error: " + response.code());
+                return;
+            }
+
+            String responseJson = response.body().string();
+            LoginResponse loginResponse = gson.fromJson(responseJson, LoginResponse.class);
+
+            App.setLoggedInUser(loginResponse.getUserDTO());
+            Main.setJwt(loginResponse.getToken());
+
+            Main.getMain().getScreen().dispose();
+            view.getCheckBox().setChecked(false);
+            Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            view.setError("Could not connect to the server.");
+        }
+    }
+
+    private DoesUserExistResponse doesUserExistRequest(String username) {
+        OkHttpClient client = new OkHttpClient();
+        DoesUserExistRequest userExistRequest = new DoesUserExistRequest(username);
+        Gson gson = new Gson();
+        String json = gson.toJson(userExistRequest);
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+        Request request = new Request.Builder()
+            .url("http://%s:%d/api/auth/%s".formatted(
+                Main.getServerIP(),
+                Main.getServerPort(),
+                NetworkRequests.DoesUserExist.getMessage()
+            ))
+            .post(body)
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                return new DoesUserExistResponse(false, "Server error: " + response.code());
+            }
+            String responseJson = response.body().string();
+            return gson.fromJson(responseJson, DoesUserExistResponse.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new DoesUserExistResponse(false, "Could not connect to server.");
+        }
+    }
 }

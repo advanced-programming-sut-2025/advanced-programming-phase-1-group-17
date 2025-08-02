@@ -13,7 +13,7 @@ import io.github.StardewValley.controllers.LoginMenuController;
 import java.util.Scanner;
 
 
-public class LoginMenu implements AppMenu, Screen {
+public class LoginMenu implements Screen {
     LoginMenuController controller ;
     private  TextButton backButton;
     private Table buttonsTable;
@@ -37,10 +37,6 @@ public class LoginMenu implements AppMenu, Screen {
 
 
     public LoginMenu(LoginMenuController controller, Skin skin) {
-//        Pixmap pixmap = new Pixmap(Gdx.files.internal("cursor2.png"));
-//        Cursor customCursor = Gdx.graphics.newCursor(pixmap, 0, 0);
-//        Gdx.graphics.setCursor(customCursor);
-//        pixmap.dispose();
         this.controller = controller;
         this.userNameButton = new TextButton("UserName", skin);
         this.userNameButton.setColor(0, 0, 1, 1);
@@ -137,8 +133,6 @@ public class LoginMenu implements AppMenu, Screen {
     @Override
     public void dispose() {
 
-    }
-    public void run(Scanner scanner) {
     }
 
     public TextButton getBackButton() {

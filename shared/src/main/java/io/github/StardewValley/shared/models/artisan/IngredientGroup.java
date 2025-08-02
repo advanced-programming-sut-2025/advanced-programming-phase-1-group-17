@@ -1,0 +1,80 @@
+package io.github.StardewValley.shared.models.artisan;
+
+import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.animal.AnimalProductType;
+import io.github.StardewValley.shared.models.enums.FishType;
+import io.github.StardewValley.shared.models.foraging.ForagingCropType;
+import io.github.StardewValley.shared.models.plant.CropType;
+import io.github.StardewValley.shared.models.plant.FruitType;
+import io.github.StardewValley.shared.models.backpack.BackPack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+public enum IngredientGroup implements BackPackableType{
+    AnyMushroom(Set.of(CropType.RedMushroom, CropType.Morel, CropType.CommonMushroom, CropType.Chanterelle, CropType.PurpleMushroom)),
+    AnyFruit(Set.of(FruitType.values())),
+    AnyVegetable(Set.of(CropType.Carrot, CropType.Potato, CropType.Tomato)), // example subset
+    MilkOrLargeMilk(Set.of(AnimalProductType.Milk, AnimalProductType.LargeMilk)),
+    GoatMilkOrLargeGoatMilk(Set.of(AnimalProductType.GoatMilk, AnimalProductType.LargeGoatMilk)),
+    EggOrLargeEgg(Set.of(AnimalProductType.Egg, AnimalProductType.LargeEgg)),
+    Grapes(Set.of(CropType.Grape, ForagingCropType.GRAPE)),
+    AnyFish(Set.of(FishType.values()));
+
+    private final Set<BackPackableType> members;
+
+    IngredientGroup(Set<BackPackableType> options) {
+        this.members = options;
+    }
+
+    public Set<BackPackableType> getMembers() {
+        return members;
+    }
+
+    public boolean matches(BackPackableType type) {
+        return members.contains(type);
+    }
+
+    public int countInBackPack(BackPack backPack) {
+        int total = 0;
+        for (BackPackableType type : members) {
+            List<BackPackable> items = backPack.getBackPackItems().getOrDefault(type, new ArrayList<>());
+            total += items.size();
+        }
+        return total;
+    }
+
+
+    public void removeFromBackPack(int count, BackPack backPack) {
+        for (BackPackableType type : members) {
+            List<BackPackable> items = backPack.getBackPackItems().getOrDefault(type, new ArrayList<>());
+            while (!items.isEmpty() && count > 0) {
+                items.remove(0); // remove one item
+                count--;
+            }
+            if (count == 0) break;
+        }
+
+        if (count > 0) {
+            throw new IllegalStateException("Not enough items to remove from group: " + this.name());
+        }
+    }
+
+    @Override
+    public String getName() {
+        return name();
+    }
+
+    @Override
+    public double getPrice() {
+        return 0;
+    }
+
+    @Override
+    public Texture getInventoryTexture() {
+        return null;
+    }
+}

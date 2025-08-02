@@ -1,16 +1,11 @@
 package io.github.StardewValley.controllers.helperControllers;
 
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.Result;
-import io.github.StardewValley.models.enums.Season;
-import io.github.StardewValley.models.map.GreenHouse;
-import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.models.plant.*;
-import io.github.StardewValley.models.tools.BackPack;
-import io.github.StardewValley.models.tools.Tool;
-import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
+import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.plant.*;
 
 public class FarmingController {
     public Result fertilize(Fertilizer fertilizer, int dx, int dy) {

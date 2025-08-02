@@ -5,11 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.enums.Season;
-import io.github.StardewValley.models.market.*;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.market.*;
 import io.github.StardewValley.views.ItemMenu;
 import io.github.StardewValley.views.StoreMenu;
 

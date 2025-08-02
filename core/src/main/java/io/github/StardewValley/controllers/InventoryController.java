@@ -2,13 +2,16 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.tools.BackPack;
-import io.github.StardewValley.models.tools.FishingPoleType;
-import io.github.StardewValley.models.tools.Tool;
-import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.tools.FishingPoleType;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.ToolType;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.views.*;
 
 public class InventoryController {

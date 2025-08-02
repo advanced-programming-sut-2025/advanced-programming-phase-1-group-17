@@ -14,10 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.controllers.SkillMenuController;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
 
 public class SkillMenu implements Screen {
     private Stage stage;
