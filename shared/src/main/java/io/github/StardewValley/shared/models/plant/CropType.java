@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.plant;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.Season;
 
@@ -217,8 +218,7 @@ public enum CropType implements BackPackableType {
 
     public static CropType getCropTypeBySeedType(SeedType seedType) {
         if (seedType.equals(SeedType.MixedSeed)) {
-            //Season season = App.getCurrentGame().getDate().getSeason();
-            Season season = null;
+            Season season = App.getCurrentGame().getDate().getSeason();
             Random random = new Random();
             CropType type;
             //Filtering Foraging Types

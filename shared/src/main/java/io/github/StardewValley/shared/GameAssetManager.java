@@ -49,26 +49,26 @@ public class GameAssetManager {
     private GameAssetManager() {
         loadStoreTextures();
         loadNormalItemTextures();
-        loadGrassTextures();
+//        loadGrassTextures();
     }
 
-    private void loadGrassTextures() {
-        Texture texture = new Texture("sprites/Grass.png");
-        int grassHeight = texture.getHeight() / 12;
-        for (int row = 0; row < 12; row++) {
-            if (row == 7)
-                continue;
-            for (int column = 0; column < 3; column++) {
-                grassTextures.add(new TextureRegion(
-                    texture,
-                    12 * column,
-                    grassHeight * row,
-                    12,
-                    grassHeight
-                ));
-            }
-        }
-    }
+//    private void loadGrassTextures() {
+//        Texture texture = new Texture("sprites/Grass.png");
+//        int grassHeight = texture.getHeight() / 12;
+//        for (int row = 0; row < 12; row++) {
+//            if (row == 7)
+//                continue;
+//            for (int column = 0; column < 3; column++) {
+//                grassTextures.add(new TextureRegion(
+//                    texture,
+//                    12 * column,
+//                    grassHeight * row,
+//                    12,
+//                    grassHeight
+//                ));
+//            }
+//        }
+//    }
 
     public static GameAssetManager getGameAssetManager() {
         if (gameAssetManager == null) {

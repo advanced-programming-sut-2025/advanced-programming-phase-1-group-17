@@ -15,10 +15,7 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.ChooseMapController;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.Game;
-import io.github.StardewValley.shared.models.GameDTO;
-import io.github.StardewValley.shared.models.LobbyDto;
+import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 
 
@@ -29,7 +26,7 @@ public class LobbyRoomScreen implements Screen {
     private final String currentUsername;
     private final Table playersTable;
     private final TextButton left;
-    private  TextButton startGameBtn;
+    private TextButton startGameBtn;
 
     public LobbyRoomScreen(LobbyDto lobby, LobbyApiClient apiClient, String currentUsername) {
         this.stage = new Stage(new ScreenViewport());
@@ -110,7 +107,6 @@ public class LobbyRoomScreen implements Screen {
                 try {
                     GameDTO gameDTO = apiClient.startGame(lobby.getId());
                     //TODO
-
                     System.out.println("Game started!");
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
@@ -133,6 +129,12 @@ public class LobbyRoomScreen implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);
         if (lobby.getAdminUsername().equals(currentUsername)) {
             startGameBtn.setVisible(true);
+        }
+        if (lobby.getStatus() != null) {
+            if (lobby.getStatus().equals(LobbyStatus.STARTED)) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
+            }
         }
         stage.act(delta);
         stage.draw();

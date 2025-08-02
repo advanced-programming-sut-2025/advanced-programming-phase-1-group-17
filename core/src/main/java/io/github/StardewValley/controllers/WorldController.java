@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Fence;
 import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
@@ -27,7 +29,9 @@ import io.github.StardewValley.shared.models.plant.CropAssetManager;
 import io.github.StardewValley.shared.models.plant.Tree;
 import io.github.StardewValley.shared.models.plant.TreeAssetManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class WorldController {
     private final OrthographicCamera camera;
@@ -52,7 +56,7 @@ public class WorldController {
         System.out.println(tileHeight + " " + tileWidth);
     }
 
-    public void update() {
+    public void update() throws Exception {
         float camLeft = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
         float camRight = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
         float camBottom = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
@@ -65,19 +69,24 @@ public class WorldController {
 
         treesInThisFrame.clear();
         giantCropsInThisFrame.clear();
-        int[] area = new int[4];
-        area[0] = minTileX;
-        area[1] = maxTileX;
-        area[2] = minTileY;
-        area[3] = maxTileY;
+
+        List<TileDTO> tiles = new ArrayList<>();
+        tiles = GameController.gameStateApiClient.getMapTilesAroundPlayer(minTileX,maxTileX,minTileY,maxTileY);
 
         for (int x = minTileX - 1; x < maxTileX; x++) {
             for (int y = minTileY - 1; y < maxTileY; y++) {
                 if (x < -2 || y < -2 || x > 300 || y > 300)
                     continue;
-                Tile tile = Tile.getTile(x + 1, y + 1);
+                TileDTO tile = null;
+                for (TileDTO tileDTO : tiles) {
+                    if (tileDTO.getX() == x && tileDTO.getY() == y){
+                        tile = tileDTO;
+                        break;
+                    }
+                }
+
                 if (tile == null) continue;
-                if (tile.getPlaceable() instanceof Store)
+                if (tile.getPlaceableType().equals("Store"))
                     continue;
 
                 if ((tile.getX() + tile.getY()) % 2 == 0)
@@ -87,9 +96,11 @@ public class WorldController {
 
                 if (tile.isPlowed())
                     Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getPlowedTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
-                if (tile.getPlaceable() == null)
+                if (tile.getPlaceableType() == null)
                     continue;
-                printTileTexture(tile);
+
+                //TODO handle Placeable
+//                printTileTexture(tile);
             }
         }
 
@@ -126,48 +137,48 @@ public class WorldController {
         });
     }
 
-    private void printTileTexture(Tile tile) {
-        Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture((tile.getPlaceable().getTexture()));
-        float printX = tile.getX() * tileWidth + printPad, printY = tile.getY() * tileHeight + 20;
-        float printWidth = tileWidth - 2 * printPad, printHeight = tileHeight - 2 * printPad;
-
-        if (tile.getPlaceable() instanceof Crop crop) {
-            if (crop.isGiant()) {
-                if (crop.isLeftBottomTileOfGiant())
-                    giantCropsInThisFrame.put(crop, new float[]{printX, printY});
-                else
-                    return;
-            }
-        } else if (tile.getPlaceable() instanceof Tree tree) {
-            if (texture == null) {
-                TextureRegion textureRegion = TreeAssetManager.getTreeAssetManager().getFullyGrownTexture(tree.getType(), App.getCurrentGame().getDate().getSeason());
-                printX = (tile.getX() * tileWidth) +
-                    ((tileWidth - textureRegion.getRegionWidth()) / 2f);
-                printY = (tile.getY() * tileHeight) + 10;
-            }
-            treesInThisFrame.put(tree, new float[]{printX, printY});
-            return;
-        }
-        switch (tile.getPlaceable()) {
-            case Fence fence -> Main.getBatch().draw(texture, printX, printY, 80, 80);
-            case Hut hut -> {
-                return;
-            }
-            case NPC npc when !npc.isNPC() -> {
-                return;
-            }
-            case NPC npc when npc.isNPC() ->
-                Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-            case NormalItem normalItem when normalItem.getType().equals(NormalItemType.Grass) ->
-                Main.getBatch().draw(normalItem.getGrassTextureRegion(),
-                    printX, printY,
-                    printWidth, printHeight);
-            case Lake lake -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-            case null, default -> Main.getBatch().draw(texture,
-                printX,  printY,
-                printWidth, printHeight);
-        }
-    }
+//    private void printTileTexture(TileDTO tile) {
+//        Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture((tile.getTexture()));
+//        float printX = tile.getX() * tileWidth + printPad, printY = tile.getY() * tileHeight + 20;
+//        float printWidth = tileWidth - 2 * printPad, printHeight = tileHeight - 2 * printPad;
+//
+//        if (tile.getPlaceable() instanceof Crop crop) {
+//            if (crop.isGiant()) {
+//                if (crop.isLeftBottomTileOfGiant())
+//                    giantCropsInThisFrame.put(crop, new float[]{printX, printY});
+//                else
+//                    return;
+//            }
+//        } else if (tile.getPlaceable() instanceof Tree tree) {
+//            if (texture == null) {
+//                TextureRegion textureRegion = TreeAssetManager.getTreeAssetManager().getFullyGrownTexture(tree.getType(), App.getCurrentGame().getDate().getSeason());
+//                printX = (tile.getX() * tileWidth) +
+//                    ((tileWidth - textureRegion.getRegionWidth()) / 2f);
+//                printY = (tile.getY() * tileHeight) + 10;
+//            }
+//            treesInThisFrame.put(tree, new float[]{printX, printY});
+//            return;
+//        }
+//        switch (tile.getPlaceable()) {
+//            case Fence fence -> Main.getBatch().draw(texture, printX, printY, 80, 80);
+//            case Hut hut -> {
+//                return;
+//            }
+//            case NPC npc when !npc.isNPC() -> {
+//                return;
+//            }
+//            case NPC npc when npc.isNPC() ->
+//                Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+//            case NormalItem normalItem when normalItem.getType().equals(NormalItemType.Grass) ->
+//                Main.getBatch().draw(normalItem.getGrassTextureRegion(),
+//                    printX, printY,
+//                    printWidth, printHeight);
+//            case Lake lake -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+//            case null, default -> Main.getBatch().draw(texture,
+//                printX,  printY,
+//                printWidth, printHeight);
+//        }
+//    }
 
     private void drawCraftingItemsProgressBars() {
         for (CraftingItem craftingItem : CraftingItem.getAllCraftingItems()) {

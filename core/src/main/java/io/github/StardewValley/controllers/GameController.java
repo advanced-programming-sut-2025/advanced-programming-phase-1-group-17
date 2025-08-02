@@ -7,14 +7,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.controller.LightningController;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.Game;
-import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.animal.AnimalPlace;
 import io.github.StardewValley.shared.models.animal.FishingController;
@@ -44,6 +43,8 @@ public class GameController {
     int mapHeightInPixels;
     private final Game game;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
+    public static GameStateApiClient gameStateApiClient = new GameStateApiClient(Main.getJwtToken());
+    private static GameClient gameClient = new GameClient();
 
     private final WorldController worldController;
     private final ToolController toolController;
@@ -121,7 +122,7 @@ public class GameController {
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
     }
 
-    public void updateCamera(Player player) {
+    public void updateCamera(PlayerClient player) {
         float camHalfWidth = camera.viewportWidth * 0.5f * camera.zoom;
         float camHalfHeight = camera.viewportHeight * 0.5f * camera.zoom;
 
@@ -143,12 +144,18 @@ public class GameController {
 
     public void updateGame(float delta) {
         if (view != null) {
-            player = App.getCurrentGame().getCurrentPlayingPlayer();
-            game.getCurrentPlayingPlayer().update(delta, upPressed, downPressed, leftPressed, rightPressed);
-            updateCamera(game.getCurrentPlayingPlayer());
-            worldController.update();
+            try {
+                PlayerDto pd = gameStateApiClient.updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
+                playerUpdate(pd);
+                updateCamera(GameClient.getPlayer());
+                worldController.update();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
 
             game.getCurrentPlayingPlayer().draw(Main.getBatch());
+
+            //TODO handle connection to server
             toolController.update(delta, player);
 
             lightningController.updateLightning(delta);
@@ -158,6 +165,22 @@ public class GameController {
             crowAttackEffect.render(Main.getBatch());
             view.getHud().handleInventoryInput();
         }
+    }
+    public void playerUpdate(PlayerDto player) {
+        if (player == null ){return;}
+        PlayerClient playerClient = GameClient.getPlayer();
+        playerClient.setX(player.getX());
+        playerClient.setY(player.getY());
+        playerClient.setAnimationTimer(player.getAnimationTimer());
+        playerClient.setPassedOut(player.isPassedOut());
+        playerClient.setCoin(player.getCoin());
+        playerClient.setSpeed(player.getSpeed());
+        playerClient.setPassOutTimer(player.getPassOutTimer());
+        playerClient.setEnergy(player.getEnergy());
+        playerClient.setMaxEnergy(player.getMaxEnergy());
+        playerClient.setEnergyUnlimited(player.isEnergyUnlimited());
+        playerClient.setCurrentDirection(player.getCurrentDirection());
+        playerClient.setLastDirection(player.getLastDirection());
     }
 
 
