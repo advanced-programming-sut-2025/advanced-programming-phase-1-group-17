@@ -44,12 +44,13 @@ public class LobbyApiClient {
                     players.add(playerJson.asString());
                 }
             }
+            LobbyStatus status = LobbyStatus.valueOf(lobbyJson.getString("status"));
             lobbies.add(new LobbyDto(
                 lobbyJson.getLong("id"),
                 lobbyJson.getString("name"),
                 lobbyJson.getString("inviteCode"),
                 lobbyJson.getBoolean("private"),
-                lobbyJson.getBoolean("visible"), LobbyStatus.WAITING,
+                lobbyJson.getBoolean("visible"), status,
                 lobbyJson.getString("adminUsername"),
                 players,
                 lobbyJson.getString("password")
@@ -115,13 +116,13 @@ public class LobbyApiClient {
             }
         }
 
-
+        LobbyStatus status = LobbyStatus.valueOf(lobbyJson.getString("status"));
         return new LobbyDto(
             lobbyJson.getLong("id"),
             lobbyJson.getString("name"),
             lobbyJson.getString("inviteCode"),
             lobbyJson.getBoolean("private"),
-            lobbyJson.getBoolean("visible"), LobbyStatus.WAITING,
+            lobbyJson.getBoolean("visible"), status,
             lobbyJson.getString("adminUsername"),
             players,
             lobbyJson.getString("password")
@@ -176,14 +177,14 @@ public class LobbyApiClient {
                 players.add(playerJson.asString());
             }
         }
-
+        LobbyStatus status = LobbyStatus.valueOf(lobbyJson.getString("status"));
         return new LobbyDto(
             lobbyJson.getLong("id"),
             lobbyJson.getString("name"),
             lobbyJson.getString("inviteCode"),
             lobbyJson.getBoolean("private"),
             lobbyJson.getBoolean("visible"),
-            LobbyStatus.WAITING,
+            status,
             lobbyJson.getString("adminUsername"),
             players,
             lobbyJson.getString("password")

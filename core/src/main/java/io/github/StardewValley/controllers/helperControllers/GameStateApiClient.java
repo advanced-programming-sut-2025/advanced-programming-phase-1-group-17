@@ -1,13 +1,16 @@
 package io.github.StardewValley.controllers.helperControllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.TileDTO;
+import io.github.StardewValley.shared.models.UserDTO;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class GameStateApiClient {
     }
 
     public List<TileDTO> getMapTilesAroundPlayer(int minX, int maxX, int minY, int maxY) throws Exception {
-        String path = String.format("/game/map/%d/%d/%d/%d", minX, maxX, minY, maxY);
+        String path = String.format("/game/map?minX=%d&maxX=%d&minY=%d&maxY=%d", minX, maxX, minY, maxY);
         URL url = new URL(BASE_URL + path);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -37,6 +40,25 @@ public class GameStateApiClient {
         } else {
             throw new RuntimeException("Could not fetch tiles: code " + conn.getResponseCode());
         }
+    }
+    public UserDTO getUserWithUserDTO() throws Exception {
+        String urlString = "http://localhost:8080/api/auth/getUserByUsername";
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            try (InputStream is = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
+                return mapper.readValue(is, UserDTO.class);
+            }
+        } else {
+            System.out.println("Error: " + responseCode);
+        }
+        return null;
     }
 
     public PlayerDto updateStateOfPlayer(float delta, boolean upPressed, boolean downPressed, boolean leftPressed, boolean rightPressed) throws Exception {

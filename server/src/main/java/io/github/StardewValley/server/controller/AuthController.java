@@ -31,6 +31,20 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
+    @GetMapping("/getUserByUsername")
+    public ResponseEntity<UserDTO> getUserByUsername(@RequestHeader("Authorization")String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+        User user = userRepository.findByUsername(username).get();
+        UserDTO userDTO = new UserDTO(
+            user.getUsername(),
+            user.getNickName(),
+            user.getGender(),
+            user.getSecurityQuestion(),
+            user.getSecurityAnswer()
+        );
+        return ResponseEntity.ok(userDTO);
+    }
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest req) {
@@ -145,4 +159,6 @@ public class AuthController {
         userRepository.deleteAll();
         return ResponseEntity.noContent().build();
     }
+
+
 }

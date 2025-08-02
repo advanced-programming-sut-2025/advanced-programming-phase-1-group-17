@@ -71,18 +71,19 @@ public class GameView implements Screen, InputProcessor {
     public GameView(GameController controller, GameMenuController menuController) {
         this.font = new BitmapFont();
         int i=0;
-        for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
-            AnimalPlace ap = new AnimalPlace(animalPlaceType);
-            ap.setX(1000+500*i);
-            ap.setY(1000+500*i);
-            i++;
-            App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
-            Animal animal = new Animal("test" + i, AnimalType.values()[i],ap);
-            animal.setX(100+20*i);
-            animal.setY(100+20*i);
-            ap.getAnimals().add(animal);
-
-        }
+        //TODO handleCurrentPlayerPlaying
+//        for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
+//            AnimalPlace ap = new AnimalPlace(animalPlaceType);
+//            ap.setX(1000+500*i);
+//            ap.setY(1000+500*i);
+//            i++;
+//            App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
+//            Animal animal = new Animal("test" + i, AnimalType.values()[i],ap);
+//            animal.setX(100+20*i);
+//            animal.setY(100+20*i);
+//            ap.getAnimals().add(animal);
+//
+//        }
 
 
 
@@ -247,29 +248,34 @@ public class GameView implements Screen, InputProcessor {
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
         controller.updateGame(delta);
-
-        controller.handlePlayerInput();
-        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
-            animalPlace.render(delta);
-            for(Animal animal:animalPlace.getAnimals()){
-                animal.render(Main.getBatch(),delta);
-                animal.update(delta);
-            }
-        }
+        //TODO handle playe
+//        controller.handlePlayerInput();
+        //TODO handel app.getCurrentGame()...
+//        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
+//            animalPlace.render(delta);
+//            for(Animal animal:animalPlace.getAnimals()){
+//                animal.render(Main.getBatch(),delta);
+//                animal.update(delta);
+//            }
+//        }
         //font.draw(Main.getBatch(),"hello",120,120);
 
         Main.getBatch().end();
-        if (App.getCurrentGame().getCurrentPlayingPlayer().isNewMessage()) {
-            error.setText("you have a new message");
-        }
-        if (activeWindow) updateInteractions();
-        updateDialogue(delta);
+        //TODO handel app.getCurrentGame()...
+//        if (App.getCurrentGame().getCurrentPlayingPlayer().isNewMessage()) {
+//            error.setText("you have a new message");
+//        }
+        //TODO handle app.get...
+//        if (activeWindow) updateInteractions();
+        //TODO App.get..
+//        updateDialogue(delta);
 
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
         stage.addActor(error);
         hud.render(Main.getBatch(),delta);
-        controller.handlePlayerInput();
+        //TODO handle player
+//        controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 

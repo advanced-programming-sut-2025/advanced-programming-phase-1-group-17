@@ -8,6 +8,7 @@ import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.map.GameMap;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.PlayerMap;
+import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.StoreManager;
 
 import java.io.Serializable;
@@ -24,6 +25,7 @@ public class Game implements Serializable {
     private StoreManager storeManager = new StoreManager();
     private ArrayList<GreenHouse>GreenHouses = new ArrayList<>();
     private ArrayList<NPC> NPCHuts = new ArrayList<>();
+    private static ArrayList<Tile> tiles = new ArrayList<>();
 
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3,UserDTO user4) {
@@ -205,5 +207,21 @@ public class Game implements Serializable {
 
     public void addGreenHouses(GreenHouse greenHouse) {
         GreenHouses.add(greenHouse);
+    }
+
+    public static ArrayList<Tile> getTiles() {
+        return tiles;
+    }
+
+    public static void setTiles(ArrayList<Tile> tiles1) {
+        tiles = tiles1;
+    }
+    public static Tile getTile(int x, int y) {
+        for (Tile tile : tiles) {
+            if (tile.getX() == x && tile.getY() == y) {
+                return tile;
+            }
+        }
+        return null;
     }
 }
