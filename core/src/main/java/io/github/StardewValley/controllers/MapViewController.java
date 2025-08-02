@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
@@ -25,45 +26,44 @@ public class MapViewController {
         uiCam.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
         uiCam.update();
     }
-//TODO HANDLE TEXTURES
     public void showMap(float delta) {
-//        uiCam.update();
-//        handleCameraInput(delta);
-//
-//        Main.getBatch().setProjectionMatrix(uiCam.combined);
-//
-//        float tileSize = 3f;
-//        int mapWidthInTiles = 300;
-//        int mapHeightInTiles = 300;
-//
-//        float totalMapWidth = mapWidthInTiles * tileSize;
-//        float totalMapHeight = mapHeightInTiles * tileSize;
-//
-//        float screenCenterX = Gdx.graphics.getWidth() / 2f;
-//        float screenCenterY = Gdx.graphics.getHeight() / 2f;
-//
-//        float offsetX = screenCenterX - totalMapWidth / 2f;
-//        float offsetY = screenCenterY - totalMapHeight / 2f;
-//
-//        for (Tile tile : Tile.getTiles()) {
-//                float drawX = offsetX + tile.getX() * tileSize;
-//                float drawY = offsetY + tile.getY() * tileSize;
-//                if (tile.getPlaceable() == null || tile.getPlaceable().getTexture() == null)
-//                    continue;
-//                Main.getBatch().draw(tile.getPlaceable().getTexture(), drawX, drawY, tileSize, tileSize);
-//        }
-//
-//        for (NPC npc : App.getCurrentGame().getNPCs()) {
-//            Main.getBatch().draw(npc.getTexture(), offsetX + npc.getX() * tileSize - 10, offsetY + npc.getY() * tileSize, tileSize * 10, tileSize * 10);
-//        }
-//        for (Player player : App.getCurrentGame().getPlayers()) {
-//            if (player.getUser().getUsername().equals("NPC"))
-//                continue;
-////            if (!player.isMoved())
-////                Main.getBatch().draw(player.getTexture(), offsetX + player.getX() * tileSize, offsetY + player.getY() * tileSize, tileSize * 10, tileSize * 10);
-////            else
-//            Main.getBatch().draw(player.getTexture(), offsetX + player.getTileX() * tileSize, offsetY + player.getTileY() * tileSize, tileSize * 10, tileSize * 10);
-//        }
+        uiCam.update();
+        handleCameraInput(delta);
+
+        Main.getBatch().setProjectionMatrix(uiCam.combined);
+
+        float tileSize = 3f;
+        int mapWidthInTiles = 300;
+        int mapHeightInTiles = 300;
+
+        float totalMapWidth = mapWidthInTiles * tileSize;
+        float totalMapHeight = mapHeightInTiles * tileSize;
+
+        float screenCenterX = Gdx.graphics.getWidth() / 2f;
+        float screenCenterY = Gdx.graphics.getHeight() / 2f;
+
+        float offsetX = screenCenterX - totalMapWidth / 2f;
+        float offsetY = screenCenterY - totalMapHeight / 2f;
+
+        for (Tile tile : Tile.getTiles()) {
+                float drawX = offsetX + tile.getX() * tileSize;
+                float drawY = offsetY + tile.getY() * tileSize;
+                if (tile.getPlaceable() == null || tile.getPlaceable().getTexture() == null)
+                    continue;
+                Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(tile.getPlaceable().getTexture()), drawX, drawY, tileSize, tileSize);
+        }
+
+        for (NPC npc : App.getCurrentGame().getNPCs()) {
+            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(npc.getTexture()), offsetX + npc.getX() * tileSize - 10, offsetY + npc.getY() * tileSize, tileSize * 10, tileSize * 10);
+        }
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals("NPC"))
+                continue;
+//            if (!player.isMoved())
+//                Main.getBatch().draw(player.getTexture(), offsetX + player.getX() * tileSize, offsetY + player.getY() * tileSize, tileSize * 10, tileSize * 10);
+//            else
+            Main.getBatch().draw(player.getTexture(), offsetX + player.getTileX() * tileSize, offsetY + player.getTileY() * tileSize, tileSize * 10, tileSize * 10);
+        }
 
     }
 
