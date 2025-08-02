@@ -6,8 +6,8 @@ import io.github.StardewValley.shared.models.map.Tile;
 
 public class Tree extends Plant implements Placeable {
     private TreeType type;
-    private final Texture[] textures;
-    private final Texture hasFruitTexture;
+    private final String[] textures;
+    private final String hasFruitTexture;
 
     public Tree(boolean isForaging, TreeType treeType, Tile tile, boolean isInsideGreenHouse) {
         super(isForaging, tile, isInsideGreenHouse);
@@ -15,11 +15,11 @@ public class Tree extends Plant implements Placeable {
         this.daysTillNextHarvest = type.getFruitHarvestCycle();
 
         String[] paths = type.getStageTexturePaths();
-        this.textures = new Texture[paths.length];
+        this.textures = new String[paths.length];
         for (int i = 0; i < paths.length; i++) {
-            this.textures[i] = new Texture(paths[i]);
+            this.textures[i] =(paths[i]);
         }
-        this.hasFruitTexture = new Texture(type.getHasFruitTexturePath());
+        this.hasFruitTexture = type.getHasFruitTexturePath();
         if (isForaging)
             this.currentStageIndex = type.getStages().size() - 1;
     }
@@ -82,7 +82,7 @@ public class Tree extends Plant implements Placeable {
         this.hasFruit = false;
     }
 
-    public Texture getTexture() {
+    public String getTexture() {
         if (isFullyGrown) {
             if (hasFruit) {
                 return TreeAssetManager.getTreeAssetManager().getHasFruitTexture(type);

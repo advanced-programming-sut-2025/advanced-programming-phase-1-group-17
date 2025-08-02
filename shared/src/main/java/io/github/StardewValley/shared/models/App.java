@@ -11,8 +11,8 @@ public class App {
         return currentGame;
     }
 
-    public static void setCurrentGame(Game currentGame) {
-        App.currentGame = currentGame;
+    public static void setCurrentGame(Game currentGame1) {
+        currentGame = currentGame1;
     }
 
     public static Camera getCamera() {
@@ -30,4 +30,8 @@ public class App {
     public static void setLoggedInUser(UserDTO userDTO) {
 
     }
+    public static String getJwt() {
+        return jwtToken;
+    }
 }
+

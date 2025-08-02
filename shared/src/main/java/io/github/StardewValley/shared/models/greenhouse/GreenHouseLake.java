@@ -5,7 +5,7 @@ import io.github.StardewValley.shared.models.map.Placeable;
 
 public class GreenHouseLake implements Placeable {
     @Override
-    public Texture getTexture() {
+    public String  getTexture() {
         //TODO
         return null;
     }

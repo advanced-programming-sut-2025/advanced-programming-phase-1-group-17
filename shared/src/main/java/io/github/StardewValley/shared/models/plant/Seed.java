@@ -6,6 +6,7 @@ import io.github.StardewValley.shared.models.map.Placeable;
 
 public class Seed implements BackPackable, Placeable {
     private SeedType type;
+    private final String texture = type.getTexturePath();
     public Seed(SeedType type) {
         this.type = type;
     }
@@ -29,7 +30,7 @@ public class Seed implements BackPackable, Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String getTexture() {
         return type.getInventoryTexture();
     }
 }

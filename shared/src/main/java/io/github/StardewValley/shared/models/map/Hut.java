@@ -5,10 +5,10 @@ import io.github.StardewValley.shared.models.cooking.Refrigerator;
 
 public class Hut implements Placeable {
     private Refrigerator refrigerator = new Refrigerator();
-    private Texture texture;
+    private String texture;
     private int x;
     private int y;
-    public Hut(Texture texture, int x, int y) {
+    public Hut(String texture, int x, int y) {
         this.texture = texture;
         this.x = x;
         this.y = y;
@@ -23,7 +23,7 @@ public class Hut implements Placeable {
     }
 
     @Override
-    public Texture getTexture() {
+    public String  getTexture() {
         return texture;
     }
 

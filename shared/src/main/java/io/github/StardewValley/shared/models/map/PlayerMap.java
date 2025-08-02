@@ -477,7 +477,7 @@ public class PlayerMap {
 
     public void setMapType(int type) {
         if (type == 1) {
-            this.hut = new Hut(new Texture("hut.png"),4 + row , 4 + col);
+            this.hut = new Hut("hut.png",4 + row , 4 + col);
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
             this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
@@ -503,7 +503,7 @@ public class PlayerMap {
             }
             createGreenHouse();
         } else if (type == 2) {
-            this.hut = new Hut(new Texture("hut.png"),40 + row , 40 + col);
+            this.hut = new Hut("hut.png",40 + row , 40 + col);
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
             this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());

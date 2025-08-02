@@ -32,7 +32,7 @@ public enum CraftingRecipeType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         //TODO
         return null;
     }

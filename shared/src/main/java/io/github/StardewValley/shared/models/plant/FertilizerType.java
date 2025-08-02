@@ -17,7 +17,7 @@ public enum FertilizerType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String  getInventoryTexture() {
         return CropAssetManager.getCropAssetManager().getFertilizerTexture(this);
     }
 }

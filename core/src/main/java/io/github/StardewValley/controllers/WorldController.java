@@ -44,13 +44,14 @@ public class WorldController {
     }
 
     public void initTransients() {
-        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
-        this.backgroundTexture2 = GameAssetManager.getGameAssetManager().getBackgroundTexture2();
+        this.backgroundTexture =new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture1());
+        this.backgroundTexture2 = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture2());
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
         System.out.println(tileHeight + " " + tileWidth);
     }
 
+    //TODO handle Textures
     public void update() {
         float camLeft = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
         float camRight = camera.position.x + camera.viewportWidth / 2 * camera.zoom;

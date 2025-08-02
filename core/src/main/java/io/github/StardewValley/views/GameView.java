@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
@@ -95,7 +96,7 @@ public class GameView implements Screen, InputProcessor {
     }
 
     private void initUI() {
-        Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+        Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
         dialogueLabel = new Label("", skin);
         dialogueLabel.setColor(Color.WHITE);
         dialogueLabel.setFontScale(1.2f);
@@ -133,7 +134,7 @@ public class GameView implements Screen, InputProcessor {
                 if (currentTargetPlayer != null) {
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new TalkView(new TalkController(currentTargetPlayer),
-                        GameAssetManager.getGameAssetManager().getSkin(), GameView.this));
+                          GameAssetManagerClient.getGameAssetManager().getSkin(), GameView.this));
                 }
             }
         });
@@ -185,7 +186,7 @@ public class GameView implements Screen, InputProcessor {
                 if (currentTargetPlayer == null) return;
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
+                      GameAssetManagerClient.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
             }
         });
         givingFlower.addListener(new ClickListener() {
@@ -284,12 +285,12 @@ public class GameView implements Screen, InputProcessor {
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new TalkView(new TalkController(),
-                GameAssetManager.getGameAssetManager().getSkin(), this));
+                  GameAssetManagerClient.getGameAssetManager().getSkin(), this));
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
-                , GameAssetManager.getGameAssetManager().getSkin(), this));
+                ,   GameAssetManagerClient.getGameAssetManager().getSkin(), this));
         }
     }
 
@@ -412,7 +413,7 @@ public class GameView implements Screen, InputProcessor {
             if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
+                      GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
                 return true;
             }
         }
@@ -425,10 +426,10 @@ public class GameView implements Screen, InputProcessor {
                 Main.getMain().getScreen().dispose();
                 if (isLeftClick)
                     Main.getMain().setScreen(new ArtisanCraftMenu(new ArtisanCraftMenuController(),
-                        GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
+                          GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
                 else
                     Main.getMain().setScreen(new ArtisanInfoMenu(new ArtisanInfoMenuController(),
-                        GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
+                          GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
             }
         }
         return false;
@@ -554,7 +555,7 @@ public class GameView implements Screen, InputProcessor {
     }
 
     public void showNotification(String message) {
-        Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+        Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
         NotificationWindow window = new NotificationWindow(message, skin, () -> {
             System.out.println("Notification dismissed!");
         });

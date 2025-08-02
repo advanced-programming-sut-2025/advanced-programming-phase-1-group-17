@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import com.google.gson.Gson;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 
@@ -31,7 +32,7 @@ public class LoginMenuController {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+                Main.getMain().setScreen(new SignUpMenu(new SignUpMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
             }
         });
         view.getUserNameButton().addListener(new ClickListener() {
@@ -149,7 +150,7 @@ public class LoginMenuController {
 
             Main.getMain().getScreen().dispose();
             view.getCheckBox().setChecked(false);
-            Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+            Main.getMain().setScreen(new MainMenu(new MainMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
         } catch (IOException e) {
             e.printStackTrace();
             view.setError("Could not connect to the server.");

@@ -1,6 +1,7 @@
 package io.github.StardewValley.controllers;
 
 import com.google.gson.Gson;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.SecurityQuestionRequest;
@@ -43,7 +44,7 @@ public class SecurityQuestionMenuController {
             }
 
             Main.getMain().getScreen().dispose();
-            SignUpMenu signupMenu = new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin());
+            SignUpMenu signupMenu = new SignUpMenu(new SignUpMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin());
             Main.getMain().setScreen(signupMenu);
             signupMenu.getErrorLabel().setText("User %s registered successfully.".formatted(user.getUsername()));
         } else {

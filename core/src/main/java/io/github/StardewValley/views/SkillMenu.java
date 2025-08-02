@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.controllers.SkillMenuController;
 import io.github.StardewValley.shared.models.App;
@@ -87,7 +88,7 @@ public class SkillMenu implements Screen {
         mainTable.setFillParent(true);
         mainTable.top().pad(20);
 
-        Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+        Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
         TooltipManager tooltipManager = TooltipManager.getInstance();
 
         Table titleTable = new Table();

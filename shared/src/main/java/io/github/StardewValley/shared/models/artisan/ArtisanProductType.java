@@ -167,7 +167,7 @@ public enum ArtisanProductType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return ArtisanAssetManager.getArtisanAssetManager().getTexture(this);
     }
 }

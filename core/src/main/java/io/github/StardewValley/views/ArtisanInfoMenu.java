@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.controllers.ArtisanInfoMenuController;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
@@ -105,7 +106,7 @@ public class ArtisanInfoMenu implements Screen {
         if (craftingItem.getArtisanProductInProgress() != null) {
             Label craftingLabel = new Label("Currently crafting: " +
                 craftingItem.getArtisanProductInProgress().getType().getName(),
-                GameAssetManager.getGameAssetManager().getSkin());
+                  GameAssetManagerClient.getGameAssetManager().getSkin());
 
             ProgressBar craftingProgress = craftingItem.getProgressBar();
             if (craftingProgress != null) {
