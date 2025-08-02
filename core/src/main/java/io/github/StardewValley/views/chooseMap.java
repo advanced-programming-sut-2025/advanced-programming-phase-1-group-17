@@ -7,8 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.ChooseMapController;
+import io.github.StardewValley.controllers.GameController;
 import io.github.StardewValley.shared.models.App;
 
 public class chooseMap implements Screen {
@@ -31,7 +33,7 @@ public class chooseMap implements Screen {
         this.controller = controller;
         this.skin = skin;
         table = new Table();
-        Next = new TextButton("Next Player", skin);
+        Next = new TextButton("Select", skin);
         Next.setColor(0,1,0,1);
         checkBox1 = new CheckBox("Map1", skin);
         checkBox2 = new CheckBox("Map2", skin);
@@ -73,8 +75,12 @@ public class chooseMap implements Screen {
         Main.getBatch().begin();
         Main.getBatch().end();
         if (!controller.done) {
-            setPlayerUserName(App.getCurrentGame().getPlayers().get(controller.playerChoice).getUser().getUsername()
-                + " ,Enter the number of the gameMapType you would like to play (1 or 2)");
+            try {
+                setPlayerUserName(GameController.gameStateApiClient.getUserName()
+                    + " ,Enter the number of the gameMapType you would like to play (1 or 2)");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

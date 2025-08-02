@@ -437,58 +437,58 @@ public class GameMenuController {
         return 0;
     }
 
-    public Result walk(int x, int y, Scanner scanner) {
-        List<Tile> result;
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Tile destination = Tile.getTile(x, y);
-        if (!(destination.getOwner().equals(player.getPartner())
-            || destination.getOwner().equals(player)
-            || destination.getOwner().equals(NPC.getFatherPlayer()))) {
-            return new Result(false, "you can't walk to this tile because this tile is not for you.");
-        } else if (!destination.isWalkAble()) {
-            return new Result(false, "you can't walk to this tile because this tile is not walkable.");
-        } else if ((result = aStar(player.getX(), player.getY(), x, y, player)) == null) {
-            return new Result(false, "you can't walk to this tile because there is not path to this tile");
-        } else {
-            float energy_needed = (float) (((result.size() - 1) + (10 * countTurns(result))) / 20);
-            System.out.println("your energy : " + player.getEnergy());
-            System.out.printf("energy needed : %.2f\n", energy_needed);
-            System.out.println("do you want to go to the destination? press y or n and press enter");
-            String input = scanner.nextLine();
-            if (input.equals("y")) {
-                double energy = player.getEnergy();
-                player.setEnergy(player.getEnergy() - energy_needed);
-                if (player.getEnergy() <= 0) {
-                    int temp = 0;
-                    for (int i = 0; i < result.size(); i++) {
-                        if ((i + 1) * energy_needed / result.size() >= energy) {
-                            temp = i + 1;
-                            break;
-                        }
-                    }
-                    player.passOut();
-                    player.setEnergy(0);
-                    try {
-                        Tile tile = result.get(temp);
-                        player.setX(tile.getX());
-                        player.setY(tile.getY());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return new Result(false, "you fainted");
-                } else {
-//                    for (Tile tile : result) {
-//                        System.out.println(tile.getX() + " " + tile.getY());
+//    public Result walk(int x, int y, Scanner scanner) {
+//        List<Tile> result;
+//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+//        Tile destination = Tile.getTile(x, y);
+//        if (!(destination.getOwner().equals(player.getPartner())
+//            || destination.getOwner().equals(player)
+//            || destination.getOwner().equals(NPC.getFatherPlayer()))) {
+//            return new Result(false, "you can't walk to this tile because this tile is not for you.");
+//        } else if (!destination.isWalkAble()) {
+//            return new Result(false, "you can't walk to this tile because this tile is not walkable.");
+//        } else if ((result = aStar(player.getX(), player.getY(), x, y, player)) == null) {
+//            return new Result(false, "you can't walk to this tile because there is not path to this tile");
+//        } else {
+//            float energy_needed = (float) (((result.size() - 1) + (10 * countTurns(result))) / 20);
+//            System.out.println("your energy : " + player.getEnergy());
+//            System.out.printf("energy needed : %.2f\n", energy_needed);
+//            System.out.println("do you want to go to the destination? press y or n and press enter");
+//            String input = scanner.nextLine();
+//            if (input.equals("y")) {
+//                double energy = player.getEnergy();
+//                player.setEnergy(player.getEnergy() - energy_needed);
+//                if (player.getEnergy() <= 0) {
+//                    int temp = 0;
+//                    for (int i = 0; i < result.size(); i++) {
+//                        if ((i + 1) * energy_needed / result.size() >= energy) {
+//                            temp = i + 1;
+//                            break;
+//                        }
 //                    }
-                    player.setX(x);
-                    player.setY(y);
-                    return new Result(true, "you are in the destination now");
-                }
-            } else {
-                return new Result(true, "cancellation...");
-            }
-        }
-    }
+//                    player.passOut();
+//                    player.setEnergy(0);
+//                    try {
+//                        Tile tile = result.get(temp);
+//                        player.setX(tile.getX());
+//                        player.setY(tile.getY());
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                    return new Result(false, "you fainted");
+//                } else {
+////                    for (Tile tile : result) {
+////                        System.out.println(tile.getX() + " " + tile.getY());
+////                    }
+//                    player.setX(x);
+//                    player.setY(y);
+//                    return new Result(true, "you are in the destination now");
+//                }
+//            } else {
+//                return new Result(true, "cancellation...");
+//            }
+//        }
+//    }
 
     public List<Tile> aStar(int startX, int startY, int endX, int endY, Player player) {
         int[][] directions = {

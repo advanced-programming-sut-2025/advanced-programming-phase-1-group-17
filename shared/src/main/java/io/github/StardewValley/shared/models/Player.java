@@ -147,39 +147,6 @@ public class Player {
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
         this.buff = new Buff(BuffType.None, 0);
 
-        //TODO Handle textures
-//        walkDownAnimation = new Animation<>(0.1f, new TextureRegion[]{
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex12.png" : "Emily/Emily12.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex13.png" : "Emily/Emily13.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex14.png" : "Emily/Emily14.png"))
-//        });
-//        walkDownAnimation.setPlayMode(Animation.PlayMode.LOOP);
-//        walkLeftAnimation = new Animation<>(0.1f, new TextureRegion[]{
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex41.png" : "Emily/Emily41.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex42.png" : "Emily/Emily42.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex43.png" : "Emily/Emily43.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex44.png" : "Emily/Emily44.png"))
-//        });
-//        walkLeftAnimation.setPlayMode(Animation.PlayMode.LOOP);
-//        walkRightAnimation = new Animation<>(0.1f, new TextureRegion[]{
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex21.png" : "Emily/Emily21.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex22.png" : "Emily/Emily22.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex23.png" : "Emily/Emily23.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex24.png" : "Emily/Emily24.png"))
-//        });
-//        walkRightAnimation.setPlayMode(Animation.PlayMode.LOOP);
-//        walkUpAnimation = new Animation<>(0.1f, new TextureRegion[]{
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex31.png" : "Emily/Emily31.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex32.png" : "Emily/Emily32.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex33.png" : "Emily/Emily33.png")),
-//            new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex34.png" : "Emily/Emily34.png"))
-//        });
-//        walkUpAnimation.setPlayMode(Animation.PlayMode.LOOP);
-//        this.backgroundTexture = GameAssetManager.getGameAssetManager().getBackgroundTexture1();
-//        currentFrame = walkDownAnimation.getKeyFrame(0);
-//        this.texture = new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png");
-
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
@@ -718,5 +685,65 @@ public class Player {
 
     public void setEnergyUnlimited(boolean energyUnlimited) {
         isEnergyUnlimited = energyUnlimited;
+    }
+
+    public boolean isPassedOut() {
+        return isPassedOut;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public Animation<TextureRegion> getWalkUpAnimation() {
+        return walkUpAnimation;
+    }
+
+    public Animation<TextureRegion> getWalkDownAnimation() {
+        return walkDownAnimation;
+    }
+
+    public Animation<TextureRegion> getWalkLeftAnimation() {
+        return walkLeftAnimation;
+    }
+
+    public Animation<TextureRegion> getWalkRightAnimation() {
+        return walkRightAnimation;
+    }
+
+    public TextureRegion getCurrentFrame() {
+        return currentFrame;
+    }
+
+    public float getAnimationTimer() {
+        return animationTimer;
+    }
+
+    public float getPassOutTimer() {
+        return passOutTimer;
+    }
+
+    public ArrayList<message> getMessages() {
+        return messages;
+    }
+
+    public ArrayList<Food> getFoods() {
+        return foods;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public int getDaysSinceBrakUp() {
+        return daysSinceBrakUp;
+    }
+
+    public int getTemporaryMaxEnergyBoost() {
+        return temporaryMaxEnergyBoost;
+    }
+
+    public int getTemporaryBoostRemainingHours() {
+        return temporaryBoostRemainingHours;
     }
 }

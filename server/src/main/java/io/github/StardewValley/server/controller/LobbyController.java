@@ -6,6 +6,7 @@ import io.github.StardewValley.server.model.Lobby;
 import io.github.StardewValley.server.repository.LobbyRepository;
 import io.github.StardewValley.shared.models.GameDTO;
 import io.github.StardewValley.shared.models.LobbyDto;
+import io.github.StardewValley.shared.models.TileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -102,4 +103,5 @@ public class LobbyController {
         Lobby lobby = lobbyService.getById(Id);
         return lobbyService.toDto(lobby);
     }
+
 }

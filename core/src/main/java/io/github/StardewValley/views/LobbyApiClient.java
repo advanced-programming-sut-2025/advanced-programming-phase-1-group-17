@@ -5,6 +5,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.GameDTO;
 import io.github.StardewValley.shared.models.LobbyDto;
+import io.github.StardewValley.shared.models.LobbyStatus;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class LobbyApiClient {
                 lobbyJson.getString("name"),
                 lobbyJson.getString("inviteCode"),
                 lobbyJson.getBoolean("private"),
-                lobbyJson.getBoolean("visible"), null,
+                lobbyJson.getBoolean("visible"), LobbyStatus.WAITING,
                 lobbyJson.getString("adminUsername"),
                 players,
                 lobbyJson.getString("password")
@@ -87,7 +89,7 @@ public class LobbyApiClient {
             lobbyJson.getString("inviteCode"),
             lobbyJson.getBoolean("private"),
             lobbyJson.getBoolean("visible"),
-            null,
+            LobbyStatus.WAITING,
             lobbyJson.getString("adminUsername"),
             players,
             lobbyJson.getString("password")
@@ -119,7 +121,7 @@ public class LobbyApiClient {
             lobbyJson.getString("name"),
             lobbyJson.getString("inviteCode"),
             lobbyJson.getBoolean("private"),
-            lobbyJson.getBoolean("visible"), null,
+            lobbyJson.getBoolean("visible"), LobbyStatus.WAITING,
             lobbyJson.getString("adminUsername"),
             players,
             lobbyJson.getString("password")
@@ -149,6 +151,7 @@ public class LobbyApiClient {
     }
     private GameDTO parseGameDto(JsonValue json) {
         GameDTO dto = new GameDTO();
+
 
         //TODO
 
@@ -180,7 +183,7 @@ public class LobbyApiClient {
             lobbyJson.getString("inviteCode"),
             lobbyJson.getBoolean("private"),
             lobbyJson.getBoolean("visible"),
-            null,
+            LobbyStatus.WAITING,
             lobbyJson.getString("adminUsername"),
             players,
             lobbyJson.getString("password")

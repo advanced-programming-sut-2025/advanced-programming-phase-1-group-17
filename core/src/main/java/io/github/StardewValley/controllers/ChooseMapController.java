@@ -2,7 +2,9 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.chooseMap;
@@ -36,16 +38,16 @@ public class ChooseMapController {
             public void clicked(InputEvent event, float x, float y) {
 
                 if (!done) {
-                    App.getCurrentGame().getPlayers().get(playerChoice).getPlayerMap().setMapType
-                        (view.getCheckBox1().isChecked() ? 1 : 2);
-                    playerChoice++;
-                    if (playerChoice == 4) {
+                    try {
+                        GameController.gameStateApiClient.selectMap(view.getCheckBox1().isChecked() ? 1 : 2);
                         done = true;
-                        view.setPlayerUserName("Let's go");
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
                 }else {
+                    System.out.println("dksjfhrdfhdbvhjbvhfdbvhgvbdfvdfvbjhvbdhvbjhhvbjhvuvbjvbuevbehvefbehvdfvbhvbjh");
                     Main.getMain().getScreen().dispose();
-
+                    //TODO handle game
                     Main.getMain().setScreen(new GameView(new GameController(App.getCurrentGame()),new GameMenuController()));
                 }
             }

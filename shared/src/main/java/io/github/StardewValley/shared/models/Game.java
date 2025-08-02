@@ -78,6 +78,18 @@ public class Game implements Serializable {
                 players.get(3).addFriendShips(players.get(i), 0);
             }
         }
+        App.setCurrentGame(this);
+        this.gameMap = new GameMap(players);
+        App.getCurrentGame().setCurrentPlayingPlayer(creator);
+        for (Player player : players) {
+            if (player.getUser().getUsername().equals("NPC")) continue;
+            if (player.isGuest()){
+                player.getPlayerMap().setType(1);
+            }
+        }
+        this.storeManager.initializeStores();
+        giveInitialItems();
+
     }
 
     private void giveInitialItems() {
