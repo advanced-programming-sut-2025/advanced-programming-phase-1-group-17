@@ -16,33 +16,33 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.controllers.helperControllers.FarmingController;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
-import io.github.StardewValley.controllers.helperControllers.FarmingController;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.Result;
-import io.github.StardewValley.models.enums.Gender;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.controllers.StoreMenuController;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.animal.AnimalPlace;
-import io.github.StardewValley.models.animal.AnimalPlaceType;
-import io.github.StardewValley.models.animal.AnimalType;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.map.GreenHouse;
-import io.github.StardewValley.models.market.ShippingBin;
-import io.github.StardewValley.models.market.StoreType;
+import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.animal.AnimalPlace;
+import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
+import io.github.StardewValley.shared.models.animal.AnimalType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
+import io.github.StardewValley.shared.models.market.ShippingBin;
+import io.github.StardewValley.shared.models.market.StoreType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.StardewValley.models.plant.Fertilizer;
-import io.github.StardewValley.models.plant.Sapling;
-import io.github.StardewValley.models.plant.Seed;
-import io.github.StardewValley.models.tools.Tool;
+import io.github.StardewValley.shared.models.plant.Fertilizer;
+import io.github.StardewValley.shared.models.plant.Sapling;
+import io.github.StardewValley.shared.models.plant.Seed;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.enums.Gender;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -69,7 +69,6 @@ public class GameView implements Screen, InputProcessor {
 
     public GameView(GameController controller, GameMenuController menuController) {
         this.font = new BitmapFont();
-        App.setGameView(this);
         int i=0;
         for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
             AnimalPlace ap = new AnimalPlace(animalPlaceType);
@@ -77,7 +76,7 @@ public class GameView implements Screen, InputProcessor {
             ap.setY(1000+500*i);
             i++;
             App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
-            Animal animal = new Animal("test" + i,AnimalType.values()[i],ap);
+            Animal animal = new Animal("test" + i, AnimalType.values()[i],ap);
             animal.setX(100+20*i);
             animal.setY(100+20*i);
             ap.getAnimals().add(animal);
@@ -291,14 +290,6 @@ public class GameView implements Screen, InputProcessor {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
                 , GameAssetManager.getGameAssetManager().getSkin(), this));
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            try {
-                menuController.nextTurn();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 

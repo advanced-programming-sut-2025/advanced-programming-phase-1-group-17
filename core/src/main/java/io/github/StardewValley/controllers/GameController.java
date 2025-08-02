@@ -6,25 +6,33 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
-import io.github.StardewValley.GameAssetManager;
-import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
-import io.github.StardewValley.models.Game;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.animal.*;
-import io.github.StardewValley.models.map.Lake;
-import io.github.StardewValley.models.plant.*;
+import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.controller.LightningController;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.animal.AnimalPlace;
+import io.github.StardewValley.shared.models.animal.FishingController;
+import io.github.StardewValley.shared.models.backpack.NormalItem;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
+import io.github.StardewValley.shared.models.map.Lake;
+import io.github.StardewValley.shared.models.map.Placeable;
+import io.github.StardewValley.shared.models.plant.*;
 import io.github.StardewValley.views.*;
-import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.crafting.CraftingItemType;
-import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.models.market.Store;
-import io.github.StardewValley.models.market.StoreType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.market.Store;
+import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.InventoryView;
 import io.github.StardewValley.views.MapView;
-import io.github.StardewValley.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.models.plant.CrowAttackEffect;
 
 import java.util.HashMap;
 
@@ -261,11 +269,11 @@ public class GameController {
             Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
             if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(), view));
+                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin()));
             }
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(),view));
+            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin()));
         }
     }
 

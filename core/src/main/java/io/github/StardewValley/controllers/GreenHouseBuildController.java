@@ -3,10 +3,10 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.NormalItemType;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.Result;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.views.GreenHouseBuildScreen;
 
 public class GreenHouseBuildController {

@@ -12,8 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.animal.AnimalPlace;
+import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.animal.AnimalPlace;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;

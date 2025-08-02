@@ -8,13 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.BackPackable;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class HUD {

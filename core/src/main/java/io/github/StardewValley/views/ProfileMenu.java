@@ -14,7 +14,7 @@ import io.github.StardewValley.controllers.ProfileMenuController;
 import java.util.Scanner;
 
 
-public class ProfileMenu implements AppMenu, Screen {
+public class ProfileMenu implements Screen {
     private final TextButton backButton;
     private Table buttonsTable;
     private Stage stage;
@@ -266,11 +266,6 @@ public class ProfileMenu implements AppMenu, Screen {
 
     public TextField getNickName() {
         return NickName;
-    }
-
-    @Override
-    public void run(Scanner scanner) {
-
     }
 
     public TextButton getChangeAvatar() {

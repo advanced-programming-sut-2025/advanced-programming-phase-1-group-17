@@ -1,24 +1,28 @@
 package io.github.StardewValley.controllers;
 
-import io.github.StardewValley.GameAssetManager;
+import com.google.gson.Gson;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.SaveUser;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.User;
+import io.github.StardewValley.shared.dto.SecurityQuestionRequest;
+import io.github.StardewValley.shared.dto.SecurityQuestionResponse;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.UserDTO;
+import io.github.StardewValley.shared.models.enums.NetworkRequests;
 import io.github.StardewValley.views.SecurityQuestionMenu;
 import io.github.StardewValley.views.SignUpMenu;
+import okhttp3.*;
+
+import java.io.IOException;
 
 public class SecurityQuestionMenuController {
-    private User user;
+    private UserDTO user;
     private String question = "";
     private SecurityQuestionMenu view;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public void setQuestion(String question) {
         this.question = question;
+        this.user = App.getLoggedInUser();
     }
 
     public void checkAnswer() {
@@ -29,7 +33,14 @@ public class SecurityQuestionMenuController {
 
             user.setSecurityQuestion(question);
             user.setSecurityAnswer(view.getSecurityAnswer().getText());
-            SaveUser.saveUser(App.getUsers());
+            //TODo
+            //SaveUser.saveUser(App.getUsers());
+
+            Result serverResponse = sendSecurityQuestion();
+            if (!serverResponse.isSuccessful()) {
+                view.getErrorLabel().setText(serverResponse.getMessage());
+                return;
+            }
 
             Main.getMain().getScreen().dispose();
             SignUpMenu signupMenu = new SignUpMenu(new SignUpMenuController(), GameAssetManager.getGameAssetManager().getSkin());
@@ -37,6 +48,42 @@ public class SecurityQuestionMenuController {
             signupMenu.getErrorLabel().setText("User %s registered successfully.".formatted(user.getUsername()));
         } else {
             view.getErrorLabel().setText("Answer and Answer Confirm are not the same.");
+        }
+    }
+
+    private Result sendSecurityQuestion() {
+        OkHttpClient client = new OkHttpClient();
+        Gson gson = new Gson();
+        SecurityQuestionRequest registerRequest = new SecurityQuestionRequest(user.getUsername(), user.getSecurityQuestion(), user.getSecurityAnswer());
+        String json = gson.toJson(registerRequest);
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+        Request request = new Request.Builder()
+            .url("http://%s:%d/api/auth/%s".formatted(
+                Main.getServerIP(),
+                Main.getServerPort(),
+                NetworkRequests.SecurityQuestion.getMessage()
+            ))
+            .post(body)
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                return new Result(false, "Server Error: " + response.code());
+            }
+
+            String responseJson = response.body().string();
+            SecurityQuestionResponse securityQuestionResponse = gson.fromJson(responseJson, SecurityQuestionResponse.class);
+
+            if (securityQuestionResponse.isSuccess()) {
+                return new Result(true, "User registered successfully!");
+            } else {
+                return new Result(false, securityQuestionResponse.getMessage());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result(false, "Network error: " + e.getMessage());
         }
     }
 

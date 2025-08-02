@@ -3,9 +3,9 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.tools.BackPack;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.views.ShippingBinScreen;
 
 public class ShippingBinScreenController {
