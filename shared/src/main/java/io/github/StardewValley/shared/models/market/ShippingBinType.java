@@ -18,7 +18,7 @@ public enum ShippingBinType implements BackPackableType {
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return GameAssetManager.getGameAssetManager().getShippingBinTexture();
     }
 }

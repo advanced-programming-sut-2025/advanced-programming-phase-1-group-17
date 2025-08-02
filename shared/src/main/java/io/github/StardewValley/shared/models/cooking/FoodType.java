@@ -6,6 +6,7 @@ import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 import java.util.Map;
 
+import static io.github.StardewValley.shared.models.artisan.IngredientGroup.*;
 import static io.github.StardewValley.shared.models.backpack.NormalItemType.*;
 import static io.github.StardewValley.shared.models.animal.AnimalProductType.*;
 import static io.github.StardewValley.shared.models.artisan.ArtisanProductType.*;

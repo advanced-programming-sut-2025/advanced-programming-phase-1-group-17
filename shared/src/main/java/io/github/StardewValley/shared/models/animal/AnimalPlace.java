@@ -20,7 +20,7 @@ public class AnimalPlace implements Placeable {
     private AnimalPlaceType animalPlaceType;
     private int capacity;
     private Stage uiStage = new Stage(new ScreenViewport());
-    private Skin skin;
+    private String  skin;
     private boolean isOpen=true;
 
     public AnimalPlace(AnimalPlaceType animalPlaceType){
@@ -85,10 +85,10 @@ public class AnimalPlace implements Placeable {
     public void addAnimal(Animal animal){
         animals.add(animal);
     }
-
-    public Rectangle getHitBox(){
-        return new Rectangle(x,y,this.animalPlaceType.getInventoryTexture().getWidth(),this.animalPlaceType.getInventoryTexture().getHeight());
-    }
+    //TODO
+//    public Rectangle getHitBox(){
+//        return new Rectangle(x,y,this.animalPlaceType.getInventoryTexture().getWidth(),this.animalPlaceType.getInventoryTexture().getHeight());
+//    }
 
     public float getX() {
         return x;
@@ -104,11 +104,12 @@ public class AnimalPlace implements Placeable {
 
     public void setY(float y) {
         this.y = y;
-        for(int i=(int)x;i<x+this.animalPlaceType.getInventoryTexture().getWidth();i+=110){
-            for (int j=(int)y;j<y + animalPlaceType.getInventoryTexture().getHeight();j+=110){
-                Tile.getTileByClick(i,j).setWalkAble(false);
-            }
-        }
+        //TODO
+//        for(int i=(int)x;i<x+this.animalPlaceType.getInventoryTexture().getWidth();i+=110){
+//            for (int j=(int)y;j<y + animalPlaceType.getInventoryTexture().getHeight();j+=110){
+//                Tile.getTileByClick(i,j).setWalkAble(false);
+//            }
+//        }
     }
 
     public boolean isOpen() {
@@ -117,8 +118,10 @@ public class AnimalPlace implements Placeable {
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+    //TODO
+    @Override
     public String getTexture() {
-        //TODO
-        return null;
+        return "";
     }
 }

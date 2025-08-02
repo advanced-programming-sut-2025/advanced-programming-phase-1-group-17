@@ -62,7 +62,9 @@ public class AnimalProduct implements BackPackable {
         return animalProductType;
     }
     public Rectangle getHitBox(){
-        return new Rectangle(x,y,this.animalProductType.getInventoryTexture().getWidth(),this.animalProductType.getInventoryTexture().getHeight());
+        return null;
+        //TODO
+//        return new Rectangle(x,y,this.animalProductType.getInventoryTexture().getWidth(),this.animalProductType.getInventoryTexture().getHeight());
     }
 
     public float getX() {
@@ -85,9 +87,10 @@ public class AnimalProduct implements BackPackable {
         return isRender;
     }
     public void render(SpriteBatch batch, float v) {
-        if(isRender){
-            batch.draw(this.animalProductType.getInventoryTexture(),x,y,this.animalProductType.getInventoryTexture().getWidth(),this.animalProductType.getInventoryTexture().getHeight());
-        }
+        //TODO
+//        if(isRender){
+//            batch.draw(this.animalProductType.getInventoryTexture(),x,y,this.animalProductType.getInventoryTexture().getWidth(),this.animalProductType.getInventoryTexture().getHeight());
+//        }
         if(Gdx.input.justTouched()){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             App.getCamera().unproject(touchPos);

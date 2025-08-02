@@ -74,7 +74,7 @@ public enum IngredientGroup implements BackPackableType{
     }
 
     @Override
-    public Texture getInventoryTexture() {
+    public String getInventoryTexture() {
         return null;
     }
 }

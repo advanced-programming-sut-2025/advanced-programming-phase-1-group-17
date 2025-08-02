@@ -64,8 +64,9 @@ public class Animal implements Placeable {
     private int counter=0;
     public Animal(String name, AnimalType animalType,AnimalPlace animalPlace){
         this.animalPlace = animalPlace;
-        this.animalHouseTile = Tile.getTileFromPixel((int) (animalPlace.getX() + (float) animalPlace.getAnimalPlaceType().getInventoryTexture().getWidth() /2)
-            ,(int)animalPlace.getY());
+        //TODO
+//        this.animalHouseTile = Tile.getTileFromPixel((int) (animalPlace.getX() + (float) animalPlace.getAnimalPlaceType().getInventoryTexture().getWidth() /2)
+//            ,(int)animalPlace.getY());
         animalHouseTile = Tile.getTile(animalHouseTile.getX(), animalHouseTile.getY()-1);
         this.hayTexture = new Texture("Hay.png");
         this.loveTexture = new Texture("Heart/Marriage_Icon.png");
@@ -526,23 +527,24 @@ public class Animal implements Placeable {
             }
             float centerX = newX + this.animalType.getTexttureSize()/2f;
             float centerY = newY + this.animalType.getTexttureSize()/2f;
-            Texture backgroundTexture = App.getCurrentGame().getCurrentPlayingPlayer().getBackgroundTexture();
-            int tileX = (int) (centerX / backgroundTexture.getWidth());
-            int tileY = (int) (centerY / backgroundTexture.getHeight());
-            if (tileX == 0) tileX = 1;
-            if (tileY == 0) tileY = 1;
-
-            Tile destination = Tile.getTile(tileX, tileY);
-            if(destination != null && destination.isWalkAble()){
-                int mapWidth = backgroundTexture.getWidth() * 300;
-                int mapHeight = backgroundTexture.getHeight() * 300;
-
-//                    x = tileX;
-//                    y = tileY;
-
-                x = (int) Math.max(1, Math.min(newX, mapWidth - this.animalType.getTexttureSize()));
-                y = (int) Math.max(1, Math.min(newY, mapHeight - this.animalType.getTexttureSize()));
-            }
+            //TODO
+//            Texture backgroundTexture = App.getCurrentGame().getCurrentPlayingPlayer().getBackgroundTexture();
+//            int tileX = (int) (centerX / backgroundTexture.getWidth());
+//            int tileY = (int) (centerY / backgroundTexture.getHeight());
+//            if (tileX == 0) tileX = 1;
+//            if (tileY == 0) tileY = 1;
+//
+//            Tile destination = Tile.getTile(tileX, tileY);
+//            if(destination != null && destination.isWalkAble()){
+//                int mapWidth = backgroundTexture.getWidth() * 300;
+//                int mapHeight = backgroundTexture.getHeight() * 300;
+//
+////                    x = tileX;
+////                    y = tileY;
+//
+//                x = (int) Math.max(1, Math.min(newX, mapWidth - this.animalType.getTexttureSize()));
+//                y = (int) Math.max(1, Math.min(newY, mapHeight - this.animalType.getTexttureSize()));
+//            }
         }
 
     }

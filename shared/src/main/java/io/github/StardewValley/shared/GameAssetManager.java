@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager;
-    private final Skin skin = new Skin(Gdx.files.internal("Skin/StardewSkin.json"));
+    private final String skin = "Skin/StardewSkin.json";
 
     private final String  backgroundTexture1 = "Flooring/Flooring_44.png";
     private final String backgroundTexture2 = "Flooring/Flooring_50.png";
@@ -34,7 +34,7 @@ public class GameAssetManager {
 
     private final HashMap<Season, String > seasonalMapTextures = new HashMap<>();
     private final HashMap<StoreType, HashMap<Season, TextureRegion>> storeTextures = new HashMap<>();
-    private final Texture shippingBinTexture = new Texture("Chest/ChestOrange.png");
+    private final String  shippingBinTexture =("Chest/ChestOrange.png");
 
     private final HashMap<String, String> abilityTextures = new HashMap<>() {{
         put("Farming", ("Skill/Farming_Skill_Icon.png"));
@@ -43,7 +43,7 @@ public class GameAssetManager {
         put("Mining", ("Skill/Mining_Skill_Icon.png"));
     }};
 
-    private final HashMap<NormalItemType, Texture> normalItemTextures = new HashMap<>();
+    private final HashMap<NormalItemType, String> normalItemTextures = new HashMap<>();
     private final ArrayList<TextureRegion> grassTextures = new ArrayList<>();
 
     private GameAssetManager() {
