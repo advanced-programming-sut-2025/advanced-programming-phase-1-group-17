@@ -65,6 +65,12 @@ public class WorldController {
 
         treesInThisFrame.clear();
         giantCropsInThisFrame.clear();
+        int[] area = new int[4];
+        area[0] = minTileX;
+        area[1] = maxTileX;
+        area[2] = minTileY;
+        area[3] = maxTileY;
+
         for (int x = minTileX - 1; x < maxTileX; x++) {
             for (int y = minTileY - 1; y < maxTileY; y++) {
                 if (x < -2 || y < -2 || x > 300 || y > 300)
