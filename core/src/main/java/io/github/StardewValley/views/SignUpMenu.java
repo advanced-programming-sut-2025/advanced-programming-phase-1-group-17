@@ -9,14 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.MainMenuController;
 import io.github.StardewValley.controllers.SecurityQuestionMenuController;
 import io.github.StardewValley.controllers.SignUpMenuController;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.Result;
-import io.github.StardewValley.models.enums.Gender;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.enums.Gender;
 
 
 public class SignUpMenu implements Screen {
@@ -114,10 +113,11 @@ public class SignUpMenu implements Screen {
                 if (result.isSuccessful()) {
                     Main.getMain().getScreen().dispose();
                     SecurityQuestionMenuController securityQuestionMenuController = new SecurityQuestionMenuController();
-                    securityQuestionMenuController.setUser(App.getUserWithUsername(usernameField.getText()));
+                    //TODO
+                    //securityQuestionMenuController.setUser(App.getUserWithUsername(usernameField.getText()));
                     Main.getMain().setScreen(new SecurityQuestionMenu(
                         securityQuestionMenuController,
-                        GameAssetManager.getGameAssetManager().getSkin()));
+                          GameAssetManagerClient.getGameAssetManager().getSkin()));
                 }
                 errorLabel.setText(result.getMessage());
             }
@@ -160,7 +160,7 @@ public class SignUpMenu implements Screen {
         Table genderRow = new Table();
         genderRow.defaults().pad(4).fillX().expandX();
         for (Gender gender : Gender.values()) {
-            TextButton genderButton = new TextButton(gender.name(), GameAssetManager.getGameAssetManager().getSkin());
+            TextButton genderButton = new TextButton(gender.name(),   GameAssetManagerClient.getGameAssetManager().getSkin());
             genderButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {

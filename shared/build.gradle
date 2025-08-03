@@ -1,0 +1,13 @@
+plugins {
+  id 'java-library'
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+  api "com.badlogicgames.gdx:gdx:$gdxVersion"
+}

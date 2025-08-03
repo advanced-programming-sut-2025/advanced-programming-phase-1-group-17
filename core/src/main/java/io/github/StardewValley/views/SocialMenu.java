@@ -3,7 +3,7 @@ package io.github.StardewValley.views;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.controllers.SocialMenuController;
-import io.github.StardewValley.models.Player;
+import io.github.StardewValley.shared.models.Player;
 
 public class SocialMenu implements Screen {
     public SocialMenu(SocialMenuController socialMenuController, Skin skin, Player player) {

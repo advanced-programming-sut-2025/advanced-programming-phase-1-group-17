@@ -5,13 +5,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.artisan.ArtisanProduct;
-import io.github.StardewValley.models.artisan.ArtisanProductType;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
+import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.tools.ToolType;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.views.ArtisanCraftMenu;
 
 import java.util.ArrayList;
@@ -86,7 +90,7 @@ public class ArtisanCraftMenuController {
                 (product, new ArrayList<>(view.getSelectedItems().keySet())));
             artisan.setArtisanProductInProgress(artisanProduct);
 
-            Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+            Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
 
             ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
             style.background = skin.newDrawable("white", Color.DARK_GRAY);  // Replace "white" with a texture name in your atlas

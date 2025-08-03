@@ -5,11 +5,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.enums.Season;
-import io.github.StardewValley.models.market.*;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.market.*;
 import io.github.StardewValley.views.ItemMenu;
 import io.github.StardewValley.views.StoreMenu;
 
@@ -46,7 +47,7 @@ public class StoreMenuController {
             else
                 price = item.getPrice();
 
-            TextButton textButton = new TextButton(item.getType().getName(), GameAssetManager.getGameAssetManager().getSkin());
+            TextButton textButton = new TextButton(item.getType().getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
             if (!item.isAvailableInSeason(App.getCurrentGame().getDate().getSeason()) ||
                 !(item.isAvailable()) ||
                 (item.getSoldToday() >= item.getDailyLimit())) {
@@ -62,18 +63,18 @@ public class StoreMenuController {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         Main.getMain().getScreen().dispose();
-                        Main.getMain().setScreen(new ItemMenu(new ItemMenuController(), GameAssetManager.getGameAssetManager().getSkin(),
+                        Main.getMain().setScreen(new ItemMenu(new ItemMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin(),
                             item, view, view.getStoreType()));
                     }
                 });
             }
-            itemsTable.add(new Label(rank + ".", GameAssetManager.getGameAssetManager().getSkin())).width(40).padRight(30);
+            itemsTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
             itemsTable.add(textButton).width(400).padRight(30);
-            itemsTable.add(new Label("%.0f".formatted(price), GameAssetManager.getGameAssetManager().getSkin())).width(80).padRight(30);
+            itemsTable.add(new Label("%.0f".formatted(price),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
             if (item.getDailyLimit() > 200)
-                itemsTable.add(new Label("INFINITY", GameAssetManager.getGameAssetManager().getSkin())).width(40).row();
+                itemsTable.add(new Label("INFINITY",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
             else
-                itemsTable.add(new Label("%d".formatted(item.getDailyLimit()), GameAssetManager.getGameAssetManager().getSkin())).width(40).row();
+                itemsTable.add(new Label("%d".formatted(item.getDailyLimit()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
             rank++;
         }
     }
@@ -83,25 +84,25 @@ public class StoreMenuController {
 
         if (storeType.equals(StoreType.Blacksmith)) {
             upgradeTable.clear();
-            upgradeTable.add(new Label("Rank", GameAssetManager.getGameAssetManager().getSkin())).width(40);
-            upgradeTable.add(new Label("Service", GameAssetManager.getGameAssetManager().getSkin())).width(200);
-            upgradeTable.add(new Label("Cost", GameAssetManager.getGameAssetManager().getSkin())).width(80).row();
+            upgradeTable.add(new Label("Rank",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40);
+            upgradeTable.add(new Label("Service",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(200);
+            upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
 
             StoreManager manager = App.getCurrentGame().getStoreManager();
             for (UpgradeService upgradeService : manager.getInventory(storeType).getUpgradeServices()) {
-                TextButton textButton = new TextButton(upgradeService.getName(), GameAssetManager.getGameAssetManager().getSkin());
+                TextButton textButton = new TextButton(upgradeService.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
                 textButton.addListener(new ClickListener() {
                     // TODO
                 });
 
-                upgradeTable.add(new Label(rank + ".", GameAssetManager.getGameAssetManager().getSkin())).width(40).padRight(30);
+                upgradeTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
                 upgradeTable.add(textButton).width(400).padRight(30);
-                upgradeTable.add(new Label("%d".formatted(upgradeService.getCost()), GameAssetManager.getGameAssetManager().getSkin())).width(80).padRight(30);
+                upgradeTable.add(new Label("%d".formatted(upgradeService.getCost()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
                 if (upgradeService.getDailyLimit() > 200)
-                    upgradeTable.add(new Label("INFINITY", GameAssetManager.getGameAssetManager().getSkin())).width(40).row();
+                    upgradeTable.add(new Label("INFINITY",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
                 else
-                    upgradeTable.add(new Label("%d".formatted(upgradeService.getDailyLimit()), GameAssetManager.getGameAssetManager().getSkin())).width(40).row();
+                    upgradeTable.add(new Label("%d".formatted(upgradeService.getDailyLimit()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
                 rank++;
             }
         }
@@ -127,22 +128,22 @@ public class StoreMenuController {
             else
                 price = item.getPrice();
 
-            TextButton textButton = new TextButton(item.getType().getName(), GameAssetManager.getGameAssetManager().getSkin());
+            TextButton textButton = new TextButton(item.getType().getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
             textButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     Main.getMain().getScreen().dispose();
-                    Main.getMain().setScreen(new ItemMenu(new ItemMenuController(), GameAssetManager.getGameAssetManager().getSkin(),
+                    Main.getMain().setScreen(new ItemMenu(new ItemMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin(),
                         item, view, view.getStoreType()));
                 }
             });
-            itemsTable.add(new Label(rank + ".", GameAssetManager.getGameAssetManager().getSkin())).width(40).padRight(30);
+            itemsTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
             itemsTable.add(textButton).width(400).padRight(30);
-            itemsTable.add(new Label("%.0f".formatted(price), GameAssetManager.getGameAssetManager().getSkin())).width(80).padRight(30);
+            itemsTable.add(new Label("%.0f".formatted(price),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
             if (item.getDailyLimit() > 200)
-                itemsTable.add(new Label("INFINITY", GameAssetManager.getGameAssetManager().getSkin())).width(40).row();
+                itemsTable.add(new Label("INFINITY",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
             else
-                itemsTable.add(new Label("%d".formatted(item.getDailyLimit()), GameAssetManager.getGameAssetManager().getSkin())).width(40).row();
+                itemsTable.add(new Label("%d".formatted(item.getDailyLimit()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
             rank++;
         }
     }
@@ -150,26 +151,26 @@ public class StoreMenuController {
     public void addAvailableUpgradeServices() {
         if (storeType.equals(StoreType.Blacksmith)) {
             upgradeTable.clear();
-            upgradeTable.add(new Label("Rank", GameAssetManager.getGameAssetManager().getSkin())).width(40);
-            upgradeTable.add(new Label("Service", GameAssetManager.getGameAssetManager().getSkin())).width(200);
-            upgradeTable.add(new Label("Cost", GameAssetManager.getGameAssetManager().getSkin())).width(80).row();
+            upgradeTable.add(new Label("Rank",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40);
+            upgradeTable.add(new Label("Service",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(200);
+            upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
 
             StoreManager manager = App.getCurrentGame().getStoreManager();
             for (UpgradeService upgradeService : manager.getInventory(storeType).getUpgradeServices()) {
                 if (upgradeService.getSoldToday() >= upgradeService.getDailyLimit())
                     continue;
-                TextButton textButton = new TextButton(upgradeService.getName(), GameAssetManager.getGameAssetManager().getSkin());
+                TextButton textButton = new TextButton(upgradeService.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
                 textButton.addListener(new ClickListener() {
                     // TODO
                 });
-                upgradeTable.add(new Label(rank + ".", GameAssetManager.getGameAssetManager().getSkin())).width(40).padRight(30);
+                upgradeTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
                 upgradeTable.add(textButton).width(400).padRight(30);
-                upgradeTable.add(new Label("%d".formatted(upgradeService.getCost()), GameAssetManager.getGameAssetManager().getSkin())).width(80).padRight(30);
+                upgradeTable.add(new Label("%d".formatted(upgradeService.getCost()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
                 if (upgradeService.getDailyLimit() > 200)
-                    upgradeTable.add(new Label("INFINITY", GameAssetManager.getGameAssetManager().getSkin())).width(40).row();
+                    upgradeTable.add(new Label("INFINITY",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
                 else
-                    upgradeTable.add(new Label("%d".formatted(upgradeService.getDailyLimit()), GameAssetManager.getGameAssetManager().getSkin())).width(40).row();
+                    upgradeTable.add(new Label("%d".formatted(upgradeService.getDailyLimit()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
                 rank++;
             }
         }

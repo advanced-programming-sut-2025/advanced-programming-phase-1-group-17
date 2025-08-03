@@ -13,10 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.controllers.CookingController;
-import io.github.StardewValley.controllers.CraftingController;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.cooking.FoodType;
-import io.github.StardewValley.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.cooking.FoodType;
 
 public class CookingShow implements Screen {
     private Stage stage;
@@ -50,7 +47,7 @@ public class CookingShow implements Screen {
         for (FoodType food : FoodType.values()) {
 
 
-            Texture texture = food.getInventoryTexture();
+            Texture texture = new Texture(food.getInventoryTexture());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(texture));
 

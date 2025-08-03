@@ -3,12 +3,12 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.crafting.CraftingItemType;
-import io.github.StardewValley.models.tools.BackPack;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.views.CraftingShow;
 import io.github.StardewValley.views.GameView;
 

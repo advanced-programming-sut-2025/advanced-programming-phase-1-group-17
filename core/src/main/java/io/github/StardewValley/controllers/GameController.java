@@ -3,64 +3,52 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
+import io.github.StardewValley.controllers.helperControllers.FarmingController;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.models.Game;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.PlayerController;
-import io.github.StardewValley.models.animal.*;
-import io.github.StardewValley.models.map.Lake;
+import io.github.StardewValley.shared.controller.LightningController;
+import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.animal.AnimalPlace;
+import io.github.StardewValley.shared.models.animal.FishingController;
+import io.github.StardewValley.shared.models.backpack.NormalItem;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
+import io.github.StardewValley.shared.models.map.Lake;
+import io.github.StardewValley.shared.models.map.Placeable;
+import io.github.StardewValley.shared.models.plant.*;
 import io.github.StardewValley.views.*;
-import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.cooking.BuffType;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.crafting.CraftingItemType;
-import io.github.StardewValley.models.enums.FishType;
-import io.github.StardewValley.models.foraging.ForagingController;
-import io.github.StardewValley.models.foraging.Mineral;
-import io.github.StardewValley.models.map.GreenHouse;
-import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.models.market.Fish;
-import io.github.StardewValley.models.market.ItemQuality;
-import io.github.StardewValley.models.market.Store;
-import io.github.StardewValley.models.market.StoreType;
-import io.github.StardewValley.views.GameMenu;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.market.Store;
+import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.InventoryView;
 import io.github.StardewValley.views.MapView;
-import io.github.StardewValley.models.plant.Crop;
-import io.github.StardewValley.models.plant.Fruit;
-import io.github.StardewValley.models.plant.Plant;
-import io.github.StardewValley.models.plant.Tree;
-import io.github.StardewValley.models.tools.FishingPoleType;
-import io.github.StardewValley.models.tools.Tool;
-import io.github.StardewValley.models.tools.ToolType;
-import io.github.StardewValley.views.*;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.models.plant.CrowAttackEffect;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.*;
 
 public class GameController {
     public GameView view;
     private OrthographicCamera camera;
     int mapWidthInPixels;
     int mapHeightInPixels;
-    private final Game game;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
-    private final GameMenuController gameMenuController = new GameMenuController();
+    private static GameClient gameClient = new GameClient();
 
-    private final WorldController worldController;
-    private final ToolController toolController;
-    private final LightningController lightningController;
+    private  WorldController worldController;
+    private  ToolController toolController;
+    private  LightningController lightningController;
+    private  FarmingController farmingController;
+    private  CrowAttackEffect crowAttackEffect;
 
     private Player player;
 
@@ -69,26 +57,32 @@ public class GameController {
     }
 
 
-    public GameController(Game game) {
-        this.game = game;
-        for (Player player : game.getPlayers()) {
-            PlayerController playerController = new PlayerController(player);
-            this.game.getPlayerControllers().add(playerController);
+    public GameController() {
+        try {
+            GameClient.setPlayer(new PlayerClient(GameClient.getGameStateApiClient().getUserWithUserDTO()));
+            PlayerDto player = GameClient.getGameStateApiClient().updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
+            playerUpdate(player);
+            this.camera.position.set(player.getX() , player.getY(), 0);
+
+            this.worldController = new WorldController(this.camera);
+            this.worldController.initTransients();
+            //TODO
+//            this.toolController = new ToolController(player);
+//            this.lightningController = LightningController.getLightningController();
+
+            this.mapWidthInPixels = worldController.getTileWidth();
+            this.mapHeightInPixels = worldController.getTileHeight();
+
+            this.farmingController = new FarmingController();
+            this.crowAttackEffect = new CrowAttackEffect();
+            //TODO
+//            initializeStoreRectangles();
+
+            App.setCamera(this.camera);
+            GameClient.setCamera(this.camera);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        Player player = game.getCurrentPlayingPlayer();
-        this.camera.position.set(player.getX() , player.getY(), 0);
-
-        this.worldController = new WorldController(this.camera);
-        this.worldController.initTransients();
-
-        this.toolController = new ToolController(player);
-        this.lightningController = LightningController.getLightningController();
-
-        this.mapWidthInPixels = worldController.getTileWidth();
-        this.mapHeightInPixels = worldController.getTileHeight();
-
-        initializeStoreRectangles();
-        App.setCamera(this.camera);
     }
 
     public void setView(GameView gameView) {
@@ -134,7 +128,7 @@ public class GameController {
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
     }
 
-    public void updateCamera(Player player) {
+    public void updateCamera(PlayerClient player) {
         float camHalfWidth = camera.viewportWidth * 0.5f * camera.zoom;
         float camHalfHeight = camera.viewportHeight * 0.5f * camera.zoom;
 
@@ -156,32 +150,44 @@ public class GameController {
 
     public void updateGame(float delta) {
         if (view != null) {
-            player = App.getCurrentGame().getCurrentPlayingPlayer();
-            game.getCurrentPlayingPlayer().update(delta, upPressed, downPressed, leftPressed, rightPressed);
-            updateCamera(game.getCurrentPlayingPlayer());
-            worldController.update();
-
-            game.getCurrentPlayingPlayer().draw(Main.getBatch());
-            toolController.update(delta, player);
-
-            lightningController.updateLightning(delta);
-            lightningController.renderLightning(Main.getBatch());
-        }
-        if(Gdx.input.isTouched()) {
-            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            App.getCamera().unproject(vector3);
-            Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
-            if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(), view));
+            try {
+                PlayerDto pd = GameClient.getGameStateApiClient().updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
+                playerUpdate(pd);
+                updateCamera(GameClient.getPlayer());
+                worldController.update();
+            }catch (Exception e) {
+                e.printStackTrace();
             }
 
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManager.getGameAssetManager().getSkin(),view));
+            GameClient.getPlayer().draw(Main.getBatch());
 
+            //TODO handle connection to server
+//            toolController.update(delta, player);
+
+            //TODO
+//            lightningController.updateLightning(delta);
+//            lightningController.renderLightning(Main.getBatch());
+//
+//            crowAttackEffect.update(delta);
+//            crowAttackEffect.render(Main.getBatch());
+            view.getHud().handleInventoryInput();
         }
+    }
+    public void playerUpdate(PlayerDto player) {
+        if (player == null ){return;}
+        PlayerClient playerClient = GameClient.getPlayer();
+        playerClient.setX(player.getX());
+        playerClient.setY(player.getY());
+        playerClient.setAnimationTimer(player.getAnimationTimer());
+        playerClient.setPassedOut(player.isPassedOut());
+        playerClient.setCoin(player.getCoin());
+        playerClient.setSpeed(player.getSpeed());
+        playerClient.setPassOutTimer(player.getPassOutTimer());
+        playerClient.setEnergy(player.getEnergy());
+        playerClient.setMaxEnergy(player.getMaxEnergy());
+        playerClient.setEnergyUnlimited(player.isEnergyUnlimited());
+        playerClient.setCurrentDirection(player.getCurrentDirection());
+        playerClient.setLastDirection(player.getLastDirection());
     }
 
 
@@ -204,11 +210,11 @@ public class GameController {
                 break;
             case Input.Keys.E:
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new CookingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CookingController()));
+                Main.getMain().setScreen(new CookingShow(  GameAssetManagerClient.getGameAssetManager().getSkin(), view,new CookingController()));
                 break;
             case Input.Keys.R:
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new CraftingShow(GameAssetManager.getGameAssetManager().getSkin(), view,new CraftingController()));
+                Main.getMain().setScreen(new CraftingShow(  GameAssetManagerClient.getGameAssetManager().getSkin(), view,new CraftingController()));
                 break;
             case Input.Keys.P:
                 for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
@@ -216,10 +222,6 @@ public class GameController {
                         if(!animal.isFollowingPath())animal.startPathTo();
                     }
                 }
-
-
-
-
         }
     }
 
@@ -232,6 +234,23 @@ public class GameController {
     }
 
     public void handlePlayerInput() {
+        player = App.getCurrentGame().getCurrentPlayingPlayer();
+        int dx = 0, dy = 0;
+        switch (player.getLastDirection()) {
+            case UP:
+                dy = 1;
+                break;
+            case RIGHT:
+                dx = 1;
+                break;
+            case DOWN:
+                dy = -1;
+                break;
+            case LEFT:
+                dx = -1;
+                break;
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new MapView(new MapViewController(), view));
@@ -239,7 +258,7 @@ public class GameController {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
-            Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManager.getGameAssetManager().getSkin(), view));
+            Main.getMain().setScreen(new TalkView(new TalkController(),   GameAssetManagerClient.getGameAssetManager().getSkin(), view));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             try {
                 App.getCurrentGame().getDate().goToNextDay();
@@ -247,46 +266,75 @@ public class GameController {
                 e.printStackTrace();
             }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-            int dx = 0, dy = 0;
-            switch (player.getCurrentDirection()) {
-                case UP:
-                    dy = 1;
-                    break;
-                case RIGHT:
-                    dx = 1;
-                    break;
-                case DOWN:
-                    dy = -1;
-                    break;
-                case LEFT:
-                    dx = -1;
-                    break;
-                case IDLE:
-                    //return;
-                    break;
-            }
-
+            Result result = null;
             if (player.getEquippedItem() instanceof Tool)
-                toolController.toolUse(dx, dy);
+                result = toolController.toolUse(dx, dy);
             else if (player.getEquippedItem() instanceof CraftingItem)
-                //placeItem(dx, dy);
-                placeItem(0, -1);
+                result = placeItem(dx, dy);
+            else if (player.getEquippedItem() instanceof Seed seed)
+                result = farmingController.plantSeed(seed, dx, dy);
+            else if (player.getEquippedItem() instanceof Sapling sapling)
+                result = farmingController.plantSapling(sapling, dx, dy);
+            else if (player.getEquippedItem() instanceof Fertilizer fertilizer) {
+                result = farmingController.fertilize(fertilizer, dx, dy);
+            }
+            if (result != null && !result.isSuccessful())
+                view.showNotification(result.getMessage());
 
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManager.getGameAssetManager().getSkin()));
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new InventoryView(new InventoryController(),
-                GameAssetManager.getGameAssetManager().getSkin(),
-                game.getCurrentPlayingPlayer()));
+            Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
-        //TODO handle input key
+        //TODO handle player
+//        else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+//            Main.getMain().getScreen().dispose();
+//            Main.getMain().setScreen(new InventoryView(new InventoryController(),
+//                  GameAssetManagerClient.getGameAssetManager().getSkin(),
+//                GameClient.getPlayer()));
+//        }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
+            pickForaging(dx, dy);
+        else if(Gdx.input.isTouched()) {
+            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            App.getCamera().unproject(vector3);
+            Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
+            if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
+            }
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
+        }
+    }
+
+    private void pickForaging(int dx, int dy) {
+        player = App.getCurrentGame().getCurrentPlayingPlayer();
+        int x = player.getX() / worldController.getTileWidth() + dx;
+        int y = player.getY() / worldController.getTileHeight() + dy;
+        Tile tile = Tile.getTile(x, y);
+
+        Placeable placeable = tile.getPlaceable();
+        if (placeable instanceof Crop crop) {
+            if (crop.isForaging()) {
+                player.getBackPack().addItemToInventory(crop);
+                tile.setPlaceable(null);
+                tile.setWalkAble(true);
+            }
+        } else if (placeable instanceof NormalItem normalItem) {
+            if (normalItem.getType().equals(NormalItemType.Wood)) {
+                player.getBackPack().addItemToInventory(normalItem);
+                tile.setPlaceable(null);
+                tile.setWalkAble(true);
+            }
+        }
     }
 
 
-    public void placeItem(int dx, int dy) {
+    public Result placeItem(int dx, int dy) {
         player = App.getCurrentGame().getCurrentPlayingPlayer();
         CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
 
@@ -295,9 +343,7 @@ public class GameController {
         Tile tile = Tile.getTile(x, y);
 
         if (tile.getPlaceable() != null) {
-            //TODO: maybe graphical error
-            return;
-            //return new Result(false, "tile is full");
+            return new Result(false, "tile is full");
         }
 
         App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().useItem(craftingItemType);
@@ -452,6 +498,7 @@ public class GameController {
 
             }
         }
+        return new Result(true, "Item placed Successfully.");
     }
 
     public WorldController getWorldController() {
@@ -462,5 +509,7 @@ public class GameController {
         return toolController;
     }
 
-
+    public CrowAttackEffect getCrowAttackEffect() {
+        return crowAttackEffect;
+    }
 }
