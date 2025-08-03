@@ -1,7 +1,5 @@
 package io.github.StardewValley.shared.models;
 
-import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
 
 public class TileDTO {
