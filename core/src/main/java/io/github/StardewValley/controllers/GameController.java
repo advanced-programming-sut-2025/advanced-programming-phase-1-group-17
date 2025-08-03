@@ -216,6 +216,12 @@ public class GameController {
                         if(!animal.isFollowingPath())animal.startPathTo();
                     }
                 }
+                break;
+            case Input.Keys.Q:
+                view.setSthBuilding(true);
+                view.setPlaceable(new AnimalPlace(AnimalPlaceType.Barn));
+                break;
+
 
 
 

@@ -19,10 +19,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
-import io.github.StardewValley.models.App;
+import io.github.StardewValley.models.*;
 import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.Result;
 import io.github.StardewValley.models.enums.Gender;
 import io.github.StardewValley.controllers.StoreMenuController;
 import io.github.StardewValley.models.Player;
@@ -64,6 +62,8 @@ public class GameView implements Screen, InputProcessor {
     private boolean dialogueActive = false;
     private Table dialogueTable;
     private BitmapFont font;
+    private boolean isSthBuilding=false;
+    private Placeable placeable ;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
@@ -246,8 +246,12 @@ public class GameView implements Screen, InputProcessor {
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
         controller.updateGame(delta);
-
         controller.handlePlayerInput();
+
+        if(isSthBuilding){
+            AnimalPlace.animalHouseBuy(Main.getBatch(), (AnimalPlace) placeable,this);
+        }
+
         for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
             animalPlace.render(delta);
             for(Animal animal:animalPlace.getAnimals()){
@@ -499,5 +503,19 @@ public class GameView implements Screen, InputProcessor {
         }
     }
 
+    public boolean isSthBuilding() {
+        return isSthBuilding;
+    }
 
+    public void setSthBuilding(boolean sthBuilding) {
+        isSthBuilding = sthBuilding;
+    }
+
+    public Placeable getPlaceable() {
+        return placeable;
+    }
+
+    public void setPlaceable(Placeable placeable) {
+        this.placeable = placeable;
+    }
 }
