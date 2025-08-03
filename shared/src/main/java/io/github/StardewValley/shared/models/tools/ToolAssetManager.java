@@ -2,7 +2,6 @@ package io.github.StardewValley.shared.models.tools;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Player;
 
 import java.util.HashMap;
@@ -54,7 +53,7 @@ public class ToolAssetManager {
         fishingPoleTextures.put(FishingPoleType.IridiumFishingPole, "Fishing_Pole/Iridium_Rod.png");
         fishingPoleTextures.put(FishingPoleType.BambooFishingPole,   "Fishing_Pole/Bamboo_Pole.png");
         fishingPoleTextures.put(FishingPoleType.TrainingFishingPole,   "Fishing_Pole/Training_Rod.png");
-        fishingPoleTextures.put(FishingPoleType.FiberglassFishingPole,   "Fishing_Pole/Fiberglass_Rod.png");;
+        fishingPoleTextures.put(FishingPoleType.FiberglassFishingPole,   "Fishing_Pole/Fiberglass_Rod.png");
     }
 
     private void loadMilkPailTextures() {
@@ -107,24 +106,22 @@ public class ToolAssetManager {
         return toolAssetManager;
     }
 
-    public String getToolTexture(ToolType toolType) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+    public String getToolTexture(ToolType toolType, Player player) {
         if (toolType.equals(ToolType.FishingPole)) {
-            FishingPoleType material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).getFirst()).getFishingPoleMaterial();
+            FishingPoleType material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).get(0)).getFishingPoleMaterial();
             return fishingPoleTextures.get(material);
         }
-        ToolMaterial material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).getFirst()).getMaterial();
+        ToolMaterial material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).get(0)).getMaterial();
         return toolTextures.get(toolType).get(material);
     }
 
-    public Sprite getToolSprite(ToolType toolType) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+    public Sprite getToolSprite(ToolType toolType, Player player) {
 //TODO
         //        if (toolType.equals(ToolType.FishingPole)) {
 //            FishingPoleType material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).getFirst()).getFishingPoleMaterial();
 //            return fishingPoleTextures.get(material);
 //        }
-        ToolMaterial material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).getFirst()).getMaterial();
+        ToolMaterial material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).get(0)).getMaterial();
         return toolSprites.get(toolType).get(material);
     }
 }

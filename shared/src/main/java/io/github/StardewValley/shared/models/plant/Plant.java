@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.plant;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
 
@@ -140,7 +141,7 @@ public abstract class Plant implements Placeable {
         isWateredToday = true;
     }
 
-    public abstract void harvest();
+    public abstract void harvest(Player player);
     //TODO: quality when harvesting
 
     public abstract String getTexture();

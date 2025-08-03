@@ -1,9 +1,12 @@
 package io.github.StardewValley.shared.models.foraging;
 
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.plant.*;
 import io.github.StardewValley.shared.models.tools.ToolMaterial;
 import io.github.StardewValley.shared.models.map.Quarry;
@@ -13,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class ForagingController {
+public final class ForagingController {
     public static void setForagingForNextDay() {
         Random random = new Random();
         for (Tile tile : Tile.getTiles()) {
@@ -130,4 +133,25 @@ public abstract class ForagingController {
         tile.setWalkAble(false);
     }
 
+
+    public static void pickForaging(int dx, int dy, Player player) {
+        int x = player.getX() / GameAssetManager.getGameAssetManager().getTileWidth() + dx;
+        int y = player.getY() / GameAssetManager.getGameAssetManager().getTileHeight() + dy;
+        Tile tile = Tile.getTile(x, y);
+
+        Placeable placeable = tile.getPlaceable();
+        if (placeable instanceof Crop crop) {
+            if (crop.isForaging()) {
+                player.getBackPack().addItemToInventory(crop);
+                tile.setPlaceable(null);
+                tile.setWalkAble(true);
+            }
+        } else if (placeable instanceof NormalItem normalItem) {
+            if (normalItem.getType().equals(NormalItemType.Wood)) {
+                player.getBackPack().addItemToInventory(normalItem);
+                tile.setPlaceable(null);
+                tile.setWalkAble(true);
+            }
+        }
+    }
 }

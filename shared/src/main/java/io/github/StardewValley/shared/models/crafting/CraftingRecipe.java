@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.crafting;
 
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
 
 public class CraftingRecipe {
     private CraftingItemType targetItem;
@@ -15,8 +16,8 @@ public class CraftingRecipe {
     public void setTargetItem(CraftingItemType targetItem) {
         this.targetItem = targetItem;
     }
-    public static CraftingRecipe findRecipe(String recipeName) {
-        for(CraftingRecipe craftingRecipe : App.getCurrentGame().getCurrentPlayingPlayer().getCraftingRecipes()) {
+    public static CraftingRecipe findRecipe(String recipeName, Player player) {
+        for(CraftingRecipe craftingRecipe : player.getCraftingRecipes()) {
             if(craftingRecipe.getTargetItem().name().equals(recipeName)) {
                 return craftingRecipe;
             }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
 
 public class LightningController {
     private static LightningController lightningController = null;
@@ -67,13 +68,13 @@ public class LightningController {
         }
     }
 
-    public void renderLightning(SpriteBatch batch) {
+    public void renderLightning(SpriteBatch batch, Player player) {
         // Flash (white screen)
         if (lightningAlpha > 0f) {
             Color prev = batch.getColor().cpy();
             batch.setColor(1f, 1f, 1f, lightningAlpha);
-            int x = App.getCurrentGame().getCurrentPlayingPlayer().getX() - Gdx.graphics.getWidth() / 2;
-            int y = App.getCurrentGame().getCurrentPlayingPlayer().getY() - Gdx.graphics.getHeight() / 2;
+            int x = player.getX() - Gdx.graphics.getWidth() / 2;
+            int y = player.getY() - Gdx.graphics.getHeight() / 2;
             batch.draw(whitePixelTexture, x, y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             batch.setColor(prev);
         }
@@ -81,8 +82,8 @@ public class LightningController {
         // Lightning bolt animation
         if (boltActive && currentFrame < lightningFrames.length) {
             Texture frame = lightningFrames[currentFrame];
-            int x = App.getCurrentGame().getCurrentPlayingPlayer().getX();
-            int y = App.getCurrentGame().getCurrentPlayingPlayer().getY() + 150;
+            int x = player.getX();
+            int y = player.getY() + 150;
             batch.draw(frame, x - frame.getWidth() / 2, y);
         }
     }

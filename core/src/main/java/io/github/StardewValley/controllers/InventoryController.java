@@ -110,6 +110,7 @@ public class InventoryController {
     }
 
     public void saveAndExitButton() {
+
         GameMenuController gameMenuController = new GameMenuController();
         Result result =  gameMenuController.exitGame();
         this.view.getItemPickLabel().setText(result.toString());

@@ -8,25 +8,20 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
-import io.github.StardewValley.controllers.helperControllers.FarmingController;
-import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.controller.LightningController;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.animal.FishingController;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.map.Lake;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.plant.*;
 import io.github.StardewValley.views.*;
-import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MapView;
-import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.models.plant.CrowAttackEffect;
 
 import java.util.HashMap;
@@ -37,16 +32,14 @@ public class GameController {
     int mapWidthInPixels;
     int mapHeightInPixels;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
-    public static GameStateApiClient gameStateApiClient = new GameStateApiClient(Main.getJwtToken());
     private static GameClient gameClient = new GameClient();
 
     private  WorldController worldController;
     private ToolRenderController toolRenderController;
     private  LightningController lightningController;
-    private  FarmingController farmingController;
     private  CrowAttackEffect crowAttackEffect;
 
-    private Player player;
+    private PlayerClient player;
 
     {
         create();
@@ -55,8 +48,8 @@ public class GameController {
 
     public GameController() {
         try {
-            GameClient.setPlayer(new PlayerClient(gameStateApiClient.getUserWithUserDTO()));
-            PlayerDto player = gameStateApiClient.updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
+            GameClient.setPlayer(new PlayerClient(GameClient.getGameStateApiClient().getUserWithUserDTO()));
+            PlayerDto player = GameClient.getGameStateApiClient().updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
             playerUpdate(player);
             this.camera.position.set(player.getX() , player.getY(), 0);
 
@@ -68,13 +61,12 @@ public class GameController {
 
             this.mapWidthInPixels = worldController.getTileWidth();
             this.mapHeightInPixels = worldController.getTileHeight();
-
-            this.farmingController = new FarmingController();
             this.crowAttackEffect = new CrowAttackEffect();
             //TODO
 //            initializeStoreRectangles();
 
             App.setCamera(this.camera);
+            GameClient.setCamera(this.camera);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -146,7 +138,7 @@ public class GameController {
     public void updateGame(float delta) {
         if (view != null) {
             try {
-                PlayerDto pd = gameStateApiClient.updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
+                PlayerDto pd = GameClient.getGameStateApiClient().updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
                 playerUpdate(pd);
                 updateCamera(GameClient.getPlayer());
                 worldController.update();
@@ -229,7 +221,7 @@ public class GameController {
     }
 
     public void handlePlayerInput() {
-        player = App.getCurrentGame().getCurrentPlayingPlayer();
+        //player = App.getCurrentGame().getCurrentPlayingPlayer();
         int dx = 0, dy = 0;
         switch (player.getLastDirection()) {
             case UP:
@@ -262,16 +254,10 @@ public class GameController {
             }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             Result result = null;
-            if (player.getEquippedItem() instanceof Tool)
-                result = toolRenderController.toolUse(dx, dy);
-            else if (player.getEquippedItem() instanceof CraftingItem)
-                result = placeItem(dx, dy);
-            else if (player.getEquippedItem() instanceof Seed seed)
-                result = farmingController.plantSeed(seed, dx, dy);
-            else if (player.getEquippedItem() instanceof Sapling sapling)
-                result = farmingController.plantSapling(sapling, dx, dy);
-            else if (player.getEquippedItem() instanceof Fertilizer fertilizer) {
-                result = farmingController.fertilize(fertilizer, dx, dy);
+            try {
+                result = GameClient.getGameStateApiClient().handleClick(dx, dy);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             if (result != null && !result.isSuccessful())
                 view.showNotification(result.getMessage());
@@ -291,40 +277,20 @@ public class GameController {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
-            pickForaging(dx, dy);
+            GameClient.getGameStateApiClient().pickForaging(dx, dy);
         else if(Gdx.input.isTouched()) {
             Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             App.getCamera().unproject(vector3);
             Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
             if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
+                //TODO
+                //Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
             }
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
-        }
-    }
-
-    private void pickForaging(int dx, int dy) {
-        player = App.getCurrentGame().getCurrentPlayingPlayer();
-        int x = player.getX() / worldController.getTileWidth() + dx;
-        int y = player.getY() / worldController.getTileHeight() + dy;
-        Tile tile = Tile.getTile(x, y);
-
-        Placeable placeable = tile.getPlaceable();
-        if (placeable instanceof Crop crop) {
-            if (crop.isForaging()) {
-                player.getBackPack().addItemToInventory(crop);
-                tile.setPlaceable(null);
-                tile.setWalkAble(true);
-            }
-        } else if (placeable instanceof NormalItem normalItem) {
-            if (normalItem.getType().equals(NormalItemType.Wood)) {
-                player.getBackPack().addItemToInventory(normalItem);
-                tile.setPlaceable(null);
-                tile.setWalkAble(true);
-            }
+            //TODO
+            //Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
     }
 
@@ -338,9 +304,5 @@ public class GameController {
 
     public CrowAttackEffect getCrowAttackEffect() {
         return crowAttackEffect;
-    }
-
-    public static GameStateApiClient getGameStateApiClient() {
-        return gameStateApiClient;
     }
 }

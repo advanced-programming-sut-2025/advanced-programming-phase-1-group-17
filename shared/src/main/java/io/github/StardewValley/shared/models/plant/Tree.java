@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.plant;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
 
@@ -75,7 +76,7 @@ public class Tree extends Plant implements Placeable {
     }
 
     @Override
-    public void harvest() {
+    public void harvest(Player player) {
         if(!hasFruit || !isFullyGrown)
             return;
         daysTillNextHarvest = type.getFruitHarvestCycle();

@@ -233,9 +233,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.neighborGiantTiles = neighborGiantTiles;
     }
 
-    public void harvest() {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
+    public void harvest(Player player) {
         if (!hasFruit)
             return;
         if (this.isForaging())

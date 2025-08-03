@@ -152,7 +152,9 @@ public class LobbyService {
             user.getNickName(),
             user.getGender(),
             user.getSecurityQuestion(),
-            user.getSecurityAnswer()
+            user.getSecurityAnswer(),
+            user.getEmail(),
+            user.getPasswordHash()
         );
     }
 

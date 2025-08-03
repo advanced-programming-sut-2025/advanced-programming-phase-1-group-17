@@ -18,7 +18,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
-import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.shared.models.App;
@@ -39,7 +38,6 @@ import io.github.StardewValley.shared.models.enums.Gender;
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
     private final GameController controller;
-    private final FarmingController farmingController = new FarmingController();
     private final GameMenuController menuController;
     private HUD hud;
     private Window window;
@@ -57,24 +55,14 @@ public class GameView implements Screen, InputProcessor {
     private boolean dialogueActive = false;
     private Table dialogueTable;
     private BitmapFont font;
+    private boolean isSthBuilding=false;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
         this.font = new BitmapFont();
         int i=0;
         //TODO handleCurrentPlayerPlaying
-//        for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
-//            AnimalPlace ap = new AnimalPlace(animalPlaceType);
-//            ap.setX(1000+500*i);
-//            ap.setY(1000+500*i);
-//            i++;
-//            App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
-//            Animal animal = new Animal("test" + i, AnimalType.values()[i],ap);
-//            animal.setX(100+20*i);
-//            animal.setY(100+20*i);
-//            ap.getAnimals().add(animal);
-//
-//        }
+
 
 
 
@@ -465,9 +453,10 @@ public class GameView implements Screen, InputProcessor {
 
     public NPC getNearbyNPC() {
         for (NPC npc : App.getCurrentGame().getNPCs()) {
-            if (menuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), npc)) {
-                return npc;
-            }
+            //TODo
+//            if (menuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), npc)) {
+//                return npc;
+//            }
         }
         return null;
     }
@@ -558,5 +547,13 @@ public class GameView implements Screen, InputProcessor {
 
     public HUD getHud() {
         return hud;
+    }
+
+    public boolean isSthBuilding() {
+        return isSthBuilding;
+    }
+
+    public void setSthBuilding(boolean sthBuilding) {
+        isSthBuilding = sthBuilding;
     }
 }

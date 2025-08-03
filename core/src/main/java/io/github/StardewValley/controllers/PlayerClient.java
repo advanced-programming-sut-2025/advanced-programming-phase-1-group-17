@@ -17,6 +17,7 @@ import io.github.StardewValley.shared.models.tools.ToolMaterial;
 import io.github.StardewValley.shared.models.tools.ToolType;
 
 public class PlayerClient {
+
     private boolean isGuest = false;
     private boolean isPassedOut = false;
     private UserDTO user;

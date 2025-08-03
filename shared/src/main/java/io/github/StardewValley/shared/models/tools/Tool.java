@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.tools;
 
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
@@ -66,8 +67,8 @@ public class Tool implements BackPackable {
     }
 
 
-    public static Tool findToolByName(String toolName) {
-        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+    public static Tool findToolByName(String toolName, Player player) {
+        BackPack backPack = player.getBackPack();
 
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
             if (backPackableType instanceof ToolType toolType) {

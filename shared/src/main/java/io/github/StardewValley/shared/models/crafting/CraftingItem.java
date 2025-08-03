@@ -113,20 +113,6 @@ public class CraftingItem implements BackPackable, Placeable {
         return targetItem.getInventoryTexture();
     }
 
-    public void setTargetItem(CraftingItemType targetItem) {
-        this.targetItem = targetItem;
-    }
-
-
-
-    public static CraftingItem findItemInBackPack(CraftingItem craftingItem) {
-        for (BackPackableType backPackableType : App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getBackPackItems().keySet()) {
-            if (backPackableType.equals(craftingItem.getType())) {
-                return craftingItem;
-            }
-        }
-        return null;
-    }
     public ProgressBar getProgressBar() {
         return progressBar;
     }

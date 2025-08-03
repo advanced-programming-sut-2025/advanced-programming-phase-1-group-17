@@ -33,11 +33,12 @@ public class FishingController {
     private Fish fish;
     private int fishCount=0;
     public Tool savedTool;
-    public FishingController() {
+
+    public FishingController(Player player) {
         this.whichMovement = MathUtils.random(1,5);
-         savedTool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
-        App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(new Tool(ToolType.FishingPole, ToolMaterial.Basic,FishingPoleType.BambooFishingPole));
-        fishing((FishingPoleType) App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool().getType());
+        savedTool = player.getCurrentTool();
+        player.setCurrentTool(new Tool(ToolType.FishingPole, ToolMaterial.Basic,FishingPoleType.BambooFishingPole));
+        fishing((FishingPoleType) player.getCurrentTool().getType(), player);
     }
 
 
@@ -227,9 +228,7 @@ public class FishingController {
 
         targetY = MathUtils.clamp(targetY, 0, 300);
     }
-    public void fishing(FishingPoleType fishingPoleType) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
+    public void fishing(FishingPoleType fishingPoleType, Player player) {
 //        if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
 //            //TODO: maybe graphical error
 //            return;

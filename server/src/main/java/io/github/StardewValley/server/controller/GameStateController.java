@@ -8,8 +8,11 @@ import io.github.StardewValley.server.controller.logicControllers.ToolController
 import io.github.StardewValley.server.model.User;
 import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.dto.HandleClickRequest;
+import io.github.StardewValley.server.model.User;
+import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.foraging.ForagingController;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.plant.Fertilizer;
 import io.github.StardewValley.shared.models.plant.Sapling;
@@ -107,6 +110,35 @@ public class GameStateController {
         String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(username);
     }
+    @PostMapping("/exitGame")
+    public ResponseEntity<Boolean> exitGame(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+        if (!username.equals(AppServer.getCurrentGame().getCreator().getUser().getUsername()))
+            return ResponseEntity.ok(false);
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            User user = userRepository.findByUsername(p.getUser().getUsername()).get();
+            p.getUser().setLastGame(AppServer.getCurrentGame());
+            p.getUser().setActiveGame(null);
+            if (p.isGuest()) continue;
+            p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
+            UserDTO userDTO = p.getUser();
+            user.setEmail(userDTO.getEmail());
+            user.setAvatar(userDTO.getAvatar());
+            user.setUsername(userDTO.getUsername());
+            user.setNickName(userDTO.getNickname());
+            user.setTheMostMoneyInGame(userDTO.getTheMostMoneyInGame());
+            user.setSecurityQuestion(userDTO.getSecurityQuestion());
+            user.setSecurityAnswer(userDTO.getSecurityAnswer());
+            user.setNumOfPlay(userDTO.getNumOfPlay());
+            user.setPasswordHash(userDTO.getPasswordHash());
+            userRepository.save(user);
+        }
+        AppServer.setCurrentGame(null);
+        return ResponseEntity.ok(true);
+    }
+
+
 
     @PostMapping("/game/handleClick")
     public ResponseEntity<Result> handleClick(@RequestBody HandleClickRequest request, @RequestHeader("Authorization") String token) {
@@ -123,6 +155,13 @@ public class GameStateController {
         else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
             result = farmingController.fertilize(fertilizer, request.getDx(), request.getDy(), player);
         return ResponseEntity.ok(result);
+    }
+
+
+    @PostMapping("/game/Foraging/pickForaging")
+    public void pickForaging(@RequestBody HandleClickRequest request, @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        ForagingController.pickForaging(request.getDx(), request.getDy(), player);
     }
 
     public Player getPlayerFromToken(String token) {
