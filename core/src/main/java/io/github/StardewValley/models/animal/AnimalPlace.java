@@ -2,7 +2,10 @@ package io.github.StardewValley.models.animal;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,6 +21,7 @@ import io.github.StardewValley.models.App;
 import io.github.StardewValley.models.Placeable;
 import io.github.StardewValley.models.map.Tile;
 import io.github.StardewValley.views.AnimalPlaceShow;
+import io.github.StardewValley.views.GameView;
 
 import java.util.ArrayList;
 
@@ -29,6 +33,7 @@ public class AnimalPlace implements Placeable {
     private Stage uiStage = new Stage(new ScreenViewport());
     private Skin skin;
     private boolean isOpen=true;
+    private boolean justPlaced = false;
 
     public AnimalPlace(AnimalPlaceType animalPlaceType){
         this.animalPlaceType = animalPlaceType;
@@ -43,7 +48,7 @@ public class AnimalPlace implements Placeable {
             x,
             y
         );
-        if (Gdx.input.justTouched()) {
+        if (!justPlaced && Gdx.input.justTouched()) {
             Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             App.getCamera().unproject(vector3);
             if (this.getHitBox().contains(vector3.x, vector3.y)) {
@@ -51,6 +56,7 @@ public class AnimalPlace implements Placeable {
                 Main.getMain().setScreen(new AnimalPlaceShow(GameAssetManager.getGameAssetManager().getSkin(), App.getGameView(),this));
             }
         }
+        justPlaced = true;
     }
 
     public ArrayList<Animal> getAnimals() {
@@ -117,7 +123,9 @@ public class AnimalPlace implements Placeable {
         this.y = y;
         for(int i=(int)x;i<x+this.animalPlaceType.getInventoryTexture().getWidth();i+=110){
             for (int j=(int)y;j<y + animalPlaceType.getInventoryTexture().getHeight();j+=110){
-                Tile.getTileByClick(i,j).setWalkAble(false);
+                Tile tile = Tile.getTileByClick(i,j);
+                assert tile != null;
+                tile.setWalkAble(false);
             }
         }
     }
@@ -128,5 +136,35 @@ public class AnimalPlace implements Placeable {
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+    public static void animalHouseBuy( SpriteBatch batch,AnimalPlace animalPlace,GameView gameView) {
+
+                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                Vector3 worldPos = App.getCamera().unproject(mousePos);
+
+                float width = animalPlace.animalPlaceType.getInventoryTexture().getWidth();
+                float height = animalPlace.animalPlaceType.getInventoryTexture().getHeight();
+                batch.setColor(1, 1, 1, 0.5f); //
+                batch.draw(animalPlace.animalPlaceType.getInventoryTexture(), worldPos.x - width / 2, worldPos.y - height / 2, width, height);
+                batch.setColor(1, 1, 1, 1f);
+                if (Gdx.input.justTouched()) {
+                    for (int i = (int) (worldPos.x - width/2); i < worldPos.x + width/2; i += 110) {
+                        for (int j = (int) (worldPos.y - height/2); j < worldPos.y + height/2; j += 110) {
+                            Tile tile = Tile.getTileFromPixel(i, j);
+                            if (tile == null || !tile.isWalkAble()) {
+                                gameView.setSthBuilding(false);
+                                if(tile == null) System.out.println("tile is null!");
+                                if(!tile.isWalkAble()) System.out.println("tile is not walkable!");
+                                return;
+                            }
+
+                        }
+                    }
+                    animalPlace.setX(worldPos.x - width / 2);
+                    animalPlace.setY(worldPos.y - height / 2);
+                    animalPlace.justPlaced = true;
+                    App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace);
+                    gameView.setSthBuilding(false);
+                }
     }
 }
