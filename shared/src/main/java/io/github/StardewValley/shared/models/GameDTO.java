@@ -5,7 +5,6 @@ import java.util.List;
 public class GameDTO {
     private String creatorUsername;
     private List<String> playerUsernames;
-    private int currentPlayingPlayerIndex;
     private String currentPlayingUsername;
     private String currentDate;
 
@@ -15,7 +14,6 @@ public class GameDTO {
     public GameDTO(String creatorUsername, List<String> playerUsernames, int currentPlayingPlayerIndex, String currentPlayingUsername, String currentDate) {
         this.creatorUsername = creatorUsername;
         this.playerUsernames = playerUsernames;
-        this.currentPlayingPlayerIndex = currentPlayingPlayerIndex;
         this.currentPlayingUsername = currentPlayingUsername;
         this.currentDate = currentDate;
     }
@@ -36,13 +34,6 @@ public class GameDTO {
         this.playerUsernames = playerUsernames;
     }
 
-    public int getCurrentPlayingPlayerIndex() {
-        return currentPlayingPlayerIndex;
-    }
-
-    public void setCurrentPlayingPlayerIndex(int currentPlayingPlayerIndex) {
-        this.currentPlayingPlayerIndex = currentPlayingPlayerIndex;
-    }
 
     public String getCurrentPlayingUsername() {
         return currentPlayingUsername;
