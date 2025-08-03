@@ -66,24 +66,14 @@ public class GameView implements Screen, InputProcessor {
     private boolean dialogueActive = false;
     private Table dialogueTable;
     private BitmapFont font;
+    private boolean isSthBuilding=false;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
         this.font = new BitmapFont();
         int i=0;
         //TODO handleCurrentPlayerPlaying
-//        for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
-//            AnimalPlace ap = new AnimalPlace(animalPlaceType);
-//            ap.setX(1000+500*i);
-//            ap.setY(1000+500*i);
-//            i++;
-//            App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
-//            Animal animal = new Animal("test" + i, AnimalType.values()[i],ap);
-//            animal.setX(100+20*i);
-//            animal.setY(100+20*i);
-//            ap.getAnimals().add(animal);
-//
-//        }
+
 
 
 
@@ -570,5 +560,13 @@ public class GameView implements Screen, InputProcessor {
 
     public HUD getHud() {
         return hud;
+    }
+
+    public boolean isSthBuilding() {
+        return isSthBuilding;
+    }
+
+    public void setSthBuilding(boolean sthBuilding) {
+        isSthBuilding = sthBuilding;
     }
 }

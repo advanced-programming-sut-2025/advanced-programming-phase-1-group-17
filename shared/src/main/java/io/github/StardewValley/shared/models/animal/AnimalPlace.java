@@ -124,36 +124,36 @@ public class AnimalPlace implements Placeable {
     public void setOpen(boolean open) {
         isOpen = open;
     }
-    public static void animalHouseBuy( SpriteBatch batch,AnimalPlace animalPlace,GameView gameView) {
-
-                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-                Vector3 worldPos = App.getCamera().unproject(mousePos);
-
-                float width = animalPlace.animalPlaceType.getInventoryTexture().getWidth();
-                float height = animalPlace.animalPlaceType.getInventoryTexture().getHeight();
-                batch.setColor(1, 1, 1, 0.5f); //
-                batch.draw(animalPlace.animalPlaceType.getInventoryTexture(), worldPos.x - width / 2, worldPos.y - height / 2, width, height);
-                batch.setColor(1, 1, 1, 1f);
-                if (Gdx.input.justTouched()) {
-                    for (int i = (int) (worldPos.x - width/2); i < worldPos.x + width/2; i += 110) {
-                        for (int j = (int) (worldPos.y - height/2); j < worldPos.y + height/2; j += 110) {
-                            Tile tile = Tile.getTileFromPixel(i, j);
-                            if (tile == null || !tile.isWalkAble()) {
-                                gameView.setSthBuilding(false);
-                                if(tile == null) System.out.println("tile is null!");
-                                if(!tile.isWalkAble()) System.out.println("tile is not walkable!");
-                                return;
-                            }
-
-                        }
-                    }
-                    animalPlace.setX(worldPos.x - width / 2);
-                    animalPlace.setY(worldPos.y - height / 2);
-                    animalPlace.justPlaced = true;
-                    App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace);
-                    gameView.setSthBuilding(false);
-                }
-    }
+//    public static void animalHouseBuy( SpriteBatch batch,AnimalPlace animalPlace,GameView gameView) {
+//
+//                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+//                Vector3 worldPos = App.getCamera().unproject(mousePos);
+//
+//                float width = animalPlace.animalPlaceType.getInventoryTexture().getWidth();
+//                float height = animalPlace.animalPlaceType.getInventoryTexture().getHeight();
+//                batch.setColor(1, 1, 1, 0.5f); //
+//                batch.draw(animalPlace.animalPlaceType.getInventoryTexture(), worldPos.x - width / 2, worldPos.y - height / 2, width, height);
+//                batch.setColor(1, 1, 1, 1f);
+//                if (Gdx.input.justTouched()) {
+//                    for (int i = (int) (worldPos.x - width/2); i < worldPos.x + width/2; i += 110) {
+//                        for (int j = (int) (worldPos.y - height/2); j < worldPos.y + height/2; j += 110) {
+//                            Tile tile = Tile.getTileFromPixel(i, j);
+//                            if (tile == null || !tile.isWalkAble()) {
+//                                gameView.setSthBuilding(false);
+//                                if(tile == null) System.out.println("tile is null!");
+//                                if(!tile.isWalkAble()) System.out.println("tile is not walkable!");
+//                                return;
+//                            }
+//
+//                        }
+//                    }
+//                    animalPlace.setX(worldPos.x - width / 2);
+//                    animalPlace.setY(worldPos.y - height / 2);
+//                    animalPlace.justPlaced = true;
+//                    App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace);
+//                    gameView.setSthBuilding(false);
+//                }
+//    }
     //TODO
     @Override
     public String getTexture() {
