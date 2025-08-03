@@ -11,6 +11,7 @@ import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.enums.Gender;
 
 public class PlayerClient {
+
     private boolean isGuest = false;
     private boolean isPassedOut = false;
     private UserDTO user;
