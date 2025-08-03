@@ -308,11 +308,12 @@ public class Animal implements Placeable {
     }
 
     public static Animal findAnimalByName(String name) {
-        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimals()) {
-            if (animal.getName().equals(name)) {
-                return animal;
-            }
-        }
+        //TODo
+        //        for (Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimals()) {
+//            if (animal.getName().equals(name)) {
+//                return animal;
+//            }
+//        }
         return null;
     }
 
@@ -392,42 +393,43 @@ public class Animal implements Placeable {
     }
 
     public void sell() {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        player.getPlayerMap().getAnimals().remove(this);
-        for (AnimalPlace animalPlace : player.getPlayerMap().getAnimalPlaces()) {
-            animalPlace.getAnimals().remove(this);
-        }
-        double price = this.animalType.getPrice() * (((double) friendship / 1000) + 0.3);
-        player.getBackPack().addcoin(price);
+        //TODO
+//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+//        player.getPlayerMap().getAnimals().remove(this);
+//        for (AnimalPlace animalPlace : player.getPlayerMap().getAnimalPlaces()) {
+//            animalPlace.getAnimals().remove(this);
+//        }
+//        double price = this.animalType.getPrice() * (((double) friendship / 1000) + 0.3);
+//        player.getBackPack().addcoin(price);
     }
     public static void goToNextDay(){
-
-        for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimals()) {
-            animal.counter++;
-            if(animal.isFedToday && animal.counter >= animal.dayTillProduce){
-                animal.counter=0;
-                animal.produce();
-                animal.setFedToday(false);
-
-            }
-
-            else{
-                animal.setFriendship(animal.getFriendship()-20);
-            }
-            if (!animal.isPettedToday) {
-                animal.setFriendship(animal.getFriendship() - 10);
-            }
-            else{
-                animal.setFriendship(animal.getFriendship() + 15);
-            }
-            if(animal.isOutside){
-                animal.setFriendship(animal.getFriendship() - 20);
-                animal.setFedOutside(true);
-            }
-            else{
-                animal.setFedOutside(false);
-            }
-        }
+        //TODo
+//        for(Animal animal : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimals()) {
+//            animal.counter++;
+//            if(animal.isFedToday && animal.counter >= animal.dayTillProduce){
+//                animal.counter=0;
+//                animal.produce();
+//                animal.setFedToday(false);
+//
+//            }
+//
+//            else{
+//                animal.setFriendship(animal.getFriendship()-20);
+//            }
+//            if (!animal.isPettedToday) {
+//                animal.setFriendship(animal.getFriendship() - 10);
+//            }
+//            else{
+//                animal.setFriendship(animal.getFriendship() + 15);
+//            }
+//            if(animal.isOutside){
+//                animal.setFriendship(animal.getFriendship() - 20);
+//                animal.setFedOutside(true);
+//            }
+//            else{
+//                animal.setFedOutside(false);
+//            }
+//        }
     }
 
     public static Map<AnimalProduct, Integer> getMapListOfAnimalProducts(ArrayList<AnimalProduct> animalProducts) {
@@ -512,7 +514,9 @@ public class Animal implements Placeable {
             directionChangeInterval = MathUtils.random(1f,5f);
             timeSinceLastDirectionChange = 0;
         }
-        vector2 = new Vector2(App.getCurrentGame().getCurrentPlayingPlayer().getX()-x,App.getCurrentGame().getCurrentPlayingPlayer().getY()- y);
+        //TODO
+        //vector2 = new Vector2(App.getCurrentGame().getCurrentPlayingPlayer().getX()-x,App.getCurrentGame().getCurrentPlayingPlayer().getY()- y);
+        vector2 = null;
 
         if(true) {
             timeSinceLastDirectionChange += delta;
@@ -653,13 +657,14 @@ public class Animal implements Placeable {
         return new Rectangle(x,y,this.animalType.getTexttureSize(),this.animalType.getTexttureSize());
     }
     public boolean noAnimalInWay(){
-        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()){
-            for(Animal animal:animalPlace.getAnimals()){
-                if(this.getHitBox().overlaps(animal.getHitBox())){
-                    return false;
-                }
-            }
-        }
+        //TODO
+        //        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()){
+//            for(Animal animal:animalPlace.getAnimals()){
+//                if(this.getHitBox().overlaps(animal.getHitBox())){
+//                    return false;
+//                }
+//            }
+//        }
         return true;
     }
     public static float TILE_SIZE=120f;

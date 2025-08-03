@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.tools;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum ToolType implements BackPackableType  {
@@ -48,6 +49,8 @@ public enum ToolType implements BackPackableType  {
 
     @Override
     public String getInventoryTexture() {
-        return ToolAssetManager.getToolAssetManager().getToolTexture(this);
+        //TODo
+        //return ToolAssetManager.getToolAssetManager().getToolTexture(this);
+        return null;
     }
 }

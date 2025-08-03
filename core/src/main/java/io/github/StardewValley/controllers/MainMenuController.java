@@ -3,6 +3,7 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.TokenStorage;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
@@ -27,15 +28,13 @@ public class MainMenuController {
             public void clicked(InputEvent event, float x, float y) {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new LobbyScreen(Main.getJwtToken()));
-//                Main.getMain().setScreen(new GameMenu(new GameMenuController(),  GameAssetManagerClient.getGameAssetManager().getSkin()));
             }
         });
         view.getLogoutAndGotoLoginMenuButton().addListener(
             new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
                     App.setLoggedInUser(null);
-                    //TODO: change stay logged in logic
-                    //SaveUser.clearStayLoggedInFile();
+                    TokenStorage.clearToken();
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),  GameAssetManagerClient.getGameAssetManager().getSkin()));
                 }

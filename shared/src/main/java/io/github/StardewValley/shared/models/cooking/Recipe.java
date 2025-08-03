@@ -1,6 +1,8 @@
 package io.github.StardewValley.shared.models.cooking;
 
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.map.Placeable;
 
 public class Recipe {
     private FoodType foodToBeCooked;
@@ -17,8 +19,8 @@ public class Recipe {
         this.foodToBeCooked = foodToBeCooked;
     }
 
-    public static Recipe findRecipe(String recipeName) {
-        for(Recipe recipe : App.getCurrentGame().getCurrentPlayingPlayer().getRecipes()){
+    public static Recipe findRecipe(String recipeName, Player player) {
+        for(Recipe recipe : player.getRecipes()){
             if(recipe.getFoodToBeCooked().name().equals(recipeName)){
                 return recipe;
             }

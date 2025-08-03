@@ -7,29 +7,20 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.GiftMenuController;
 import io.github.StardewValley.controllers.MainMenuController;
 import io.github.StardewValley.shared.models.App;
 
 public class MainMenu implements Screen {
     private TextButton backButton;
-    private Table buttonsTable;
     private Stage stage;
-    private Skin skin;
     private MainMenuController controller;
     private TextButton profileMenuButton;
     private TextButton gameMenuButton;
     private TextButton logoutAndGotoLoginMenuButton;
-    private TextField newUserName;
-    private TextField newPassword;
-    private TextField oldPassword;
     private TextButton menuTitle;
-    private TextButton showUserInfo;
-    private TextField oldEmail;
-    private TextField newEmail;
-    private TextButton changeNickName;
-    private TextField NickName;
-    private Label error;
     public Table table;
     public Table buttons;
     private Image avatar;
@@ -38,20 +29,27 @@ public class MainMenu implements Screen {
     public MainMenu(MainMenuController mainMenuController, Skin skin) {
 
         this.controller = mainMenuController;
-        this.nickName = new Label(App.getLoggedInUser().getNickname(), skin);
+        try {
+            this.nickName = new Label(GameClient.getGameStateApiClient().getUserWithUserDTO().getNickname(), skin);
+        } catch (Exception e) {
+            this.nickName = new Label("", skin);
+        }
         nickName.setColor(0, 1, 0, 1);
         nickName.setFontScale(2);
         nickName.setPosition(1750, 800);
-        this.avatar = new Image(new Texture(App.getLoggedInUser().getAvatar()));
+        try {
+        this.avatar = new Image(new Texture(GameClient.getGameStateApiClient().getUserWithUserDTO().getAvatar()));
+        }catch (Exception e){
+            this.avatar = new Image(new Texture(Gdx.files.internal("avatar/avatar1.jpg")));
+        }
         avatar.setSize(200, 200);
         avatar.setPosition(1700, 850);
-        this.gameMenuButton = new TextButton("Game menu", skin);
+        this.gameMenuButton = new TextButton("Lobby", skin);
         this.profileMenuButton = new TextButton("Profile menu", skin);
         this.menuTitle = new TextButton("Main menu", skin);
         menuTitle.setColor(0, 0, 1, 1);
         this.logoutAndGotoLoginMenuButton = new TextButton("log out", skin);
         this.table = new Table().top().left();
-        this.skin = skin;
         this.buttons = new Table().center();
         controller.setView(this);
 
