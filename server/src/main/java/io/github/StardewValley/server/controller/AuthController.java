@@ -12,10 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,8 +28,9 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
+
     @GetMapping("/getUserByUsername")
-    public ResponseEntity<UserDTO> getUserByUsername(@RequestHeader("Authorization")String authHeader) {
+    public ResponseEntity<UserDTO> getUserByUsername(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         String username = jwtService.extractUsername(token);
         User user = userRepository.findByUsername(username).get();
@@ -41,8 +39,13 @@ public class AuthController {
             user.getNickName(),
             user.getGender(),
             user.getSecurityQuestion(),
-            user.getSecurityAnswer()
+            user.getSecurityAnswer(),
+            user.getEmail(),
+            user.getPasswordHash()
         );
+        userDTO.setAvatar(user.getAvatar());
+        userDTO.setNumOfPlay(user.getNumOfPlay());
+        userDTO.setTheMostMoneyInGame(user.getTheMostMoneyInGame());
         return ResponseEntity.ok(userDTO);
     }
 
@@ -55,14 +58,47 @@ public class AuthController {
         User user = new User(
             req.getUsername(),
             passwordEncoder.encode(req.getPassword()),
-            req.getNickname(),
             req.getEmail(),
+            req.getNickname(),
             req.getGender()
         );
 
         userRepository.save(user);
         return ResponseEntity.ok(new RegisterResponse(true, "User registered"));
     }
+
+    @PostMapping("/passWordCheck")
+    public ResponseEntity<Boolean> passWordCheck(@RequestHeader("Authorization") String authHeader,
+                                                 @RequestBody String password) {
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null || !passwordEncoder.matches(password.substring(1, password.length() - 1), user.getPasswordHash())) {
+            return ResponseEntity.ok(false);
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<String> changePassword(
+        @RequestHeader("Authorization") String authHeader,
+        @RequestBody Map<String, String> passwordData) {
+
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+
+        String newPassword = passwordData.get("newPassword");
+
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) return ResponseEntity.status(404).build();
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(jwtService.generateToken(user));
+    }
+
 
     @PostMapping("/securityQuestion")
     public ResponseEntity<SecurityQuestionResponse> setSecurityQuestion(@RequestBody SecurityQuestionRequest req) {
@@ -91,7 +127,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse(null, null, "Invalid credentials"));
         }
 
-        // Generate JWT
         String token = jwtService.generateToken(user);
 
         UserDTO userDTO = new UserDTO(
@@ -99,7 +134,9 @@ public class AuthController {
             user.getNickName(),
             user.getGender(),
             user.getSecurityQuestion(),
-            user.getSecurityAnswer()
+            user.getSecurityAnswer(),
+            user.getEmail(),
+            user.getPasswordHash()
         );
         return ResponseEntity.ok(new LoginResponse(token, userDTO, "Login successful"));
     }
@@ -108,9 +145,9 @@ public class AuthController {
     public ResponseEntity<DoesUserExistResponse> doesUserExist(@RequestBody DoesUserExistRequest req) {
         boolean doesExist = userRepository.existsByUsername(req.getUsername());
         return ResponseEntity.ok(new DoesUserExistResponse(
-                doesExist,
-                doesExist ? "" : "No User found with username %s".formatted(req.getUsername())
-                ));
+            doesExist,
+            doesExist ? "" : "No User found with username %s".formatted(req.getUsername())
+        ));
     }
 
     @PostMapping("/forgotPassword")
@@ -154,11 +191,52 @@ public class AuthController {
 
         return result.toString();
     }
+
     @DeleteMapping("/all")
     public ResponseEntity<Void> deleteAllLobbies() {
         userRepository.deleteAll();
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/user/update")
+    public ResponseEntity<String> updateUser(
+        @RequestHeader("Authorization") String authHeader,
+        @RequestParam String email,
+        @RequestParam String avatar,
+        @RequestParam String username,
+        @RequestParam String nickname,
+        @RequestParam double theMostMoneyInGame,
+        @RequestParam String securityQuestion,
+        @RequestParam String securityAnswer,
+        @RequestParam int numOfPlay
+    ) {
+        String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        String realUsername = jwtService.extractUsername(token);
+        User user = userRepository.findByUsername(realUsername).orElse(null);
+        if (user == null) return ResponseEntity.notFound().build();
+
+        user.setEmail(email);
+        user.setAvatar(avatar);
+        user.setUsername(username);
+        user.setNickName(nickname);
+        user.setTheMostMoneyInGame(theMostMoneyInGame);
+        user.setSecurityQuestion(securityQuestion);
+        user.setSecurityAnswer(securityAnswer);
+        user.setNumOfPlay(numOfPlay);
+
+        userRepository.save(user);
+        String string = jwtService.generateToken(user);
+
+        return ResponseEntity.ok(string);
+    }
+    @PostMapping("/tokenIsValid")
+    public ResponseEntity<Boolean> isTokenValid(@RequestParam String token) {
+        if (!jwtService.isTokenExpired(token)) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
+    }
+
 
 
 }

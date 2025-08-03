@@ -13,10 +13,12 @@ public class UserDTO {
     private String username;
     private String nickname;
     private Gender gender;
+    private String email;
     private String securityQuestion;
     private String securityAnswer;
     private int numOfPlay = 0;
     private double theMostMoneyInGame;
+    private String passwordHash;
     @JsonIgnore
     private transient Game activeGame;
     @JsonIgnore
@@ -31,12 +33,14 @@ public class UserDTO {
         this.gender = gender;
     }
 
-    public UserDTO(String username, String nickname, Gender gender, String securityQuestion, String securityAnswer) {
+    public UserDTO(String username, String nickname, Gender gender, String securityQuestion, String securityAnswer,String email,String passwordHash) {
         this.username = username;
         this.nickname = nickname;
         this.gender = gender;
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
+        this.email = email;
+        this.passwordHash = passwordHash;
     }
 
     public String getUsername() {
@@ -115,5 +119,21 @@ public class UserDTO {
 
     public void setLastGame(Game lastGame) {
         this.lastGame = lastGame;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 }
