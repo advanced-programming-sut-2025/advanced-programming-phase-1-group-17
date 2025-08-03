@@ -1,8 +1,0 @@
-package io.github.StardewValley.models.enums;
-
-public enum Season {
-    Spring,
-    Summer,
-    Fall,
-    Winter;
-}

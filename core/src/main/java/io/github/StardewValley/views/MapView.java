@@ -1,18 +1,12 @@
 package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.controllers.MapController;
-import io.github.StardewValley.models.Player;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.MapViewController;
-import io.github.StardewValley.models.Game;
 
 public class MapView implements Screen {
     private Stage stage;

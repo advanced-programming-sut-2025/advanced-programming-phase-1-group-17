@@ -13,8 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.controllers.CraftingController;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 
 public class CraftingShow implements Screen {
     private Stage stage;
@@ -48,7 +47,7 @@ public class CraftingShow implements Screen {
         for (CraftingItemType type : CraftingItemType.values()) {
 
 
-            Texture texture = type.getInventoryTexture();
+            Texture texture = new Texture(type.getInventoryTexture());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(texture));
 

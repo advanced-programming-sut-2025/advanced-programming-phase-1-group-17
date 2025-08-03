@@ -1,14 +1,19 @@
 package io.github.StardewValley.controllers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
-import io.github.StardewValley.models.*;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.artisan.ArtisanProduct;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.enums.GameMenuCommands;
-import io.github.StardewValley.models.enums.WeatherType;
-import io.github.StardewValley.models.map.Tile;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.controller.LightningController;
+import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
+import io.github.StardewValley.shared.models.enums.WeatherType;
+import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.views.CheatCodeTerminal;
 
 import java.util.ArrayList;
@@ -22,35 +27,42 @@ public class CheatCodeTerminalController {
         this.view = cheatCodeTerminal;
     }
 
+    public void handlePlayerInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(Main.getGameView());
+        }
+    }
+
     public void handleCommand(String command) {
         Matcher matcher;
         String result = "Invalid Command";
 
-        if ((matcher = GameMenuCommands.CheatAdvanceTime.getMatcher(command)) != null) {
+        if ((matcher = CheatCodeCommands.CheatAdvanceTime.getMatcher(command)) != null) {
             result = changeTime(
                 matcher.group("hour")
             );
-        } else if ((matcher = GameMenuCommands.CheatAdvanceDate.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatAdvanceDate.getMatcher(command)) != null) {
             result = changeDate(
                 matcher.group("day")
             );
-        } else if ((matcher = GameMenuCommands.CheatThor.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatThor.getMatcher(command)) != null) {
             result = cheatThor(
                 Integer.parseInt(matcher.group("x")),
                 Integer.parseInt(matcher.group("y"))
             );
-        } else if ((matcher = GameMenuCommands.CheatWeatherSet.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatWeatherSet.getMatcher(command)) != null) {
             result = changeWeather(
                 matcher.group("type")
             );
-        } else if ((matcher = GameMenuCommands.EnergyUnlimited.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.EnergyUnlimited.getMatcher(command)) != null) {
             result = energyUnlimited();
-        } else if ((matcher = GameMenuCommands.CheatAddItem.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatAddItem.getMatcher(command)) != null) {
             result = addItem(matcher.group("itemName"), matcher.group("count"));
-        } else if ((matcher = GameMenuCommands.CheatSetFriendshipWithAnimal.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatSetFriendshipWithAnimal.getMatcher(command)) != null) {
             result = setFriendship(matcher.group("animalName"),
                 matcher.group("amount"));
-        } else if ((matcher = GameMenuCommands.CheatAddDollars.getMatcher(command)) != null) {
+        } else if ((matcher = CheatCodeCommands.CheatAddDollars.getMatcher(command)) != null) {
             result = cheatAddDollars(
                 matcher.group("count")
             );
@@ -102,6 +114,7 @@ public class CheatCodeTerminalController {
         Tile tile = Tile.getTile(x, y);
         if (tile == null)
             return "tile not found";
+        LightningController.getLightningController().triggerLightning();
         tile.lightningStrike();
         return "Successfully lightninged.";
     }
@@ -117,7 +130,9 @@ public class CheatCodeTerminalController {
     }
 
     private String energyUnlimited() {
+        App.getCurrentGame().getCurrentPlayingPlayer().setMaxEnergy(Double.POSITIVE_INFINITY);
         App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(Double.POSITIVE_INFINITY);
+        App.getCurrentGame().getCurrentPlayingPlayer().setEnergyUnlimited(true);
         return "Energy successfully set to infinity";
     }
 
@@ -150,14 +165,16 @@ public class CheatCodeTerminalController {
     }
 
     private String setFriendship(String animalName, String amount) {
-        Animal animal = Animal.findAnimalByName(animalName);
-        if (animal == null) {
-            return "animal not found";
-        }
-
-        int amountInt = Integer.parseInt(amount);
-        animal.cheatSetFriendship(amountInt);
-        return "friendship is now " + animal.getFriendship();
+        //TODO
+        //        Animal animal = Animal.findAnimalByName(animalName);
+//        if (animal == null) {
+//            return "animal not found";
+//        }
+//
+//        int amountInt = Integer.parseInt(amount);
+//        animal.cheatSetFriendship(amountInt);
+//        return "friendship is now " + animal.getFriendship();
+        return "";
     }
 
     public String cheatAddDollars(String count) {

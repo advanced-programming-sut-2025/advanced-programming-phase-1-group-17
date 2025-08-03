@@ -3,19 +3,9 @@ package io.github.StardewValley;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import io.github.StardewValley.controllers.GameController;
-import io.github.StardewValley.controllers.ProfileMenuController;
-import io.github.StardewValley.controllers.SignUpMenuController;
-import io.github.StardewValley.controllers.*;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.User;
-import io.github.StardewValley.models.enums.Menu;
+import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.views.GameView;
-import io.github.StardewValley.views.ProfileMenu;
-import io.github.StardewValley.views.SignUpMenu;
 import io.github.StardewValley.views.*;
-
-import java.util.ArrayList;
 
 public class Main extends Game {
 
@@ -24,30 +14,38 @@ public class Main extends Game {
     private static ShapeRenderer shapeRenderer;
     private static boolean isLoggedInUser = false;
     private static GameView gameView;
+    private static final String serverIP = "localhost";
+    private static final int serverPort = 8080;
+
+    private static String jwtToken;
+    private static UserDTO loggedInUser;
 
     @Override
     public void create() {
         main = this;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        ArrayList<User> users = LoadUser.loadUsers();
-        if (users != null) {
-            App.setUsers(users);
-        }
-        User user1 = LoadUser.loadStayLoggedInUser();
-        if (user1 != null) {
-            assert users != null;
-            for (User user : users) {
-                if (user.equals(user1)) {
-                    App.setLoggedInUser(user);
-                    isLoggedInUser = true;
-                    Main.getMain().setScreen(new WelcomeMenu(this,true));
-                }
-            }
-        }
-        if (!isLoggedInUser) {
-            Main.getMain().setScreen(new WelcomeMenu(this,false));
-        }
+
+
+//        ArrayList<User> users = LoadUser.loadUsers();
+//        if (users != null) {
+//            App.setUsers(users);
+//        }
+//        User user1 = LoadUser.loadStayLoggedInUser();
+//        if (user1 != null) {
+//            assert users != null;
+//            for (User user : users) {
+//                if (user.equals(user1)) {
+//                    App.setLoggedInUser(user);
+//                    isLoggedInUser = true;
+//                    Main.getMain().setScreen(new WelcomeMenu(this,true));
+//                }
+//            }
+//        }
+//        if (!isLoggedInUser) {
+//            Main.getMain().setScreen(new WelcomeMenu(this,false));
+//        }
+        Main.getMain().setScreen(new WelcomeMenu(this,false));
     }
 
     @Override
@@ -86,5 +84,25 @@ public class Main extends Game {
 
     public static void setGameView(GameView gameView) {
         Main.gameView = gameView;
+    }
+
+    public static String getServerIP() {
+        return serverIP;
+    }
+
+    public static int getServerPort() {
+        return serverPort;
+    }
+
+    public static String getJwtToken() {
+        return jwtToken;
+    }
+
+    public static UserDTO getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    public static void setJwt(String jwtToken) {
+        Main.jwtToken = jwtToken;
     }
 }

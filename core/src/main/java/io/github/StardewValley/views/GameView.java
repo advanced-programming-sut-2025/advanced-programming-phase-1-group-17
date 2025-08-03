@@ -16,37 +16,39 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.GameAssetManager;
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.controllers.helperControllers.FarmingController;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.NPCS.NPC;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.Result;
-import io.github.StardewValley.models.enums.Gender;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.controllers.StoreMenuController;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.animal.Animal;
-import io.github.StardewValley.models.animal.AnimalPlace;
-import io.github.StardewValley.models.animal.AnimalPlaceType;
-import io.github.StardewValley.models.animal.AnimalType;
-import io.github.StardewValley.models.crafting.CraftingItem;
-import io.github.StardewValley.models.map.Lake;
-import io.github.StardewValley.models.map.Tile;
-import io.github.StardewValley.models.market.StoreType;
+import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.animal.AnimalPlace;
+import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
+import io.github.StardewValley.shared.models.animal.AnimalType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
+import io.github.StardewValley.shared.models.market.ShippingBin;
+import io.github.StardewValley.shared.models.market.StoreType;
 
 import java.util.ArrayList;
-import java.awt.image.Kernel;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-import io.github.StardewValley.models.tools.Tool;
-
-import static io.github.StardewValley.models.animal.AnimalType.*;
+import io.github.StardewValley.shared.models.plant.Fertilizer;
+import io.github.StardewValley.shared.models.plant.Sapling;
+import io.github.StardewValley.shared.models.plant.Seed;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.enums.Gender;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
     private final GameController controller;
+    private final FarmingController farmingController = new FarmingController();
     private final GameMenuController menuController;
     private HUD hud;
     private Window window;
@@ -68,20 +70,20 @@ public class GameView implements Screen, InputProcessor {
 
     public GameView(GameController controller, GameMenuController menuController) {
         this.font = new BitmapFont();
-        App.setGameView(this);
         int i=0;
-        for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
-            AnimalPlace ap = new AnimalPlace(animalPlaceType);
-            ap.setX(1000+500*i);
-            ap.setY(1000+500*i);
-            i++;
-            App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
-            Animal animal = new Animal("test" + i,AnimalType.values()[i],ap);
-            animal.setX(100+20*i);
-            animal.setY(100+20*i);
-            ap.getAnimals().add(animal);
-
-        }
+        //TODO handleCurrentPlayerPlaying
+//        for(AnimalPlaceType animalPlaceType : AnimalPlaceType.values()) {
+//            AnimalPlace ap = new AnimalPlace(animalPlaceType);
+//            ap.setX(1000+500*i);
+//            ap.setY(1000+500*i);
+//            i++;
+//            App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(ap);
+//            Animal animal = new Animal("test" + i, AnimalType.values()[i],ap);
+//            animal.setX(100+20*i);
+//            animal.setY(100+20*i);
+//            ap.getAnimals().add(animal);
+//
+//        }
 
 
 
@@ -95,7 +97,7 @@ public class GameView implements Screen, InputProcessor {
     }
 
     private void initUI() {
-        Skin skin = GameAssetManager.getGameAssetManager().getSkin();
+        Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
         dialogueLabel = new Label("", skin);
         dialogueLabel.setColor(Color.WHITE);
         dialogueLabel.setFontScale(1.2f);
@@ -133,7 +135,7 @@ public class GameView implements Screen, InputProcessor {
                 if (currentTargetPlayer != null) {
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new TalkView(new TalkController(currentTargetPlayer),
-                        GameAssetManager.getGameAssetManager().getSkin(), GameView.this));
+                          GameAssetManagerClient.getGameAssetManager().getSkin(), GameView.this));
                 }
             }
         });
@@ -185,7 +187,7 @@ public class GameView implements Screen, InputProcessor {
                 if (currentTargetPlayer == null) return;
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
+                      GameAssetManagerClient.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
             }
         });
         givingFlower.addListener(new ClickListener() {
@@ -246,29 +248,34 @@ public class GameView implements Screen, InputProcessor {
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
         controller.updateGame(delta);
-
-        controller.handlePlayerInput();
-        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
-            animalPlace.render(delta);
-            for(Animal animal:animalPlace.getAnimals()){
-                animal.render(Main.getBatch(),delta);
-                animal.update(delta);
-            }
-        }
+        //TODO handle playe
+//        controller.handlePlayerInput();
+        //TODO handel app.getCurrentGame()...
+//        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
+//            animalPlace.render(delta);
+//            for(Animal animal:animalPlace.getAnimals()){
+//                animal.render(Main.getBatch(),delta);
+//                animal.update(delta);
+//            }
+//        }
         //font.draw(Main.getBatch(),"hello",120,120);
 
         Main.getBatch().end();
-        if (App.getCurrentGame().getCurrentPlayingPlayer().isNewMessage()) {
-            error.setText("you have a new message");
-        }
-        if (activeWindow) updateInteractions();
-        updateDialogue(delta);
+        //TODO handel app.getCurrentGame()...
+//        if (App.getCurrentGame().getCurrentPlayingPlayer().isNewMessage()) {
+//            error.setText("you have a new message");
+//        }
+        //TODO handle app.get...
+//        if (activeWindow) updateInteractions();
+        //TODO App.get..
+//        updateDialogue(delta);
 
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
         stage.addActor(error);
         hud.render(Main.getBatch(),delta);
-        controller.handlePlayerInput();
+        //TODO handle player
+//        controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
@@ -284,20 +291,12 @@ public class GameView implements Screen, InputProcessor {
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new TalkView(new TalkController(),
-                GameAssetManager.getGameAssetManager().getSkin(), this));
+                  GameAssetManagerClient.getGameAssetManager().getSkin(), this));
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
-                , GameAssetManager.getGameAssetManager().getSkin(), this));
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            try {
-                menuController.nextTurn();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                ,   GameAssetManagerClient.getGameAssetManager().getSkin(), this));
         }
     }
 
@@ -366,11 +365,15 @@ public class GameView implements Screen, InputProcessor {
         if (button == Input.Buttons.RIGHT)
             return checkCraftingItemBounds(worldCoordinates, false);
 
+        if (checkGreenHouseBounds(worldCoordinates))
+            return true;
         if (checkCraftingItemBounds(worldCoordinates, true))
             return true;
         if(handleToolUse(worldCoordinates))
             return true;
-        //return checkCraftingItemBounds(worldCoordinates, true);
+        if (handleShippingBin(worldCoordinates)) {
+            return true;
+        }
         return checkStoreBounds(worldCoordinates);
     }
 
@@ -416,7 +419,7 @@ public class GameView implements Screen, InputProcessor {
             if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
+                      GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
                 return true;
             }
         }
@@ -429,10 +432,10 @@ public class GameView implements Screen, InputProcessor {
                 Main.getMain().getScreen().dispose();
                 if (isLeftClick)
                     Main.getMain().setScreen(new ArtisanCraftMenu(new ArtisanCraftMenuController(),
-                        GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
+                          GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
                 else
                     Main.getMain().setScreen(new ArtisanInfoMenu(new ArtisanInfoMenuController(),
-                        GameAssetManager.getGameAssetManager().getSkin(), entry.getKey()));
+                          GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
             }
         }
         return false;
@@ -449,10 +452,19 @@ public class GameView implements Screen, InputProcessor {
         int dy = clickedTileY - player.getTileY();
 
         if (Math.abs(dx) + Math.abs(dy) == 1) {
+            Result result = null;
             if (player.getEquippedItem() instanceof Tool)
-                controller.getToolController().toolUse(dx, dy);
+                result = controller.getToolController().toolUse(dx, dy);
             else if (player.getEquippedItem() instanceof CraftingItem)
-                controller.placeItem(dx, dy);
+                result = controller.placeItem(dx, dy);
+            else if (player.getEquippedItem() instanceof Seed seed)
+                result = farmingController.plantSeed(seed, dx, dy);
+            else if (player.getEquippedItem() instanceof Sapling sapling)
+                result = farmingController.plantSapling(sapling, dx, dy);
+            else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
+                result = farmingController.fertilize(fertilizer, dx, dy);
+            if (result != null && !result.isSuccessful())
+                showNotification(result.getMessage());
             return true;
         }
         return false;
@@ -499,5 +511,64 @@ public class GameView implements Screen, InputProcessor {
         }
     }
 
+    private boolean checkGreenHouseBounds(Vector3 worldCoordinates) {
+        HashMap<GreenHouse, Rectangle> bounds = GreenHouse.getGreenHouseBounds();
+        for (GreenHouse greenHouse : bounds.keySet()) {
+            if (bounds.get(greenHouse).contains(worldCoordinates.x, worldCoordinates.y)) {
+                if (greenHouse.isActive()) {
+                    GreenHouse.getGreenHouseBounds().remove(greenHouse);
+                    return true;
+                }
+                if (!greenHouse.getOwner().equals(App.getCurrentGame().getCurrentPlayingPlayer())) {
+                    showNotification("This greenhouse is not yours.");
+                    return true;
+                }
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new GreenHouseBuildScreen(
+                    new GreenHouseBuildController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin()
+                ));
+                return true;
+            }
+        }
+        return false;
+    }
 
+
+    private boolean handleShippingBin(Vector3 worldCoordinates) {
+        HashMap<ShippingBin, Rectangle> bounds = ShippingBin.getShippingBinBounds();
+        for (ShippingBin shippingBin : bounds.keySet()) {
+            if (bounds.get(shippingBin).contains(worldCoordinates.x, worldCoordinates.y)) {
+                if (shippingBin.getTodayItemOwner() != null && !shippingBin.getTodayItemOwner().equals(App.getCurrentGame().getCurrentPlayingPlayer())) {
+                    showNotification("Player %s has put some items inside this shipping Bin today.\n Try using another shipping Bin."
+                        .formatted(shippingBin.getTodayItemOwner().getUser().getUsername()));
+                    return true;
+                }
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new ShippingBinScreen(
+                    shippingBin,
+                    new ShippingBinScreenController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin()
+                ));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public GameController getController() {
+        return controller;
+    }
+
+    public void showNotification(String message) {
+        Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
+        NotificationWindow window = new NotificationWindow(message, skin, () -> {
+            System.out.println("Notification dismissed!");
+        });
+        stage.addActor(window); // Add to current stage
+    }
+
+    public HUD getHud() {
+        return hud;
+    }
 }

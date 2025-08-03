@@ -84,6 +84,7 @@ public class CheatCodeTerminal implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);
         stage.act(v);
         stage.draw();
+        controller.handlePlayerInput();
     }
 
     @Override

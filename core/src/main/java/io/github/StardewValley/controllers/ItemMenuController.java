@@ -2,20 +2,20 @@ package io.github.StardewValley.controllers;
 
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.BackPackable;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.cooking.FoodType;
-import io.github.StardewValley.models.cooking.Recipe;
-import io.github.StardewValley.models.cooking.RecipeType;
-import io.github.StardewValley.models.crafting.CraftingItemType;
-import io.github.StardewValley.models.crafting.CraftingRecipe;
-import io.github.StardewValley.models.crafting.CraftingRecipeType;
-import io.github.StardewValley.models.enums.BackPackType;
-import io.github.StardewValley.models.market.ShopItem;
-import io.github.StardewValley.models.market.StoreType;
-import io.github.StardewValley.models.tools.Tool;
-import io.github.StardewValley.models.tools.ToolType;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.cooking.FoodType;
+import io.github.StardewValley.shared.models.cooking.Recipe;
+import io.github.StardewValley.shared.models.cooking.RecipeType;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
+import io.github.StardewValley.shared.models.crafting.CraftingRecipeType;
+import io.github.StardewValley.shared.models.backpack.BackPackType;
+import io.github.StardewValley.shared.models.market.ShopItem;
+import io.github.StardewValley.shared.models.market.StoreType;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.ToolType;
 import io.github.StardewValley.views.ItemMenu;
 
 public class ItemMenuController {

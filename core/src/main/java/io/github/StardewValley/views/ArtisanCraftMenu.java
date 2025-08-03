@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,11 +13,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.controllers.ArtisanCraftMenuController;
-import io.github.StardewValley.models.App;
-import io.github.StardewValley.models.BackPackable;
-import io.github.StardewValley.models.BackPackableType;
-import io.github.StardewValley.models.Player;
-import io.github.StardewValley.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class ArtisanCraftMenu implements Screen {
             if (count == 0) continue;
 
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
-            style.imageUp = new TextureRegionDrawable(new TextureRegion(item.getInventoryTexture()));
+            style.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexture())));
             ImageButton itemButton = new ImageButton(style);
 
             Label countLabel = new Label("x" + count, skin);
@@ -109,7 +110,7 @@ public class ArtisanCraftMenu implements Screen {
             BackPackableType item = entry.getKey();
             int count = entry.getValue().size();
 
-            Image image = new Image(new TextureRegionDrawable(new TextureRegion(item.getInventoryTexture())));
+            Image image = new Image(new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexture()))));
             Label nameLabel = new Label(item.getName(), skin);
             Label countLabel = new Label("x" + count, skin);
 
