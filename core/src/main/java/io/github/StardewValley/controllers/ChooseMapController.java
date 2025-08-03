@@ -13,7 +13,6 @@ import io.github.StardewValley.views.chooseMap;
 
 public class ChooseMapController {
     private chooseMap view;
-    public int playerChoice = 0;
     public boolean done = false;
 
     public void setView(chooseMap view) {
@@ -46,7 +45,6 @@ public class ChooseMapController {
                     }
                 }else {
                     Main.getMain().getScreen().dispose();
-                    //TODO handle game
                     Main.getMain().setScreen(new GameView(new GameController(),new GameMenuController()));
                 }
             }

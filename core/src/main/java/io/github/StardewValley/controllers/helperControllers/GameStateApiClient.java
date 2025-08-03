@@ -10,7 +10,6 @@ import io.github.StardewValley.shared.models.UserDTO;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 

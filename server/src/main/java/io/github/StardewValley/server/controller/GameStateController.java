@@ -3,12 +3,9 @@ package io.github.StardewValley.server.controller;
 
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
-import io.github.StardewValley.server.model.User;
-import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.map.Tile;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -32,9 +29,6 @@ public class GameStateController {
         List<TileDTO> tileDTOs = new ArrayList<>();
         for (int i = minX - 1; i < maxX; i++) {
             for (int j = minY - 1; j < maxY; j++) {
-                if (Tile.getTile(i + 1, j + 1) == null) {
-                    System.out.println("**********************************************************---i----j----***********8");
-                }
                 tileDTOs.add(new TileDTO(Objects.requireNonNull(Tile.getTile(i + 1, j + 1))));
             }
         }

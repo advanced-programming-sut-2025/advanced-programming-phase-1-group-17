@@ -107,7 +107,6 @@ public class LobbyRoomScreen implements Screen {
                 try {
                     GameDTO gameDTO = apiClient.startGame(lobby.getId());
                     refreshPlayerList();
-                    //TODO
                     System.out.println("Game started!");
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
