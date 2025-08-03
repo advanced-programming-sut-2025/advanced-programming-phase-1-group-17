@@ -117,6 +117,24 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to get username: " + responseCode);
         }
     }
+    public boolean exitGame() throws Exception {
+        String urlString = BASE_URL + "/exitGame";
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            try (InputStream is = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(is, boolean.class);
+            }
+        } else {
+            System.out.println("Error: " + responseCode);
+            return false;
+        }
+    }
 
 
 }

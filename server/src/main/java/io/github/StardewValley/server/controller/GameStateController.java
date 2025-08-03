@@ -88,6 +88,22 @@ public class GameStateController {
         String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(username);
     }
+    @PostMapping("/exitGame")
+    public ResponseEntity<Boolean> exitGame(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+        if (!username.equals(AppServer.getCurrentGame().getCreator().getUser().getUsername()))
+            return ResponseEntity.ok(false);
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            p.getUser().setLastGame(AppServer.getCurrentGame());
+            p.getUser().setActiveGame(null);
+            if (p.isGuest()) continue;
+            p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
+        }
+        AppServer.setCurrentGame(null);
+        return ResponseEntity.ok(true);
+    }
+
 
 
 }
