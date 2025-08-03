@@ -3,6 +3,8 @@ package io.github.StardewValley.server.controller;
 
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
+import io.github.StardewValley.server.model.User;
+import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.map.Tile;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,11 @@ import java.util.Objects;
 @RequestMapping("/api/gameState")
 public class GameStateController {
     private final JwtService jwtService = new JwtService();
+    private final UserRepository userRepository;
+
+    public GameStateController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/game/map")
     public ResponseEntity<List<TileDTO>> getGameMap(
@@ -95,14 +102,27 @@ public class GameStateController {
         if (!username.equals(AppServer.getCurrentGame().getCreator().getUser().getUsername()))
             return ResponseEntity.ok(false);
         for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            User user = userRepository.findByUsername(p.getUser().getUsername()).get();
             p.getUser().setLastGame(AppServer.getCurrentGame());
             p.getUser().setActiveGame(null);
             if (p.isGuest()) continue;
             p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
+            UserDTO userDTO = p.getUser();
+            user.setEmail(userDTO.getEmail());
+            user.setAvatar(userDTO.getAvatar());
+            user.setUsername(userDTO.getUsername());
+            user.setNickName(userDTO.getNickname());
+            user.setTheMostMoneyInGame(userDTO.getTheMostMoneyInGame());
+            user.setSecurityQuestion(userDTO.getSecurityQuestion());
+            user.setSecurityAnswer(userDTO.getSecurityAnswer());
+            user.setNumOfPlay(userDTO.getNumOfPlay());
+            user.setPasswordHash(userDTO.getPasswordHash());
+            userRepository.save(user);
         }
         AppServer.setCurrentGame(null);
         return ResponseEntity.ok(true);
     }
+
 
 
 
