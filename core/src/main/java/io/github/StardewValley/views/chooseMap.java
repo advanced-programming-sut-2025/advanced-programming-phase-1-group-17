@@ -76,7 +76,7 @@ public class chooseMap implements Screen {
         Main.getBatch().end();
         if (!controller.done) {
             try {
-                setPlayerUserName(GameController.gameStateApiClient.getUserName()
+                setPlayerUserName(GameClient.getGameStateApiClient().getUserName()
                     + " ,Enter the number of the gameMapType you would like to play (1 or 2)");
             } catch (Exception e) {
                 throw new RuntimeException(e);

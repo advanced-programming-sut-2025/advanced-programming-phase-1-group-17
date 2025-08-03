@@ -42,7 +42,6 @@ public class GameController {
     int mapWidthInPixels;
     int mapHeightInPixels;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
-    public static GameStateApiClient gameStateApiClient = new GameStateApiClient(Main.getJwtToken());
     private static GameClient gameClient = new GameClient();
 
     private  WorldController worldController;
@@ -60,8 +59,8 @@ public class GameController {
 
     public GameController() {
         try {
-            GameClient.setPlayer(new PlayerClient(gameStateApiClient.getUserWithUserDTO()));
-            PlayerDto player = gameStateApiClient.updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
+            GameClient.setPlayer(new PlayerClient(GameClient.getGameStateApiClient().getUserWithUserDTO()));
+            PlayerDto player = GameClient.getGameStateApiClient().updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
             playerUpdate(player);
             this.camera.position.set(player.getX() , player.getY(), 0);
 
@@ -80,6 +79,7 @@ public class GameController {
 //            initializeStoreRectangles();
 
             App.setCamera(this.camera);
+            GameClient.setCamera(this.camera);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -151,7 +151,7 @@ public class GameController {
     public void updateGame(float delta) {
         if (view != null) {
             try {
-                PlayerDto pd = gameStateApiClient.updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
+                PlayerDto pd = GameClient.getGameStateApiClient().updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
                 playerUpdate(pd);
                 updateCamera(GameClient.getPlayer());
                 worldController.update();

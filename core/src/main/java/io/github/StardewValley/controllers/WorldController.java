@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
@@ -71,7 +72,7 @@ public class WorldController {
         giantCropsInThisFrame.clear();
 
         List<TileDTO> tiles = new ArrayList<>();
-        tiles = GameController.gameStateApiClient.getMapTilesAroundPlayer(minTileX,maxTileX,minTileY,maxTileY);
+        tiles = GameClient.getGameStateApiClient().getMapTilesAroundPlayer(minTileX,maxTileX,minTileY,maxTileY);
 
         for (int x = minTileX - 1; x < maxTileX; x++) {
             for (int y = minTileY - 1; y < maxTileY; y++) {

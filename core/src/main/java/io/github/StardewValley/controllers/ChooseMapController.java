@@ -38,7 +38,7 @@ public class ChooseMapController {
 
                 if (!done) {
                     try {
-                        GameController.gameStateApiClient.selectMap(view.getCheckBox1().isChecked() ? 1 : 2);
+                        GameClient.getGameStateApiClient().selectMap(view.getCheckBox1().isChecked() ? 1 : 2);
                         done = true;
                     }catch (Exception e){
                         e.printStackTrace();

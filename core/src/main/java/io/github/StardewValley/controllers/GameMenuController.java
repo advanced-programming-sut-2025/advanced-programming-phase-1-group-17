@@ -1,5 +1,8 @@
 package io.github.StardewValley.controllers;
 
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
 import io.github.StardewValley.controllers.helperControllers.MarketsController;
 import io.github.StardewValley.shared.models.App;
@@ -28,6 +31,7 @@ import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.tools.*;
 import io.github.StardewValley.views.GameMenu;
+import io.github.StardewValley.views.MainMenu;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -305,21 +309,20 @@ public class GameMenuController {
 //        return new Result(true, "game deleted, you are in MainMenu now.");
 //
 //    }
-//
     public Result exitGame() {
-        if (!App.getCurrentGame().getCurrentPlayingPlayer().equals(App.getCurrentGame().getCreator()))
-            return new Result(false, "Only the game creator can exit the game.");
-        for (Player p : App.getCurrentGame().getPlayers()) {
-            //TODO
-            //p.getUser().setLastGame(App.getCurrentGame());
-            p.getUser().setActiveGame(null);
-            if (p.isGuest()) continue;
-            //TODO
-            //p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
+        try {
+            if (!GameClient.gameStateApiClient.exitGame())
+                return new Result(false, "Only the game creator can exit the game.");
+            else{
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
+                return new Result(true, "Exit the game.");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result(false, e.getMessage());
         }
-        App.setCurrentGame(null);
-        //App.setCurrentMenu(Menu.MainMenu);
-        return new Result(true, "Game saved successfully.you are now in main menu");
     }
 
     public Result getTime() {
