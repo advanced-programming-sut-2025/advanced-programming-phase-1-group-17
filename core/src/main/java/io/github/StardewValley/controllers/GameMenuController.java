@@ -1740,10 +1740,6 @@ public class GameMenuController {
 //        return new Result(true, count + " " + fish.getFishType().getName() + " got caught successfully");
 //    }
 
-    public Result cheatAddDollars(String count) {
-        return marketsController.cheatAddDollars(count);
-    }
-
 
     public String friendship(Player player) {
         Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();

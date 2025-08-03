@@ -8,14 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BackPack {
-    //Attention: It seems there is only one backpack of each type in the whole game
-
-    //previous backpackItems
-    //private HashMap<BackPackable, Integer> backPackItems = new HashMap<>();
     private Player player;
     private HashMap<BackPackableType, ArrayList<BackPackable>> backPackItems = new HashMap<>();
-
-
     private final BackPackType type;
     private double coin = 100000;
 
@@ -107,7 +101,7 @@ public class BackPack {
         return 0;
     }
 
-    public void addItemToInventory(BackPackable backPackable) {
+    public boolean addItemToInventory(BackPackable backPackable) {
         ArrayList<BackPackableType> b = new ArrayList<>();
         for (BackPackableType backPackableType : backPackItems.keySet()) {
             if (backPackItems.get(backPackableType).isEmpty())
@@ -118,12 +112,13 @@ public class BackPack {
             backPackItems.remove(backPackableType);
         }
         if (isBackPackFull())
-            return;
+            return false;
         if (backPackable == null) {
-            return;
+            return false;
         }
         backPackItems.computeIfAbsent(backPackable.getType(), k -> new ArrayList<>());
         backPackItems.get(backPackable.getType()).add(backPackable);
+        return true;
     }
 
     public Player getPlayer() {

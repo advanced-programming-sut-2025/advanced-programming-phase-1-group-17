@@ -6,26 +6,20 @@ import io.github.StardewValley.shared.models.cooking.Recipe;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.map.GameMap;
-import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.PlayerMap;
-import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.market.StoreManager;
+import io.github.StardewValley.shared.models.market.MarketsController;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Game implements Serializable {
-    private Player creator;
-    private Player currentPlayingPlayer;
-    private TimeAndDate date = new TimeAndDate();
-    private int currentPlayingPlayerIndex = 0;
-    private ArrayList<Player> players = new ArrayList<Player>();
-    private GameMap gameMap;
-    private ArrayList<NPC> NPCs = new ArrayList<>();
-    private StoreManager storeManager = new StoreManager();
-    private ArrayList<GreenHouse>GreenHouses = new ArrayList<>();
-    private ArrayList<NPC> NPCHuts = new ArrayList<>();
-    private static ArrayList<Tile> tiles = new ArrayList<>();
+    private final Player creator;
+    private final TimeAndDate date = new TimeAndDate();
+    private final ArrayList<Player> players = new ArrayList<Player>();
+    private final GameMap gameMap;
+    private final ArrayList<NPC> NPCs = new ArrayList<>();
+    private final MarketsController marketsController = new MarketsController();
+    private final ArrayList<NPC> NPCHuts = new ArrayList<>();
 
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3,UserDTO user4) {
@@ -82,14 +76,13 @@ public class Game implements Serializable {
         }
         App.setCurrentGame(this);
         this.gameMap = new GameMap(players);
-        App.getCurrentGame().setCurrentPlayingPlayer(creator);
         for (Player player : players) {
             if (player.getUser().getUsername().equals("NPC")) continue;
             if (player.isGuest()){
                 player.getPlayerMap().setType(1);
             }
         }
-        this.storeManager.initializeStores();
+        this.marketsController.initializeStores();
         giveInitialItems();
 
     }
@@ -115,78 +108,30 @@ public class Game implements Serializable {
         return null;
     }
 
-    public Player getCurrentPlayingPlayer() {
-        return currentPlayingPlayer;
-    }
-
-    public void switchPlayer() {
-        currentPlayingPlayer.setInitialEnergyForTomorrow(currentPlayingPlayer.isHasPassedOutToday());
-        if (currentPlayingPlayer.getEnergy() == Double.POSITIVE_INFINITY)
-            currentPlayingPlayer.setEnergy(currentPlayingPlayer.getMaxEnergy());
-        if (currentPlayingPlayer.equals(players.get(3))) {
-            date.increaseHour();
-            currentPlayingPlayer = players.get(0);
-            currentPlayingPlayerIndex = 0;
-        } else {
-            currentPlayingPlayer = players.get(++currentPlayingPlayerIndex);
-        }
-    }
-
-    public void setCurrentPlayingPlayer(Player currentPlayingPlayer) {
-        this.currentPlayingPlayer = currentPlayingPlayer;
-    }
-
     public ArrayList<Player> getPlayers() {
         return players;
-    }
-
-    public void setPlayers(ArrayList<Player> players) {
-        this.players = players;
     }
 
     public GameMap getGameMap() {
         return gameMap;
     }
 
-    public void setGameMap(GameMap gameMap) {
-        this.gameMap = gameMap;
-    }
-
     public TimeAndDate getDate() {
         return date;
-    }
-
-    public void setDate(TimeAndDate date) {
-        this.date = date;
     }
 
     public Player getCreator() {
         return creator;
     }
 
-    public void setCreator(Player creator) {
-        this.creator = creator;
-    }
-
-    public int getCurrentPlayingPlayerIndex() {
-        return currentPlayingPlayerIndex;
-    }
-
-    public void setCurrentPlayingPlayerIndex(int currentPlayingPlayerIndex) {
-        this.currentPlayingPlayerIndex = currentPlayingPlayerIndex;
-    }
-
-    public StoreManager getStoreManager() {
-        return storeManager;
+    public MarketsController getStoreManager() {
+        return marketsController;
     }
     public ArrayList<NPC> getNPCs() {
         return NPCs;
     }
     public ArrayList<NPC> getNPCHuts(){
         return NPCHuts;
-    }
-    public void setNPCs(ArrayList<NPC> npcs) {
-        NPCHuts = npcs;
     }
 
     public void addNPCs(NPC npc) {
@@ -201,26 +146,10 @@ public class Game implements Serializable {
         return null;
     }
 
-    public ArrayList<GreenHouse> getGreenHouses() {
-        return GreenHouses;
-    }
-
-    public void addGreenHouses(GreenHouse greenHouse) {
-        GreenHouses.add(greenHouse);
-    }
-
-    public static ArrayList<Tile> getTiles() {
-        return tiles;
-    }
-
-    public static void setTiles(ArrayList<Tile> tiles1) {
-        tiles = tiles1;
-    }
-    public static Tile getTile(int x, int y) {
-        for (Tile tile : tiles) {
-            if (tile.getX() == x && tile.getY() == y) {
-                return tile;
-            }
+    public Player getPlayerByUsername(String username) {
+        for (Player player : players) {
+            if (player.getUser().getUsername().equals(username))
+                return player;
         }
         return null;
     }

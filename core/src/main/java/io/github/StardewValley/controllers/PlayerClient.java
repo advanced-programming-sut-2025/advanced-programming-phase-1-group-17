@@ -8,7 +8,13 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.UserDTO;
+import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPackType;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.enums.Gender;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.ToolMaterial;
+import io.github.StardewValley.shared.models.tools.ToolType;
 
 public class PlayerClient {
     private boolean isGuest = false;

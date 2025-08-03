@@ -17,8 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.helperControllers.FarmingController;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.shared.models.App;
@@ -26,23 +26,14 @@ import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.controllers.StoreMenuController;
-import io.github.StardewValley.shared.models.animal.Animal;
-import io.github.StardewValley.shared.models.animal.AnimalPlace;
-import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
-import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.shared.models.market.StoreType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.StardewValley.shared.models.plant.Fertilizer;
-import io.github.StardewValley.shared.models.plant.Sapling;
-import io.github.StardewValley.shared.models.plant.Seed;
-import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.enums.Gender;
 
 public class GameView implements Screen, InputProcessor {
@@ -152,7 +143,7 @@ public class GameView implements Screen, InputProcessor {
                     @Override
                     public void run() {
                         if (r.isSuccessful()) {
-                            Gender playerGender = App.getCurrentGame().getCurrentPlayingPlayer().getUser().getGender();
+                            Gender playerGender = GameClient.getPlayer().getUser().getGender();
                             Gender targetGender = currentTargetPlayer.getUser().getGender();
                             String imagePath;
                             if (playerGender == targetGender) {
@@ -186,8 +177,9 @@ public class GameView implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (currentTargetPlayer == null) return;
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
-                      GameAssetManagerClient.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
+                //TODO
+//                Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
+//                      GameAssetManagerClient.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
             }
         });
         givingFlower.addListener(new ClickListener() {
@@ -301,25 +293,26 @@ public class GameView implements Screen, InputProcessor {
     }
 
     public void updateInteractions() {
-        ArrayList<Player> targetPlayers = new ArrayList<>();
-        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
-
-        for (Player player : App.getCurrentGame().getPlayers()) {
-            if (!player.getUser().getUsername().equals("NPC") && !player.equals(currentPlayer)) {
-                if (menuController.sideBySide(player, currentPlayer)) {
-                    targetPlayers.add(player);
-                }
-            }
-        }
-        if (targetPlayers.isEmpty()) {
-            window.setVisible(false);
-        }
-
-        if (!targetPlayers.isEmpty()) {
-            window.setVisible(true);
-            currentTargetPlayer = targetPlayers.get(0);
-            showInteractionWindow(currentTargetPlayer);
-        }
+        //TODO
+        //        ArrayList<Player> targetPlayers = new ArrayList<>();
+//        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+//
+//        for (Player player : App.getCurrentGame().getPlayers()) {
+//            if (!player.getUser().getUsername().equals("NPC") && !player.equals(currentPlayer)) {
+//                if (menuController.sideBySide(player, currentPlayer)) {
+//                    targetPlayers.add(player);
+//                }
+//            }
+//        }
+//        if (targetPlayers.isEmpty()) {
+//            window.setVisible(false);
+//        }
+//
+//        if (!targetPlayers.isEmpty()) {
+//            window.setVisible(true);
+//            currentTargetPlayer = targetPlayers.get(0);
+//            showInteractionWindow(currentTargetPlayer);
+//        }
     }
 
     private void showInteractionWindow(Player targetPlayer) {
@@ -369,7 +362,7 @@ public class GameView implements Screen, InputProcessor {
             return true;
         if (checkCraftingItemBounds(worldCoordinates, true))
             return true;
-        if(handleToolUse(worldCoordinates))
+        if(handleClick(worldCoordinates))
             return true;
         if (handleShippingBin(worldCoordinates)) {
             return true;
@@ -441,28 +434,23 @@ public class GameView implements Screen, InputProcessor {
         return false;
     }
 
-    private boolean handleToolUse(Vector3 worldCoordinates) {
+    private boolean handleClick(Vector3 worldCoordinates) {
         float tileWidth = controller.getWorldController().getTileWidth();
         float tileHeight = controller.getWorldController().getTileHeight();
         int clickedTileX = (int)(worldCoordinates.x / tileWidth);
         int clickedTileY = (int)(worldCoordinates.y / tileHeight);
 
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        PlayerClient player = GameClient.getPlayer();
         int dx = clickedTileX - player.getTileX();
         int dy = clickedTileY - player.getTileY();
 
         if (Math.abs(dx) + Math.abs(dy) == 1) {
             Result result = null;
-            if (player.getEquippedItem() instanceof Tool)
-                result = controller.getToolController().toolUse(dx, dy);
-            else if (player.getEquippedItem() instanceof CraftingItem)
-                result = controller.placeItem(dx, dy);
-            else if (player.getEquippedItem() instanceof Seed seed)
-                result = farmingController.plantSeed(seed, dx, dy);
-            else if (player.getEquippedItem() instanceof Sapling sapling)
-                result = farmingController.plantSapling(sapling, dx, dy);
-            else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
-                result = farmingController.fertilize(fertilizer, dx, dy);
+            try {
+                result = GameController.getGameStateApiClient().handleClick(dx, dy);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (result != null && !result.isSuccessful())
                 showNotification(result.getMessage());
             return true;
@@ -519,7 +507,7 @@ public class GameView implements Screen, InputProcessor {
                     GreenHouse.getGreenHouseBounds().remove(greenHouse);
                     return true;
                 }
-                if (!greenHouse.getOwner().equals(App.getCurrentGame().getCurrentPlayingPlayer())) {
+                if (!greenHouse.getOwner().equals(GameClient.getPlayer())) {
                     showNotification("This greenhouse is not yours.");
                     return true;
                 }

@@ -212,7 +212,7 @@ public class WorldController {
             Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(App.getCurrentGame().getNPCHuts().get(i).getTexture()),
                 App.getCurrentGame().getNPCHuts().get(i).x_start * tileWidth, App.getCurrentGame().getNPCHuts().get(i).y_start * tileHeight, 500 , 500);
         }
-        for (GreenHouse greenHouse : App.getCurrentGame().getGreenHouses()) {
+        for (GreenHouse greenHouse : GreenHouse.getGreenHouseBounds().keySet()) {
             Main.getBatch().draw(
                 GameAssetManagerClient.getGameAssetManager().getTexture(GameAssetManager.getGameAssetManager().getGreenHouseTexture()),
                 greenHouse.getStarting_x() * tileWidth, greenHouse.getStarting_y() * tileHeight,
