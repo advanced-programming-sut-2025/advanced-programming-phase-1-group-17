@@ -11,7 +11,7 @@ public class GameAssetManagerClient {
     private final Texture plowedTexture = new Texture("Flooring/Flooring_57.png");
     private final HashMap<String, Texture> textures = new HashMap<>();
 
-    private Skin skin = new Skin(Gdx.files.internal("skin/StardewSkin.json"));
+    private Skin skin = new Skin(Gdx.files.internal("Skin/StardewSkin.json"));
 
     public static GameAssetManagerClient getGameAssetManager() {
         if (gameAssetManager == null) {

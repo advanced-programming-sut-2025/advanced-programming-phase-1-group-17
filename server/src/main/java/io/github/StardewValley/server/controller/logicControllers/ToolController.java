@@ -1,10 +1,10 @@
-package io.github.StardewValley.controllers;
+package io.github.StardewValley.server.controller.logicControllers;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.TimeAndDate;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.animal.AnimalType;
@@ -12,6 +12,8 @@ import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.cooking.BuffType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
 import io.github.StardewValley.shared.models.foraging.Mineral;
@@ -25,7 +27,6 @@ import io.github.StardewValley.shared.models.plant.Plant;
 import io.github.StardewValley.shared.models.plant.Tree;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
-import io.github.StardewValley.shared.models.tools.ToolAssetManager;
 import io.github.StardewValley.shared.models.tools.ToolType;
 
 import java.util.ArrayList;
@@ -34,57 +35,16 @@ import java.util.Map;
 import java.util.Random;
 
 public class ToolController {
-    private boolean isToolAnimating = false;
-    private float toolRotation = 0;
-    private float toolAnimationTimer = 0;
-    private final float TOOL_ANIMATION_DURATION = 0.4f;
-
-    private Player player;
     private Tool tool;
     private double leverage;
     private Tile tile;
 
-    private Sprite toolSprite;
-
-    public ToolController(Player player) {
-        this.player = player;
-        this.toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getCurrentTool().getToolType());
-        toolSprite.setOriginCenter(); // Rotation around center — adjust if needed
-    }
-
-
-    public void startToolAnimation() {
-        isToolAnimating = true;
-        toolRotation = 0;
-        toolAnimationTimer = 0;
-    }
-
-    public void updateToolAnimation(float delta) {
-        if (!isToolAnimating) return;
-        toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getCurrentTool().getToolType());
-
-        toolAnimationTimer += delta;
-        float progress = toolAnimationTimer / TOOL_ANIMATION_DURATION;
-
-        toolRotation = progress * -90f; // You can tweak this arc
-
-        if (toolAnimationTimer >= TOOL_ANIMATION_DURATION) {
-            isToolAnimating = false;
-        }
-
-        if (toolSprite != null) {
-            toolSprite.setRotation(toolRotation);
-        }
-    }
-
-
-    public Result toolUse(int dx, int dy) {
+    public Result toolUse(int dx, int dy, Player player) {
         leverage = App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
-        player = App.getCurrentGame().getCurrentPlayingPlayer();
         int x = player.getTileX() + dx;
         int y = player.getTileY() + dy;
 
-        tool = App.getCurrentGame().getCurrentPlayingPlayer().getCurrentTool();
+        tool = player.getCurrentTool();
         tile = Tile.getTile(x, y);
 
         if (tile == null) {
@@ -93,28 +53,29 @@ public class ToolController {
         Result result = null;
 
         if (tool.getToolType().equals(ToolType.Hoe)) {
-            result = useHoe();
+            result = useHoe(player);
         } else if (tool.getToolType().equals(ToolType.Pickaxe)) {
-            result = usePickAxe();
+            result = usePickAxe(player);
         } else if (tool.getToolType().equals(ToolType.Axe)) {
-            result = useAxe();
+            result = useAxe(player);
         } else if (tool.getToolType().equals(ToolType.WateringCan)) {
-            result = useWateringCan();
+            result = useWateringCan(player);
         } else if (tool.getToolType().equals(ToolType.Scythe)) {
-            result = useScythe();
+            result = useScythe(player);
         } else if (tool.getToolType().equals(ToolType.MilkPail)) {
-            result = useMilkPail();
+            result = useMilkPail(player);
         } else if (tool.getToolType().equals(ToolType.Shear)) {
-            result = useShear();
+            result = useShear(player);
         } else if (tool.getToolType().equals(ToolType.FishingPole)) {
-            result =  useFishingPole();
+            result =  useFishingPole(player);
         }
-        startToolAnimation();
+        //TODO
+        //startToolAnimation();
         return result;
     }
 
 
-    private Result useHoe() {
+    private Result useHoe(Player player) {
         double energy = ToolType.Hoe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getFarmingLevel() == 4) {
             energy--;
@@ -134,7 +95,7 @@ public class ToolController {
     }
 
 
-    private Result usePickAxe() {
+    private Result usePickAxe(Player player) {
         double energy = ToolType.Pickaxe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getMiningLevel() == 4) {
             energy--;
@@ -151,7 +112,7 @@ public class ToolController {
                 return new Result(false, "This type of Pickaxe (%s) cannot break this mineral (%s)".formatted(
                     tool.getMaterial(),
                     mineral.getType().name()
-                    ));
+                ));
             }
             player.getAbilities().increaseMiningAbility();
 
@@ -187,7 +148,7 @@ public class ToolController {
     }
 
 
-    private Result useAxe() {
+    private Result useAxe(Player player) {
         double energy = ToolType.Axe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getForagingLevel() == 4) {
             energy--;
@@ -217,7 +178,7 @@ public class ToolController {
     }
 
 
-    private Result useWateringCan() {
+    private Result useWateringCan(Player player) {
         double energy = ToolType.WateringCan.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getForagingLevel() == 4) {
             energy--;
@@ -242,7 +203,7 @@ public class ToolController {
     }
 
 
-    private Result useScythe() {
+    private Result useScythe(Player player) {
         player.setEnergy(player.getEnergy() - 2 * leverage);
         if (tile.getPlaceable() instanceof NormalItem normalItem) {
             if (normalItem.getType().equals(NormalItemType.Grass)) {
@@ -287,7 +248,7 @@ public class ToolController {
     }
 
 
-    private Result useMilkPail() {
+    private Result useMilkPail(Player player) {
         player.setEnergy(player.getEnergy() - 4 * leverage);
         if (tile.getPlaceable() instanceof Animal animal) {
             if (animal.getAnimalType().equals(AnimalType.Cow)) {
@@ -320,7 +281,7 @@ public class ToolController {
     }
 
 
-    private Result useShear() {
+    private Result useShear(Player player) {
         player.setEnergy(player.getEnergy() - 4 * leverage);
         if (tile.getPlaceable() instanceof Animal animal) {
             if (animal.getAnimalType().equals(AnimalType.Sheep)) {
@@ -345,7 +306,7 @@ public class ToolController {
     }
 
 
-    private Result useFishingPole() {
+    private Result useFishingPole(Player player) {
         if (!tile.isWater()) {
             return new Result(false, "you should catch fish near water and lakes , here is not water");
         }
@@ -363,13 +324,11 @@ public class ToolController {
             energy--;
         }
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return fishing(tool.getFishingPoleMaterial().name());
+        return fishing(tool.getFishingPoleMaterial().name(), player);
     }
 
 
-    public Result fishing(String fishingPole) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
+    public Result fishing(String fishingPole, Player player) {
         if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
             return new Result(false, "first go near water");
         }
@@ -444,34 +403,170 @@ public class ToolController {
     }
 
 
-    public boolean isToolAnimating() {
-        return isToolAnimating;
-    }
+    public Result placeCraftingItem(int dx, int dy, Player player) {
+        CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
 
-    public float getToolRotation() {
-        return toolRotation;
-    }
+        int x = player.getX() / GameAssetManager.getGameAssetManager().getTileWidth() + dx;
+        int y = player.getY() / GameAssetManager.getGameAssetManager().getTileHeight() + dy;
+        Tile tile = Tile.getTile(x, y);
 
-    public void update(float delta, Player player) {
-        this.player = player;
-        updateToolAnimation(delta);
-        if (player.getCurrentTool() != null)
-            drawTool();
-    }
-
-    private void drawTool() {
-        if (!isToolAnimating()) {
-            Texture texture =new Texture(player.getCurrentTool().getType().getInventoryTexture());
-            Main.getBatch().draw(texture, player.getX(), player.getY());
-        } else {
-            if (toolSprite == null) return;
-            // Position tool sprite relative to player position
-            float playerX = player.getX();
-            float playerY = player.getY();
-
-            toolSprite.setPosition(playerX, playerY);
-
-            toolSprite.draw(Main.getBatch());
+        if (tile.getPlaceable() != null) {
+            return new Result(false, "tile is full");
         }
+
+        player.getBackPack().useItem(craftingItemType);
+        CraftingItem craftingItem = new CraftingItem(craftingItemType, player);
+        craftingItem.setStart_x(x);
+        craftingItem.setStart_y(y);
+        craftingItem.addCraftingItemBound();
+
+        tile.setPlaceable(craftingItem);
+        tile.setWalkAble(false);
+
+        switch (craftingItemType) {
+            case CherryBomb -> {
+                int range = 3;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case Bomb -> {
+                int range = 5;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case MegaBomb -> {
+                int range = 7;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            target.setPlaceable(null);
+                        }
+                    }
+                }
+            }
+
+            case Sprinkler -> {
+                int[] dx2 = {0, 1, 0, -1};
+                int[] dy2 = {1, 0, -1, 0};
+                for (int i = 0; i < 4; i++) {
+                    Tile target = Tile.getTile(tile.getX() + dx2[i], tile.getY() + dy2[i]);
+                    if (target != null && target.getPlaceable() instanceof Plant plant) {
+                        plant.wateringPlant();
+                    }
+                }
+            }
+
+            case QualitySprinkler -> {
+                int range = 1;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null && target.getPlaceable() instanceof Plant plant) {
+                            plant.wateringPlant();
+                        }
+                    }
+                }
+            }
+
+            case IridiumSprinkler -> {
+                int range = 2;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null && target.getPlaceable() instanceof Plant plant) {
+                            plant.wateringPlant();
+                        }
+                    }
+                }
+            }
+
+            case Scarecrow -> {
+                int range = 8;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            tile.setCrowImmunity(true);
+                        }
+                    }
+                }
+            }
+
+            case DeluxeScarecrow -> {
+                int range = 12;
+                for (int i = -range; i < range + 1; i++) {
+                    for (int j = -range; j < range + 1; j++) {
+
+                        Tile target = Tile.getTile(tile.getX() + i, tile.getY() + j);
+                        if (target != null) {
+                            tile.setCrowImmunity(true);
+                        }
+                    }
+                }
+            }
+
+            case BeeHouse -> {
+
+            }
+
+            case CheesePress -> {
+
+            }
+
+            case Keg -> {
+
+            }
+
+            case Loom -> {
+
+            }
+
+            case MayonnaiseMachine -> {
+
+            }
+
+            case OilMaker -> {
+
+            }
+
+            case PreservesJar -> {
+
+            }
+
+            case Dehydrator -> {
+
+            }
+
+            case FishSmoker -> {
+
+            }
+
+            case MysticTreeSeed -> {
+
+            }
+        }
+        return new Result(true, "Item placed Successfully.");
     }
+
 }

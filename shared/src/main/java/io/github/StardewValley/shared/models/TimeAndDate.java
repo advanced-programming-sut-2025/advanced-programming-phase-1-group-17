@@ -134,29 +134,30 @@ public class TimeAndDate {
     }
 
     private void weatherEffect() {
-        if (todayWeather.equals(WeatherType.Rainy)) {
-            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
-                if (tile.getPlaceable() instanceof Plant plant) {
-                    if (!plant.isInsideGreenhouse())
-                        plant.wateringPlant();
-                }
-            }
-        } else if (todayWeather.equals(WeatherType.Storm)) {
-            int counter = 3;
-            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
-                double rand = Math.random();
-                if (rand <= 0.01) {
-                    if (counter > 0) {
-                        LightningController.getLightningController().triggerLightning();
-                        tile.lightningStrike();
-                        counter--;
-                    }
-                }
-                if (tile.getPlaceable() instanceof Plant plant) {
-                    plant.wateringPlant();
-                }
-            }
-        }
+        //TODO
+        //        if (todayWeather.equals(WeatherType.Rainy)) {
+//            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
+//                if (tile.getPlaceable() instanceof Plant plant) {
+//                    if (!plant.isInsideGreenhouse())
+//                        plant.wateringPlant();
+//                }
+//            }
+//        } else if (todayWeather.equals(WeatherType.Storm)) {
+//            int counter = 3;
+//            for (Tile tile : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getTiles()) {
+//                double rand = Math.random();
+//                if (rand <= 0.01) {
+//                    if (counter > 0) {
+//                        LightningController.getLightningController().triggerLightning();
+//                        tile.lightningStrike();
+//                        counter--;
+//                    }
+//                }
+//                if (tile.getPlaceable() instanceof Plant plant) {
+//                    plant.wateringPlant();
+//                }
+//            }
+//        }
     }
 
     private void normalizeMaxEnergies() {

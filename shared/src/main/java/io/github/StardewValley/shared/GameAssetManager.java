@@ -18,8 +18,8 @@ public class GameAssetManager {
 
     private final String  backgroundTexture1 = "Flooring/Flooring_44.png";
     private final String backgroundTexture2 = "Flooring/Flooring_50.png";
-    private final float tileWidth = 120;
-    private final float tileHeight = 120;
+    private final int tileWidth = 120;
+    private final int tileHeight = 120;
 
     private final String  plowedTexture ="Flooring/Flooring_57.png";
     private final String  farmTexture ="Flooring/Flooring_14.png";
@@ -89,11 +89,11 @@ public class GameAssetManager {
         return backgroundTexture2;
     }
 
-    public float getTileWidth() {
+    public int getTileWidth() {
         return tileWidth;
     }
 
-    public float getTileHeight() {
+    public int getTileHeight() {
         return tileHeight;
     }
 

@@ -1,31 +1,40 @@
 package io.github.StardewValley.shared.models.market;
 
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
+import io.github.StardewValley.shared.models.NPCS.Ring;
 import io.github.StardewValley.shared.models.NPCS.RingType;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.animal.AnimalProduct;
+import io.github.StardewValley.shared.models.animal.AnimalProductType;
+import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
-import io.github.StardewValley.shared.models.backpack.BackPackableType;
-import io.github.StardewValley.shared.models.backpack.NormalItemType;
+import io.github.StardewValley.shared.models.backpack.*;
+import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.cooking.RecipeType;
 import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
 import io.github.StardewValley.shared.models.animal.AnimalType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipeType;
-import io.github.StardewValley.shared.models.backpack.BackPackType;
+import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.enums.Season;
-import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.foraging.Mineral;
+import io.github.StardewValley.shared.models.plant.*;
+import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.ToolMaterial;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import io.github.StardewValley.shared.models.foraging.MineralType;
-import io.github.StardewValley.shared.models.plant.FertilizerType;
-import io.github.StardewValley.shared.models.plant.SeedType;
-import io.github.StardewValley.shared.models.plant.SaplingType;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StoreManager {
+public class MarketsController {
     private final Map<StoreType, StoreInventory> shopInventories = new HashMap<>();
 
     private final HashMap<StoreType, Store> stores = new HashMap<>();
@@ -369,20 +378,20 @@ public class StoreManager {
         return hour >= storeType.getOpeningHour() && hour <= storeType.getClosingHour();
     }
 
-    public boolean hasIngredients(ShopItem product) {
+    public boolean hasIngredients(ShopItem product, Player player) {
         if (product.getCost().isEmpty())
             return true;
 
         for (BackPackableType backPackableType : product.getCost().keySet()) {
             if (product.getCost().get(backPackableType) >
-                App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getInventorySize(backPackableType.getName()))
+                player.getBackPack().getInventorySize(backPackableType.getName()))
                 return false;
         }
         return true;
     }
 
-    public void useIngredients(ShopItem product) {
-        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+    public void useIngredients(ShopItem product, Player player) {
+        BackPack backPack = player.getBackPack();
         for (BackPackableType backPackableType : product.getCost().keySet()) {
             for (int i = 0; i < product.getCost().get(backPackableType); i++) {
                 backPack.useItem(backPackableType);
@@ -390,8 +399,8 @@ public class StoreManager {
         }
     }
 
-    public boolean checkFishingSkill(ShopItem item) {
-        int fishingLevel = App.getCurrentGame().getCurrentPlayingPlayer().getAbilities().getFishingLevel();
+    public boolean checkFishingSkill(ShopItem item, Player player) {
+        int fishingLevel = player.getAbilities().getFishingLevel();
         if (item.getType().equals(FishingPoleType.IridiumFishingPole)) {
             return fishingLevel >= 4;
         } else if (item.getType().equals(FishingPoleType.FiberglassFishingPole)) {
@@ -400,7 +409,7 @@ public class StoreManager {
         return true;
     }
 
-    public void purchaseBackpack(ShopItem product) {
+    public void purchaseBackpack(ShopItem product, Player player) {
         if (product.getType().equals(BackPackType.LargeBackPack)) {
             for (ShopItem item : shopInventories.get(StoreType.PierresGeneralStore).getItems()) {
                 if (item.getType().equals(BackPackType.DeluxeBackPack)){
@@ -409,16 +418,16 @@ public class StoreManager {
                 }
             }
             BackPack backPack = new BackPack(BackPackType.LargeBackPack,
-                App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getPlayer());
-            backPack.setBackPackItems(App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getBackPackItems());
-            backPack.setCoin(App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin());
-            App.getCurrentGame().getCurrentPlayingPlayer().setBackPack(backPack);
+                player.getBackPack().getPlayer());
+            backPack.setBackPackItems(player.getBackPack().getBackPackItems());
+            backPack.setCoin(player.getBackPack().getCoin());
+            player.setBackPack(backPack);
         } else {
             BackPack backPack = new BackPack(BackPackType.DeluxeBackPack,
-                App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getPlayer());
-            backPack.setBackPackItems(App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getBackPackItems());
-            backPack.setCoin(App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin());
-            App.getCurrentGame().getCurrentPlayingPlayer().setBackPack(backPack);
+                player.getBackPack().getPlayer());
+            backPack.setBackPackItems(player.getBackPack().getBackPackItems());
+            backPack.setCoin(player.getBackPack().getCoin());
+            player.setBackPack(backPack);
         }
     }
 
@@ -471,5 +480,114 @@ public class StoreManager {
 
     public void addStore(StoreType storeType, Store store) {
         stores.put(storeType, store);
+    }
+
+    public static ArrayList<Object> addItem(String itemName, Player player) {
+        BackPackableType type = null;
+        BackPackable sampleItem = null;
+        try {
+            type = CraftingItemType.valueOf(itemName);
+            sampleItem = new CraftingItem((CraftingItemType) type, player);
+        } catch (IllegalArgumentException e1) {
+            try {
+                type = NormalItemType.valueOf(itemName);
+                sampleItem = new NormalItem((NormalItemType) type);
+            } catch (IllegalArgumentException e2) {
+                try {
+                    type = MineralType.valueOf(itemName);
+                    sampleItem = new Mineral((MineralType) type, true);
+                } catch (Exception e3) {
+                    try {
+                        type = SaplingType.valueOf(itemName);
+                        sampleItem = new Sapling((SaplingType) type);
+                    } catch (IllegalArgumentException e4) {
+                        try {
+                            type = SeedType.valueOf(itemName);
+                            sampleItem = new Seed((SeedType) type);
+                        } catch (IllegalArgumentException e5) {
+                            try {
+                                type = CropType.valueOf(itemName);
+                                sampleItem = new Crop(false, (CropType) type, null, false);
+                            } catch (IllegalArgumentException e6) {
+                                try {
+                                    type = FlowerType.valueOf(itemName);
+                                    sampleItem = new Flower((FlowerType) type);
+                                } catch (IllegalArgumentException e7) {
+                                    {
+                                        try {
+                                            type = FruitType.valueOf(itemName);
+                                            sampleItem = new Fruit((FruitType) type);
+                                        } catch (IllegalArgumentException e9) {
+                                            try {
+                                                type = AnimalProductType.valueOf(itemName);
+                                                AnimalProduct a = new AnimalProduct();
+                                                a.setAnimalProductType((AnimalProductType) type);
+                                                a.setQuality(ItemQuality.Regular);
+                                                sampleItem = a;
+
+
+                                            } catch (IllegalArgumentException e10) {
+                                                try {
+                                                    type = FishType.valueOf(itemName);
+                                                    sampleItem = new Fish((FishType) type, ItemQuality.Regular);
+                                                } catch (Exception e11) {
+                                                    try {
+                                                        type = FertilizerType.valueOf(itemName);
+                                                        sampleItem = new Fertilizer((FertilizerType) type);
+                                                    } catch (Exception e12) {
+                                                        try {
+                                                            type = ArtisanProductType.valueOf(itemName);
+                                                            sampleItem = new ArtisanProduct((ArtisanProductType) type, null);
+                                                        } catch (Exception e13) {
+                                                            try{
+                                                                if(!itemName.equals("FishingPole")) {
+                                                                    type = ToolType.valueOf(itemName);
+                                                                    sampleItem = new Tool((ToolType) type, ToolMaterial.Basic,null);
+
+
+                                                                }
+                                                            } catch (Exception e14){
+                                                                try{
+                                                                    type = FishingPoleType.valueOf(itemName);
+                                                                    sampleItem = new Tool(ToolType.FishingPole, ToolMaterial.Basic,(FishingPoleType) type);
+                                                                }
+                                                                catch(Exception e15){
+                                                                    try{
+                                                                        type = FoodType.valueOf(itemName);
+                                                                        sampleItem = new Food((FoodType) type);
+
+                                                                    } catch (Exception e16){
+                                                                        try{
+                                                                            type = ArtisanProductType.valueOf(itemName);
+                                                                            sampleItem = new ArtisanProduct((ArtisanProductType) type,null);
+                                                                        }catch (Exception e17) {
+                                                                            try {
+                                                                                type = RingType.valueOf(itemName);
+                                                                                sampleItem = new Ring();
+                                                                            } catch (Exception e18) {
+                                                                                sampleItem = null;
+                                                                                type = null;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ArrayList<Object> result = new ArrayList<>();
+        result.add(type);
+        result.add(sampleItem);
+        return result;
     }
 }

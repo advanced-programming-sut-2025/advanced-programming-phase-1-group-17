@@ -1,4 +1,4 @@
-package io.github.StardewValley.controllers.helperControllers;
+package io.github.StardewValley.server.controller.logicControllers;
 
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Player;
@@ -8,9 +8,8 @@ import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.plant.*;
 
 public class FarmingController {
-    public Result fertilize(Fertilizer fertilizer, int dx, int dy) {
+    public Result fertilize(Fertilizer fertilizer, int dx, int dy, Player player) {
         FertilizerType fertilizerType = fertilizer.getType();
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
 
         int newX = player.getTileX() + dx;
         int newY = player.getTileY() + dy;
@@ -41,9 +40,7 @@ public class FarmingController {
     }
 
 
-    public Result plantSeed(Seed seed, int dx, int dy) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
+    public Result plantSeed(Seed seed, int dx, int dy, Player player) {
         int newX = player.getTileX() + dx;
         int newY = player.getTileY() + dy;
 
@@ -87,15 +84,13 @@ public class FarmingController {
     }
 
 
-    public Result plantSapling(Sapling sapling, int dx, int dy) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-
+    public Result plantSapling(Sapling sapling, int dx, int dy, Player player) {
         int newX = player.getTileX() + dx;
         int newY = player.getTileY() + dy;
 
         Tile tile = Tile.getTile(newX, newY);
         if (tile == null) {
-            return new Result(false, "TIle out of map");
+            return new Result(false, "Tile out of map");
         }
 
         if (tile.getPlaceable() != null && !(tile.getPlaceable() instanceof GreenHouse greenHouse))

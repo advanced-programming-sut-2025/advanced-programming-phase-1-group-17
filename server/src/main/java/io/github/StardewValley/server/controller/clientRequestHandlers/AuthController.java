@@ -1,4 +1,4 @@
-package io.github.StardewValley.server.controller;
+package io.github.StardewValley.server.controller.clientRequestHandlers;
 
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.shared.dto.*;

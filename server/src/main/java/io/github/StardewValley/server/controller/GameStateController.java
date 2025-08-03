@@ -3,8 +3,18 @@ package io.github.StardewValley.server.controller;
 
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
+import io.github.StardewValley.server.controller.logicControllers.FarmingController;
+import io.github.StardewValley.server.controller.logicControllers.ToolController;
+import io.github.StardewValley.server.model.User;
+import io.github.StardewValley.server.repository.UserRepository;
+import io.github.StardewValley.shared.dto.HandleClickRequest;
 import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.plant.Fertilizer;
+import io.github.StardewValley.shared.models.plant.Sapling;
+import io.github.StardewValley.shared.models.plant.Seed;
+import io.github.StardewValley.shared.models.tools.Tool;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +26,16 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/gameState")
 public class GameStateController {
-    private final JwtService jwtService = new JwtService();
+    private final ToolController toolController = new ToolController();
+    private final FarmingController farmingController = new FarmingController();
+
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+
+    public GameStateController(UserRepository userRepository, JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
+    }
 
     @GetMapping("/game/map")
     public ResponseEntity<List<TileDTO>> getGameMap(
@@ -89,5 +108,47 @@ public class GameStateController {
         return ResponseEntity.ok(username);
     }
 
+    @PostMapping("/game/handleClick")
+    public ResponseEntity<Result> handleClick(@RequestBody HandleClickRequest request, @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token); // Authenticate and get the correct Player
+        Result result = null;
+        if (player.getEquippedItem() instanceof Tool)
+            result = toolController.toolUse(request.getDx(), request.getDy(), player);
+        else if (player.getEquippedItem() instanceof CraftingItem)
+            result = toolController.placeCraftingItem(request.getDx(), request.getDy(), player);
+        else if (player.getEquippedItem() instanceof Seed seed)
+            result = farmingController.plantSeed(seed, request.getDx(), request.getDy(), player);
+        else if (player.getEquippedItem() instanceof Sapling sapling)
+            result = farmingController.plantSapling(sapling, request.getDx(), request.getDy(), player);
+        else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
+            result = farmingController.fertilize(fertilizer, request.getDx(), request.getDy(), player);
+        return ResponseEntity.ok(result);
+    }
+
+    public Player getPlayerFromToken(String token) {
+        String username = jwtService.extractUsername(token.replace("Bearer ", ""));
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Game activeGame = user.getActiveGame();
+        if (activeGame == null) {
+            throw new RuntimeException("User is not in an active game");
+        }
+
+        return activeGame.getPlayerByUsername(username);
+    }
+
+    public Game getGameFromToken(String token) {
+        String username = jwtService.extractUsername(token.replace("Bearer ", ""));
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Game activeGame = user.getActiveGame();
+        if (activeGame == null) {
+            throw new RuntimeException("No active game found for user");
+        }
+
+        return activeGame;
+    }
 
 }

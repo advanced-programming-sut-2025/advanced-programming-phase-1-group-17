@@ -3,7 +3,9 @@ package io.github.StardewValley.controllers.helperControllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.PlayerDto;
+import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.UserDTO;
 
@@ -14,7 +16,7 @@ import java.net.URL;
 import java.util.List;
 
 public class GameStateApiClient {
-    private static final String BASE_URL = "http://localhost:8080/api/gameState";
+    private static final String BASE_URL = "http://%s:%d/api/gameState".formatted(Main.getServerIP(), Main.getServerPort());
     private final String token;
 
     public GameStateApiClient(String jwtToken) {
@@ -41,7 +43,7 @@ public class GameStateApiClient {
         }
     }
     public UserDTO getUserWithUserDTO() throws Exception {
-        String urlString = "http://localhost:8080/api/auth/getUserByUsername";
+        String urlString = "http://%s:%d/api/auth/getUserByUsername".formatted(Main.getServerIP(), Main.getServerPort());
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -101,6 +103,8 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to select map. Code: " + responseCode);
         }
     }
+
+
     public String getUserName() throws Exception {
         URL url = new URL(BASE_URL + "/getUserNameByToken");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -118,5 +122,30 @@ public class GameStateApiClient {
         }
     }
 
+
+    public Result handleClick(int dx, int dy) throws Exception {
+        URL url = new URL(BASE_URL + "/game/handleClick");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        String jsonInput = String.format("{\"dx\":%d,\"dy\":%d}", dx, dy);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInput.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, Result.class);
+            }
+        } else {
+            throw new RuntimeException("Failed to handle click: " + conn.getResponseCode());
+        }
+    }
 
 }

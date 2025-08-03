@@ -45,20 +45,12 @@ public class Player {
     private ArrayList<Animal> animals = new ArrayList<>();
     private boolean moved;
     private Direction lastDirection = Direction.DOWN;
-
-
-    public enum Direction {
-        UP, DOWN, LEFT, RIGHT, IDLE
-    }
-
     private Direction currentDirection = Direction.IDLE;
-
 
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
     private final HashMap<Player, Talk> talk = new HashMap<Player, Talk>();
     private boolean newMessage = false;
-
 
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
     private ArrayList<message> messages = new ArrayList<>();
@@ -67,11 +59,11 @@ public class Player {
     private Player partner = this;
     private boolean interactionWithPartner = false;
     private int isbrokenUp = 0;
+
     //For NPC
     private HashMap<NPC, Integer> friendShipsWithNPCs = new HashMap<>();
     private HashMap<NPC, Boolean> talkedNPCToday = new HashMap<>();
     private HashMap<NPC, Boolean> giftNPCToday = new HashMap<>();
-
 
     //For Energy
     private double energy;
@@ -97,6 +89,9 @@ public class Player {
     private double balance;
     private int daysSinceBrakUp = 0;
 
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT, IDLE
+    }
 
     public int getVegetableFarmed() {
         return vegetableFarmed;
@@ -451,7 +446,6 @@ public class Player {
         if (isPassedOut) {
             passOutTimer -= delta;
             if (passOutTimer <= 0) {
-                App.getCurrentGame().switchPlayer();
                 isPassedOut = false;
                 hasPassedOutToday = false;
             }
@@ -514,7 +508,6 @@ public class Player {
 
         //TODO  Create movement restrictions
         boolean isOky = true;
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
         int playerWidth = (int)GameAssetManager.getGameAssetManager().getTileWidth();;
         int playerHeight = (int)GameAssetManager.getGameAssetManager().getTileHeight();;
         try {

@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManagerClient;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.enums.Season;
@@ -36,7 +35,7 @@ public class StoreMenuController {
         itemsTable.clear();
         this.storeType = view.getStoreType();
 
-        StoreManager manager = App.getCurrentGame().getStoreManager();
+        MarketsController manager = App.getCurrentGame().getStoreManager();
         StoreInventory inventory = manager.getInventory(storeType);
         int rank = 1;
         double price;
@@ -89,7 +88,7 @@ public class StoreMenuController {
             upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
 
-            StoreManager manager = App.getCurrentGame().getStoreManager();
+            MarketsController manager = App.getCurrentGame().getStoreManager();
             for (UpgradeService upgradeService : manager.getInventory(storeType).getUpgradeServices()) {
                 TextButton textButton = new TextButton(upgradeService.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
                 textButton.addListener(new ClickListener() {
@@ -110,7 +109,7 @@ public class StoreMenuController {
 
     public void showAllAvailableProducts() {
         itemsTable.clear();
-        StoreManager manager = App.getCurrentGame().getStoreManager();
+        MarketsController manager = App.getCurrentGame().getStoreManager();
         StoreInventory inventory = manager.getInventory(storeType);
         Season season = App.getCurrentGame().getDate().getSeason();
 
@@ -156,7 +155,7 @@ public class StoreMenuController {
             upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
 
-            StoreManager manager = App.getCurrentGame().getStoreManager();
+            MarketsController manager = App.getCurrentGame().getStoreManager();
             for (UpgradeService upgradeService : manager.getInventory(storeType).getUpgradeServices()) {
                 if (upgradeService.getSoldToday() >= upgradeService.getDailyLimit())
                     continue;
