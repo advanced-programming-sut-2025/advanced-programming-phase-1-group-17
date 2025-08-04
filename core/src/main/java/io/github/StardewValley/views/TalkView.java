@@ -45,7 +45,7 @@ public class TalkView implements Screen {
     private Table table2;
     private TextField textField;
     private TextButton send;
-    private Player[] players = new Player[3];
+    private String[] players = new String[3];
 
 
     public TalkView(TalkController controller, Skin skin, GameView gameView) {
@@ -89,7 +89,7 @@ public class TalkView implements Screen {
         this.label = new Label("", skin);
         label.setColor(Color.BLACK);
         label.setFontScale(1);
-
+        //TODO handle name of players
         int i = 0;
         for (Player player : App.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals("NPC") || player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
@@ -97,9 +97,9 @@ public class TalkView implements Screen {
             players[i] = player;
             i++;
         }
-        this.button1 = new TextButton(players[0].getUser().getUsername(), skin);
-        this.button2 = new TextButton(players[1].getUser().getUsername(), skin);
-        this.button3 = new TextButton(players[2].getUser().getUsername(), skin);
+        this.button1 = new TextButton(players[0], skin);
+        this.button2 = new TextButton(players[1], skin);
+        this.button3 = new TextButton(players[2], skin);
         this.button9 = new TextButton("messages", skin);
         this.button11 = new TextButton("Trade List", skin);
         this.button10 = new TextButton("Trade History", skin);
@@ -128,13 +128,6 @@ public class TalkView implements Screen {
         button16.setVisible(false);
         giftNumber.setVisible(false);
         giftRate.setVisible(false);
-//        this.button14 = new TextButton("Talk", skin);
-//        this.button15 = new TextButton("Gift", skin);
-
-
-
-        //TODO
-
 
 
         controller.setView(this, gameView);
@@ -285,7 +278,7 @@ public class TalkView implements Screen {
         return button9;
     }
 
-    public Player[] getPlayers() {
+    public String[] getPlayers() {
         return players;
     }
 

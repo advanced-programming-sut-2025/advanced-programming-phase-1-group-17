@@ -4,8 +4,12 @@ import com.badlogic.gdx.graphics.Camera;
 import io.github.StardewValley.controllers.PlayerClient;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameClient {
     public static GameStateApiClient gameStateApiClient = new GameStateApiClient(Main.getJwtToken());
+    public static List<String> userNameOfPlayers = new ArrayList<>();
     private static Camera camera;
     private static PlayerClient player;
     public static PlayerClient getPlayer() {
@@ -27,5 +31,13 @@ public class GameClient {
 
     public static void setGameStateApiClient(GameStateApiClient gameStateApiClient) {
         GameClient.gameStateApiClient = gameStateApiClient;
+    }
+
+    public static List<String> getUserNameOfPlayers() {
+        return userNameOfPlayers;
+    }
+
+    public static void setUserNameOfPlayers(List<String> userNameOfPlayers) {
+        GameClient.userNameOfPlayers = userNameOfPlayers;
     }
 }

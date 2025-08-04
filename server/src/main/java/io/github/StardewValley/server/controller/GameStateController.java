@@ -26,6 +26,7 @@ import io.github.StardewValley.shared.models.plant.Sapling;
 import io.github.StardewValley.shared.models.plant.Seed;
 import io.github.StardewValley.shared.models.tools.Tool;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -92,6 +93,7 @@ public class GameStateController {
             , player.getSpeed(), player.getLastDirection()
             , player.getCoin(), player.getAnimationTimer()
             , player.getPassOutTimer());
+        pd.setNewMessage(player.isNewMessage());
 
         return ResponseEntity.ok(pd);
     }
@@ -679,6 +681,43 @@ public class GameStateController {
         }
         return ResponseEntity.notFound().build();
     }
+    @PostMapping("/getNearbyPlayer")
+    public ResponseEntity<Result> getNearbyPlayer(@RequestHeader("Authorization") String token) {
+        Player player1 = getPlayerFromToken(token);
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (!player.getUser().getUsername().equals("NPC") && !player.equals(player1)) {
+                if (sideBySide(player, player1)) {
+                    return ResponseEntity.ok(new Result(true,player.getUser().getUsername()));
+                }
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+    @PostMapping("/getGender")
+    public ResponseEntity<Result> getGender(@RequestParam String username) {
+        return ResponseEntity.ok(new Result(true, userRepository.findByUsername(username).get().getGender().toString()));
+    }
+    @PostMapping("/getPlayerDTOByUserName")
+    public ResponseEntity<PlayerDto> getPlayerDTOByUserName(@RequestHeader("Authorization") String token,@RequestParam String username) {
+        for (Player player : App.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().equals(username)) {
+                PlayerDto pd = new PlayerDto(player.isPassedOut()
+                    , player.getEnergy()
+                    , player.getMaxEnergy()
+                    , player.isEnergyUnlimited()
+                    , player.isHasPassedOutToday()
+                    , player.getX(), player.getY(), player.getCurrentDirection()
+                    , player.getSpeed(), player.getLastDirection()
+                    , player.getCoin(), player.getAnimationTimer()
+                    , player.getPassOutTimer());
+                pd.setNewMessage(player.isNewMessage());
+
+                return ResponseEntity.ok(pd);
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 
 
     public boolean sideBySide(Player currentPlayer, NPC npc) {

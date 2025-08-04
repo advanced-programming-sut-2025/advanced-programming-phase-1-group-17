@@ -12,11 +12,11 @@ import io.github.StardewValley.views.TalkView;
 public class TalkController {
     private TalkView view;
     private GameView gameView;
-    private Player targetPlayer;
+    private String targetPlayer;
     private NPC targetNpc;
     private GameMenuController gameMenuController;
 
-    public TalkController(Player player) {
+    public TalkController(String player) {
         this.targetPlayer = player;
     }
 
