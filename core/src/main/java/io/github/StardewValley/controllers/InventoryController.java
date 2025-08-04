@@ -3,12 +3,14 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
@@ -22,59 +24,15 @@ public class InventoryController {
         this.view = view;
     }
 
-    public void handleItemClick(BackPackableType backPackableType, Player player) {
-        //TODO: maybe we can delete player.currentTool
-        player.setEquippedItem(player.getBackPack().getBackPackItems().get(backPackableType).get(0));
-        player.setCurrentTool(null);
-        if (backPackableType instanceof ToolType toolType)
-            toolEquip(toolType, player);
-        else if (backPackableType instanceof FishingPoleType fishingPoleType)
-            fishingPoleEquip(fishingPoleType, player);
-
+    public void handleItemClick(BackpackableTypeDTO backPackableTypeDTO) {
+        GameClient.getGameStateApiClient().equipItem(backPackableTypeDTO);
     }
 
-
-    public void handleItemTrash(Player player) {
-        if (player.getEquippedItem() == null) {
-            this.view.getItemPickLabel().setText("You haven't picked any item.");
-            return;
-        } else {
-            BackPackable backPackable = player.getEquippedItem();
-            if (player.getEquippedItem() instanceof Tool tool)
-                player.setCurrentTool(null);
-            player.setEquippedItem(null);
-
-            if (player.getBackPack().getInventorySize(backPackable.getType().getName()) == 1)
-                player.getBackPack().getBackPackItems().remove(backPackable.getType());
-            else
-                player.getBackPack().getBackPackItems().get(backPackable.getType()).removeFirst();
-
-
-            this.view.getItemPickLabel().setText("Item deleted from Inventory");
-            handleRefund(backPackable, player);
-
-            //for updating the view
+    public void handleItemTrash() {
+        String result = GameClient.getGameStateApiClient().trashItem();
+        view.getItemPickLabel().setText(result);
+        if (result.equals("Item deleted from Inventory"))
             view.refreshInventoryItems();
-        }
-    }
-
-    private void toolEquip(ToolType toolType, Player player) {
-        BackPack backPack = player.getBackPack();
-        Tool tool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
-        player.setCurrentTool(tool);
-    }
-
-    private void fishingPoleEquip(FishingPoleType fishingPoleType, Player player) {
-        BackPack backPack = player.getBackPack();
-        Tool tool = (Tool) backPack.getBackPackItems().get(fishingPoleType).get(0);
-        player.setCurrentTool(tool);
-    }
-
-
-    public void handleRefund(BackPackable backPackable, Player player) {
-        double refundPercentage = player.getTrashCan().getTrashCanRefundPercentage() / 100.0;
-        double refund = backPackable.getType().getPrice() * refundPercentage;
-        player.getBackPack().addCoin(refund);
     }
 
 

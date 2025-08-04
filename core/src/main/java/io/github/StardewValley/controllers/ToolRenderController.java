@@ -12,11 +12,11 @@ public class ToolRenderController {
     private float toolAnimationTimer = 0;
     private final float TOOL_ANIMATION_DURATION = 0.4f;
 
-    private Player player;
+    private PlayerClient player;
 
     private Sprite toolSprite;
 
-    public ToolRenderController(Player player) {
+    public ToolRenderController(PlayerClient player) {
         this.player = player;
         this.toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getCurrentTool().getToolType());
         toolSprite.setOriginCenter(); // Rotation around center — adjust if needed
@@ -56,7 +56,7 @@ public class ToolRenderController {
         return toolRotation;
     }
 
-    public void update(float delta, Player player) {
+    public void update(float delta, PlayerClient player) {
         this.player = player;
         updateToolAnimation(delta);
         if (player.getCurrentTool() != null)

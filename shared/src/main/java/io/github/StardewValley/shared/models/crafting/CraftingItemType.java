@@ -56,7 +56,7 @@ public enum CraftingItemType implements BackPackableType {
     }
 
     @Override
-    public String getInventoryTexture() {
+    public String getInventoryTexturePath() {
         return icon;
     }
 

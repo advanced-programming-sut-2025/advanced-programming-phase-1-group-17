@@ -11,14 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.controllers.ItemMenuController;
+import io.github.StardewValley.controllers.UIControllers.ItemMenuController;
 import io.github.StardewValley.shared.models.market.ShopItem;
+import io.github.StardewValley.shared.models.market.ShopItemDTO;
 import io.github.StardewValley.shared.models.market.StoreType;
 
 public class ItemMenu implements Screen {
     private Stage stage;
     private final ItemMenuController controller;
-    private final ShopItem item;
+    private final ShopItemDTO item;
     private final StoreMenu storeMenu;
     private final StoreType storeType;
 
@@ -35,7 +36,7 @@ public class ItemMenu implements Screen {
     private final TextButton purchaseButton;
     private final TextButton exitButton;
 
-    public ItemMenu(ItemMenuController controller, Skin skin, ShopItem item, StoreMenu storeMenu, StoreType storeType) {
+    public ItemMenu(ItemMenuController controller, Skin skin, ShopItemDTO item, StoreMenu storeMenu, StoreType storeType) {
         this.controller = controller;
         this.controller.setView(this);
         this.item = item;
@@ -43,7 +44,7 @@ public class ItemMenu implements Screen {
         this.storeType = storeType;
 
         this.titleLabel = new Label("Item Buying Menu", skin);
-        this.itemNameLabel = new Label(item.getName(), skin);
+        this.itemNameLabel = new Label(item.getType(), skin);
 
         this.plusButton = new TextButton("+", skin);
         this.plusButton.addListener(new ClickListener(){
@@ -65,7 +66,7 @@ public class ItemMenu implements Screen {
         this.purchaseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.purchase();
+                errorLabel.setText(controller.purchase().getMessage());
             }
         });
 
@@ -150,7 +151,7 @@ public class ItemMenu implements Screen {
         this.count = count;
     }
 
-    public ShopItem getItem() {
+    public ShopItemDTO getItem() {
         return item;
     }
 

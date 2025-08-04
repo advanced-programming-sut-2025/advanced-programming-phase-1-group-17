@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.plant;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.map.Placeable;
 
@@ -31,6 +30,6 @@ public class Seed implements BackPackable, Placeable {
 
     @Override
     public String getTexture() {
-        return type.getInventoryTexture();
+        return type.getInventoryTexturePath();
     }
 }

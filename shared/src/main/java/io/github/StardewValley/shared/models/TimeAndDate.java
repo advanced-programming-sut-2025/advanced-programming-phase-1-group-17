@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models;
 
-import io.github.StardewValley.shared.controller.LightningController;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.animal.Animal;
@@ -14,7 +13,6 @@ import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.shared.models.plant.Crop;
-import io.github.StardewValley.shared.models.plant.Plant;
 import io.github.StardewValley.shared.models.plant.PlantGrowthController;
 import io.github.StardewValley.shared.models.plant.Tree;
 
@@ -118,7 +116,7 @@ public class TimeAndDate {
             PlantGrowthController.growOneDay();
             ForagingController.setForagingForNextDay();
             ShippingBin.goToNextDay();
-            App.getCurrentGame().getStoreManager().resetDailyLimits();
+            App.getCurrentGame().getMarketsController().resetDailyLimits();
         }
 
         changeDayOfTheWeek();

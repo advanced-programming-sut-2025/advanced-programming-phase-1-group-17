@@ -32,7 +32,7 @@ public enum FishingPoleType implements BackPackableType {
     }
 
     @Override
-    public String  getInventoryTexture() {
+    public String getInventoryTexturePath() {
         //TODO
         return null;
     }

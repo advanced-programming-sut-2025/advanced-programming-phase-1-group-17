@@ -23,7 +23,7 @@ public enum RingType implements BackPackableType {
     }
 
     @Override
-    public String getInventoryTexture() {
+    public String getInventoryTexturePath() {
         return this.texturePath;
     }
 }

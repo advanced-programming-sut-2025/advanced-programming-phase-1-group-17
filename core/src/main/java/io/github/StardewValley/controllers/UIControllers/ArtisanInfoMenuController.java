@@ -1,4 +1,4 @@
-package io.github.StardewValley.controllers;
+package io.github.StardewValley.controllers.UIControllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

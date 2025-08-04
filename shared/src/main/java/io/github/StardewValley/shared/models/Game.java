@@ -124,7 +124,7 @@ public class Game implements Serializable {
         return creator;
     }
 
-    public MarketsController getStoreManager() {
+    public MarketsController getMarketsController() {
         return marketsController;
     }
     public ArrayList<NPC> getNPCs() {

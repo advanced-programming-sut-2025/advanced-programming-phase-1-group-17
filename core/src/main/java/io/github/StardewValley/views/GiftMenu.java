@@ -55,10 +55,10 @@ public class GiftMenu implements Screen {
         for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
             // 1. Prepare image button style:
             //TODO: need to delete this null-check
-            if (backPackableType.getInventoryTexture() == null)
+            if (backPackableType.getInventoryTexturePath() == null)
                 continue;
 
-            Texture itemTexture =new Texture (backPackableType.getInventoryTexture());
+            Texture itemTexture =new Texture (backPackableType.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 

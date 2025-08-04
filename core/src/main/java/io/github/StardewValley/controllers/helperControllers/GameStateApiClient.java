@@ -4,9 +4,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.NPCS.NPC;
-import io.github.StardewValley.shared.models.NPCS.Quest;
+import io.github.StardewValley.shared.dto.*;
+import io.github.StardewValley.shared.models.PlayerDto;
+import io.github.StardewValley.shared.models.Result;
+import io.github.StardewValley.shared.models.TileDTO;
+import io.github.StardewValley.shared.models.UserDTO;
+import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
+import io.github.StardewValley.shared.models.market.ShopItemDTO;
+import io.github.StardewValley.shared.models.market.StoreType;
+import okhttp3.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,6 +27,9 @@ import java.util.Map;
 public class GameStateApiClient {
     private static final String BASE_URL = "http://%s:%d/api/gameState".formatted(Main.getServerIP(), Main.getServerPort());
     private String token;
+
+    private static final OkHttpClient client = new OkHttpClient();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public GameStateApiClient(String jwtToken) {
         this.token = jwtToken;
@@ -242,7 +251,7 @@ public class GameStateApiClient {
     }
 
 
-    public Result handleClick(int dx, int dy) throws Exception {
+    public HandleWorldClickResponse handleWorldClick(float x, float y, int button) throws Exception {
         URL url = new URL(BASE_URL + "/game/handleClick");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
@@ -250,7 +259,7 @@ public class GameStateApiClient {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Authorization", "Bearer " + token);
 
-        String jsonInput = String.format("{\"dx\":%d,\"dy\":%d}", dx, dy);
+        String jsonInput = String.format("{\"x\":%f,\"y\":%f, \"button\":%d}", x, y, button);
 
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = jsonInput.getBytes("utf-8");
@@ -260,7 +269,7 @@ public class GameStateApiClient {
         if (conn.getResponseCode() == 200) {
             try (InputStream inputStream = conn.getInputStream()) {
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(inputStream, Result.class);
+                return mapper.readValue(inputStream, HandleWorldClickResponse.class);
             }
         } else {
             throw new RuntimeException("Failed to handle click: " + conn.getResponseCode());
@@ -286,4 +295,164 @@ public class GameStateApiClient {
         }
     }
 
+
+    public Result handleCheatCode(String command) throws Exception {
+        URL url = new URL(BASE_URL + "/game/cheatCode/handleCheatCode");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        String jsonInput = String.format("{\"input\":%s}", command);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInput.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, Result.class);
+            }
+        } else {
+            throw new RuntimeException("Failed to handle click: " + conn.getResponseCode());
+        }
+    }
+
+    public Result purchase(ShopItemDTO item, int count, StoreType storeType) {
+        try {
+            // 1. Build PurchaseRequest DTO
+            PurchaseRequest requestDTO = new PurchaseRequest();
+            requestDTO.setShopItemDTO(item); // You must implement this method
+            requestDTO.setCount(count);
+            requestDTO.setStoreType(storeType);
+
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(requestDTO);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/market/purchase")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return new Result(false, "Server error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Result.class);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Failed to send purchase request: " + e.getMessage());
+        }
+    }
+
+    public GetMarketInventoryResponse getInventory(StoreType storeType) {
+        try {
+            GetMarketInventoryRequest requestDTO = new GetMarketInventoryRequest(storeType);
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(requestDTO);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/market/getInventory")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, GetMarketInventoryResponse.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public GetBackpackItemsResponse getBackpackItems() {
+        try {
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/backpack/getBackpackItems")
+                .addHeader("Authorization", token)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, GetBackpackItemsResponse.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void equipItem(BackpackableTypeDTO backPackableTypeDTO) {
+        try {
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(backPackableTypeDTO.getName(), MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/backpack/equipItem")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String trashItem() {
+        try {
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/backpack/trashItem")
+                .addHeader("Authorization", token)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, String.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -287,24 +287,11 @@ public enum CropType implements BackPackableType {
         return 0;
     }
 
-    public static CropType getCropTypeByName(String name) {
-        for (CropType value : CropType.values()) {
-            if (value.name().equalsIgnoreCase(name))
-                return value;
-        }
-        return null;
-    }
-
     public String[] getStageTexturePaths() {
         return stageTextureAddresses;
     }
 
-
     @Override
-    public String getInventoryTexture() {
-        return CropAssetManager.getCropAssetManager().getInventoryTexture(this);
-    }
-
     public String getInventoryTexturePath() {
         return inventoryTexturePath;
     }

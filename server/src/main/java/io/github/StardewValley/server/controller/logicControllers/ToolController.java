@@ -569,4 +569,10 @@ public class ToolController {
         return new Result(true, "Item placed Successfully.");
     }
 
+    public void handleRefund(BackPackable backPackable, Player player) {
+        double refundPercentage = player.getTrashCan().getTrashCanRefundPercentage() / 100.0;
+        double refund = backPackable.getType().getPrice() * refundPercentage;
+        player.getBackPack().addCoin(refund);
+    }
+
 }

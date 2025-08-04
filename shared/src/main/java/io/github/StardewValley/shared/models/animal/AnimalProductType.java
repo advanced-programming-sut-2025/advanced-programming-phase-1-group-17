@@ -36,7 +36,7 @@ public enum AnimalProductType implements BackPackableType {
     }
 
     @Override
-    public String getInventoryTexture() {
+    public String getInventoryTexturePath() {
         return icon;
     }
 }

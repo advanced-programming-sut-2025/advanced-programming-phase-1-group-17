@@ -3,35 +3,30 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.controller.LightningController;
+import io.github.StardewValley.controllers.UIControllers.*;
+import io.github.StardewValley.controllers.UIControllers.LightningController;
+import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.backpack.NormalItem;
-import io.github.StardewValley.shared.models.backpack.NormalItemType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.map.Lake;
-import io.github.StardewValley.shared.models.map.Placeable;
-import io.github.StardewValley.shared.models.plant.*;
+import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.views.*;
 import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MapView;
 import io.github.StardewValley.models.plant.CrowAttackEffect;
-
-import java.util.HashMap;
 
 public class GameController {
     public GameView view;
     private OrthographicCamera camera;
     int mapWidthInPixels;
     int mapHeightInPixels;
-    private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
     private static GameClient gameClient = new GameClient();
 
     private  WorldController worldController;
@@ -39,7 +34,7 @@ public class GameController {
     private  LightningController lightningController;
     private  CrowAttackEffect crowAttackEffect;
 
-    private PlayerClient player;
+    private PlayerDto player;
 
     {
         create();
@@ -48,16 +43,16 @@ public class GameController {
 
     public GameController() {
         try {
-            GameClient.setPlayer(new PlayerClient(GameClient.getGameStateApiClient().getUserWithUserDTO()));
+            PlayerClient playerClient = new PlayerClient(GameClient.getGameStateApiClient().getUserWithUserDTO());
+            GameClient.setPlayer(playerClient);
             PlayerDto player = GameClient.getGameStateApiClient().updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
             playerUpdate(player);
             this.camera.position.set(player.getX() , player.getY(), 0);
 
             this.worldController = new WorldController(this.camera);
             this.worldController.initTransients();
-            //TODO
-//            this.toolController = new ToolController(player);
-//            this.lightningController = LightningController.getLightningController();
+            this.toolRenderController = new ToolRenderController(playerClient);
+            this.lightningController = LightningController.getLightningController();
 
             this.mapWidthInPixels = worldController.getTileWidth();
             this.mapHeightInPixels = worldController.getTileHeight();
@@ -80,39 +75,6 @@ public class GameController {
     private void create() {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    }
-
-    private void initializeStoreRectangles() {
-        int tileWidth = worldController.getTileWidth();
-        int tileHeight = worldController.getTileHeight();
-
-        Store store = App.getCurrentGame().getStoreManager().getStore(StoreType.Blacksmith);
-        storeBounds.put(StoreType.Blacksmith, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
-            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
-
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.Ranch);
-        storeBounds.put(StoreType.Ranch, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
-            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
-
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.StardropSaloon);
-        storeBounds.put(StoreType.StardropSaloon, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
-            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
-
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.CarpentersShop);
-        storeBounds.put(StoreType.CarpentersShop, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
-            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
-
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.JojaMart);
-        storeBounds.put(StoreType.JojaMart, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
-            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
-
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.PierresGeneralStore);
-        storeBounds.put(StoreType.PierresGeneralStore, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
-            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
-
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.FishShop);
-        storeBounds.put(StoreType.FishShop, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
-            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
     }
 
     public void updateCamera(PlayerClient player) {
@@ -142,7 +104,7 @@ public class GameController {
                 playerUpdate(pd);
                 updateCamera(GameClient.getPlayer());
                 worldController.update();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -152,11 +114,11 @@ public class GameController {
 //            toolController.update(delta, player);
 
             //TODO
-//            lightningController.updateLightning(delta);
-//            lightningController.renderLightning(Main.getBatch());
-//
-//            crowAttackEffect.update(delta);
-//            crowAttackEffect.render(Main.getBatch());
+            lightningController.updateLightning(delta);
+            lightningController.renderLightning(Main.getBatch(), player);
+
+            crowAttackEffect.update(delta);
+            crowAttackEffect.render(Main.getBatch());
             view.getHud().handleInventoryInput();
         }
     }
@@ -216,10 +178,6 @@ public class GameController {
         return camera;
     }
 
-    public HashMap<StoreType, Rectangle> getStoreBounds() {
-        return storeBounds;
-    }
-
     public void handlePlayerInput() {
         //player = App.getCurrentGame().getCurrentPlayingPlayer();
         int dx = 0, dy = 0;
@@ -253,31 +211,35 @@ public class GameController {
                 e.printStackTrace();
             }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            Result result = null;
+            HandleWorldClickResponse result = null;
             try {
-                result = GameClient.getGameStateApiClient().handleClick(dx, dy);
+                result = GameClient.getGameStateApiClient().handleWorldClick(dx, dy, Input.Buttons.LEFT);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (result != null && !result.isSuccessful())
-                view.showNotification(result.getMessage());
+            if (result != null)
+                handleClickAction(result);
 
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
         //TODO handle player
-//        else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-//            Main.getMain().getScreen().dispose();
-//            Main.getMain().setScreen(new InventoryView(new InventoryController(),
-//                  GameAssetManagerClient.getGameAssetManager().getSkin(),
-//                GameClient.getPlayer()));
-//        }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new InventoryView(new InventoryController(),
+                  GameAssetManagerClient.getGameAssetManager().getSkin()));
+        }
         else if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
-            GameClient.getGameStateApiClient().pickForaging(dx, dy);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            try {
+                GameClient.getGameStateApiClient().pickForaging(dx, dy);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         else if(Gdx.input.isTouched()) {
             Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             App.getCamera().unproject(vector3);
@@ -298,11 +260,58 @@ public class GameController {
         return worldController;
     }
 
-    public ToolRenderController getToolController() {
-        return toolRenderController;
-    }
-
     public CrowAttackEffect getCrowAttackEffect() {
         return crowAttackEffect;
+    }
+
+    public boolean handleClickAction(HandleWorldClickResponse result) {
+        if (result.getActionType().equals(HandleWorldClickResponse.ActionType.NONE))
+            return false;
+
+        switch (result.getActionType()) {
+            case SHOW_NOTIFICATION -> view.showNotification(result.getMessage());
+            case OPEN_STORE -> {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new StoreMenu(
+                    new StoreMenuController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin(),
+                    (StoreType) result.getPayload()
+                ));
+            }
+            case OPEN_ARTISAN_CRAFT_MENU -> {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new ArtisanCraftMenu(
+                    new ArtisanCraftMenuController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin(),
+                    (CraftingItem) result.getPayload()
+                ));
+            }
+            case OPEN_GREENHOUSE_BUILD -> {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new GreenHouseBuildScreen(
+                    new GreenHouseBuildController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin()
+                ));
+            }
+            case OPEN_SHIPPING_BIN_MENU -> {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new ShippingBinScreen(
+                    (ShippingBin) result.getPayload(),
+                    new ShippingBinScreenController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin()
+                ));
+            }
+            case OPEN_ARTISAN_INFO_MENU -> {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new ArtisanInfoMenu(
+                    new ArtisanInfoMenuController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin(),
+                    (CraftingItem) result.getPayload()
+                ));
+            }
+            default -> {
+            }
+        }
+        return true;
     }
 }

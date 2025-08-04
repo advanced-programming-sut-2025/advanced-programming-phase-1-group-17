@@ -116,16 +116,16 @@ public class HUD {
             (float) ((App.getCurrentGame().getDate().getHour() - 9) * 180) / 13
         );
         float otherSize = 3.2f;
-        batch.draw(sunny, 1794, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
+        batch.draw(sunny, Gdx.graphics.getWidth() - 126, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
 
-        batch.draw(spring, 1867, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
+        batch.draw(spring, Gdx.graphics.getWidth() - 53, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
 
 
         // کشیدن مقدار پول
         int money = (int) App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin();
         int i = 0;
         while (money > 0) {
-            font.draw(batch, String.valueOf(money % 10), 1885 - 18 * i, Gdx.graphics.getHeight() - 150);
+            font.draw(batch, String.valueOf(money % 10), Gdx.graphics.getWidth() - 35 - 18 * i, Gdx.graphics.getHeight() - 150);
             money /= 10;
             i++;
         }

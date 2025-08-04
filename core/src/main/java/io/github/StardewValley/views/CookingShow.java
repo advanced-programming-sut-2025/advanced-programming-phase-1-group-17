@@ -47,7 +47,7 @@ public class CookingShow implements Screen {
         for (FoodType food : FoodType.values()) {
 
 
-            Texture texture = new Texture(food.getInventoryTexture());
+            Texture texture = new Texture(food.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(texture));
 

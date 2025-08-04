@@ -1,7 +1,5 @@
 package io.github.StardewValley.shared.models.plant;
 
-import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
@@ -313,7 +311,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
         if (isGiant)
             return CropAssetManager.getCropAssetManager().getGiantTexture(type);
         if (isForaging)
-            return type.getInventoryTexture();
+            return type.getInventoryTexturePath();
         return CropAssetManager.getCropAssetManager().getStageTexture(this.currentStageIndex, type);
     }
 

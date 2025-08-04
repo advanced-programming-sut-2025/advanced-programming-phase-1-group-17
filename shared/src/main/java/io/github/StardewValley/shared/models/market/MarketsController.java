@@ -1,11 +1,14 @@
 package io.github.StardewValley.shared.models.market;
 
+import com.badlogic.gdx.math.Rectangle;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.NPCS.Ring;
 import io.github.StardewValley.shared.models.NPCS.RingType;
 import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.animal.AnimalProductType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
@@ -13,11 +16,13 @@ import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 import io.github.StardewValley.shared.models.backpack.*;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
+import io.github.StardewValley.shared.models.cooking.Recipe;
 import io.github.StardewValley.shared.models.cooking.RecipeType;
 import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipeType;
 import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.enums.Season;
@@ -36,13 +41,12 @@ import java.util.Map;
 
 public class MarketsController {
     private final Map<StoreType, StoreInventory> shopInventories = new HashMap<>();
-
     private final HashMap<StoreType, Store> stores = new HashMap<>();
+    private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
 
     public void registerShop(StoreInventory inventory) {
         shopInventories.put(inventory.getStoreType(), inventory);
     }
-
     public StoreInventory getInventory(StoreType shopType) {
         return shopInventories.get(shopType);
     }
@@ -68,6 +72,8 @@ public class MarketsController {
 
         // === Fish Shop ===
         initializeFishShop();
+
+        initializeStoreBounds();
     }
 
     private void initializeFishShop() {
@@ -360,6 +366,41 @@ public class MarketsController {
     }
 
 
+    private void initializeStoreBounds() {
+        int tileWidth = GameAssetManager.getGameAssetManager().getTileWidth();
+        int tileHeight = GameAssetManager.getGameAssetManager().getTileHeight();
+
+        Store store = App.getCurrentGame().getMarketsController().getStore(StoreType.Blacksmith);
+        storeBounds.put(StoreType.Blacksmith, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.Ranch);
+        storeBounds.put(StoreType.Ranch, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.StardropSaloon);
+        storeBounds.put(StoreType.StardropSaloon, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.CarpentersShop);
+        storeBounds.put(StoreType.CarpentersShop, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.JojaMart);
+        storeBounds.put(StoreType.JojaMart, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.PierresGeneralStore);
+        storeBounds.put(StoreType.PierresGeneralStore, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.FishShop);
+        storeBounds.put(StoreType.FishShop, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+            store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+    }
+
+
+
     public void resetDailyLimits() {
         for (StoreType storeType : shopInventories.keySet()) {
             StoreInventory inventory = shopInventories.get(storeType);
@@ -431,8 +472,7 @@ public class MarketsController {
         }
     }
 
-    public double getSeasonalPrice(ShopItem product) {
-        Season season = App.getCurrentGame().getDate().getSeason();
+    public static double getSeasonalPrice(ShopItem product, Season season) {
         BackPackableType type = product.getType();
 
         // Spring Seeds
@@ -589,5 +629,80 @@ public class MarketsController {
         result.add(type);
         result.add(sampleItem);
         return result;
+    }
+
+    public Result purchase(ShopItemDTO shopItem2, int count, StoreType storeType, Player player, Season season) {
+        ShopItem shopItem = null;
+        for (ShopItem item : getInventory(storeType).getItems()) {
+            if (item.getType().getName().equals(shopItem2.getType())) {
+                shopItem = item;
+                break;
+            }
+        }
+        if (!isStoreOpen(storeType))
+            return new Result(false, "Store is open from %d to %d".formatted(
+                storeType.getOpeningHour(), storeType.getClosingHour()
+            ));
+
+        if (storeType.equals(StoreType.FishShop))
+            if (!checkFishingSkill(shopItem, player)) {
+                return new Result(false, "You do not have enough fishing skill to buy this item.");
+            }
+
+        if (!hasIngredients(shopItem, player)) {
+            return new Result(false, "You do not have enough ingredients to buy this item");
+        }
+
+        useIngredients(shopItem, player);
+
+        double price = calculatePrice(shopItem, count, storeType, season);
+        if (player.getBackPack().getCoin() < price) {
+            return new Result(false, "you have only %.2f dollars left(not enough money)".formatted(
+                player.getBackPack().getCoin()));
+        }
+
+        //purchasing
+        shopItem.setSoldToday(shopItem.getSoldToday() + count);
+        player.getBackPack().addcoin(-price);
+        if (shopItem.getType().equals(BackPackType.LargeBackPack) || shopItem.getType().equals(BackPackType.DeluxeBackPack))
+            purchaseBackpack(shopItem, player);
+
+        if (shopItem.getType().getClass().equals(RecipeType.class)) {
+            player.getRecipes().add(new Recipe((FoodType) ((RecipeType) shopItem.getType()).getFoodType()));
+        }else if (shopItem.getType().getClass().equals(CraftingRecipeType.class)) {
+            CraftingRecipeType craftingRecipeType = ((CraftingRecipeType) shopItem.getType());
+            if (craftingRecipeType.equals(CraftingRecipeType.DehydratorRecipe)) {
+                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.Dehydrator));
+            } else if (craftingRecipeType.equals(CraftingRecipeType.FishSmokerRecipe)) {
+                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.FishSmoker));
+            } else if (craftingRecipeType.equals(CraftingRecipeType.GrassStarterRecipe)) {
+                player.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.GrassStarter));
+            }
+        }else if (shopItem.getType().getClass().equals(ToolType.class)) {
+            //milkpail and shear in marine's ranch
+            player.getBackPack().addItemToInventory(new Tool((ToolType) shopItem.getType(), null,null));
+        } else {
+            for (int i = 0; i < count; i++) {
+                //player.getBackPack().addItemToInventory(product);
+                player.getBackPack().addItemToInventory((BackPackable) addItem(shopItem.getName(), player).get(1));
+            }
+        }
+        return new Result(true, "Purchased successfully. New Balance: %.0f".formatted(player.getBackPack().getCoin()));
+    }
+
+    private double calculatePrice(ShopItem shopItem, int count, StoreType storeType, Season season) {
+        double price;
+        if (storeType.equals(StoreType.PierresGeneralStore))
+            price = getSeasonalPrice(shopItem, season);
+        else
+            price = shopItem.getPrice();
+
+        price *= count;
+        return price;
+    }
+
+
+    public HashMap<StoreType, Rectangle> getStoreBounds() {
+        return storeBounds;
     }
 }

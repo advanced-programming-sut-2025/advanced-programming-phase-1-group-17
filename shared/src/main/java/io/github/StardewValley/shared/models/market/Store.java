@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.market;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.map.Placeable;
 
 public class Store implements Placeable {

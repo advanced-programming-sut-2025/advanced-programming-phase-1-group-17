@@ -1,4 +1,4 @@
-package io.github.StardewValley.shared.controller;
+package io.github.StardewValley.controllers.UIControllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.PlayerDto;
 
 public class LightningController {
     private static LightningController lightningController = null;
@@ -68,7 +67,7 @@ public class LightningController {
         }
     }
 
-    public void renderLightning(SpriteBatch batch, Player player) {
+    public void renderLightning(SpriteBatch batch, PlayerDto player) {
         // Flash (white screen)
         if (lightningAlpha > 0f) {
             Color prev = batch.getColor().cpy();

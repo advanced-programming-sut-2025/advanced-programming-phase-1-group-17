@@ -40,7 +40,7 @@ public class GameAssetManagerClient {
                 Texture texture = new Texture(key);
                 textures.put(key, texture);
                 return texture;
-            }catch (Exception e){
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }

@@ -1,6 +1,6 @@
 package io.github.StardewValley.shared.dto;
 
-public class HandleClickRequest {
+public class PickForaingRequest {
     private int dx;
     private int dy;
 

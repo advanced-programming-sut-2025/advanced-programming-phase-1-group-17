@@ -1,4 +1,4 @@
-package io.github.StardewValley.controllers;
+package io.github.StardewValley.controllers.UIControllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.GameAssetManagerClient;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackable;

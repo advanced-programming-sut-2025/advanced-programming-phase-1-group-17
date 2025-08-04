@@ -3,21 +3,29 @@ package io.github.StardewValley.server.controller;
 
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
+import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
 import io.github.StardewValley.server.controller.logicControllers.FarmingController;
+import io.github.StardewValley.server.controller.logicControllers.GameWorldController;
 import io.github.StardewValley.server.controller.logicControllers.ToolController;
 import io.github.StardewValley.server.model.User;
 import io.github.StardewValley.server.repository.UserRepository;
-import io.github.StardewValley.shared.dto.HandleClickRequest;
-import io.github.StardewValley.server.model.User;
-import io.github.StardewValley.server.repository.UserRepository;
+import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.dto.*;
 import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
 import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.market.MarketsController;
+import io.github.StardewValley.shared.models.market.StoreInventory;
 import io.github.StardewValley.shared.models.plant.Fertilizer;
 import io.github.StardewValley.shared.models.plant.Sapling;
 import io.github.StardewValley.shared.models.plant.Seed;
+import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
+import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
 
 @RestController
 @RequestMapping("/api/gameState")
 public class GameStateController {
     private final ToolController toolController = new ToolController();
     private final FarmingController farmingController = new FarmingController();
+    private final GameWorldController gameWorldController = new GameWorldController();
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
@@ -141,27 +151,143 @@ public class GameStateController {
 
 
     @PostMapping("/game/handleClick")
-    public ResponseEntity<Result> handleClick(@RequestBody HandleClickRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<HandleWorldClickResponse> handleClick(@RequestBody HandleWorldClickRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token); // Authenticate and get the correct Player
-        Result result = null;
-        if (player.getEquippedItem() instanceof Tool)
-            result = toolController.toolUse(request.getDx(), request.getDy(), player);
-        else if (player.getEquippedItem() instanceof CraftingItem)
-            result = toolController.placeCraftingItem(request.getDx(), request.getDy(), player);
-        else if (player.getEquippedItem() instanceof Seed seed)
-            result = farmingController.plantSeed(seed, request.getDx(), request.getDy(), player);
-        else if (player.getEquippedItem() instanceof Sapling sapling)
-            result = farmingController.plantSapling(sapling, request.getDx(), request.getDy(), player);
-        else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
-            result = farmingController.fertilize(fertilizer, request.getDx(), request.getDy(), player);
-        return ResponseEntity.ok(result);
+        float x = request.getX();
+        float y = request.getY();
+        int button = request.getButton();
+
+        HandleWorldClickResponse response = gameWorldController.checkBounds(x, y, button, player);
+        if (!response.isSuccessful() || !response.getActionType().equals(HandleWorldClickResponse.ActionType.NONE))
+            return ResponseEntity.ok(response);
+
+        // Convert world coordinates to tile positions
+        int clickedTileX = (int) (x / GameAssetManager.getGameAssetManager().getTileWidth());
+        int clickedTileY = (int) (y / GameAssetManager.getGameAssetManager().getTileHeight());
+        int dx = clickedTileX - player.getTileX();
+        int dy = clickedTileY - player.getTileY();
+
+        Result result = new Result(false, "");
+        if (Math.abs(dx) + Math.abs(dy) == 1) {
+            if (player.getEquippedItem() instanceof Tool)
+                result = toolController.toolUse(dx, dy, player);
+            else if (player.getEquippedItem() instanceof CraftingItem)
+                result = toolController.placeCraftingItem(dx, dy, player);
+            else if (player.getEquippedItem() instanceof Seed seed)
+                result = farmingController.plantSeed(seed, dx, dy, player);
+            else if (player.getEquippedItem() instanceof Sapling sapling)
+                result = farmingController.plantSapling(sapling, dx, dy, player);
+            else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
+                result = farmingController.fertilize(fertilizer, dx, dy, player);
+        }
+        return ResponseEntity.ok(new HandleWorldClickResponse(result.isSuccessful(), result.getMessage(), HandleWorldClickResponse.ActionType.NONE));
+    }
+
+
+    @PostMapping("/game/cheatCode/handleCheatCode")
+    public ResponseEntity<Result> handleCheatCode(@RequestBody String command, @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        String result = "invalid Command";
+        Matcher matcher;
+
+        if ((matcher = CheatCodeCommands.CheatAdvanceTime.getMatcher(command)) != null) {
+            result = CheatCodeHandler.changeTime(
+                matcher.group("hour")
+            );
+        } else if ((matcher = CheatCodeCommands.CheatAdvanceDate.getMatcher(command)) != null) {
+            result = CheatCodeHandler.changeDate(
+                matcher.group("day")
+            );
+        } else if ((matcher = CheatCodeCommands.CheatThor.getMatcher(command)) != null) {
+            result = CheatCodeHandler.cheatThor(
+                Integer.parseInt(matcher.group("x")),
+                Integer.parseInt(matcher.group("y"))
+            );
+        } else if ((matcher = CheatCodeCommands.CheatWeatherSet.getMatcher(command)) != null) {
+            result = CheatCodeHandler.changeWeather(
+                matcher.group("type")
+            );
+        } else if ((matcher = CheatCodeCommands.EnergyUnlimited.getMatcher(command)) != null) {
+            result = CheatCodeHandler.energyUnlimited(player);
+        } else if ((matcher = CheatCodeCommands.CheatAddItem.getMatcher(command)) != null) {
+            result = CheatCodeHandler.addItem(matcher.group("itemName"), matcher.group("count"), player);
+        } else if ((matcher = CheatCodeCommands.CheatSetFriendshipWithAnimal.getMatcher(command)) != null) {
+            result = CheatCodeHandler.setFriendship(matcher.group("animalName"),
+                matcher.group("amount"));
+        } else if ((matcher = CheatCodeCommands.CheatAddDollars.getMatcher(command)) != null) {
+            result = CheatCodeHandler.cheatAddDollars(
+                matcher.group("count"), player
+            );
+        }
+        return ResponseEntity.ok(new Result(true, result));
     }
 
 
     @PostMapping("/game/Foraging/pickForaging")
-    public void pickForaging(@RequestBody HandleClickRequest request, @RequestHeader("Authorization") String token) {
+    public void pickForaging(@RequestBody PickForaingRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
         ForagingController.pickForaging(request.getDx(), request.getDy(), player);
+    }
+
+
+    @PostMapping("/game/market/purchase")
+    public ResponseEntity<Result> purchaseItem(@RequestBody PurchaseRequest request, @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = player.getUser().getActiveGame();
+        MarketsController marketsController = player.getUser().getActiveGame().getMarketsController();
+        return ResponseEntity.ok(
+            marketsController.purchase(request.getShopItemDTO(), request.getCount(),
+                request.getStoreType(), player, game.getDate().getSeason())
+        );
+    }
+
+    @PostMapping("/game/market/getInventory")
+    public ResponseEntity<GetMarketInventoryResponse> getMarketInventory(@RequestBody GetMarketInventoryRequest request,
+                                                                         @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = player.getUser().getActiveGame();
+        MarketsController marketsController = player.getUser().getActiveGame().getMarketsController();
+        StoreInventory inventory = marketsController.getInventory(request.getStoreType());
+        return ResponseEntity.ok(new GetMarketInventoryResponse(
+            inventory.getItemDTOs(game.getDate().getSeason(), request.getStoreType()),
+            inventory.getUpgradeServiceDTOs()
+        ));
+    }
+
+    @PostMapping("/game/backpack/equipItem")
+    public void equipItem(@RequestBody String request,
+                          @RequestHeader("Authorization") String token){
+        //TODO: maybe we can delete player.currentTool
+        Player player = getPlayerFromToken(token);
+        BackPackable backPackable = player.getBackPack().getFromDTO(request);
+        player.setEquippedItem(backPackable);
+        player.setCurrentTool(null);
+        if (backPackable.getType() instanceof ToolType toolType)
+            player.toolEquip(toolType);
+        else if (backPackable.getType() instanceof FishingPoleType fishingPoleType)
+            player.fishingPoleEquip(fishingPoleType);
+    }
+
+
+    @PostMapping("/game/backpack/trashItem")
+    public ResponseEntity<String> trashItem(@RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        if (player.getEquippedItem() == null) {
+            return ResponseEntity.ok("You haven't picked any item.");
+        } else {
+            BackPackable backPackable = player.getEquippedItem();
+            if (player.getEquippedItem() instanceof Tool tool)
+                player.setCurrentTool(null);
+            player.setEquippedItem(null);
+
+            if (player.getBackPack().getInventorySize(backPackable.getType().getName()) == 1)
+                player.getBackPack().getBackPackItems().remove(backPackable.getType());
+            else
+                player.getBackPack().getBackPackItems().get(backPackable.getType()).remove(0);
+
+            toolController.handleRefund(backPackable, player);
+            return ResponseEntity.ok("Item deleted from Inventory");
+        }
     }
 
     public Player getPlayerFromToken(String token) {
@@ -189,5 +315,4 @@ public class GameStateController {
 
         return activeGame;
     }
-
 }
