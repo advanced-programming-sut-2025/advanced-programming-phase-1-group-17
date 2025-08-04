@@ -3,32 +3,22 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
-import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.Fence;
-import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
-import io.github.StardewValley.shared.models.backpack.NormalItem;
-import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
-import io.github.StardewValley.shared.models.map.Hut;
-import io.github.StardewValley.shared.models.map.Lake;
-import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CropAssetManager;
 import io.github.StardewValley.shared.models.plant.Tree;
-import io.github.StardewValley.shared.models.plant.TreeAssetManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -195,7 +185,7 @@ public class WorldController {
                 bar.draw(Main.getBatch(), 1f);
             } else if (artisanProduct != null && artisanProduct.isReady()) {
                 Main.getBatch().draw(
-                    GameAssetManagerClient.getGameAssetManager().getTexture(artisanProduct.getType().getInventoryTexture()),
+                    GameAssetManagerClient.getGameAssetManager().getTexture(artisanProduct.getType().getInventoryTexturePath()),
                     craftingItem.getStart_x() * tileWidth, craftingItem.getStart_y() * tileHeight + craftingItem.getHeight() + 5,
                     (float) 0.5 * tileWidth, (float) 0.5 * tileHeight
                     );
@@ -225,37 +215,37 @@ public class WorldController {
         GameAssetManager assets = GameAssetManager.getGameAssetManager();
         Season season = App.getCurrentGame().getDate().getSeason();
 
-        Store store = App.getCurrentGame().getStoreManager().getStore(StoreType.Blacksmith);
+        Store store = App.getCurrentGame().getMarketsController().getStore(StoreType.Blacksmith);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.Blacksmith),
             store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.JojaMart);
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.JojaMart);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.JojaMart),
             store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.PierresGeneralStore);
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.PierresGeneralStore);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.PierresGeneralStore),
             store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.CarpentersShop);
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.CarpentersShop);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.CarpentersShop),
             store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.FishShop);
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.FishShop);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.FishShop),
             store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.Ranch);
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.Ranch);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.Ranch),
             store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
-        store = App.getCurrentGame().getStoreManager().getStore(StoreType.StardropSaloon);
+        store = App.getCurrentGame().getMarketsController().getStore(StoreType.StardropSaloon);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.StardropSaloon),
             store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);

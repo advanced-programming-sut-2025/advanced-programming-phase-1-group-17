@@ -47,7 +47,7 @@ public class CraftingShow implements Screen {
         for (CraftingItemType type : CraftingItemType.values()) {
 
 
-            Texture texture = new Texture(type.getInventoryTexture());
+            Texture texture = new Texture(type.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(texture));
 

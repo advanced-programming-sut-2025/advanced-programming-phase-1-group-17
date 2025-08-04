@@ -18,6 +18,17 @@ public class UpgradeService {
         this.dailyLimit = dailyLimit;
     }
 
+    public static UpgradeServiceDTO getUpgradeServiceDTO(UpgradeService upgradeService) {
+        return new UpgradeServiceDTO(
+            upgradeService.name,
+            upgradeService.requiredMaterial.getName(),
+            upgradeService.requiredQuantity,
+            upgradeService.cost,
+            upgradeService.requiredQuantity,
+            upgradeService.soldToday
+        );
+    }
+
     public String getName() {
         return name;
     }

@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.controllers.ShippingBinScreenController;
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
@@ -65,9 +64,9 @@ public class ShippingBinScreen implements Screen {
 
         for (BackPackableType itemType : backPack.getBackPackItems().keySet()) {
             int available = backPack.getBackPackItems().get(itemType).size();
-            if (itemType.getInventoryTexture() == null) continue;
+            if (itemType.getInventoryTexturePath() == null) continue;
             //TODO remove new Texture
-            Texture texture = new Texture(itemType.getInventoryTexture());
+            Texture texture = new Texture(itemType.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(texture));
             ImageButton itemButton = new ImageButton(style);

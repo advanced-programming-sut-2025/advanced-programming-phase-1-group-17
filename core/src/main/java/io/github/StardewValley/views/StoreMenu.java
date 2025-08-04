@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.controllers.StoreMenuController;
+import io.github.StardewValley.controllers.UIControllers.StoreMenuController;
 import io.github.StardewValley.shared.models.market.StoreType;
 
 public class StoreMenu implements Screen {
@@ -35,6 +35,7 @@ public class StoreMenu implements Screen {
 
         this.titleLabel = new Label("Store Name: %s".formatted(storeType), skin);
         this.itemsTable = new Table();
+        controller.getMarketInventory(storeType);
         controller.showAllProducts();
         this.itemsPane = new ScrollPane(itemsTable);
         itemsPane.setFadeScrollBars(false);

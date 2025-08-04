@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.backpack;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.map.Placeable;
@@ -37,7 +36,7 @@ public class NormalItem implements BackPackable, Placeable {
 
     @Override
     public String getTexture() {
-        return type.getInventoryTexture();
+        return type.getInventoryTexturePath();
     }
     public TextureRegion getGrassTextureRegion() {
         return grassTextureRegion;

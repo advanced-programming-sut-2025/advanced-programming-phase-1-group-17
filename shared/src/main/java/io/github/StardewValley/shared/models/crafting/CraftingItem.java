@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.crafting;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import io.github.StardewValley.shared.GameAssetManager;
@@ -110,7 +109,7 @@ public class CraftingItem implements BackPackable, Placeable {
 
     @Override
     public String getTexture() {
-        return targetItem.getInventoryTexture();
+        return targetItem.getInventoryTexturePath();
     }
 
     public ProgressBar getProgressBar() {

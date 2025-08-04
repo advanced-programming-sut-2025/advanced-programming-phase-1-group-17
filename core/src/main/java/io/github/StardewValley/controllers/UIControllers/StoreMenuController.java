@@ -1,4 +1,4 @@
-package io.github.StardewValley.controllers;
+package io.github.StardewValley.controllers.UIControllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -6,18 +6,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.dto.GetMarketInventoryResponse;
 import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.market.*;
 import io.github.StardewValley.views.ItemMenu;
 import io.github.StardewValley.views.StoreMenu;
+
+import java.util.List;
 
 public class StoreMenuController {
     private StoreMenu view;
     private Table itemsTable;
     private StoreType storeType;
     private Table upgradeTable;
+    private GetMarketInventoryResponse marketInventory;
 
 
     public void exit() {
@@ -35,20 +39,12 @@ public class StoreMenuController {
         itemsTable.clear();
         this.storeType = view.getStoreType();
 
-        MarketsController manager = App.getCurrentGame().getStoreManager();
-        StoreInventory inventory = manager.getInventory(storeType);
+        List<ShopItemDTO> items = marketInventory.getItems();
         int rank = 1;
-        double price;
 
-        for (ShopItem item : inventory.getItems()) {
-            if (storeType.equals(StoreType.PierresGeneralStore))
-                price = manager.getSeasonalPrice(item);
-            else
-                price = item.getPrice();
-
-            TextButton textButton = new TextButton(item.getType().getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
-            if (!item.isAvailableInSeason(App.getCurrentGame().getDate().getSeason()) ||
-                !(item.isAvailable()) ||
+        for (ShopItemDTO item : items) {
+            TextButton textButton = new TextButton(item.getType(), GameAssetManagerClient.getGameAssetManager().getSkin());
+            if (!(item.isAvailable()) ||
                 (item.getSoldToday() >= item.getDailyLimit())) {
                 textButton.setColor(0.5f, 0.5f, 0.5f, 1f);
                 textButton.addListener(new ClickListener() {
@@ -69,7 +65,7 @@ public class StoreMenuController {
             }
             itemsTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
             itemsTable.add(textButton).width(400).padRight(30);
-            itemsTable.add(new Label("%.0f".formatted(price),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
+            itemsTable.add(new Label("%.0f".formatted(item.getPrice()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
             if (item.getDailyLimit() > 200)
                 itemsTable.add(new Label("INFINITY",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
             else
@@ -88,20 +84,20 @@ public class StoreMenuController {
             upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
 
-            MarketsController manager = App.getCurrentGame().getStoreManager();
-            for (UpgradeService upgradeService : manager.getInventory(storeType).getUpgradeServices()) {
-                TextButton textButton = new TextButton(upgradeService.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
+            MarketsController manager = App.getCurrentGame().getMarketsController();
+            for (UpgradeServiceDTO upgradeServiceDTO : marketInventory.getUpgradeServices()) {
+                TextButton textButton = new TextButton(upgradeServiceDTO.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
                 textButton.addListener(new ClickListener() {
                     // TODO
                 });
 
                 upgradeTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
                 upgradeTable.add(textButton).width(400).padRight(30);
-                upgradeTable.add(new Label("%d".formatted(upgradeService.getCost()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
-                if (upgradeService.getDailyLimit() > 200)
+                upgradeTable.add(new Label("%d".formatted(upgradeServiceDTO.getCost()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
+                if (upgradeServiceDTO.getDailyLimit() > 200)
                     upgradeTable.add(new Label("INFINITY",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
                 else
-                    upgradeTable.add(new Label("%d".formatted(upgradeService.getDailyLimit()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
+                    upgradeTable.add(new Label("%d".formatted(upgradeServiceDTO.getDailyLimit()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
                 rank++;
             }
         }
@@ -109,25 +105,16 @@ public class StoreMenuController {
 
     public void showAllAvailableProducts() {
         itemsTable.clear();
-        MarketsController manager = App.getCurrentGame().getStoreManager();
-        StoreInventory inventory = manager.getInventory(storeType);
-        Season season = App.getCurrentGame().getDate().getSeason();
+        List<ShopItemDTO> items = marketInventory.getItems();
 
         int rank = 1;
-        double price;
 
-        for (ShopItem item : inventory.getItems()) {
-            if (!item.isAvailableInSeason(season) ||
-                !(item.isAvailable()) ||
+        for (ShopItemDTO item : items) {
+            if (!(item.isAvailable()) ||
                 (item.getSoldToday() >= item.getDailyLimit()))
                 continue;
 
-            if (storeType.equals(StoreType.PierresGeneralStore))
-                price = manager.getSeasonalPrice(item);
-            else
-                price = item.getPrice();
-
-            TextButton textButton = new TextButton(item.getType().getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
+            TextButton textButton = new TextButton(item.getType(),   GameAssetManagerClient.getGameAssetManager().getSkin());
             textButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -138,7 +125,7 @@ public class StoreMenuController {
             });
             itemsTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
             itemsTable.add(textButton).width(400).padRight(30);
-            itemsTable.add(new Label("%.0f".formatted(price),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
+            itemsTable.add(new Label("%.0f".formatted(item.getPrice()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
             if (item.getDailyLimit() > 200)
                 itemsTable.add(new Label("INFINITY",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
             else
@@ -155,23 +142,28 @@ public class StoreMenuController {
             upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
 
-            MarketsController manager = App.getCurrentGame().getStoreManager();
-            for (UpgradeService upgradeService : manager.getInventory(storeType).getUpgradeServices()) {
-                if (upgradeService.getSoldToday() >= upgradeService.getDailyLimit())
+            MarketsController manager = App.getCurrentGame().getMarketsController();
+            for (UpgradeServiceDTO upgradeServiceDTO : marketInventory.getUpgradeServices()) {
+                if (upgradeServiceDTO.getSoldToday() >= upgradeServiceDTO.getDailyLimit())
                     continue;
-                TextButton textButton = new TextButton(upgradeService.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
+                TextButton textButton = new TextButton(upgradeServiceDTO.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
                 textButton.addListener(new ClickListener() {
                     // TODO
                 });
                 upgradeTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
                 upgradeTable.add(textButton).width(400).padRight(30);
-                upgradeTable.add(new Label("%d".formatted(upgradeService.getCost()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
-                if (upgradeService.getDailyLimit() > 200)
+                upgradeTable.add(new Label("%d".formatted(upgradeServiceDTO.getCost()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).padRight(30);
+                if (upgradeServiceDTO.getDailyLimit() > 200)
                     upgradeTable.add(new Label("INFINITY",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
                 else
-                    upgradeTable.add(new Label("%d".formatted(upgradeService.getDailyLimit()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
+                    upgradeTable.add(new Label("%d".formatted(upgradeServiceDTO.getDailyLimit()),   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).row();
                 rank++;
             }
         }
+    }
+
+
+    public void getMarketInventory(StoreType storeType) {
+        marketInventory = GameClient.getGameStateApiClient().getInventory(storeType);
     }
 }

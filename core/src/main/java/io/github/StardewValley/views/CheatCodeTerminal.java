@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.controllers.CheatCodeTerminalController;
+import io.github.StardewValley.controllers.UIControllers.CheatCodeTerminalController;
 
 public class CheatCodeTerminal implements Screen {
     private Stage stage;

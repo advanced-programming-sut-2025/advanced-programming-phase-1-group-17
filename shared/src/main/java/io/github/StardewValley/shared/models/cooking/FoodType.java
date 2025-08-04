@@ -66,7 +66,7 @@ public enum FoodType implements BackPackableType {
     }
 
     @Override
-    public String getInventoryTexture() {
+    public String getInventoryTexturePath() {
         return texture;
     }
 

@@ -8,7 +8,6 @@ public class CropAssetManager {
     private static CropAssetManager cropAssetManager = null;
 
     private final HashMap<CropType, ArrayList<String>> stageTextures = new HashMap<>();
-    private final HashMap<CropType, String> inventoryTextures = new HashMap<>();
     private final HashMap<SeedType, String> seedTextures = new HashMap<>();
     private final HashMap<CropType, String> giantTextures = new HashMap<>();
 
@@ -21,7 +20,6 @@ public class CropAssetManager {
 
     private CropAssetManager() {
         loadStageTextures();
-        loadInventoryTextures();
         loadSeedTextures();
         loadGiantTextures();
     }
@@ -50,15 +48,6 @@ public class CropAssetManager {
         }
     }
 
-    private void loadInventoryTextures() {
-        for (CropType type : CropType.values()) {
-            String inventoryPath = type.getInventoryTexturePath();
-            if (inventoryPath != null && !inventoryPath.isEmpty()) {
-                inventoryTextures.put(type, inventoryPath);
-            }
-        }
-    }
-
     public static CropAssetManager getCropAssetManager() {
         if (cropAssetManager == null)
             cropAssetManager = new CropAssetManager();
@@ -67,10 +56,6 @@ public class CropAssetManager {
 
     public String  getStageTexture(int currentStageIndex, CropType type) {
         return stageTextures.get(type).get(currentStageIndex);
-    }
-
-    public String getInventoryTexture(CropType cropType) {
-        return inventoryTextures.get(cropType);
     }
 
     public String getSeedTexture(SeedType seedType) {

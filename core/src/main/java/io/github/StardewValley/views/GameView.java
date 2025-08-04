@@ -8,7 +8,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,18 +19,17 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
+import io.github.StardewValley.controllers.UIControllers.ArtisanCraftMenuController;
+import io.github.StardewValley.controllers.UIControllers.ArtisanInfoMenuController;
+import io.github.StardewValley.controllers.UIControllers.StoreMenuController;
+import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.controllers.StoreMenuController;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
-import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.shared.models.market.StoreType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.github.StardewValley.shared.models.enums.Gender;
 
@@ -343,19 +341,7 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        if (button == Input.Buttons.RIGHT)
-            return checkCraftingItemBounds(worldCoordinates, false);
-
-        if (checkGreenHouseBounds(worldCoordinates))
-            return true;
-        if (checkCraftingItemBounds(worldCoordinates, true))
-            return true;
-        if(handleClick(worldCoordinates))
-            return true;
-        if (handleShippingBin(worldCoordinates)) {
-            return true;
-        }
-        return checkStoreBounds(worldCoordinates);
+        return handleClick(worldCoordinates, button);
     }
 
     @Override
@@ -395,55 +381,16 @@ public class GameView implements Screen, InputProcessor {
         return true;
     }
 
-    private boolean checkStoreBounds(Vector3 worldCoordinates) {
-        for (Map.Entry<StoreType, Rectangle> entry : controller.getStoreBounds().entrySet()) {
-            if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
-                      GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
-                return true;
-            }
+    private boolean handleClick(Vector3 worldCoordinates, int button) {
+        HandleWorldClickResponse result = null;
+        try {
+            result = GameClient.getGameStateApiClient()
+                .handleWorldClick(worldCoordinates.x, worldCoordinates.y, button);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return false;
-    }
 
-    private boolean checkCraftingItemBounds(Vector3 worldCoordinates , boolean isLeftClick) {
-        for (Map.Entry<CraftingItem, Rectangle> entry:  CraftingItem.getCraftingItemBounds().entrySet()) {
-            if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
-                Main.getMain().getScreen().dispose();
-                if (isLeftClick)
-                    Main.getMain().setScreen(new ArtisanCraftMenu(new ArtisanCraftMenuController(),
-                          GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
-                else
-                    Main.getMain().setScreen(new ArtisanInfoMenu(new ArtisanInfoMenuController(),
-                          GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
-            }
-        }
-        return false;
-    }
-
-    private boolean handleClick(Vector3 worldCoordinates) {
-        float tileWidth = controller.getWorldController().getTileWidth();
-        float tileHeight = controller.getWorldController().getTileHeight();
-        int clickedTileX = (int)(worldCoordinates.x / tileWidth);
-        int clickedTileY = (int)(worldCoordinates.y / tileHeight);
-
-        PlayerClient player = GameClient.getPlayer();
-        int dx = clickedTileX - player.getTileX();
-        int dy = clickedTileY - player.getTileY();
-
-        if (Math.abs(dx) + Math.abs(dy) == 1) {
-            Result result = null;
-            try {
-                result = GameController.getGameStateApiClient().handleClick(dx, dy);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (result != null && !result.isSuccessful())
-                showNotification(result.getMessage());
-            return true;
-        }
-        return false;
+        return controller.handleClickAction(result);
     }
 
 
@@ -486,51 +433,6 @@ public class GameView implements Screen, InputProcessor {
             dialogueActive = false;
             currentNPC = null;
         }
-    }
-
-    private boolean checkGreenHouseBounds(Vector3 worldCoordinates) {
-        HashMap<GreenHouse, Rectangle> bounds = GreenHouse.getGreenHouseBounds();
-        for (GreenHouse greenHouse : bounds.keySet()) {
-            if (bounds.get(greenHouse).contains(worldCoordinates.x, worldCoordinates.y)) {
-                if (greenHouse.isActive()) {
-                    GreenHouse.getGreenHouseBounds().remove(greenHouse);
-                    return true;
-                }
-                if (!greenHouse.getOwner().equals(GameClient.getPlayer())) {
-                    showNotification("This greenhouse is not yours.");
-                    return true;
-                }
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new GreenHouseBuildScreen(
-                    new GreenHouseBuildController(),
-                    GameAssetManagerClient.getGameAssetManager().getSkin()
-                ));
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    private boolean handleShippingBin(Vector3 worldCoordinates) {
-        HashMap<ShippingBin, Rectangle> bounds = ShippingBin.getShippingBinBounds();
-        for (ShippingBin shippingBin : bounds.keySet()) {
-            if (bounds.get(shippingBin).contains(worldCoordinates.x, worldCoordinates.y)) {
-                if (shippingBin.getTodayItemOwner() != null && !shippingBin.getTodayItemOwner().equals(App.getCurrentGame().getCurrentPlayingPlayer())) {
-                    showNotification("Player %s has put some items inside this shipping Bin today.\n Try using another shipping Bin."
-                        .formatted(shippingBin.getTodayItemOwner().getUser().getUsername()));
-                    return true;
-                }
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new ShippingBinScreen(
-                    shippingBin,
-                    new ShippingBinScreenController(),
-                    GameAssetManagerClient.getGameAssetManager().getSkin()
-                ));
-                return true;
-            }
-        }
-        return false;
     }
 
     public GameController getController() {

@@ -128,4 +128,13 @@ public class BackPack {
     public void setCoin(double coin) {
         this.coin = coin;
     }
+
+
+    public BackPackable getFromDTO(String backpackableTypeDTO) {
+        for (BackPackableType backPackableType : backPackItems.keySet()) {
+            if (backPackableType.getName().equals(backpackableTypeDTO))
+                return backPackItems.get(backPackableType).get(0);
+        }
+        return null;
+    }
 }

@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.controllers.JournalController;
+import io.github.StardewValley.controllers.UIControllers.JournalController;
 
 public class Journal implements Screen {
     private Stage stage;

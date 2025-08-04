@@ -43,7 +43,7 @@ public enum MineralType implements BackPackableType  {
     }
 
     @Override
-    public String  getInventoryTexture() {
+    public String getInventoryTexturePath() {
         return MineralAssetManager.getMineralAssetManager().getTexture(this);
     }
 

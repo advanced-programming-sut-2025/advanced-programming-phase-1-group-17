@@ -15,11 +15,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.InventoryController;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.tools.ToolType;
+
+import java.util.HashMap;
 
 public class InventoryView implements Screen {
     private Stage stage;
@@ -27,79 +31,37 @@ public class InventoryView implements Screen {
 
     private final Label titleLabel;
     private final Table mainTable;
-
-    private final Player player;
-    private final BackPack backPack;
     private final Table itemsTable;
     private final ScrollPane itemsPane;
     private final Label itemPickLabel;
     private final Label inventoryLabel;
-
     private final TextButton trashButton;
     private final TextButton skillMenuButton;
     private final TextButton socialMenuButton;
     private final TextButton mapButton;
     private final TextButton exitButton;
-    private final TextButton saveanndexitButton;
+    private final TextButton saveAndExitButton;
 
-    public InventoryView(InventoryController controller, Skin skin, Player player) {
+    private HashMap<BackpackableTypeDTO, Integer> backPackItems;
+
+    public InventoryView(InventoryController controller, Skin skin) {
         this.controller = controller;
         this.controller.setView(this);
         this.mainTable = new Table();
 
         this.titleLabel = new Label("Inventory", skin);
-        this.player = player;
-        this.backPack = player.getBackPack();
 
         this.itemPickLabel = new Label("", skin);
         this.inventoryLabel = new Label("Inventory", skin);
         this.itemsTable = new Table();
-        for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
-            // 1. Prepare image button style:
-            //TODO: need to delete this null-check
-            if (backPackableType.getInventoryTexture() == null)
-                continue;
-
-            Texture itemTexture =new Texture(backPackableType.getInventoryTexture());
-            ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
-            style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
-
-            ImageButton itemButton = new ImageButton(style);
-
-            // 2. Prepare label for count:
-            Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-            Label countLabel = new Label("%d".formatted(backPack.getBackPackItems().get(backPackableType).size()),
-                labelStyle);
-            countLabel.setTouchable(Touchable.disabled);
-            countLabel.setFontScale(1.3f); // Adjust size
-            countLabel.setAlignment(Align.bottomRight);
-
-            // 3. Use a Stack:
-            Stack itemStack = new Stack();
-            itemStack.setSize(64, Math.min(64, backPack.getBackPackItems().size()));
-            itemStack.add(itemButton);
-            itemStack.add(countLabel);
-
-            // 4. Handle click logic:
-            itemButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    controller.handleItemClick(backPackableType, player);
-                    itemPickLabel.setText("You picked: %s".formatted(backPackableType.getName()));
-                }
-            });
-
-            // 5. Add to inventory layout:
-            itemsTable.add(itemStack).size(64, 64).pad(5);
-        }
-
+        refreshInventoryItems();
         this.itemsPane = new ScrollPane(itemsTable, skin);
 
         this.trashButton = new TextButton("Trash picked Item", skin);
         this.trashButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.handleItemTrash(player);
+                controller.handleItemTrash();
             }
         });
 
@@ -134,8 +96,8 @@ public class InventoryView implements Screen {
                 controller.goToGameView();
             }
         });
-        this.saveanndexitButton = new TextButton("Save and Exit Game", skin);
-        this.saveanndexitButton.addListener(new ClickListener(){
+        this.saveAndExitButton = new TextButton("Save and Exit Game", skin);
+        this.saveAndExitButton.addListener(new ClickListener(){
                 public void clicked(InputEvent event, float x, float y) {
                     controller.saveAndExitButton();
                 }
@@ -160,7 +122,7 @@ public class InventoryView implements Screen {
         Table rightButtonTable = new Table();
         rightButtonTable.add(mapButton).pad(5).row();
         rightButtonTable.add(exitButton).pad(5).row();
-        rightButtonTable.add(saveanndexitButton).pad(5).row();
+        rightButtonTable.add(saveAndExitButton).pad(5).row();
 
         Table inventoryTable = new Table();
         inventoryTable.add(titleLabel).padBottom(10).row();
@@ -214,65 +176,73 @@ public class InventoryView implements Screen {
         return itemPickLabel;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-
     public void refreshInventoryItems() {
         itemsTable.clear();
+        backPackItems = GameClient.getGameStateApiClient().getBackpackItems().getItems();
 
-        for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
-            if (backPackableType.getInventoryTexture() == null) continue;
-            if (backPack.getBackPackItems().get(backPackableType).isEmpty()) continue;
-
-            Texture itemTexture = new Texture(backPackableType.getInventoryTexture());
+        for (BackpackableTypeDTO backpackableTypeDTO : backPackItems.keySet()) {
+            // 1. Prepare image button style:
+            Texture itemTexture = GameAssetManagerClient.getGameAssetManager().getTexture(backpackableTypeDTO.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 
             ImageButton itemButton = new ImageButton(style);
 
+            // 2. Prepare label for count:
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-            Label countLabel = new Label("%d".formatted(backPack.getBackPackItems().get(backPackableType).size()), labelStyle);
-            countLabel.setFontScale(1.3f);
-            countLabel.setAlignment(Align.bottomRight);
+            Label countLabel = new Label("%d".formatted(backPackItems.get(backpackableTypeDTO)),
+                labelStyle);
             countLabel.setTouchable(Touchable.disabled);
+            countLabel.setFontScale(1.3f); // Adjust size
+            countLabel.setAlignment(Align.bottomRight);
 
+            // 3. Use a Stack:
             Stack itemStack = new Stack();
-            itemStack.setSize(64, 64);
+            itemStack.setSize(64, Math.min(64, backPackItems.get(backpackableTypeDTO)));
             itemStack.add(itemButton);
             itemStack.add(countLabel);
 
+            // 4. Handle click logic:
             itemButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    controller.handleItemClick(backPackableType, player);
-                    itemPickLabel.setText("You picked: %s".formatted(backPackableType.getName()));
+                    controller.handleItemClick(backpackableTypeDTO);
+                    itemPickLabel.setText("You picked: %s".formatted(backpackableTypeDTO.getName()));
                 }
             });
 
+            // 5. Add to inventory layout:
             itemsTable.add(itemStack).size(64, 64).pad(5);
         }
-
         itemsTable.invalidate();
     }
 
     public void showOnlyTools() {
         itemsTable.clear();
 
-        for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
-            if (backPackableType.getInventoryTexture() == null) continue;
-            if (!(backPackableType instanceof ToolType)) continue;
-            if (backPack.getBackPackItems().get(backPackableType).isEmpty()) continue;
+        for (BackpackableTypeDTO backPackableTypeDTO : backPackItems.keySet()) {
+            if (backPackableTypeDTO.getInventoryTexturePath() == null) continue;
 
-            Texture itemTexture =new Texture( backPackableType.getInventoryTexture());
+            boolean found = false;
+            for (ToolType toolType : ToolType.values()) {
+                if (toolType.name().equals(backPackableTypeDTO.getName())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                continue;
+
+            if (backPackItems.get(backPackableTypeDTO) == 0) continue;
+
+            Texture itemTexture = GameAssetManagerClient.getGameAssetManager().getTexture(backPackableTypeDTO.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 
             ImageButton itemButton = new ImageButton(style);
 
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-            Label countLabel = new Label("%d".formatted(backPack.getBackPackItems().get(backPackableType).size()), labelStyle);
+            Label countLabel = new Label("%d".formatted(backPackItems.get(backPackableTypeDTO)), labelStyle);
             countLabel.setFontScale(1.3f);
             countLabel.setAlignment(Align.bottomRight);
             countLabel.setTouchable(Touchable.disabled);
@@ -285,8 +255,8 @@ public class InventoryView implements Screen {
             itemButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    controller.handleItemClick(backPackableType, player);
-                    itemPickLabel.setText("You picked: %s".formatted(backPackableType.getName()));
+                    controller.handleItemClick(backPackableTypeDTO);
+                    itemPickLabel.setText("You picked: %s".formatted(backPackableTypeDTO.getName()));
                 }
             });
 

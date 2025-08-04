@@ -89,6 +89,16 @@ public class Player {
     private double balance;
     private int daysSinceBrakUp = 0;
 
+    public void toolEquip(ToolType toolType) {
+        BackPack backPack = this.backPack;
+        currentTool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
+    }
+
+    public void fishingPoleEquip(FishingPoleType fishingPoleType) {
+        BackPack backPack = this.backPack;
+        currentTool = (Tool) backPack.getBackPackItems().get(fishingPoleType).get(0);
+    }
+
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
     }

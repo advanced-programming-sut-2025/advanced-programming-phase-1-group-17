@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.StardewValley.controllers.ArtisanCraftMenuController;
+import io.github.StardewValley.controllers.UIControllers.ArtisanCraftMenuController;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
@@ -74,13 +74,13 @@ public class ArtisanCraftMenu implements Screen {
         Player player = App.getCurrentGame().getCurrentPlayingPlayer();
 
         for (BackPackableType item : player.getBackPack().getBackPackItems().keySet()) {
-            if (item.getInventoryTexture() == null) continue;
+            if (item.getInventoryTexturePath() == null) continue;
 
             int count = player.getBackPack().getBackPackItems().get(item).size();
             if (count == 0) continue;
 
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
-            style.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexture())));
+            style.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexturePath())));
             ImageButton itemButton = new ImageButton(style);
 
             Label countLabel = new Label("x" + count, skin);
@@ -110,7 +110,7 @@ public class ArtisanCraftMenu implements Screen {
             BackPackableType item = entry.getKey();
             int count = entry.getValue().size();
 
-            Image image = new Image(new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexture()))));
+            Image image = new Image(new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexturePath()))));
             Label nameLabel = new Label(item.getName(), skin);
             Label countLabel = new Label("x" + count, skin);
 
