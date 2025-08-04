@@ -1,12 +1,10 @@
 package io.github.StardewValley.server;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
 import io.github.StardewValley.server.model.Lobby;
 import io.github.StardewValley.server.model.User;
 import io.github.StardewValley.server.repository.LobbyRepository;
 import io.github.StardewValley.server.repository.UserRepository;
-import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.Main;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.map.Tile;
@@ -130,6 +128,10 @@ public class LobbyService {
 
         Game game = new Game(userDTO(user1),userDTO(user2), userDTO(user3), userDTO(user4));
         AppServer.setCurrentGame(game);
+        user1.setActiveGame(game);
+        user2.setActiveGame(game);
+        user3.setActiveGame(game);
+        user4.setActiveGame(game);
         return toDto(game);
     }
 
@@ -185,8 +187,6 @@ public class LobbyService {
         return new GameDTO(
             game.getCreator().getUser().getUsername(),
             playerUsernames,
-            game.getCurrentPlayingPlayerIndex(),
-            game.getCurrentPlayingPlayer().getUser().getUsername(),
             game.getDate().toString()
         );
     }

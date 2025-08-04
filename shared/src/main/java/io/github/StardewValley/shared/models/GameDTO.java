@@ -11,10 +11,9 @@ public class GameDTO {
     public GameDTO() {
     }
 
-    public GameDTO(String creatorUsername, List<String> playerUsernames, int currentPlayingPlayerIndex, String currentPlayingUsername, String currentDate) {
+    public GameDTO(String creatorUsername, List<String> playerUsernames, String currentDate) {
         this.creatorUsername = creatorUsername;
         this.playerUsernames = playerUsernames;
-        this.currentPlayingUsername = currentPlayingUsername;
         this.currentDate = currentDate;
     }
 
