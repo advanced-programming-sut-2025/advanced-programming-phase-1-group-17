@@ -736,6 +736,56 @@ public class GameStateApiClient {
             return new Result(false, "Exception: " + e.getMessage());
         }
     }
+    public String getNearbyNPC() {
+        try {
+            String baseUrl = BASE_URL + "/getNearbyNPC";
+            URL url = new URL(baseUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String getDialogueTextNPCByName(String Name) {
+        try {
+            String baseUrl = BASE_URL + "/deleteMessage";
+            String params = "?Name" + URLEncoder.encode(Name, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
 
 
 }

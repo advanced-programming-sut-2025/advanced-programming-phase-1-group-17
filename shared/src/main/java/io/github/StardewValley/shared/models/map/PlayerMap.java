@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.map;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Fence;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouseLake;
@@ -138,24 +139,22 @@ public class PlayerMap {
             this.player = owner;
             owner.setPlayerMap(this);
 
-            //TODO
-//            Abigail abigail2 = (Abigail) App.getCurrentGame().getNPCs().get(0);
-//            Harvey harvey2 = (Harvey) App.getCurrentGame().getNPCs().get(1);
-//            Lia lia2 = (Lia) App.getCurrentGame().getNPCs().get(2);
-//            Robin robin2 = (Robin) App.getCurrentGame().getNPCs().get(3);
-//            Sebastian sebastian2 = (Sebastian) App.getCurrentGame().getNPCs().get(4);
+            Abigail abigail2 = (Abigail) App.getCurrentGame().getNPCs().get(0);
+            Harvey harvey2 = (Harvey) App.getCurrentGame().getNPCs().get(1);
+            Lia lia2 = (Lia) App.getCurrentGame().getNPCs().get(2);
+            Robin robin2 = (Robin) App.getCurrentGame().getNPCs().get(3);
+            Sebastian sebastian2 = (Sebastian) App.getCurrentGame().getNPCs().get(4);
             Abigail abigail = new Abigail(false,145,102);
             Harvey harvey = new Harvey(false,145,122);
             Lia lia = new Lia(false,145,142);
             Robin robin = new Robin(false,145,162);
             Sebastian sebastian = new Sebastian(false,145,182);
 
-            //TODO
-            //            App.getCurrentGame().getNPCHuts().add(abigail);
-//            App.getCurrentGame().getNPCHuts().add(harvey);
-//            App.getCurrentGame().getNPCHuts().add(lia);
-//            App.getCurrentGame().getNPCHuts().add(robin);
-//            App.getCurrentGame().getNPCHuts().add(sebastian);
+            App.getCurrentGame().getNPCHuts().add(abigail);
+            App.getCurrentGame().getNPCHuts().add(harvey);
+            App.getCurrentGame().getNPCHuts().add(lia);
+            App.getCurrentGame().getNPCHuts().add(robin);
+            App.getCurrentGame().getNPCHuts().add(sebastian);
             for (int k = 0; k < 81; k += 20) {
                 for (int i = 145; i <= 149; i++) {
                     for (int j = 102 + k; j <= 106 + k; j++) {
@@ -179,61 +178,61 @@ public class PlayerMap {
                 }
             }
             out:
-//            for (int k = 0; k < 81; k += 20) {
-//                for (int i = 140; i < 145; i++) {
-//                    for (int j = 102 + k; j < 111 + k; j++) {
-//                        if (Tile.getTile(i, j).getPlaceable() == null
-//                            && Tile.getTile(i, j).isWalkAble()) {
-//                            if (k == 0) {
-//                                abigail2.setX(i);
-//                                abigail2.setY(j);
-//                                Tile.getTile(i,j).setWalkAble(false);
-//                                Tile.getTile(i, j).setPlaceable(abigail2);
-//                                abigail2.setTile_x(i);
-//                                abigail2.setTile_y(j);
-//                                Tile.getTile(i, j).setNpcIsHere(abigail2);
-//                                continue out;
-//                            } else if (k == 20) {
-//                                harvey2.setX(i);
-//                                harvey2.setY(j);
-//                                Tile.getTile(i,j).setWalkAble(false);
-//                                Tile.getTile(i, j).setPlaceable(harvey2);
-//                                harvey2.setTile_x(i);
-//                                harvey2.setTile_y(j);
-//                                Tile.getTile(i, j).setNpcIsHere(harvey2);
-//                                continue out;
-//                            } else if (k == 40) {
-//                                lia2.setX(i);
-//                                lia2.setY(j);
-//                                Tile.getTile(i,j).setWalkAble(false);
-//                                Tile.getTile(i, j).setPlaceable(lia2);
-//                                lia2.setTile_x(i);
-//                                lia2.setTile_y(j);
-//                                Tile.getTile(i, j).setNpcIsHere(lia2);
-//                                continue out;
-//                            } else if (k == 60) {
-//                                robin2.setX(i);
-//                                robin2.setY(j);
-//                                Tile.getTile(i,j).setWalkAble(false);
-//                                Tile.getTile(i, j).setPlaceable(robin2);
-//                                robin2.setTile_x(i);
-//                                robin2.setTile_y(j);
-//                                Tile.getTile(i, j).setNpcIsHere(robin2);
-//                                continue out;
-//                            } else {
-//                                sebastian2.setX(i);
-//                                sebastian2.setY(j);
-//                                Tile.getTile(i,j).setWalkAble(false);
-//                                Tile.getTile(i, j).setPlaceable(sebastian2);
-//                                sebastian2.setTile_x(i);
-//                                sebastian2.setTile_y(j);
-//                                Tile.getTile(i, j).setNpcIsHere(sebastian2);
-//                                continue out;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+            for (int k = 0; k < 81; k += 20) {
+                for (int i = 140; i < 145; i++) {
+                    for (int j = 102 + k; j < 111 + k; j++) {
+                        if (Tile.getTile(i, j).getPlaceable() == null
+                            && Tile.getTile(i, j).isWalkAble()) {
+                            if (k == 0) {
+                                abigail2.setX(i);
+                                abigail2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(abigail2);
+                                abigail2.setTile_x(i);
+                                abigail2.setTile_y(j);
+                                Tile.getTile(i, j).setNpcIsHere(abigail2);
+                                continue out;
+                            } else if (k == 20) {
+                                harvey2.setX(i);
+                                harvey2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(harvey2);
+                                harvey2.setTile_x(i);
+                                harvey2.setTile_y(j);
+                                Tile.getTile(i, j).setNpcIsHere(harvey2);
+                                continue out;
+                            } else if (k == 40) {
+                                lia2.setX(i);
+                                lia2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(lia2);
+                                lia2.setTile_x(i);
+                                lia2.setTile_y(j);
+                                Tile.getTile(i, j).setNpcIsHere(lia2);
+                                continue out;
+                            } else if (k == 60) {
+                                robin2.setX(i);
+                                robin2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(robin2);
+                                robin2.setTile_x(i);
+                                robin2.setTile_y(j);
+                                Tile.getTile(i, j).setNpcIsHere(robin2);
+                                continue out;
+                            } else {
+                                sebastian2.setX(i);
+                                sebastian2.setY(j);
+                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setPlaceable(sebastian2);
+                                sebastian2.setTile_x(i);
+                                sebastian2.setTile_y(j);
+                                Tile.getTile(i, j).setNpcIsHere(sebastian2);
+                                continue out;
+                            }
+                        }
+                    }
+                }
+            }
 
 
             //Creating Stores
