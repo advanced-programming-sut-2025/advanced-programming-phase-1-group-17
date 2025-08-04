@@ -226,7 +226,7 @@ public class ToolController {
                     return new Result(false, "Tree (%s) is Fully Grown but doesn't have fruit today\n(Days till next harvest time: %d)"
                         .formatted(tree.getType().name(), tree.getDaysTillNextHarvest()));
                 }
-                tree.harvest();
+                tree.harvest(player);
                 Fruit fruit = new Fruit(tree.getType().getFruitType());
                 fruit.setItemQuality();
                 player.getBackPack().addItemToInventory(fruit);
@@ -241,7 +241,7 @@ public class ToolController {
                     return new Result(false, "Crop (%s) is Fully Grown but doesn't have fruit today\n(Days till next harvest time: %d)"
                         .formatted(crop.getName(), crop.getDaysTillNextHarvest()));
                 }
-                crop.harvest();
+                crop.harvest(player);
             }
         }
         return new Result(true, "");

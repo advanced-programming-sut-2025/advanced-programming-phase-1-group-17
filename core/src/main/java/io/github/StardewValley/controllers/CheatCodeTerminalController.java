@@ -3,7 +3,6 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.helperControllers.MarketsController;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.controller.LightningController;
 import io.github.StardewValley.shared.models.*;
@@ -14,6 +13,7 @@ import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
 import io.github.StardewValley.shared.models.enums.WeatherType;
 import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.market.MarketsController;
 import io.github.StardewValley.views.CheatCodeTerminal;
 
 import java.util.ArrayList;
@@ -130,38 +130,41 @@ public class CheatCodeTerminalController {
     }
 
     private String energyUnlimited() {
-        App.getCurrentGame().getCurrentPlayingPlayer().setMaxEnergy(Double.POSITIVE_INFINITY);
-        App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(Double.POSITIVE_INFINITY);
-        App.getCurrentGame().getCurrentPlayingPlayer().setEnergyUnlimited(true);
+        //TODO
+//        App.getCurrentGame().getCurrentPlayingPlayer().setMaxEnergy(Double.POSITIVE_INFINITY);
+//        App.getCurrentGame().getCurrentPlayingPlayer().setEnergy(Double.POSITIVE_INFINITY);
+//        App.getCurrentGame().getCurrentPlayingPlayer().setEnergyUnlimited(true);
         return "Energy successfully set to infinity";
     }
 
     private String addItem(String itemName, String countStr) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        int count;
-        try {
-            count = Integer.parseInt(countStr);
-        } catch (NumberFormatException e) {
-            return "Invalid number format for count.";
-        }
+        //TODO
+//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+//        int count;
+//        try {
+//            count = Integer.parseInt(countStr);
+//        } catch (NumberFormatException e) {
+//            return "Invalid number format for count.";
+//        }
+//
+//        ArrayList<Object> result = marketsController.addItem(itemName);
+//
+//        BackPackableType type = (BackPackableType) result.get(0);
+//        BackPackable sampleItem = (BackPackable) result.get(1);
+//
+//        if (type == null && sampleItem == null)
+//            return "Invalid item name";
+//
+//        if (player.getBackPack().getBackPackItems().get(type) == null &&
+//            player.getBackPack().isBackPackFull())
+//            return "Backpack Full";
+//
+//        for (int i = 0; i < count; i++) {
+//            player.getBackPack().addItemToInventory(sampleItem);
+//        }
 
-        ArrayList<Object> result = marketsController.addItem(itemName);
-
-        BackPackableType type = (BackPackableType) result.get(0);
-        BackPackable sampleItem = (BackPackable) result.get(1);
-
-        if (type == null && sampleItem == null)
-            return "Invalid item name";
-
-        if (player.getBackPack().getBackPackItems().get(type) == null &&
-            player.getBackPack().isBackPackFull())
-            return "Backpack Full";
-
-        for (int i = 0; i < count; i++) {
-            player.getBackPack().addItemToInventory(sampleItem);
-        }
-
-        return count + " x " + itemName + " added to backpack.";
+//        return count + " x " + itemName + " added to backpack.";
+        return "";
     }
 
     private String setFriendship(String animalName, String amount) {
@@ -184,11 +187,12 @@ public class CheatCodeTerminalController {
         } catch (Exception e) {
             return "Amount must be number.";
         }
-
-        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addCoin(amount);
-        return "Your new Balance: %.1f".formatted(
-            App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin()
-        );
+        //TODO
+//        App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addCoin(amount);
+//        return "Your new Balance: %.1f".formatted(
+//            App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin()
+//        );
+        return "";
     }
 
     public void exit() {

@@ -4,10 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.PlayerDto;
-import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.shared.models.TileDTO;
-import io.github.StardewValley.shared.models.UserDTO;
+import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.NPCS.Quest;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -286,4 +285,5 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to pick Foraging: " + conn.getResponseCode());
         }
     }
+
 }
