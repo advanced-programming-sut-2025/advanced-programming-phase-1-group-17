@@ -32,6 +32,7 @@ import io.github.StardewValley.shared.models.market.StoreType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.github.StardewValley.shared.models.enums.Gender;
 
@@ -51,7 +52,7 @@ public class GameView implements Screen, InputProcessor {
     private int dialogueCharIndex = 0;
     private String currentDialogueText = "";
     private Label dialogueLabel;
-    private NPC currentNPC = null;
+    private String currentNPC = null;
     private boolean dialogueActive = false;
     private Table dialogueTable;
     private BitmapFont font;
@@ -451,22 +452,19 @@ public class GameView implements Screen, InputProcessor {
         this.error.setText(error);
     }
 
-    public NPC getNearbyNPC() {
-        for (NPC npc : App.getCurrentGame().getNPCs()) {
-            //TODo
-//            if (menuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), npc)) {
-//                return npc;
-//            }
-        }
-        return null;
+    public String getNearbyNPC() {
+        return GameClient.gameStateApiClient.getNearbyNPC();
+    }
+    public String getDialogueTextNPCByName(String Name) {
+        return GameClient.gameStateApiClient.getDialogueTextNPCByName(Name);
     }
 
     private void updateDialogue(float delta) {
-        NPC nearbyNPC = getNearbyNPC();
+        String nearbyNPC = getNearbyNPC();
         if (nearbyNPC != null ) {
-            if (!dialogueActive || currentNPC != nearbyNPC) {
+            if (!dialogueActive || !Objects.equals(currentNPC, nearbyNPC)) {
                 currentNPC = nearbyNPC;
-                currentDialogueText = currentNPC.getDialogueText();
+                currentDialogueText = getDialogueTextNPCByName(currentNPC);
                 dialogueCharIndex = 0;
                 dialogueTimer = 0;
                 dialogueLabel.setText("");

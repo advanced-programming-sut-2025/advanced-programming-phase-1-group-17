@@ -114,6 +114,7 @@ public class GameStateController {
         String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(username);
     }
+
     @PostMapping("/exitGame")
     public ResponseEntity<Boolean> exitGame(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
@@ -141,7 +142,6 @@ public class GameStateController {
         AppServer.setCurrentGame(null);
         return ResponseEntity.ok(true);
     }
-
 
 
     @PostMapping("/game/handleClick")
@@ -193,8 +193,9 @@ public class GameStateController {
 
         return activeGame;
     }
+
     @PostMapping("/questFinish")
-    public  ResponseEntity<Result> questFinish(@RequestHeader("Authorization") String token,@RequestParam String index) {
+    public ResponseEntity<Result> questFinish(@RequestHeader("Authorization") String token, @RequestParam String index) {
         int i = Integer.parseInt(index);
         if (i < 1 || i > 3) {
             return ResponseEntity.ok(new Result(false, "invalid index"));
@@ -241,6 +242,7 @@ public class GameStateController {
             }
         }
     }
+
     @PostMapping("/friendship")
     public ResponseEntity<Result> friendship(@RequestHeader("Authorization") String token, @RequestParam String userNameOfPlayer) {
         Player currentPlayer = getPlayerFromToken(token);
@@ -258,8 +260,9 @@ public class GameStateController {
             + String.valueOf((int) Math.floor(currentPlayer.getFriendShips().get(player) / 100)) + "\n";
         return ResponseEntity.ok(new Result(true, result));
     }
+
     @PostMapping("/talk")
-    public ResponseEntity<Result> talk(@RequestHeader("Authorization") String token,@RequestParam String username, @RequestParam String massage) {
+    public ResponseEntity<Result> talk(@RequestHeader("Authorization") String token, @RequestParam String username, @RequestParam String massage) {
         Player currentPlayer = getPlayerFromToken(token);
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
@@ -287,19 +290,21 @@ public class GameStateController {
         }
         return ResponseEntity.ok(new Result(false, "there isn't player in this game with this username"));
     }
+
     @PostMapping("/talkHistory")
-    public ResponseEntity<Result> talkHistory(@RequestHeader("Authorization") String token,@RequestParam String username) {
+    public ResponseEntity<Result> talkHistory(@RequestHeader("Authorization") String token, @RequestParam String username) {
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
                 if (getPlayerFromToken(token).getTalk().get(player) != null) {
-                    return ResponseEntity.ok(new Result(true,getPlayerFromToken(token).getTalk().get(player).getTalk()));
+                    return ResponseEntity.ok(new Result(true, getPlayerFromToken(token).getTalk().get(player).getTalk()));
                 }
             }
         }
-        return ResponseEntity.ok(new Result(false,""));
+        return ResponseEntity.ok(new Result(false, ""));
     }
+
     @PostMapping("/gift")
-    public ResponseEntity<Result> gift(@RequestHeader("Authorization") String token,@RequestParam String username, @RequestParam String item,@RequestParam String amount) {
+    public ResponseEntity<Result> gift(@RequestHeader("Authorization") String token, @RequestParam String username, @RequestParam String item, @RequestParam String amount) {
         int Amount;
         try {
             Amount = Integer.parseInt(amount);
@@ -344,6 +349,7 @@ public class GameStateController {
         }
         return ResponseEntity.ok(new Result(false, "there isn't player in this game with this username"));
     }
+
     @PostMapping("/giftList")
     public ResponseEntity<Result> giftList(@RequestHeader("Authorization") String token) {
         Player currentPlayer = getPlayerFromToken(token);
@@ -360,7 +366,7 @@ public class GameStateController {
     }
 
     @PostMapping("/giftRate")
-    public  ResponseEntity<Result> giftRate(@RequestHeader("Authorization") String token,@RequestParam String giftNumber,@RequestParam String rate) {
+    public ResponseEntity<Result> giftRate(@RequestHeader("Authorization") String token, @RequestParam String giftNumber, @RequestParam String rate) {
         if (CheatCodeCommands.Int.getMatcher(rate) == null || CheatCodeCommands.Int.getMatcher(giftNumber) == null) {
             return ResponseEntity.ok(new Result(true, "your rate or giftNumber is not valid"));
         } else if (Integer.parseInt(rate) > 5 || Integer.parseInt(rate) < 1) {
@@ -389,10 +395,10 @@ public class GameStateController {
 
 
     @PostMapping("/giftHistory")
-    public  ResponseEntity<Result> giftHistory(@RequestHeader("Authorization") String token,@RequestParam String username) {
+    public ResponseEntity<Result> giftHistory(@RequestHeader("Authorization") String token, @RequestParam String username) {
         Player currentPlayer = getPlayerFromToken(token);
-        if (username.equals( getPlayerFromToken(token).getUser().getUsername())) {
-            return ResponseEntity.ok(new Result(false,"you can't gift to your self."));
+        if (username.equals(getPlayerFromToken(token).getUser().getUsername())) {
+            return ResponseEntity.ok(new Result(false, "you can't gift to your self."));
         }
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
@@ -404,11 +410,12 @@ public class GameStateController {
                 return ResponseEntity.ok(new Result(true, result));
             }
         }
-        return ResponseEntity.ok(new Result(false,"this username there is not in this game"));
+        return ResponseEntity.ok(new Result(false, "this username there is not in this game"));
 
     }
+
     @PostMapping("/hug")
-    public  ResponseEntity<Result> hug(@RequestHeader("Authorization") String token,@RequestParam String username) {
+    public ResponseEntity<Result> hug(@RequestHeader("Authorization") String token, @RequestParam String username) {
         if (getPlayerFromToken(token).getUser().getUsername().equals(username)) {
             return ResponseEntity.ok(new Result(false, "you can't hug yourself"));
         }
@@ -429,14 +436,15 @@ public class GameStateController {
                         return ResponseEntity.ok(new Result(false, "you can't hug your friend from this distance"));
                     }
                 } else {
-                    return ResponseEntity.ok( new Result(false, "your level less than 2"));
+                    return ResponseEntity.ok(new Result(false, "your level less than 2"));
                 }
             }
         }
         return ResponseEntity.ok(new Result(false, "this username does not exist in this game"));
     }
+
     @PostMapping("/flower")
-    public  ResponseEntity<Result> flower(@RequestHeader("Authorization") String token,@RequestParam String username) {
+    public ResponseEntity<Result> flower(@RequestHeader("Authorization") String token, @RequestParam String username) {
         Player currentPlayer = getPlayerFromToken(token);
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
@@ -458,54 +466,56 @@ public class GameStateController {
                                     player.setEnergy(player.getEnergy() + 50);
                                     currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
                                 }
-                                return  ResponseEntity.ok(new Result(true, "Flower were presented to " + player.getUser().getUsername()));
+                                return ResponseEntity.ok(new Result(true, "Flower were presented to " + player.getUser().getUsername()));
                             }
                         } else {
-                            return  ResponseEntity.ok(new Result(false, "insufficient inventory"));
+                            return ResponseEntity.ok(new Result(false, "insufficient inventory"));
                         }
 
                     }
                 }
-                return  ResponseEntity.ok(new Result(false, "you can't give flower to your self"));
+                return ResponseEntity.ok(new Result(false, "you can't give flower to your self"));
             }
         }
-        return  ResponseEntity.ok(new Result(false, "this username does not exist in this game"));
+        return ResponseEntity.ok(new Result(false, "this username does not exist in this game"));
     }
+
     @PostMapping("/askMarriage")
-    public  ResponseEntity<Result> askMarriage(@RequestHeader("Authorization") String token,@RequestParam String username,@RequestParam String ring) {
+    public ResponseEntity<Result> askMarriage(@RequestHeader("Authorization") String token, @RequestParam String username, @RequestParam String ring) {
         Player currentPlayer = getPlayerFromToken(token);
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
                 if (sideBySide(player, currentPlayer)) {
                     if (currentPlayer.getFriendShips().containsKey(player)) {
                         if (currentPlayer.getFriendShips().get(player) < 300) {
-                            return  ResponseEntity.ok(new Result(false, "your friendship level is less than 3"));
+                            return ResponseEntity.ok(new Result(false, "your friendship level is less than 3"));
                         } else {
                             if (currentPlayer.getUser().getGender().equals(Gender.Female)) {
-                                return  ResponseEntity.ok(new Result(false, "you can't ask marriage"));
+                                return ResponseEntity.ok(new Result(false, "you can't ask marriage"));
                             } else if (player.getUser().getGender() == currentPlayer.getUser().getGender()) {
-                                return ResponseEntity.ok( new Result(false, "khejalat bekesh dadash (abjy)"));
+                                return ResponseEntity.ok(new Result(false, "khejalat bekesh dadash (abjy)"));
                             } else if (currentPlayer.getBackPack().getInventorySize(ring) < 1) {
-                                return  ResponseEntity.ok(new Result(false, "you haven't Ring for ask marriage"));
+                                return ResponseEntity.ok(new Result(false, "you haven't Ring for ask marriage"));
                             } else {
                                 message message = new message(currentPlayer, "ask for marriage with "
                                     + getPlayerFromToken(token).getUser().getUsername());
                                 player.getMessage().add(message);
-                                return  ResponseEntity.ok(new Result(true, "your marriage request has been sent"));
+                                return ResponseEntity.ok(new Result(true, "your marriage request has been sent"));
                             }
                         }
                     } else {
-                        return  ResponseEntity.ok(new Result(false, "you can't ask marriage to your self"));
+                        return ResponseEntity.ok(new Result(false, "you can't ask marriage to your self"));
                     }
                 } else {
-                    return  ResponseEntity.ok(new Result(false, "you can't ask marriage from this distance"));
+                    return ResponseEntity.ok(new Result(false, "you can't ask marriage from this distance"));
                 }
             }
         }
-        return  ResponseEntity.ok(new Result(false, "this username does not exist in this game"));
+        return ResponseEntity.ok(new Result(false, "this username does not exist in this game"));
     }
+
     @PostMapping("/respond")
-    public  ResponseEntity<Result> respond(@RequestHeader("Authorization") String token,@RequestParam String accept,@RequestParam String username) {
+    public ResponseEntity<Result> respond(@RequestHeader("Authorization") String token, @RequestParam String accept, @RequestParam String username) {
         Player currentPlayer = getPlayerFromToken(token);
         for (message m : currentPlayer.getMessage()) {
             if (m.getMessage().startsWith("ask for marriage")) {
@@ -535,7 +545,7 @@ public class GameStateController {
                                 message m1 = new message(getPlayerFromToken(token)
                                     , "oh my God, I was taken by surprise. I thought about it. I accept");
                                 player.addMessage(m1);
-                                return  ResponseEntity.ok(new Result(true, "Congratulations, you got married"));
+                                return ResponseEntity.ok(new Result(true, "Congratulations, you got married"));
                             } else {
                                 player.setIsbrokenUp(7);
                                 player.getFriendShips().put(currentPlayer, 0);
@@ -551,63 +561,65 @@ public class GameStateController {
                                 }
                                 message m1 = new message(getPlayerFromToken(token), "i do not intend to marry");
                                 player.addMessage(m1);
-                                return  ResponseEntity.ok(new Result(true, "request was rejected"));
+                                return ResponseEntity.ok(new Result(true, "request was rejected"));
                             }
                         } else {
-                            return  ResponseEntity.ok(new Result(false, "this username did not request marriage to you"));
+                            return ResponseEntity.ok(new Result(false, "this username did not request marriage to you"));
                         }
                     }
                 }
-                return  ResponseEntity.ok(new Result(false, "this username does not exist in this game"));
+                return ResponseEntity.ok(new Result(false, "this username does not exist in this game"));
             }
         }
 
-        return  ResponseEntity.ok(new Result(false, "this username did not request marriage to you"));
+        return ResponseEntity.ok(new Result(false, "this username did not request marriage to you"));
     }
 
     @PostMapping("/giftNPC")
-    public ResponseEntity<Result> giftNPC(@RequestHeader("Authorization") String token,@RequestParam String npc1,@RequestParam String item,@RequestParam String amount) {
+    public ResponseEntity<Result> giftNPC(@RequestHeader("Authorization") String token, @RequestParam String npc1, @RequestParam String item, @RequestParam String amount) {
         NPC npc = AppServer.getCurrentGame().getNPC(npc1);
         Player currentPlayer = getPlayerFromToken(token);
         if (currentPlayer.getBackPack().getInventorySize(item) == 0) {
-            return  ResponseEntity.ok(new Result(false, "your inventory is empty"));
+            return ResponseEntity.ok(new Result(false, "your inventory is empty"));
         } else {
             int Amount;
             try {
                 Amount = Integer.parseInt(amount);
-            }catch (NumberFormatException e) {
-                return  ResponseEntity.ok(new Result(false, "amount is not a number"));
+            } catch (NumberFormatException e) {
+                return ResponseEntity.ok(new Result(false, "amount is not a number"));
             }
-            for (int i = 0; i < Amount ; i++) {
+            for (int i = 0; i < Amount; i++) {
                 currentPlayer.getBackPack().useItem(item);
             }
             if (!currentPlayer.getGiftNPCToday().get(npc)) {
                 if (npc.getFavorites().contains(item)) {
                     currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 200));
                     currentPlayer.getGiftNPCToday().put(npc, true);
-                    return  ResponseEntity.ok(new Result(true, "your beautiful gift was received by  " + npc.getName()));
+                    return ResponseEntity.ok(new Result(true, "your beautiful gift was received by  " + npc.getName()));
                 } else {
                     currentPlayer.getGiftNPCToday().put(npc, true);
                     currentPlayer.getFriendShipsWithNPCs().put(npc, Math.min(799, currentPlayer.getFriendShipsWithNPCs().get(npc) + 50));
-                    return  ResponseEntity.ok(new Result(true, "your gift was received by  " + npc.getName()));
+                    return ResponseEntity.ok(new Result(true, "your gift was received by  " + npc.getName()));
                 }
             } else {
-                return  ResponseEntity.ok(new Result(true, "your gift was received by  " + npc.getName()));
+                return ResponseEntity.ok(new Result(true, "your gift was received by  " + npc.getName()));
             }
 
         }
     }
+
     @PostMapping("/friendshipNPCList")
-    public ResponseEntity<Result> friendshipNPCList(@RequestHeader("Authorization") String token,@RequestParam String npc1) {
+    public ResponseEntity<Result> friendshipNPCList(@RequestHeader("Authorization") String token, @RequestParam String npc1) {
         NPC npc = AppServer.getCurrentGame().getNPC(npc1);
-        Player currentPlayer =  getPlayerFromToken(token);
+        Player currentPlayer = getPlayerFromToken(token);
         String result = "";
         result += ("friendship score with " + npc.getName()
             + " : " + currentPlayer.getFriendShipsWithNPCs().get(npc)
             + "\n" + "friendship level with " + npc.getName() + " : "
             + currentPlayer.getFriendShipsWithNPCs().get(npc) / 200 + "\n" + "-------------" + "\n");
-        return  ResponseEntity.ok(new Result(true  ,result));
+        return ResponseEntity.ok(new Result(true, result));
     }
+
     @PostMapping("/questsList")
     public ResponseEntity<Result> questsList(@RequestHeader("Authorization") String token) {
         String result = "";
@@ -628,21 +640,44 @@ public class GameStateController {
                 (npc.getRequests().get(2).isCompleted() ? " is completed" : " not completed")
                 + "\n" + "------------------------------------" + "\n");
         }
-        return  ResponseEntity.ok(new Result(false, result));
+        return ResponseEntity.ok(new Result(false, result));
     }
+
     @PostMapping("/showMessage")
     public ResponseEntity<Result> showMessage(@RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok( new Result(true,  getPlayerFromToken(token).getStringMessage()));
+        return ResponseEntity.ok(new Result(true, getPlayerFromToken(token).getStringMessage()));
     }
+
     @PostMapping("/deleteMessage")
-    public ResponseEntity<Result> deleteMessage(@RequestHeader("Authorization") String token,@RequestParam int index) {
+    public ResponseEntity<Result> deleteMessage(@RequestHeader("Authorization") String token, @RequestParam int index) {
         if (index >= getPlayerFromToken(token).getMessage().size()) {
-            return  ResponseEntity.ok(new Result(false, "there are no messages with this index"));
+            return ResponseEntity.ok(new Result(false, "there are no messages with this index"));
         } else {
             message message = getPlayerFromToken(token).getMessage().get(index);
             getPlayerFromToken(token).getMessage().remove(message);
-            return  ResponseEntity.ok(new Result(true, "message delete successfully"));
+            return ResponseEntity.ok(new Result(true, "message delete successfully"));
         }
+    }
+
+    @PostMapping("/getDialogueTextNPCByName")
+    public ResponseEntity<Result> getDialogueTextNPCByName(@RequestHeader("Authorization") String token, @RequestParam String Name) {
+        for (NPC npc : AppServer.getCurrentGame().getNPCs()) {
+            if (npc.getName().equals(Name)) {
+                return ResponseEntity.ok(new Result(true, npc.getDialogueText()));
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/getNearbyNPC")
+    public ResponseEntity<Result> getNearbyNPC(@RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        for (NPC npc : App.getCurrentGame().getNPCs()) {
+            if (sideBySide(player, npc)) {
+                return ResponseEntity.ok(new Result(true,npc.getName()));
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
@@ -663,7 +698,6 @@ public class GameStateController {
             return true;
         } else return false;
     }
-
 
 
     public boolean sideBySide(Player currentPlayer, Player player) {
