@@ -61,7 +61,7 @@ public class TalkController {
                 gameView.setError("");
                 view.getStage().addActor(view.getWindow());
                 view.getWindow().getTitleLabel().setText("                     messages");
-                view.setText(App.getCurrentGame().getCurrentPlayingPlayer().getStringMessage());
+                view.setText(gameMenuController.showMessage().getMessage());
             }
         });
         view.getButton1().addListener(new ClickListener() {
