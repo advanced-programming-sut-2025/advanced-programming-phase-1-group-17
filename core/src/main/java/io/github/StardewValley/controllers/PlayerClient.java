@@ -39,6 +39,7 @@ public class PlayerClient {
     private Texture texture;
     private float animationTimer = 0f;
     private float passOutTimer = 0f;
+    private boolean isNewMessage = false;
 
 
     PlayerClient(UserDTO user) {
@@ -320,6 +321,14 @@ public class PlayerClient {
         Main.getBatch().draw(this.currentFrame, getX() == 0 ? 1 : getX(), getY() == 0 ? 1 : getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
 //            else
 //                Main.getBatch().draw(texture, getX() == 0 ? 1 : getX(), getY() == 0 ? 1 : getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+    }
+
+    public boolean isNewMessage() {
+        return isNewMessage;
+    }
+
+    public void setNewMessage(boolean newMessage) {
+        isNewMessage = newMessage;
     }
 }
 

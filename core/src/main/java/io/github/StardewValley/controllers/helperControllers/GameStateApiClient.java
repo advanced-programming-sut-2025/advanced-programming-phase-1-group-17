@@ -760,9 +760,57 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
+    public String getNearbyPlayer() {
+        try {
+            String baseUrl = BASE_URL + "/getNearbyPlayer";
+            URL url = new URL(baseUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String getGender(String username) {
+        try {
+            String baseUrl = BASE_URL + "/getGender";
+            String params = "?username" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
     public String getDialogueTextNPCByName(String Name) {
         try {
-            String baseUrl = BASE_URL + "/deleteMessage";
+            String baseUrl = BASE_URL + "/getDialogueTextNPCByName";
             String params = "?Name" + URLEncoder.encode(Name, "UTF-8");
             URL url = new URL(baseUrl + params);
 
@@ -785,6 +833,32 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
+    public PlayerDto getPlayerDTOByUserName(String username){
+        try {
+            String baseUrl = BASE_URL + "/getPlayerDTOByUserName";
+            String params = "?username" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, PlayerDto.class);
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
 
 

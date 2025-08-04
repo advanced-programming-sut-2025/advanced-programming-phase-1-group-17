@@ -1743,8 +1743,8 @@ public class GameMenuController {
 //    }
 
 
-    public String friendship(Player player) {
-        return GameClient.getGameStateApiClient().friendship(player.getUser().getUsername());
+    public String friendship(String player) {
+        return GameClient.getGameStateApiClient().friendship(player);
     }
 
     public Result talk(String username, String massage) {

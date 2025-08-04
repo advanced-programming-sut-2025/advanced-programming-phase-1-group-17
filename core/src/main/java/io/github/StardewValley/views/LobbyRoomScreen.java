@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.Gdx;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.ChooseMapController;
 import io.github.StardewValley.shared.GameAssetManager;
@@ -107,6 +108,7 @@ public class LobbyRoomScreen implements Screen {
                 try {
                     GameDTO gameDTO = apiClient.startGame(lobby.getId());
                     refreshPlayerList();
+                    GameClient.setUserNameOfPlayers(lobby.getPlayerUsernames());
                     System.out.println("Game started!");
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
