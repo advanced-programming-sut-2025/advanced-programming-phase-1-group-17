@@ -117,7 +117,7 @@ public class GameStateController {
         String token = authHeader.substring(7);
         for (Player p : AppServer.getCurrentGame().getPlayers()) {
             if (p.getUser().getUsername().equals(jwtService.extractUsername(token))) {
-                p.getPlayerMap().setType(type);
+                p.getPlayerMap().setMapType(type,AppServer.getCurrentGame());
                 break;
             }
         }
