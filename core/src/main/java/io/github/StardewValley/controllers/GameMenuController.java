@@ -676,8 +676,8 @@ public class GameMenuController {
     }
 
 
-    public Result giftNPC(NPC npc, String item,String amount) {
-        return GameClient.gameStateApiClient.giftNPC(npc.getName(), item, amount);
+    public Result giftNPC(String npc, String item,String amount) {
+        return GameClient.gameStateApiClient.giftNPC(npc, item, amount);
     }
 
     public String friendshipNPCList(String npc) {
