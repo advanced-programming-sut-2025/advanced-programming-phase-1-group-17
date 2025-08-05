@@ -56,15 +56,14 @@ public class Tile {
     }
 
     public void setPlaceable(Placeable placeable) {
-        if (!(placeable instanceof Tree) && treeTile.contains(this)) {
+        if (!(placeable instanceof Tree) && owner.getUser().getActiveGame().getTreeTile().contains(this)) {
             treeTile.remove(this);
         }
         this.placeable = placeable;
         if (placeable instanceof Tree) {
             this.setWalkAble(false);
-            treeTile.add(this);
+            owner.getUser().getActiveGame().getTreeTile().add(this);
         }
-
     }
 
     public boolean isWalkAble() {

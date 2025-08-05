@@ -7,6 +7,7 @@ import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.map.GameMap;
 import io.github.StardewValley.shared.models.map.PlayerMap;
+import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
 
 import java.io.Serializable;
@@ -20,6 +21,8 @@ public class Game implements Serializable {
     private final ArrayList<NPC> NPCs = new ArrayList<>();
     private final MarketsController marketsController = new MarketsController();
     private final ArrayList<NPC> NPCHuts = new ArrayList<>();
+    private ArrayList<Tile> tiles = new ArrayList<Tile>();
+    private ArrayList<Tile> treeTile = new ArrayList<Tile>();
 
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3,UserDTO user4) {
@@ -76,10 +79,12 @@ public class Game implements Serializable {
         }
         App.setCurrentGame(this);
         this.gameMap = new GameMap(players);
+        setTiles(Tile.getTreeTile());
+        setTreeTile(Tile.getTreeTile());
         for (Player player : players) {
             if (player.getUser().getUsername().equals("NPC")) continue;
             if (player.isGuest()){
-                player.getPlayerMap().setType(1);
+                player.getPlayerMap().setMapType(1,this);
             }
         }
         this.marketsController.initializeStores();
@@ -150,6 +155,30 @@ public class Game implements Serializable {
         for (Player player : players) {
             if (player.getUser().getUsername().equals(username))
                 return player;
+        }
+        return null;
+    }
+
+    public ArrayList<Tile> getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(ArrayList<Tile> tiles) {
+        this.tiles = tiles;
+    }
+
+    public ArrayList<Tile> getTreeTile() {
+        return treeTile;
+    }
+
+    public void setTreeTile(ArrayList<Tile> treeTile) {
+        this.treeTile = treeTile;
+    }
+    public Tile getTile(int x,int y){
+        for (Tile tile : tiles) {
+            if (tile.getX() == x && tile.getY() == y) {
+                return tile;
+            }
         }
         return null;
     }

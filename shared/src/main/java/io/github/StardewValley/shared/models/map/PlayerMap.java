@@ -3,6 +3,7 @@ package io.github.StardewValley.shared.models.map;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Fence;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouseLake;
 import io.github.StardewValley.shared.models.NPCS.*;
@@ -15,6 +16,7 @@ import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 
+import java.applet.AppletStub;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -474,7 +476,7 @@ public class PlayerMap {
         }
     }
 
-    public void setMapType(int type) {
+    public void setMapType(int type, Game game) {
         if (type == 1) {
             this.hut = new Hut("hut.png",4 + row , 4 + col);
             this.lakes.add(new Lake());
@@ -484,20 +486,20 @@ public class PlayerMap {
             this.y_start = 4 + col;
             for (int x = 0; x < 4; x++) {
                 for (int y = 0; y < 4; y++) {
-                    Tile.getTile(4 + row + x, 4 + col + y).setPlaceable(hut);
-                    Tile.getTile(4 + row + x, 4 + col + y).setWalkAble(false);
+                    game.getTile(4 + row + x, 4 + col + y).setPlaceable(hut);
+                    game.getTile(4 + row + x, 4 + col + y).setWalkAble(false);
                 }
             }
             for (int i = 1 + row; i < 12 + row; i++) {
                 for (int j = 20 + col; j < 31 + col; j++) {
-                    Tile.getTile(i, j).setPlaceable(quarry);
-                    Tile.getTile(i, j).setWalkAble(false);
+                    game.getTile(i, j).setPlaceable(quarry);
+                    game.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 40 + row; i < 46 + row; i++) {
                 for (int j = 30 + col; j < 36 + col; j++) {
-                    Tile.getTile(i, j).setPlaceable(lakes.get(0));
-                    Tile.getTile(i, j).setWalkAble(false);
+                    game.getTile(i, j).setPlaceable(lakes.get(0));
+                    game.getTile(i, j).setWalkAble(false);
                 }
             }
             createGreenHouse();
@@ -511,55 +513,55 @@ public class PlayerMap {
             this.y_start = 40 + col;
             for (int x = 0; x < 4; x++) {
                 for (int y = 0; y < 4; y++) {
-                    Tile.getTile(40 + row + x, 40 + col + y).setPlaceable(hut);
-                    Tile.getTile(40 + row + x, 40 + col + y).setWalkAble(false);
+                    game.getTile(40 + row + x, 40 + col + y).setPlaceable(hut);
+                    game.getTile(40 + row + x, 40 + col + y).setWalkAble(false);
                 }
             }
             for (int i = 25 + row; i < 31 + row; i++) {
                 for (int j = 35 + col; j < 41 + col; j++) {
-                    Tile.getTile(i, j).setPlaceable(quarry);
-                    Tile.getTile(i, j).setWalkAble(false);
+                    game.getTile(i, j).setPlaceable(quarry);
+                    game.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = 30 + row; i < 36 + row; i++) {
                 for (int j = 15 + col; j < 21 + col; j++) {
-                    Tile.getTile(i, j).setPlaceable(lakes.get(0));
-                    Tile.getTile(i, j).setWalkAble(false);
+                    game.getTile(i, j).setPlaceable(lakes.get(0));
+                    game.getTile(i, j).setWalkAble(false);
                 }
             }
             for (int i = row + 1; i < 7 + row; i++) {
                 for (int j = 25 + col; j < 31 + col; j++) {
-                    Tile.getTile(i, j).setPlaceable(lakes.get(1));
-                    Tile.getTile(i, j).setWalkAble(false);
+                    game.getTile(i, j).setPlaceable(lakes.get(1));
+                    game.getTile(i, j).setWalkAble(false);
                 }
             }
-            createGreenHouse();
+            createGreenHouse(game);
         }
-        randomFillMap();
+        randomFillMap(game);
     }
 
-    public void createGreenHouse() {
+    public void createGreenHouse(Game game) {
         for (int i = 35 + row; i < 41 + row; i++) {
             for (int j = 2 + col; j < 10 + col; j++) {
                 if (j == 8 + col || j == 9 + col)
-                    Tile.getTile(34 + row, j).setPlaceable(greenHouse.getLake());
+                    game.getTile(34 + row, j).setPlaceable(greenHouse.getLake());
 
                 else if (j == 2 + col) {
                     if (i == 38 + row)
                         continue;
-                    Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
+                    game.getTile(i, j).setPlaceable(greenHouse.getFence());
                 } else if (j == 7 + col)
-                    Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
+                    game.getTile(i, j).setPlaceable(greenHouse.getFence());
                 else if (i == 35 + row || i == 40 + row) {
-                    Tile.getTile(i, j).setPlaceable(greenHouse.getFence());
+                    game.getTile(i, j).setPlaceable(greenHouse.getFence());
                 }
                 else
-                    Tile.getTile(i, j).setPlaceable(greenHouse);
+                    game.getTile(i, j).setPlaceable(greenHouse);
 
-                if ((Tile.getTile(i, j).getPlaceable() instanceof GreenHouse))
-                    Tile.getTile(i, j).setWalkAble(true);
+                if ((game.getTile(i, j).getPlaceable() instanceof GreenHouse))
+                    game.getTile(i, j).setWalkAble(true);
                 else
-                    Tile.getTile(i, j).setWalkAble(false);
+                    game.getTile(i, j).setWalkAble(false);
             }
         }
     }
@@ -568,19 +570,19 @@ public class PlayerMap {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
-    private void randomFillMap() {
+    private void randomFillMap(Game game) {
         int numOfTrees = randomInt(14, 20);
         int numOfForagings = randomInt(14, 20);
-        generateTrees(numOfTrees);
-        generateForagings(numOfForagings);
+        generateTrees(numOfTrees,game);
+        generateForagings(numOfForagings,game);
     }
 
-    private void generateForagings(int numOfForagings) {
+    private void generateForagings(int numOfForagings,Game game) {
         int counter = 0;
         while (numOfForagings != 0) {
             int randomIndex_x = randomInt(1 + row, 100 + row);
             int randomIndex_y = randomInt(1 + col, 100 + col);
-            Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+            Tile tile = game.getTile(randomIndex_x, randomIndex_y);
             if (tile.getPlaceable() == null) {
                 if (counter < 2)
                     ForagingController.setTreeForaging(tile);
@@ -595,11 +597,11 @@ public class PlayerMap {
         }
     }
 
-    private void generateTrees(int numOfTrees) {
+    private void generateTrees(int numOfTrees,Game game) {
         while (numOfTrees != 0) {
             int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 100 + col);
-            Tile tile = Tile.getTile(randomIndex_x, randomIndex_y);
+            Tile tile = game.getTile(randomIndex_x, randomIndex_y);
             if (tile.getPlaceable() == null) {
                 Tree tree = new Tree(false, ForagingController.getRandomTreeType(), tile, false);
                 tile.setPlaceable(tree);
