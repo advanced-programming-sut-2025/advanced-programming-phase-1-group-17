@@ -32,8 +32,6 @@ public class GameController {
     int mapWidthInPixels;
     int mapHeightInPixels;
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
-    private static GameClient gameClient = new GameClient();
-
     private  WorldController worldController;
     private ToolRenderController toolRenderController;
     private  LightningController lightningController;

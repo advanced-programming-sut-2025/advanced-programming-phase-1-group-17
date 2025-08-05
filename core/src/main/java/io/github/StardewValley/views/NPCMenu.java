@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.NPCMenuController;
 import io.github.StardewValley.shared.models.App;
@@ -54,11 +55,11 @@ public class NPCMenu implements Screen {
         this.label = new Label("", skin);
         label.setColor(Color.BLACK);
         label.setFontScale(1);
-        this.button4 = new TextButton(App.getCurrentGame().getNPCs().get(0).getName(), skin);
-        this.button5 = new TextButton(App.getCurrentGame().getNPCs().get(1).getName(), skin);
-        this.button6 = new TextButton(App.getCurrentGame().getNPCs().get(2).getName(), skin);
-        this.button7 = new TextButton(App.getCurrentGame().getNPCs().get(3).getName(), skin);
-        this.button8 = new TextButton(App.getCurrentGame().getNPCs().get(4).getName(), skin);
+        this.button4 = new TextButton("Abigail", skin);
+        this.button5 = new TextButton("Harvey", skin);
+        this.button6 = new TextButton("Lia", skin);
+        this.button7 = new TextButton("Robin", skin);
+        this.button8 = new TextButton("Sebastian", skin);
         this.button10 = new TextButton("Quests List", skin);
         this.button1 = new TextButton("Gift", skin);
         questfinishLable = new Label("", skin);
@@ -210,8 +211,6 @@ public class NPCMenu implements Screen {
     }
 
 
-
-
     public Table getTable2() {
         return table2;
     }
@@ -220,22 +219,19 @@ public class NPCMenu implements Screen {
         return button1;
     }
 
-    public void showQuestDialog(NPC npc) {
+    public void showQuestDialog(String npc) {
         Dialog dialog = new Dialog("Choose a Quest", skin);
 
         for (int i = 0; i < 3; i++) {
             final int index = i;
-            String questText = (i + 1) + "- Level: " +
-                npc.getRequests().get(i).getLevel() +
-                " | " + npc.getRequests().get(i).getQuestExplanation() +
-                (npc.getRequests().get(i).isCompleted() ? " [COMPLETED]" : "");
+            String questText = GameClient.gameStateApiClient.getQuestWithIndex(npc, i);
 
             TextButton questButton = new TextButton(questText, skin);
             questButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     dialog.hide();
-                    controller.onQuestSelected(npc, index + 1);
+                    controller.onQuestSelected(index + 1);
                 }
             });
 
@@ -245,6 +241,7 @@ public class NPCMenu implements Screen {
         dialog.button("Cancel", false);
         dialog.show(stage);
     }
+
     public void showQuestFinishAnimation() {
 
         questfinishLable.addAction(Actions.sequence(

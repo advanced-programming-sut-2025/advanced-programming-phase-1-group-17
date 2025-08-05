@@ -857,6 +857,99 @@ public class GameStateApiClient {
             return null;
         }
     }
+    public void setNewMessage(boolean newMessage) {
+        try {
+            String baseUrl = BASE_URL + "/setNewMessage";
+            String params = "?newMessage" + URLEncoder.encode(String.valueOf(newMessage), "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public String tradeHistory(){
+        try {
+            String baseUrl = BASE_URL + "/tradeHistory";
+            URL url = new URL(baseUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String tradeList(){
+        try {
+            String baseUrl = BASE_URL + "/tradeList";
+            URL url = new URL(baseUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String getQuestWithIndex(String NpcName, int index){
+        try {
+            String baseUrl = BASE_URL + "/getQuestWithIndex";
+            String params = "?NpcName" + URLEncoder.encode(NpcName, "UTF-8")
+                + "&index" + index;
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
 
 
 

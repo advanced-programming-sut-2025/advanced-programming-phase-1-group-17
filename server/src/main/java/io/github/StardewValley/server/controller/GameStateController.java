@@ -674,7 +674,7 @@ public class GameStateController {
     @PostMapping("/getNearbyNPC")
     public ResponseEntity<Result> getNearbyNPC(@RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
-        for (NPC npc : App.getCurrentGame().getNPCs()) {
+        for (NPC npc : AppServer.getCurrentGame().getNPCs()) {
             if (sideBySide(player, npc)) {
                 return ResponseEntity.ok(new Result(true,npc.getName()));
             }
@@ -684,7 +684,7 @@ public class GameStateController {
     @PostMapping("/getNearbyPlayer")
     public ResponseEntity<Result> getNearbyPlayer(@RequestHeader("Authorization") String token) {
         Player player1 = getPlayerFromToken(token);
-        for (Player player : App.getCurrentGame().getPlayers()) {
+        for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (!player.getUser().getUsername().equals("NPC") && !player.equals(player1)) {
                 if (sideBySide(player, player1)) {
                     return ResponseEntity.ok(new Result(true,player.getUser().getUsername()));
@@ -699,7 +699,7 @@ public class GameStateController {
     }
     @PostMapping("/getPlayerDTOByUserName")
     public ResponseEntity<PlayerDto> getPlayerDTOByUserName(@RequestHeader("Authorization") String token,@RequestParam String username) {
-        for (Player player : App.getCurrentGame().getPlayers()) {
+        for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
                 PlayerDto pd = new PlayerDto(player.isPassedOut()
                     , player.getEnergy()
@@ -716,7 +716,122 @@ public class GameStateController {
             }
         }
         return ResponseEntity.notFound().build();
+        }
+    @PostMapping("/setNewMessage")
+    public ResponseEntity<Void> setNewMessage(@RequestHeader ("Authorization") String token, @RequestParam String newMessage) {
+        Player player = getPlayerFromToken(token);
+        player.setNewMessage(newMessage.equals("true"));
+        return ResponseEntity.ok().build();
     }
+    @PostMapping("/tradeHistory")
+    public ResponseEntity<Result> tradeHistory(@RequestHeader ("Authorization") String token) {
+        Player currentPlayer =  getPlayerFromToken(token);
+        String result = "on going trades : \n";
+        for (Trade trade : currentPlayer.getTrades()) {
+            if (trade.getTradeType().equals("byMoney")) {
+                result += (trade.getType() + " : " + "\n"
+                    + "tradeId : " + trade.getId() + "\n"
+                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
+                    + "tradeType : " + "byMoney" + "\n"
+                    + "tradeItem : " + trade.getItem() + "\n"
+                    + "amount : " + trade.getAmount() + "\n"
+                    + "price : " + trade.getPrice() + "\n"
+                    + "--------------------------------------------------\n");
+            } else {
+                result += (trade.getType() + " : " + "\n"
+                    + "tradeId : " + trade.getId() + "\n"
+                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
+                    + "tradeType : " + "byItem" + "\n"
+                    + "item : " + trade.getItem() + "\n"
+                    + "amount : " + trade.getAmount() + "\n"
+                    + "targetItem : " + trade.getTargetItem() + "\n"
+                    + "targetAmount : " + trade.getTargetAmount() + "\n"
+                    + "--------------------------------------------------\n");
+            }
+        }
+        result += "\nprevious trades (accepted): \n";
+        for (Trade trade : currentPlayer.getTradeHistory()) {
+            if (trade.getTradeType().equals("byMoney")) {
+                result += (trade.getType() + " : " + "\n"
+                    + "tradeId : " + trade.getId() + "\n"
+                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
+                    + "tradeType : " + "byMoney" + "\n"
+                    + "tradeItem : " + trade.getItem() + "\n"
+                    + "amount : " + trade.getAmount() + "\n"
+                    + "price : " + trade.getPrice() + "\n"
+                    + "--------------------------------------------------\n");
+            } else {
+                result += (trade.getType() + " : " + "\n"
+                    + "tradeId : " + trade.getId() + "\n"
+                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
+                    + "tradeType : " + "byItem" + "\n"
+                    + "item : " + trade.getItem() + "\n"
+                    + "amount : " + trade.getAmount() + "\n"
+                    + "targetItem : " + trade.getTargetItem() + "\n"
+                    + "targetAmount : " + trade.getTargetAmount() + "\n"
+                    + "--------------------------------------------------\n");
+            }
+        }
+        return ResponseEntity.ok(new Result(true,result));
+    }
+    @PostMapping("/tradeList")
+    public ResponseEntity<Result> tradeList(@RequestHeader ("Authorization") String token) {
+        Player currentPlayer = getPlayerFromToken(token);
+        if (currentPlayer.getTrades() == null) {
+            return ResponseEntity.ok(new Result(false,"there are nothing trade for you"));
+        } else {
+            String result = "";
+            for (Trade trade : currentPlayer.getTrades()) {
+                if (!trade.getSender().equals(currentPlayer)) {
+                    if (trade.getTradeType().equals("byMoney")) {
+                        result += (trade.getType() + " : " + "\n"
+                            + "tradeId : " + trade.getId() + "\n"
+                            + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
+                            + "tradeType : " + "byMoney" + "\n"
+                            + "tradeItem : " + trade.getItem() + "\n"
+                            + "amount : " + trade.getAmount() + "\n"
+                            + "price : " + trade.getPrice() + "\n"
+                            + "--------------------------------------------------\n");
+                    } else {
+                        result += (trade.getType() + " : " + "\n"
+                            + "tradeId : " + trade.getId() + "\n"
+                            + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
+                            + "tradeType : " + "byItem" + "\n"
+                            + "item : " + trade.getItem() + "\n"
+                            + "amount : " + trade.getAmount() + "\n"
+                            + "targetItem : " + trade.getTargetItem() + "\n"
+                            + "targetAmount : " + trade.getTargetAmount() + "\n"
+                            + "--------------------------------------------------\n");
+                    }
+                }
+            }
+            if (result.isEmpty()) {
+                return ResponseEntity.ok(new Result(false,"there are nothing trade for you"));
+            } else {
+                return ResponseEntity.ok(new Result(true,result));
+            }
+        }
+    }
+    @PostMapping("/getQuestWithIndex")
+    public ResponseEntity<Result> getQuestWithIndex(@RequestHeader ("Authorization") String token,String NpcName, int index) {
+        int i = index;
+        NPC npc = AppServer.getCurrentGame().getNPC(NpcName);
+        return ResponseEntity.ok(new Result(true,(i + 1) + "- Level: " +
+            npc.getRequests().get(i).getLevel() +
+            " | " + npc.getRequests().get(i).getQuestExplanation() +
+            (npc.getRequests().get(i).isCompleted() ? " [COMPLETED]" : "")));
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 

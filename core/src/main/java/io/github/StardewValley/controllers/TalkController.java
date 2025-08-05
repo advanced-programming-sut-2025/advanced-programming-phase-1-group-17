@@ -2,18 +2,17 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.NPCS.NPC;
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.TalkView;
+
+import java.util.Objects;
 
 public class TalkController {
     private TalkView view;
     private GameView gameView;
     private String targetPlayer;
-    private NPC targetNpc;
     private GameMenuController gameMenuController;
 
     public TalkController(String player) {
@@ -57,7 +56,7 @@ public class TalkController {
                 view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
-                App.getCurrentGame().getCurrentPlayingPlayer().setNewMessage(false);
+                GameClient.getGameStateApiClient().setNewMessage(false);
                 gameView.setError("");
                 view.getStage().addActor(view.getWindow());
                 view.getWindow().getTitleLabel().setText("                     messages");
@@ -73,7 +72,6 @@ public class TalkController {
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetPlayer = view.getPlayers()[0];
-                targetNpc = null;
                 view.getWindow().remove();
                 view.setError(gameMenuController.friendship(targetPlayer));
             }
@@ -87,7 +85,6 @@ public class TalkController {
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetPlayer = view.getPlayers()[1];
-                targetNpc = null;
                 view.getWindow().remove();
                 view.setError(gameMenuController.friendship(targetPlayer));
             }
@@ -101,81 +98,10 @@ public class TalkController {
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
                 targetPlayer = view.getPlayers()[2];
-                targetNpc = null;
                 view.getWindow().remove();
                 view.setError(gameMenuController.friendship(targetPlayer));
             }
         });
-//        view.getButton4().addListener(new ClickListener() {
-//            public void clicked(InputEvent event, float x, float y) {
-//                view.getWindow().remove();
-//                view.getButton16().setVisible(false);
-//                view.getGiftNumber().setVisible(false);
-//                view.getGiftRate().setVisible(false);
-//                view.getSend().setVisible(false);
-//                view.getTextField().setVisible(false);
-//                targetNpc = App.getCurrentGame().getNPCs().get(0);
-//                targetPlayer = null;
-//                view.getWindow().remove();
-//                view.setError(gameMenuController.friendshipNPCList(targetNpc));
-//            }
-//        });
-//        view.getButton5().addListener(new ClickListener() {
-//            public void clicked(InputEvent event, float x, float y) {
-//                view.getWindow().remove();
-//                view.getButton16().setVisible(false);
-//                view.getGiftNumber().setVisible(false);
-//                view.getGiftRate().setVisible(false);
-//                view.getSend().setVisible(false);
-//                view.getTextField().setVisible(false);
-//                targetNpc = App.getCurrentGame().getNPCs().get(1);
-//                targetPlayer = null;
-//                view.getWindow().remove();
-//                view.setError(gameMenuController.friendshipNPCList(targetNpc));
-//            }
-//        });
-//        view.getButton6().addListener(new ClickListener() {
-//            public void clicked(InputEvent event, float x, float y) {
-//                view.getWindow().remove();
-//                view.getButton16().setVisible(false);
-//                view.getGiftNumber().setVisible(false);
-//                view.getGiftRate().setVisible(false);
-//                view.getSend().setVisible(false);
-//                view.getTextField().setVisible(false);
-//                targetNpc = App.getCurrentGame().getNPCs().get(2);
-//                targetPlayer = null;
-//                view.getWindow().remove();
-//                view.setError(gameMenuController.friendshipNPCList(targetNpc));
-//            }
-//        });
-//        view.getButton7().addListener(new ClickListener() {
-//            public void clicked(InputEvent event, float x, float y) {
-//                view.getWindow().remove();
-//                view.getButton16().setVisible(false);
-//                view.getGiftNumber().setVisible(false);
-//                view.getGiftRate().setVisible(false);
-//                view.getSend().setVisible(false);
-//                view.getTextField().setVisible(false);
-//                targetNpc = App.getCurrentGame().getNPCs().get(3);
-//                targetPlayer = null;
-//                view.getWindow().remove();
-//                view.setError(gameMenuController.friendshipNPCList(targetNpc));
-//            }
-//        });
-//        view.getButton8().addListener(new ClickListener() {
-//            public void clicked(InputEvent event, float x, float y) {
-//                view.getWindow().remove();
-//                view.getButton16().setVisible(false);
-//                view.getGiftNumber().setVisible(false);
-//                view.getGiftRate().setVisible(false);
-//                view.getSend().setVisible(false);
-//                view.getTextField().setVisible(false);
-//                targetNpc = App.getCurrentGame().getNPCs().get(4);
-//                targetPlayer = null;
-//                view.getWindow().remove();
-//                view.setText(gameMenuController.friendshipNPCList(targetNpc));
-//            }
-//        });
 
         view.getButton10().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -217,7 +143,7 @@ public class TalkController {
                     return;
                 }
 
-                String userName = targetPlayer.getUser().getUsername();
+                String userName = targetPlayer;
                 view.getStage().addActor(view.getWindow());
                 view.getWindow().getTitleLabel().setText("              Gift History with");
                 view.setText(gameMenuController.giftHistory(userName));
@@ -235,7 +161,7 @@ public class TalkController {
                     view.setError("please choose a player");
                     return;
                 }
-                String userName = targetPlayer.getUser().getUsername();
+                String userName = targetPlayer;
                 view.getStage().addActor(view.getWindow());
                 view.getWindow().getTitleLabel().setText("                 Talk History with ");
                 view.setText(gameMenuController.talkHistory(userName));
@@ -253,9 +179,9 @@ public class TalkController {
                     view.setError("please choose a player");
                     return;
                 }
-                view.setError(gameMenuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), targetPlayer) ?
+                view.setError(Objects.equals(GameClient.getGameStateApiClient().getNearbyPlayer(), targetPlayer) ?
                     "please enter your message" : "you can't talk from this distance");
-                if (gameMenuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), targetPlayer)) {
+                if (Objects.equals(GameClient.getGameStateApiClient().getNearbyPlayer(), targetPlayer)) {
                     view.getSend().setVisible(true);
                     view.getTextField().setVisible(true);
                 }
@@ -270,7 +196,7 @@ public class TalkController {
                 }
                 String Message = view.getTextField().getText();
                 if (Message.isEmpty()) return;
-                view.setError(gameMenuController.talk(targetPlayer.getUser().getUsername(), Message).toString());
+                view.setError(gameMenuController.talk(targetPlayer, Message).toString());
             }
         });
         view.getButton15().addListener(new ClickListener() {
@@ -303,7 +229,7 @@ public class TalkController {
                     view.setError("please choose a player");
                     return;
                 }
-                String userName = targetPlayer.getUser().getUsername();
+                String userName = targetPlayer;
                 view.setError(gameMenuController.respond("accept", userName).toString());
             }
         });
@@ -313,13 +239,10 @@ public class TalkController {
                     view.setError("please choose a player");
                     return;
                 }
-                String userName = targetPlayer.getUser().getUsername();
+                String userName = targetPlayer;
                 view.setError(gameMenuController.respond("reject", userName).toString());
             }
         });
-
-
-        //TODO
 
         view.getCloseX().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {

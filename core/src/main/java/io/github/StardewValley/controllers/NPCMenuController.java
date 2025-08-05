@@ -15,7 +15,7 @@ import io.github.StardewValley.views.NPCMenu;
 public class NPCMenuController {
     private NPCMenu view;
     private GameView gameView;
-    private NPC targetNpc;
+    private String targetNpc;
     private GameMenuController gameMenuController;
 
     public void setView(NPCMenu view, GameView gameView) {
@@ -35,31 +35,31 @@ public class NPCMenuController {
         });
         view.getButton4().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                targetNpc = App.getCurrentGame().getNPCs().get(0);
+                targetNpc = "Abigail";
                 view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton5().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                targetNpc = App.getCurrentGame().getNPCs().get(1);
+                targetNpc = "Harvey";
                 view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton6().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                targetNpc = App.getCurrentGame().getNPCs().get(2);
+                targetNpc = "Lia";
                 view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton7().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                targetNpc = App.getCurrentGame().getNPCs().get(3);
+                targetNpc = "Robin";
                 view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
         view.getButton8().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                targetNpc = App.getCurrentGame().getNPCs().get(4);
+                targetNpc = "Sebastian";
                 view.setError(gameMenuController.friendshipNPCList(targetNpc));
             }
         });
@@ -67,6 +67,7 @@ public class NPCMenuController {
             public void clicked(InputEvent event, float x, float y) {
                 if (targetNpc == null) return;
                 Main.getMain().getScreen().dispose();
+                //TODO saeed
                 Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
                       GameAssetManagerClient.getGameAssetManager().getSkin(), null, gameView,targetNpc));
             }
@@ -82,7 +83,7 @@ public class NPCMenuController {
 
 
     }
-    public void onQuestSelected(NPC npc, int index) {
+    public void onQuestSelected(int index) {
         Result result = gameMenuController.questFinish(String.valueOf(index));
         if (result.isSuccessful()) {
             view.getQuestFinishLabel().setText(result.toString());

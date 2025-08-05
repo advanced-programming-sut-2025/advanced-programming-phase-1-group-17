@@ -25,27 +25,7 @@ public class Main extends Game {
         main = this;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-
-
-//        ArrayList<User> users = LoadUser.loadUsers();
-//        if (users != null) {
-//            App.setUsers(users);
-//        }
-//        User user1 = LoadUser.loadStayLoggedInUser();
-//        if (user1 != null) {
-//            assert users != null;
-//            for (User user : users) {
-//                if (user.equals(user1)) {
-//                    App.setLoggedInUser(user);
-//                    isLoggedInUser = true;
-//                    Main.getMain().setScreen(new WelcomeMenu(this,true));
-//                }
-//            }
-//        }
-//        if (!isLoggedInUser) {
-//            Main.getMain().setScreen(new WelcomeMenu(this,false));
-//        }
-        Main.getMain().setScreen(new WelcomeMenu(this,false));
+        Main.getMain().setScreen(new WelcomeMenu(this));
     }
 
     @Override
