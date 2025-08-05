@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.plant;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.Season;

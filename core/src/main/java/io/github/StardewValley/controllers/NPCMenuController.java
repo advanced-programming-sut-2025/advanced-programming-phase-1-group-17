@@ -68,8 +68,8 @@ public class NPCMenuController {
                 if (targetNpc == null) return;
                 Main.getMain().getScreen().dispose();
                 //TODO saeed
-                Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
-                      GameAssetManagerClient.getGameAssetManager().getSkin(), null, gameView,targetNpc));
+//                Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
+//                      GameAssetManagerClient.getGameAssetManager().getSkin(), null, gameView,targetNpc));
             }
         });
         view.getButton10().addListener(new ClickListener() {

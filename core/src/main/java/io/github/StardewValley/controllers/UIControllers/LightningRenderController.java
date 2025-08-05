@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import io.github.StardewValley.controllers.PlayerClient;
+import io.github.StardewValley.shared.dto.LightningStateDTO;
 import io.github.StardewValley.shared.models.PlayerDto;
 
-public class LightningController {
-    private static LightningController lightningController = null;
+public class LightningRenderController {
+    private static LightningRenderController lightningRenderController = null;
 
     private float lightningAlpha = 0f;
     private boolean flashing = false;
@@ -20,7 +22,7 @@ public class LightningController {
     private int currentFrame = 0;
     private boolean boltActive = false;
 
-    private LightningController() {
+    private LightningRenderController() {
         // white texture for flash
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
@@ -31,43 +33,22 @@ public class LightningController {
         generateLightningAnimation(); // build bolt frames
     }
 
-    public static LightningController getLightningController() {
-        if (lightningController == null)
-            lightningController = new LightningController();
-        return lightningController;
+    public static LightningRenderController getLightningController() {
+        if (lightningRenderController == null)
+            lightningRenderController = new LightningRenderController();
+        return lightningRenderController;
     }
 
-    public void triggerLightning() {
-        lightningAlpha = 1f;
-        flashing = true;
-
-        animationTime = 0f;
-        currentFrame = 0;
-        boltActive = true;
+    public void applyLightningState(LightningStateDTO state) {
+        this.flashing = state.isFlashing();
+        this.lightningAlpha = state.getLightningAlpha();
+        this.boltActive = state.isBoltActive();
+        this.currentFrame = state.getCurrentFrame();
+        this.animationTime = state.getAnimationTime();
     }
 
-    public void updateLightning(float delta) {
-        if (flashing) {
-            lightningAlpha -= delta * 2f;
-            if (lightningAlpha <= 0f) {
-                lightningAlpha = 0f;
-                flashing = false;
-            }
-        }
 
-        if (boltActive) {
-            animationTime += delta;
-            if (animationTime >= 0.05f) {
-                animationTime = 0f;
-                currentFrame++;
-                if (currentFrame >= lightningFrames.length) {
-                    boltActive = false;
-                }
-            }
-        }
-    }
-
-    public void renderLightning(SpriteBatch batch, PlayerDto player) {
+    public void renderLightning(SpriteBatch batch, PlayerClient player) {
         // Flash (white screen)
         if (lightningAlpha > 0f) {
             Color prev = batch.getColor().cpy();

@@ -1,5 +1,7 @@
 package io.github.StardewValley.shared.models;
 
+import io.github.StardewValley.shared.models.tools.ToolType;
+
 public class PlayerDto {
     private boolean isPassedOut = false;
     private double energy;
@@ -15,6 +17,9 @@ public class PlayerDto {
     private float animationTimer = 0f;
     private float passOutTimer = 0f;
     private boolean isNewMessage;
+
+    private ToolType toolType;
+    private String toolTexturePath;
 
     public PlayerDto() {}
     public PlayerDto(boolean isPassedOut
@@ -146,6 +151,9 @@ public class PlayerDto {
         this.passOutTimer = passOutTimer;
     }
 
+    public String getToolTexturePath() {
+        return toolTexturePath;
+    }
     public boolean isNewMessage() {
         return isNewMessage;
     }

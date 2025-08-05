@@ -13,6 +13,13 @@ public class GameAssetManagerClient {
 
     private Skin skin = new Skin(Gdx.files.internal("Skin/StardewSkin.json"));
 
+    private final HashMap<String, Texture> abilityTextures = new HashMap<>() {{
+        put("Farming", new Texture("Skill/Farming_Skill_Icon.png"));
+        put("Fishing", new Texture("Skill/Fishing_Skill_Icon.png"));
+        put("Foraging", new Texture("Skill/Foraging_Skill_Icon.png"));
+        put("Mining", new Texture("Skill/Mining_Skill_Icon.png"));
+    }};
+
     public static GameAssetManagerClient getGameAssetManager() {
         if (gameAssetManager == null) {
             gameAssetManager = new GameAssetManagerClient();
@@ -45,6 +52,10 @@ public class GameAssetManagerClient {
             }
         }
         return null;
+    }
+
+    public Texture getAbilityTextures(String abilityName) {
+        return abilityTextures.get(abilityName);
     }
 
 }

@@ -12,19 +12,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.ShippingBinScreenController;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.backpack.BackPack;
-import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.TileDTO;
+import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.market.ShippingBin;
+
+import java.util.HashMap;
 
 public class ShippingBinScreen implements Screen {
     private Stage stage;
-    private final ShippingBin shippingBin;
+    private final TileDTO shippingBinTile;
     private final ShippingBinScreenController controller;
 
-    private BackPackableType selectedItem;
+    private BackpackableTypeDTO selectedItem;
     private int selectedAvailable;
     private int quantityToSell;
 
@@ -34,10 +35,12 @@ public class ShippingBinScreen implements Screen {
     private final TextButton minusButton;
 
     private final Table mainTable;
+    private final HashMap<BackpackableTypeDTO, Integer> backpackItems =
+        GameClient.getGameStateApiClient().getBackpackItems().getItems();
 
-    public ShippingBinScreen(ShippingBin shippingBin, ShippingBinScreenController controller, Skin skin) {
+    public ShippingBinScreen(TileDTO shippingBinTile, ShippingBinScreenController controller, Skin skin) {
         this.controller = controller;
-        this.shippingBin = shippingBin;
+        this.shippingBinTile = shippingBinTile;
 
         this.titleLabel = new Label("Selling Products Menu", skin);
         this.errorLabel = new Label("", skin);
@@ -52,8 +55,7 @@ public class ShippingBinScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         mainTable.setFillParent(true);
 
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        BackPack backPack = player.getBackPack();
+
         Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
 
         quantityToSell = 0;
@@ -62,8 +64,8 @@ public class ShippingBinScreen implements Screen {
         ScrollPane scrollPane = new ScrollPane(itemTable, skin);
         Label quantityLabel = new Label("Sell: 0", skin);
 
-        for (BackPackableType itemType : backPack.getBackPackItems().keySet()) {
-            int available = backPack.getBackPackItems().get(itemType).size();
+        for (BackpackableTypeDTO itemType : backpackItems.keySet()) {
+            int available = backpackItems.get(itemType);
             if (itemType.getInventoryTexturePath() == null) continue;
             //TODO remove new Texture
             Texture texture = new Texture(itemType.getInventoryTexturePath());
@@ -115,7 +117,7 @@ public class ShippingBinScreen implements Screen {
         sellButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 if (selectedItem != null && quantityToSell > 0) {
-                    controller.sellItem(selectedItem, quantityToSell, player);
+                    controller.sellItem(selectedItem, quantityToSell);
                     quantityToSell = 0;
                     quantityLabel.setText("Sell: 0");
                     // refresh item quantity if needed
@@ -169,11 +171,15 @@ public class ShippingBinScreen implements Screen {
 
     }
 
-    public ShippingBin getShippingBin() {
-        return shippingBin;
+    public TileDTO getShippingBinTile() {
+        return shippingBinTile;
     }
 
     public Label getErrorLabel() {
         return errorLabel;
+    }
+
+    public HashMap<BackpackableTypeDTO, Integer> getBackpackItems() {
+        return backpackItems;
     }
 }
