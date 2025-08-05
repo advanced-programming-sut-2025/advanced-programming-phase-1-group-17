@@ -137,6 +137,7 @@ public class GameController {
         playerClient.setEnergyUnlimited(player.isEnergyUnlimited());
         playerClient.setCurrentDirection(player.getCurrentDirection());
         playerClient.setLastDirection(player.getLastDirection());
+        playerClient.setNewMessage(player.isNewMessage());
     }
 
 

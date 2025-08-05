@@ -27,14 +27,12 @@ public class WelcomeMenu implements Screen {
     private Texture welcomeImage;
     private SpriteBatch batch;
     private float timePassed = 0;
-    private boolean isLoggedInUser = false;
 
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    public WelcomeMenu(Game game, boolean isLoggedIn) {
+    public WelcomeMenu(Game game) {
         this.game = game;
-        this.isLoggedInUser = isLoggedIn;
         welcomeImage = new Texture("Logo.png");
         batch = new SpriteBatch();
 

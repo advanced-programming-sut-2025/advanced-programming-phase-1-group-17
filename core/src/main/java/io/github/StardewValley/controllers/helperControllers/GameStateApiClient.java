@@ -54,6 +54,7 @@ public class GameStateApiClient {
             throw new RuntimeException("Could not fetch tiles: code " + conn.getResponseCode());
         }
     }
+
     public UserDTO getUserWithUserDTO() throws Exception {
         String urlString = "http://%s:%d/api/auth/getUserByUsername".formatted(Main.getServerIP(), Main.getServerPort());
         URL url = new URL(urlString);
@@ -133,6 +134,7 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to get username: " + responseCode);
         }
     }
+
     public boolean exitGame() throws Exception {
         String urlString = BASE_URL + "/exitGame";
         URL url = new URL(urlString);
@@ -151,6 +153,7 @@ public class GameStateApiClient {
             return false;
         }
     }
+
     public void updateUser(UserDTO dto) throws Exception {
         String urlStr = "http://localhost:8080/api/auth/user/update";
         URL url = new URL(urlStr);
@@ -214,6 +217,7 @@ public class GameStateApiClient {
             return false;
         }
     }
+
     public void changePassword(String oldPassword, String newPassword) throws Exception {
         URL url = new URL("http://localhost:8080/api/auth/changePassword");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -246,6 +250,7 @@ public class GameStateApiClient {
             System.out.println("Failed to change password: " + code);
         }
     }
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -276,7 +281,7 @@ public class GameStateApiClient {
         }
     }
 
-    public void pickForaging(int dx, int dy) throws Exception{
+    public void pickForaging(int dx, int dy) throws Exception {
         URL url = new URL(BASE_URL + "/game/Foraging/pickForaging");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
@@ -455,4 +460,668 @@ public class GameStateApiClient {
         }
         return null;
     }
+    public String friendship(String userNameOfPlayer) {
+        try {
+            String baseUrl = BASE_URL + "/friendship";
+            String params = "?userNameOfPlayer=" + URLEncoder.encode(userNameOfPlayer, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    public Result talk(String username, String massage) {
+        try {
+            String baseUrl = BASE_URL + "/talk";
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8")
+                + "&massage=" + URLEncoder.encode(massage, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public String talkHistory(String username) {
+        try {
+            String baseUrl = BASE_URL + "/talkHistory";
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    public Result gift(String username, String item, String amount) {
+        try {
+            String baseUrl = BASE_URL + "/gift";
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8")
+                +  "&massage=" + URLEncoder.encode(item, "UTF-8")
+                + "&amount=" + URLEncoder.encode(amount, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result giftList() {
+        try {
+            String baseUrl = BASE_URL + "/giftList";
+            URL url = new URL(baseUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result giftRate(String giftNumber, String rate) {
+        try {
+            String baseUrl = BASE_URL + "/giftRate";
+            String params = "?username=" + URLEncoder.encode(giftNumber, "UTF-8")
+                 + "&massage=" + URLEncoder.encode(rate, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public String giftHistory(String username) {
+        try {
+            String baseUrl = BASE_URL + "/giftHistory";
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    public Result hug(String username) {
+        try {
+            String baseUrl = BASE_URL + "/hug";
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result flower(String username) {
+        try {
+            String baseUrl = BASE_URL + "/flower";
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result askMarriage(String username, String ring) {
+        try {
+            String baseUrl = BASE_URL + "/askMarriage";
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8")
+                + "&ring=" + URLEncoder.encode(ring, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result respond(String accept, String username) {
+        try {
+            String baseUrl = BASE_URL + "/respond";
+            String params = "?accept=" + URLEncoder.encode(accept, "UTF-8")
+                + "&username=" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result giftNPC(String npc1, String item, String amount) {
+        try {
+            String baseUrl = BASE_URL + "/giftNPC";
+            String params = "?npc1=" + URLEncoder.encode(npc1, "UTF-8")
+                + "&item=" + URLEncoder.encode(item, "UTF-8")
+                + "&amount=" + URLEncoder.encode(amount, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public String friendshipNPCList(String npc1) {
+        try {
+            String baseUrl = BASE_URL + "/friendshipNPCList";
+            String params = "?npc1=" + URLEncoder.encode(npc1, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    public Result questsList() {
+        try {
+            String baseUrl = BASE_URL + "/questsList";
+            URL url = new URL(baseUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result questFinish(String index) {
+        try {
+            String baseUrl = BASE_URL + "/questFinish";
+            String params = "?index=" + URLEncoder.encode(index, "UTF-8");
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result showMessage() {
+        try {
+            String baseUrl = BASE_URL + "/showMessage";
+            URL url = new URL(baseUrl );
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+
+    public Result deleteMessage(int index) {
+        try {
+            String baseUrl = BASE_URL + "/deleteMessage";
+            String params = "?index" + index;
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Exception: " + e.getMessage());
+        }
+    }
+    public String getNearbyNPC() {
+        try {
+            String baseUrl = BASE_URL + "/getNearbyNPC";
+            URL url = new URL(baseUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String getNearbyPlayer() {
+        try {
+            String baseUrl = BASE_URL + "/getNearbyPlayer";
+            URL url = new URL(baseUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String getGender(String username) {
+        try {
+            String baseUrl = BASE_URL + "/getGender";
+            String params = "?username" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String getDialogueTextNPCByName(String Name) {
+        try {
+            String baseUrl = BASE_URL + "/getDialogueTextNPCByName";
+            String params = "?Name" + URLEncoder.encode(Name, "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public PlayerDto getPlayerDTOByUserName(String username){
+        try {
+            String baseUrl = BASE_URL + "/getPlayerDTOByUserName";
+            String params = "?username" + URLEncoder.encode(username, "UTF-8");
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, PlayerDto.class);
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public void setNewMessage(boolean newMessage) {
+        try {
+            String baseUrl = BASE_URL + "/setNewMessage";
+            String params = "?newMessage" + URLEncoder.encode(String.valueOf(newMessage), "UTF-8");
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public String tradeHistory(){
+        try {
+            String baseUrl = BASE_URL + "/tradeHistory";
+            URL url = new URL(baseUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String tradeList(){
+        try {
+            String baseUrl = BASE_URL + "/tradeList";
+            URL url = new URL(baseUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+    public String getQuestWithIndex(String NpcName, int index){
+        try {
+            String baseUrl = BASE_URL + "/getQuestWithIndex";
+            String params = "?NpcName" + URLEncoder.encode(NpcName, "UTF-8")
+                + "&index" + index;
+            URL url = new URL(baseUrl + params);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream is = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(is, Result.class).getMessage();
+                }
+            } else {
+                throw new RuntimeException("Error: HTTP " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+
+
+
+
+
 }

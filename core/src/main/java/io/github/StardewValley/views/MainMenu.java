@@ -9,9 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.GiftMenuController;
 import io.github.StardewValley.controllers.MainMenuController;
-import io.github.StardewValley.shared.models.App;
 
 public class MainMenu implements Screen {
     private TextButton backButton;
