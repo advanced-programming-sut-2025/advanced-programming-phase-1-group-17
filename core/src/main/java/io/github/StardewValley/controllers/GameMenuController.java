@@ -2074,92 +2074,11 @@ public class GameMenuController {
     }
 
     public String tradeHistory() {
-        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
-        String result = "on going trades : \n";
-        for (Trade trade : currentPlayer.getTrades()) {
-            if (trade.getTradeType().equals("byMoney")) {
-                result += (trade.getType() + " : " + "\n"
-                    + "tradeId : " + trade.getId() + "\n"
-                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                    + "tradeType : " + "byMoney" + "\n"
-                    + "tradeItem : " + trade.getItem() + "\n"
-                    + "amount : " + trade.getAmount() + "\n"
-                    + "price : " + trade.getPrice() + "\n"
-                    + "--------------------------------------------------\n");
-            } else {
-                result += (trade.getType() + " : " + "\n"
-                    + "tradeId : " + trade.getId() + "\n"
-                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                    + "tradeType : " + "byItem" + "\n"
-                    + "item : " + trade.getItem() + "\n"
-                    + "amount : " + trade.getAmount() + "\n"
-                    + "targetItem : " + trade.getTargetItem() + "\n"
-                    + "targetAmount : " + trade.getTargetAmount() + "\n"
-                    + "--------------------------------------------------\n");
-            }
-        }
-        result += "\nprevious trades (accepted): \n";
-        for (Trade trade : currentPlayer.getTradeHistory()) {
-            if (trade.getTradeType().equals("byMoney")) {
-                result += (trade.getType() + " : " + "\n"
-                    + "tradeId : " + trade.getId() + "\n"
-                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                    + "tradeType : " + "byMoney" + "\n"
-                    + "tradeItem : " + trade.getItem() + "\n"
-                    + "amount : " + trade.getAmount() + "\n"
-                    + "price : " + trade.getPrice() + "\n"
-                    + "--------------------------------------------------\n");
-            } else {
-                result += (trade.getType() + " : " + "\n"
-                    + "tradeId : " + trade.getId() + "\n"
-                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                    + "tradeType : " + "byItem" + "\n"
-                    + "item : " + trade.getItem() + "\n"
-                    + "amount : " + trade.getAmount() + "\n"
-                    + "targetItem : " + trade.getTargetItem() + "\n"
-                    + "targetAmount : " + trade.getTargetAmount() + "\n"
-                    + "--------------------------------------------------\n");
-            }
-        }
-        return result;
+        return GameClient.getGameStateApiClient().tradeHistory();
     }
 
     public String tradeList() {
-        Player currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
-        if (currentPlayer.getTrades() == null) {
-            return "there are nothing trade for you";
-        } else {
-            String result = "";
-            for (Trade trade : currentPlayer.getTrades()) {
-                if (!trade.getSender().equals(currentPlayer)) {
-                    if (trade.getTradeType().equals("byMoney")) {
-                        result += (trade.getType() + " : " + "\n"
-                            + "tradeId : " + trade.getId() + "\n"
-                            + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                            + "tradeType : " + "byMoney" + "\n"
-                            + "tradeItem : " + trade.getItem() + "\n"
-                            + "amount : " + trade.getAmount() + "\n"
-                            + "price : " + trade.getPrice() + "\n"
-                            + "--------------------------------------------------\n");
-                    } else {
-                        result += (trade.getType() + " : " + "\n"
-                            + "tradeId : " + trade.getId() + "\n"
-                            + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                            + "tradeType : " + "byItem" + "\n"
-                            + "item : " + trade.getItem() + "\n"
-                            + "amount : " + trade.getAmount() + "\n"
-                            + "targetItem : " + trade.getTargetItem() + "\n"
-                            + "targetAmount : " + trade.getTargetAmount() + "\n"
-                            + "--------------------------------------------------\n");
-                    }
-                }
-            }
-            if (result.isEmpty()) {
-                return "there are nothing trade for you";
-            } else {
-                return result;
-            }
-        }
+       return GameClient.getGameStateApiClient().tradeList();
     }
 
 
@@ -2167,8 +2086,8 @@ public class GameMenuController {
         return GameClient.gameStateApiClient.giftNPC(npc.getName(), item, amount);
     }
 
-    public String friendshipNPCList(NPC npc) {
-        return GameClient.gameStateApiClient.friendshipNPCList(npc.getName());
+    public String friendshipNPCList(String npc) {
+        return GameClient.gameStateApiClient.friendshipNPCList(npc);
     }
 
     public Result questsList() {

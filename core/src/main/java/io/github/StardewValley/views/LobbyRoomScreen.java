@@ -19,6 +19,8 @@ import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 
+import java.util.List;
+
 
 public class LobbyRoomScreen implements Screen {
     private final Stage stage;
@@ -98,7 +100,6 @@ public class LobbyRoomScreen implements Screen {
         root.add(left).padTop(20).colspan(2);
         root.row();
 
-//        if (lobby.getAdminUsername().equals(currentUsername)) {
         startGameBtn = new TextButton("Start Game", skin);
         startGameBtn.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -106,9 +107,15 @@ public class LobbyRoomScreen implements Screen {
                     return;
                 }
                 try {
+                    List<String> playerUsernames = lobby.getPlayerUsernames();
+                    int i = 1 ;
+                    while (playerUsernames.size() < 4) {
+                        playerUsernames.add("guest" + i);
+                        i++;
+                    }
                     GameDTO gameDTO = apiClient.startGame(lobby.getId());
                     refreshPlayerList();
-                    GameClient.setUserNameOfPlayers(lobby.getPlayerUsernames());
+                    GameClient.setUserNameOfPlayers(playerUsernames);
                     System.out.println("Game started!");
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManagerClient.getGameAssetManager().getSkin()));

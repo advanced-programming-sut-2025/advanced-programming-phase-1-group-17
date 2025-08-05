@@ -40,10 +40,6 @@ public class ProfileMenu implements Screen {
 
 
     public ProfileMenu(ProfileMenuController profileMenuController, Skin skin) {
-//        Pixmap pixmap = new Pixmap(Gdx.files.internal("cursor2.png"));
-//        Cursor customCursor = Gdx.graphics.newCursor(pixmap, 0, 0);
-//        Gdx.graphics.setCursor(customCursor);
-//        pixmap.dispose();
         this.changeNickName = new TextButton("Change Nickname", skin);
         this.changeAvatar = new TextButton("Change Avatar", skin);
         changeAvatar.setColor(0,0,1,1);

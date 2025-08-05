@@ -9,10 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.TalkController;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.Player;
 
 public class TalkView implements Screen {
 
@@ -89,10 +88,9 @@ public class TalkView implements Screen {
         this.label = new Label("", skin);
         label.setColor(Color.BLACK);
         label.setFontScale(1);
-        //TODO handle name of players
         int i = 0;
-        for (Player player : App.getCurrentGame().getPlayers()) {
-            if (player.getUser().getUsername().equals("NPC") || player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
+        for (String player : GameClient.getUserNameOfPlayers()) {
+            if (player.equals("NPC") || player.equals(GameClient.getPlayer().getUser().getUsername()))
                 continue;
             players[i] = player;
             i++;
