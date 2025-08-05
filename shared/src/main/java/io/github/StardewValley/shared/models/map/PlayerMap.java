@@ -144,11 +144,11 @@ public class PlayerMap {
             Lia lia2 = (Lia) App.getCurrentGame().getNPCs().get(2);
             Robin robin2 = (Robin) App.getCurrentGame().getNPCs().get(3);
             Sebastian sebastian2 = (Sebastian) App.getCurrentGame().getNPCs().get(4);
-            Abigail abigail = new Abigail(false,145,102);
-            Harvey harvey = new Harvey(false,145,122);
-            Lia lia = new Lia(false,145,142);
-            Robin robin = new Robin(false,145,162);
-            Sebastian sebastian = new Sebastian(false,145,182);
+            Abigail abigail = new Abigail(false, 145, 102);
+            Harvey harvey = new Harvey(false, 145, 122);
+            Lia lia = new Lia(false, 145, 142);
+            Robin robin = new Robin(false, 145, 162);
+            Sebastian sebastian = new Sebastian(false, 145, 182);
 
             App.getCurrentGame().getNPCHuts().add(abigail);
             App.getCurrentGame().getNPCHuts().add(harvey);
@@ -160,19 +160,19 @@ public class PlayerMap {
                     for (int j = 102 + k; j <= 106 + k; j++) {
                         if (k == 0) {
                             Tile.getTile(i, j).setPlaceable(abigail);
-                            Tile.getTile(i,j).setWalkAble(false);
+                            Tile.getTile(i, j).setWalkAble(false);
                         } else if (k == 20) {
                             Tile.getTile(i, j).setPlaceable(harvey);
-                            Tile.getTile(i,j).setWalkAble(false);
+                            Tile.getTile(i, j).setWalkAble(false);
                         } else if (k == 40) {
                             Tile.getTile(i, j).setPlaceable(lia);
-                            Tile.getTile(i,j).setWalkAble(false);
+                            Tile.getTile(i, j).setWalkAble(false);
                         } else if (k == 60) {
                             Tile.getTile(i, j).setPlaceable(robin);
-                            Tile.getTile(i,j).setWalkAble(false);
+                            Tile.getTile(i, j).setWalkAble(false);
                         } else {
                             Tile.getTile(i, j).setPlaceable(sebastian);
-                            Tile.getTile(i,j).setWalkAble(false);
+                            Tile.getTile(i, j).setWalkAble(false);
                         }
                     }
                 }
@@ -186,7 +186,7 @@ public class PlayerMap {
                             if (k == 0) {
                                 abigail2.setX(i);
                                 abigail2.setY(j);
-                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(abigail2);
                                 abigail2.setTile_x(i);
                                 abigail2.setTile_y(j);
@@ -195,7 +195,7 @@ public class PlayerMap {
                             } else if (k == 20) {
                                 harvey2.setX(i);
                                 harvey2.setY(j);
-                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(harvey2);
                                 harvey2.setTile_x(i);
                                 harvey2.setTile_y(j);
@@ -204,7 +204,7 @@ public class PlayerMap {
                             } else if (k == 40) {
                                 lia2.setX(i);
                                 lia2.setY(j);
-                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(lia2);
                                 lia2.setTile_x(i);
                                 lia2.setTile_y(j);
@@ -213,7 +213,7 @@ public class PlayerMap {
                             } else if (k == 60) {
                                 robin2.setX(i);
                                 robin2.setY(j);
-                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(robin2);
                                 robin2.setTile_x(i);
                                 robin2.setTile_y(j);
@@ -222,7 +222,7 @@ public class PlayerMap {
                             } else {
                                 sebastian2.setX(i);
                                 sebastian2.setY(j);
-                                Tile.getTile(i,j).setWalkAble(false);
+                                Tile.getTile(i, j).setWalkAble(false);
                                 Tile.getTile(i, j).setPlaceable(sebastian2);
                                 sebastian2.setTile_x(i);
                                 sebastian2.setTile_y(j);
@@ -356,7 +356,7 @@ public class PlayerMap {
                     Tile.getTile(i, 101).setWalkAble(false);
                 }
 
-                if (Tile.getTile(i, 200).getPlaceable()== null) {
+                if (Tile.getTile(i, 200).getPlaceable() == null) {
                     Tile.getTile(i, 200).setPlaceable(fence);
                     Tile.getTile(i, 200).setWalkAble(false);
                 }
@@ -476,7 +476,7 @@ public class PlayerMap {
 
     public void setMapType(int type, Game game) {
         if (type == 1) {
-            this.hut = new Hut("hut.png",4 + row , 4 + col);
+            this.hut = new Hut("hut.png", 4 + row, 4 + col);
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
             this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
@@ -502,7 +502,7 @@ public class PlayerMap {
             }
             createGreenHouse(game);
         } else if (type == 2) {
-            this.hut = new Hut("hut.png",40 + row , 40 + col);
+            this.hut = new Hut("hut.png", 40 + row, 40 + col);
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
             this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
@@ -552,8 +552,7 @@ public class PlayerMap {
                     game.getTile(i, j).setPlaceable(greenHouse.getFence());
                 else if (i == 35 + row || i == 40 + row) {
                     game.getTile(i, j).setPlaceable(greenHouse.getFence());
-                }
-                else
+                } else
                     game.getTile(i, j).setPlaceable(greenHouse);
 
                 if ((game.getTile(i, j).getPlaceable() instanceof GreenHouse))
@@ -571,11 +570,11 @@ public class PlayerMap {
     private void randomFillMap(Game game) {
         int numOfTrees = randomInt(14, 20);
         int numOfForagings = randomInt(14, 20);
-        generateTrees(numOfTrees,game);
-        generateForagings(numOfForagings,game);
+        generateTrees(numOfTrees, game);
+        generateForagings(numOfForagings, game);
     }
 
-    private void generateForagings(int numOfForagings,Game game) {
+    private void generateForagings(int numOfForagings, Game game) {
         int counter = 0;
         while (numOfForagings != 0) {
             int randomIndex_x = randomInt(1 + row, 100 + row);
@@ -595,7 +594,7 @@ public class PlayerMap {
         }
     }
 
-    private void generateTrees(int numOfTrees,Game game) {
+    private void generateTrees(int numOfTrees, Game game) {
         while (numOfTrees != 0) {
             int randomIndex_x = randomInt(1 + row, 50 + row);
             int randomIndex_y = randomInt(1 + col, 100 + col);

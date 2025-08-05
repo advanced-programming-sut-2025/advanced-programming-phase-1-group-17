@@ -56,13 +56,25 @@ public class Tile {
     }
 
     public void setPlaceable(Placeable placeable) {
-        if (!(placeable instanceof Tree) && owner.getUser().getActiveGame().getTreeTile().contains(this)) {
-            treeTile.remove(this);
+        if (owner.getUser().getActiveGame() == null) {
+            if (!(placeable instanceof Tree) && treeTile.contains(this)) {
+                treeTile.remove(this);
+            }
+            this.placeable = placeable;
+            if (placeable instanceof Tree) {
+                this.setWalkAble(false);
+                treeTile.add(this);
+            }
         }
-        this.placeable = placeable;
-        if (placeable instanceof Tree) {
-            this.setWalkAble(false);
-            owner.getUser().getActiveGame().getTreeTile().add(this);
+        else {
+            if (!(placeable instanceof Tree) && owner.getUser().getActiveGame().getTreeTile().contains(this)) {
+                treeTile.remove(this);
+            }
+            this.placeable = placeable;
+            if (placeable instanceof Tree) {
+                this.setWalkAble(false);
+                owner.getUser().getActiveGame().getTreeTile().add(this);
+            }
         }
     }
 
@@ -180,4 +192,5 @@ public class Tile {
     public static ArrayList<Tile> getTreeTile() {
         return treeTile;
     }
+
 }
