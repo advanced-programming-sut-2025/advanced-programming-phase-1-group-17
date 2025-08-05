@@ -22,7 +22,8 @@ public class FishingView implements Screen {
     private BitmapFont font;
     private Fish fish;
     public FishingView(FishingController controller, Skin skin) {
-        App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(new Tool(ToolType.FishingPole, ToolMaterial.Basic,FishingPoleType.TrainingFishingPole));
+        //TODO
+        //App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(new Tool(ToolType.FishingPole, ToolMaterial.Basic,FishingPoleType.TrainingFishingPole));
         this.controller = controller;
         barTexture = new TextureRegion(new Texture("bar.png"));
         targetTexture = new TextureRegion(new Texture("target.png"));
@@ -53,8 +54,9 @@ public class FishingView implements Screen {
         font.draw(Main.getBatch(),controller.getFish().getName() + " :" + controller.getFishCount(),1500,500);
         if(controller.getSuccess()>=100){
             font.draw(Main.getBatch(),"you got " + controller.getFishCount()  + " " + controller.getFish().getName(),900,960);
-            App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(controller.savedTool);
-            App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(controller.getFish());
+            //TODo
+//            App.getCurrentGame().getCurrentPlayingPlayer().setCurrentTool(controller.savedTool);
+//            App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(controller.getFish());
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(Main.getGameView());
 

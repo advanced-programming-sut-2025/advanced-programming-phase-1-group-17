@@ -36,13 +36,6 @@ public class GameAssetManager {
     private final HashMap<StoreType, HashMap<Season, TextureRegion>> storeTextures = new HashMap<>();
     private final String  shippingBinTexture =("Chest/ChestOrange.png");
 
-    private final HashMap<String, String> abilityTextures = new HashMap<>() {{
-        put("Farming", ("Skill/Farming_Skill_Icon.png"));
-        put("Fishing", ("Skill/Fishing_Skill_Icon.png"));
-        put("Foraging",("Skill/Foraging_Skill_Icon.png"));
-        put("Mining", ("Skill/Mining_Skill_Icon.png"));
-    }};
-
     private final HashMap<NormalItemType, String> normalItemTextures = new HashMap<>();
     private final ArrayList<TextureRegion> grassTextures = new ArrayList<>();
 
@@ -173,10 +166,6 @@ public class GameAssetManager {
 
     public TextureRegion getStoreTexture(Season season, StoreType type) {
         return storeTextures.get(type).get(season);
-    }
-
-    public String getAbilityTextures(String abilityName) {
-        return abilityTextures.get(abilityName);
     }
 
     public String getNormalItemTexture(NormalItemType normalItemType) {

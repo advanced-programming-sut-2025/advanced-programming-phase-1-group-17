@@ -4,14 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
+import io.github.StardewValley.controllers.UIControllers.LightningRenderController;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
+import io.github.StardewValley.shared.dto.GetGameStateResponse;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.TileDTO;
-import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
-import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.market.Store;
@@ -19,6 +21,7 @@ import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CropAssetManager;
 import io.github.StardewValley.shared.models.plant.Tree;
+import io.github.StardewValley.views.GameView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +38,12 @@ public class WorldController {
     private HashMap<Tree, float[]> treesInThisFrame = new HashMap<>();
     private HashMap<Crop, float[]> giantCropsInThisFrame = new HashMap<>();
 
+    private List<CraftingItemDTO> craftingItems = new ArrayList<>();
+    private final HashMap<String, ProgressBar> progressBarMap = new HashMap<>();
+    private LightningRenderController lightningRenderController;
+
     public WorldController(OrthographicCamera camera) {
+        this.lightningRenderController = LightningRenderController.getLightningController();
         this.camera = camera;
     }
 
@@ -47,7 +55,7 @@ public class WorldController {
         System.out.println(tileHeight + " " + tileWidth);
     }
 
-    public void update() throws Exception {
+    public void update(float delta) throws Exception {
         float camLeft = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
         float camRight = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
         float camBottom = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
@@ -61,8 +69,13 @@ public class WorldController {
         treesInThisFrame.clear();
         giantCropsInThisFrame.clear();
 
-        List<TileDTO> tiles = new ArrayList<>();
-        tiles = GameClient.getGameStateApiClient().getMapTilesAroundPlayer(minTileX,maxTileX,minTileY,maxTileY);
+        GetGameStateResponse gameState = GameClient.getGameStateApiClient().getGameState(minTileX, maxTileX, minTileY, maxTileY);
+        List<TileDTO> tiles = gameState.getTiles();
+        //tiles = GameClient.getGameStateApiClient().getMapTilesAroundPlayer(minTileX,maxTileX,minTileY,maxTileY);
+        craftingItems = gameState.getCraftingItems();
+
+        lightningRenderController.applyLightningState(gameState.getLightningStateDTO());
+        lightningRenderController.renderLightning(Main.getBatch(), GameClient.getPlayer());
 
         for (int x = minTileX - 1; x < maxTileX; x++) {
             for (int y = minTileY - 1; y < maxTileY; y++) {
@@ -174,21 +187,38 @@ public class WorldController {
 //    }
 
     private void drawCraftingItemsProgressBars() {
-        for (CraftingItem craftingItem : CraftingItem.getAllCraftingItems()) {
-            ProgressBar bar = craftingItem.getProgressBar();
-            ArtisanProduct artisanProduct = craftingItem.getArtisanProductInProgress();
+        for (CraftingItemDTO craftingItem : craftingItems) {
+            String key = craftingItem.getTileX() + ":" + craftingItem.getTileY();
+            ProgressBar bar = progressBarMap.get(key);
+
+            if (bar == null && craftingItem.isInProgress() && !craftingItem.isArtisanProductReady()) {
+                bar = createProgressBar(); // or however you create it
+                progressBarMap.put(key, bar);
+            }
+
             if (bar != null) {
-                bar.setPosition(craftingItem.getStart_x() * tileWidth, craftingItem.getStart_y() * tileHeight + craftingItem.getHeight() + 5);
-                bar.setWidth(craftingItem.getWidth());
-                bar.setHeight(50f);
-                bar.act(Gdx.graphics.getDeltaTime());
-                bar.draw(Main.getBatch(), 1f);
-            } else if (artisanProduct != null && artisanProduct.isReady()) {
+                if (craftingItem.isInProgress() && !craftingItem.isArtisanProductReady()) {
+                    float value = craftingItem.getProgress(); // e.g., returns 0.0 to 1.0
+                    bar.setValue(value);
+                    bar.setPosition(craftingItem.getTileX() * tileWidth,
+                        craftingItem.getTileY() * tileHeight + GameAssetManager.getGameAssetManager().getTileHeight() + 5);
+                    bar.setWidth(GameAssetManager.getGameAssetManager().getTileWidth());
+                    bar.setHeight(50f);
+                    bar.act(Gdx.graphics.getDeltaTime());
+                    bar.draw(Main.getBatch(), 1f);
+                } else {
+                    progressBarMap.remove(key);
+                }
+            } else if (craftingItem.isInProgress() && craftingItem.isArtisanProductReady()) {
                 Main.getBatch().draw(
-                    GameAssetManagerClient.getGameAssetManager().getTexture(artisanProduct.getType().getInventoryTexturePath()),
-                    craftingItem.getStart_x() * tileWidth, craftingItem.getStart_y() * tileHeight + craftingItem.getHeight() + 5,
-                    (float) 0.5 * tileWidth, (float) 0.5 * tileHeight
-                    );
+                    GameAssetManagerClient.getGameAssetManager().getTexture(
+                        craftingItem.getArtisanProductTexturePath()
+                    ),
+                    craftingItem.getTileX() * tileWidth,
+                    craftingItem.getTileY() * tileHeight + GameAssetManager.getGameAssetManager().getTileHeight() + 5,
+                    0.5f * tileWidth,
+                    0.5f * tileHeight
+                );
             }
         }
     }
@@ -269,5 +299,21 @@ public class WorldController {
 
     public OrthographicCamera getCamera() {
         return camera;
+    }
+
+    private ProgressBar createProgressBar() {
+        Skin skin = GameAssetManagerClient.getGameAssetManager().getSkin();
+//        ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
+//        style.background = skin.newDrawable("white", Color.DARK_GRAY);  // Replace "white" with a texture name in your atlas
+//        style.knob = skin.newDrawable("white", Color.GRAY); // or whatever color
+//        style.knobBefore = skin.newDrawable("white", Color.GREEN);      // Replace with fill texture
+//        style.background.setMinHeight(15); // adjust height
+//        style.knob.setMinHeight(15);
+//        style.knobBefore.setMinHeight(15);
+//
+//        ProgressBar progressBar = new ProgressBar(0f, 1f, 0.01f, false, style);
+//        progressBar.setValue(0.01f);
+//        progressBar.setAnimateDuration(0.25f);
+        return new ProgressBar(0f, 1f, 0.01f, false, skin, "default-horizontal");
     }
 }

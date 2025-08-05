@@ -1,6 +1,9 @@
 package io.github.StardewValley.server.controller;
 
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
@@ -10,15 +13,18 @@ import io.github.StardewValley.server.controller.logicControllers.ToolController
 import io.github.StardewValley.server.model.User;
 import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.LightningLogicController;
 import io.github.StardewValley.shared.dto.*;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.backpack.BackPack;
-import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
+import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
+import io.github.StardewValley.shared.models.backpack.*;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
+import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.shared.models.market.StoreInventory;
 import io.github.StardewValley.shared.models.plant.Fertilizer;
 import io.github.StardewValley.shared.models.plant.Sapling;
@@ -29,10 +35,7 @@ import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 
 @RestController
@@ -50,21 +53,48 @@ public class GameStateController {
         this.jwtService = jwtService;
     }
 
+//    @GetMapping("/game/map")
+//    public ResponseEntity<List<TileDTO>> getGameMap(
+//        @RequestHeader("Authorization") String token,
+//        @RequestParam int minX,
+//        @RequestParam int maxX,
+//        @RequestParam int minY,
+//        @RequestParam int maxY
+//    ) {
+//        List<TileDTO> tileDTOs = new ArrayList<>();
+//        for (int i = minX - 1; i < maxX; i++) {
+//            for (int j = minY - 1; j < maxY; j++) {
+//                tileDTOs.add(new TileDTO(Objects.requireNonNull(Tile.getTile(i + 1, j + 1))));
+//            }
+//        }
+//        return ResponseEntity.ok(tileDTOs);
+//    }
+
     @GetMapping("/game/map")
-    public ResponseEntity<List<TileDTO>> getGameMap(
+    public ResponseEntity<GetGameStateResponse> getGameMap(
         @RequestHeader("Authorization") String token,
         @RequestParam int minX,
         @RequestParam int maxX,
         @RequestParam int minY,
         @RequestParam int maxY
     ) {
+        Game game = getGameFromToken(token);
         List<TileDTO> tileDTOs = new ArrayList<>();
+        List<CraftingItemDTO> craftingItemDTOs = new ArrayList<>();
         for (int i = minX - 1; i < maxX; i++) {
             for (int j = minY - 1; j < maxY; j++) {
-                tileDTOs.add(new TileDTO(Objects.requireNonNull(Tile.getTile(i + 1, j + 1))));
+                Tile tile = Tile.getTile(i + 1, j + 1);
+                tileDTOs.add(new TileDTO(Objects.requireNonNull(tile)));
+                if (tile.getPlaceable() instanceof CraftingItem craftingItem) {
+                    craftingItemDTOs.add(CraftingItem.getCraftingItemDTO(craftingItem));
+                }
             }
         }
-        return ResponseEntity.ok(tileDTOs);
+        return ResponseEntity.ok(new GetGameStateResponse(
+            craftingItemDTOs,
+            tileDTOs,
+            game.getLightningLogicController().getLightningStateDTO()
+        ));
     }
 
     @PostMapping("/game/player/update")
@@ -201,7 +231,8 @@ public class GameStateController {
         } else if ((matcher = CheatCodeCommands.CheatThor.getMatcher(command)) != null) {
             result = CheatCodeHandler.cheatThor(
                 Integer.parseInt(matcher.group("x")),
-                Integer.parseInt(matcher.group("y"))
+                Integer.parseInt(matcher.group("y")),
+                getGameFromToken(token)
             );
         } else if ((matcher = CheatCodeCommands.CheatWeatherSet.getMatcher(command)) != null) {
             result = CheatCodeHandler.changeWeather(
@@ -288,6 +319,130 @@ public class GameStateController {
             toolController.handleRefund(backPackable, player);
             return ResponseEntity.ok("Item deleted from Inventory");
         }
+    }
+
+
+    @PostMapping("/game/greenhouse/buildGreenhouse")
+    public ResponseEntity<Result> buildGreenhouse(@RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        if (player.getBackPack().getCoin() < 1000) {
+            return ResponseEntity.ok(new Result(false, "You only have %.2f coin. (not enough)".formatted(
+                player.getBackPack().getCoin())));
+        }
+
+        int woodCount = player.getBackPack().getInventorySize(NormalItemType.Wood.getName());
+        if (woodCount < 500) {
+            return ResponseEntity.ok(new Result(false, "You only have %d wood. (not enough wood)".formatted(woodCount)));
+        }
+
+        player.getBackPack().addCoin(-1000);
+        for (int i = 0; i < 500; i++)
+            player.getBackPack().useItem(NormalItemType.Wood);
+
+        player.getPlayerMap().getGreenHouse().setActive(true);
+        return ResponseEntity.ok(new Result(true, "Greenhouse built successfully!"));
+    }
+
+    @PostMapping("/game/shippingBin/sellItem")
+    public ResponseEntity<Boolean> sellItem(@RequestBody SellItemRequest request,
+                                            @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        BackPack backPack = player.getBackPack();
+        Tile shippingBinTile = Tile.getTile(request.getShippingBinTile().getX(), request.getShippingBinTile().getY());
+        ShippingBin shippingBin = (ShippingBin) shippingBinTile.getPlaceable();
+
+        BackpackableTypeDTO itemType = request.getItem();
+        for (int i = 0; i < request.getQuantity(); i++) {
+            BackPackable backPackable = backPack.getFromDTO(itemType.getName());
+            shippingBin.addItem(backPackable);
+            backPack.useItem(backPackable.getType());
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/game/artisanProduct/takeProduct")
+    public ResponseEntity<Boolean> takeArtisanProduct(@RequestBody CraftingItemDTO craftingItemDTO,
+                                                      @RequestHeader("Authorization") String token) {
+
+        Player player = getPlayerFromToken(token);
+        Tile craftingItemTile = Tile.getTile(craftingItemDTO.getTileX(), craftingItemDTO.getTileY());
+        if (craftingItemTile == null)
+            return ResponseEntity.ok(false);
+        CraftingItem craftingItem = (CraftingItem) craftingItemTile.getPlaceable();
+        player.getBackPack().addItemToInventory(craftingItem.getArtisanProductInProgress());
+        craftingItem.setArtisanProductInProgress(null);
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/game/artisanProduct/cancelProduction")
+    public ResponseEntity<Boolean> cancelArtisanProduction(@RequestBody CraftingItemDTO craftingItemDTO,
+                                                           @RequestHeader("Authorization") String token) {
+        Tile craftingItemTile = Tile.getTile(craftingItemDTO.getTileX(), craftingItemDTO.getTileY());
+        if (craftingItemTile == null)
+            return ResponseEntity.ok(false);
+        CraftingItem craftingItem = (CraftingItem) craftingItemTile.getPlaceable();
+        craftingItem.setArtisanProductInProgress(null);
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/game/artisanProduct/craftArtisan")
+    public ResponseEntity<Result> craftArtisan(@RequestBody CraftArtisanRequest request,
+                                               @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Tile craftingItemTile = Tile.getTile(request.getCraftingItemDTO().getTileX(), request.getCraftingItemDTO().getTileY());
+        if (craftingItemTile == null)
+            return ResponseEntity.ok(new Result(false, "Crafting Item not found."));
+        CraftingItem artisan = (CraftingItem) craftingItemTile.getPlaceable();
+        if (!artisan.getOwner().equals(player))
+            return ResponseEntity.ok(new Result(false, "This crafting Item is not yours."));
+
+        if (artisan.getArtisanProductInProgress() != null) {
+            return ResponseEntity.ok(new Result(false, "Artisan is already crafting a product!"));
+        }
+
+        // Try to match an ArtisanProductType with given artisan and ingredients
+        for (ArtisanProductType product : ArtisanProductType.values()) {
+            if (!product.getArtisan().equals(artisan.getType())) continue;
+
+            boolean matched = true;
+            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems().keySet()) {
+                if (!product.containsDTO(backPackableTypeDTO)) {
+                    matched = false;
+                    break;
+                } else if (request.getSelectedItems().get(backPackableTypeDTO) < product.getIngredients().get(backPackableTypeDTO)) {
+                    matched = false;
+                    break;
+                }
+            }
+            if (!matched || (product.getIngredients().size() != request.getSelectedItems().size()))
+                continue;
+
+            ArrayList<BackPackableType> provided = new ArrayList<>();
+            for (BackpackableTypeDTO backpackableTypeDTO : request.getSelectedItems().keySet()) {
+                try {
+                    BackPackableType item = AppServer.getEnumInstance(backpackableTypeDTO.getClassName(), backpackableTypeDTO.getName());
+                    provided.add(item);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            ArtisanProduct artisanProduct = new ArtisanProduct(product, ArtisanProduct.getIngredient(product, provided));
+            artisan.setArtisanProductInProgress(artisanProduct);
+
+            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems().keySet()) {
+                try {
+                    BackPackableType backPackableType = AppServer.getEnumInstance(backPackableTypeDTO.getClassName(), backPackableTypeDTO.getName());
+                    if (request.getSelectedItems().get(backPackableTypeDTO) > 0) {
+                        player.getBackPack().getBackPackItems().get(backPackableType).subList(0, request.getSelectedItems().get(backPackableTypeDTO)).clear();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return ResponseEntity.ok(new Result(true, "%s is now being crafted".formatted(product.getName())));
+        }
+        return ResponseEntity.ok(new Result(false, "Items given do not match any of the artisan product ingredients."));
     }
 
     public Player getPlayerFromToken(String token) {

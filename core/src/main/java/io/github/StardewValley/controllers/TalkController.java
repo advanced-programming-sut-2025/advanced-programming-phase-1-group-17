@@ -57,11 +57,12 @@ public class TalkController {
                 view.getGiftRate().setVisible(false);
                 view.getSend().setVisible(false);
                 view.getTextField().setVisible(false);
-                App.getCurrentGame().getCurrentPlayingPlayer().setNewMessage(false);
-                gameView.setError("");
-                view.getStage().addActor(view.getWindow());
-                view.getWindow().getTitleLabel().setText("                     messages");
-                view.setText(App.getCurrentGame().getCurrentPlayingPlayer().getStringMessage());
+                //TODO
+//                App.getCurrentGame().getCurrentPlayingPlayer().setNewMessage(false);
+//                gameView.setError("");
+//                view.getStage().addActor(view.getWindow());
+//                view.getWindow().getTitleLabel().setText("                     messages");
+//                view.setText(App.getCurrentGame().getCurrentPlayingPlayer().getStringMessage());
             }
         });
         view.getButton1().addListener(new ClickListener() {
@@ -253,12 +254,13 @@ public class TalkController {
                     view.setError("please choose a player");
                     return;
                 }
-                view.setError(gameMenuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), targetPlayer) ?
-                    "please enter your message" : "you can't talk from this distance");
-                if (gameMenuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), targetPlayer)) {
-                    view.getSend().setVisible(true);
-                    view.getTextField().setVisible(true);
-                }
+                //TODO
+//                view.setError(gameMenuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), targetPlayer) ?
+//                    "please enter your message" : "you can't talk from this distance");
+//                if (gameMenuController.sideBySide(App.getCurrentGame().getCurrentPlayingPlayer(), targetPlayer)) {
+//                    view.getSend().setVisible(true);
+//                    view.getTextField().setVisible(true);
+//                }
 
             }
         });

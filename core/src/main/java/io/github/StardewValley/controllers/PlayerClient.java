@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.models.Ability;
+import io.github.StardewValley.shared.models.AbilityDTO;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.backpack.BackPack;
@@ -39,6 +41,10 @@ public class PlayerClient {
     private Texture texture;
     private float animationTimer = 0f;
     private float passOutTimer = 0f;
+
+    private ToolType toolType;
+    private String toolTexturePath;
+    private AbilityDTO ability;
 
 
     PlayerClient(UserDTO user) {
@@ -320,6 +326,18 @@ public class PlayerClient {
         Main.getBatch().draw(this.currentFrame, getX() == 0 ? 1 : getX(), getY() == 0 ? 1 : getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
 //            else
 //                Main.getBatch().draw(texture, getX() == 0 ? 1 : getX(), getY() == 0 ? 1 : getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+    }
+
+    public String getToolTexturePath() {
+        return toolTexturePath;
+    }
+
+    public ToolType getToolType() {
+        return toolType;
+    }
+
+    public AbilityDTO getAbility() {
+        return ability;
     }
 }
 

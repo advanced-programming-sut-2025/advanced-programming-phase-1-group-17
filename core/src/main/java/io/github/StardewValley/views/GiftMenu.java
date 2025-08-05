@@ -38,8 +38,6 @@ public class GiftMenu implements Screen {
     private final TextButton gift;
 
 
-
-
     public GiftMenu(Player player, GiftMenuController controller, Skin skin, Player targetPlayer, GameView gameView, NPC npc) {
         this.player = player;
         this.controller = controller;

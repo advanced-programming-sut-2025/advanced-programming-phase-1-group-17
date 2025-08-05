@@ -3,6 +3,7 @@ package io.github.StardewValley.shared.models.crafting;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
@@ -15,9 +16,8 @@ import java.util.HashMap;
 public class CraftingItem implements BackPackable, Placeable {
     private static HashMap<CraftingItem, Rectangle>  craftingItemBounds = new HashMap<>();
     private static ArrayList<CraftingItem> allCraftingItems = new ArrayList<>();
-    private CraftingItemType targetItem;
+    private final CraftingItemType type;
     private ArtisanProduct artisanProductInProgress = null;
-    private transient ProgressBar progressBar;
 
     private final Player owner;
     private int start_x = 0;
@@ -25,35 +25,47 @@ public class CraftingItem implements BackPackable, Placeable {
     private final int width;
     private final int height;
 
-    public CraftingItem(CraftingItemType targetItem, Player owner) {
+    public CraftingItem(CraftingItemType type, Player owner) {
         this.owner = owner;
-        this.targetItem = targetItem;
-        //TODO
-        //this.width = targetItem.getInventoryTexture().getWidth();
-        //this.height = targetItem.getInventoryTexture().getHeight();
-        this.width =120;
-        this.height = 120;
+        this.type = type;
+//        this.width = targetItem.getInventoryTexture().getWidth();
+//        this.height = targetItem.getInventoryTexture().getHeight();
+        this.width = GameAssetManager.getGameAssetManager().getTileWidth();
+        this.height = GameAssetManager.getGameAssetManager().getTileHeight();
 
         allCraftingItems.add(this);
     }
 
-    public CraftingItemType getTargetItem() {
-        return targetItem;
+    public static CraftingItemDTO getCraftingItemDTO(CraftingItem craftingItem) {
+        boolean isArtisanProductNull = craftingItem.artisanProductInProgress == null;
+        return new CraftingItemDTO(
+            !isArtisanProductNull,
+            !isArtisanProductNull && craftingItem.artisanProductInProgress.isReady(),
+            craftingItem.type.getName(),
+            isArtisanProductNull ? "" : craftingItem.artisanProductInProgress.getName(),
+            isArtisanProductNull ? "" : craftingItem.artisanProductInProgress.getType().getInventoryTexturePath(),
+            craftingItem.start_x,
+            craftingItem.start_y,
+            isArtisanProductNull ? -1 : craftingItem.artisanProductInProgress.getHoursInProgress(),
+            isArtisanProductNull ? -1 : craftingItem.artisanProductInProgress.getDaysInProgress(),
+            isArtisanProductNull ? -1 : craftingItem.artisanProductInProgress.getType().getProcessingHours(),
+            isArtisanProductNull ? -1 : craftingItem.artisanProductInProgress.getType().getProcessingDays()
+        );
     }
 
     @Override
     public String getName() {
-        return targetItem.getName();
+        return type.getName();
     }
 
     @Override
     public double getPrice() {
-        return targetItem.getPrice();
+        return type.getPrice();
     }
 
     @Override
     public BackPackableType getType() {
-        return targetItem;
+        return type;
     }
 
     public ArtisanProduct getArtisanProductInProgress() {
@@ -109,26 +121,6 @@ public class CraftingItem implements BackPackable, Placeable {
 
     @Override
     public String getTexture() {
-        return targetItem.getInventoryTexturePath();
-    }
-
-    public ProgressBar getProgressBar() {
-        return progressBar;
-    }
-
-    public void setProgressBar(ProgressBar progressBar) {
-        this.progressBar = progressBar;
-    }
-
-    public void updateProgressBar() {
-        if (progressBar == null)
-            return;
-        float elapsed = artisanProductInProgress.getDaysInProgress() * 24 + artisanProductInProgress.getHoursInProgress();
-        float duration = artisanProductInProgress.getType().getProcessingDays() * 24 + artisanProductInProgress.getType().getProcessingHours();
-        if ((elapsed / duration) == 1) {
-            progressBar = null;
-            return;
-        }
-        progressBar.setValue(elapsed / duration);
+        return type.getInventoryTexturePath();
     }
 }

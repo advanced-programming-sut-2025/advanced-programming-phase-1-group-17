@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models;
 
+import io.github.StardewValley.shared.LightningLogicController;
 import io.github.StardewValley.shared.models.NPCS.*;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.cooking.Recipe;
@@ -19,6 +20,7 @@ public class Game implements Serializable {
     private final GameMap gameMap;
     private final ArrayList<NPC> NPCs = new ArrayList<>();
     private final MarketsController marketsController = new MarketsController();
+    private final LightningLogicController lightningLogicController = new LightningLogicController();
     private final ArrayList<NPC> NPCHuts = new ArrayList<>();
 
 
@@ -152,5 +154,9 @@ public class Game implements Serializable {
                 return player;
         }
         return null;
+    }
+
+    public LightningLogicController getLightningLogicController() {
+        return lightningLogicController;
     }
 }
