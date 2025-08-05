@@ -81,6 +81,8 @@ public class Game implements Serializable {
         this.gameMap = new GameMap(players);
         setTiles(Tile.getTreeTile());
         setTreeTile(Tile.getTreeTile());
+        Tile.getTiles().clear();
+        Tile.getTreeTile().clear();
         for (Player player : players) {
             if (player.getUser().getUsername().equals("NPC")) continue;
             if (player.isGuest()){
