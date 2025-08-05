@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.controllers.UIControllers.ArtisanInfoMenuController;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
+import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 import io.github.StardewValley.shared.models.artisan.IngredientGroup;
@@ -18,7 +20,7 @@ import io.github.StardewValley.shared.models.crafting.CraftingItem;
 public class ArtisanInfoMenu implements Screen {
     private Stage stage;
     private final ArtisanInfoMenuController controller;
-    private final CraftingItem craftingItem;
+    private final CraftingItemDTO craftingItem;
 
     private final TextButton cheatReadyButton;
     private final TextButton cancelButton;
@@ -29,7 +31,7 @@ public class ArtisanInfoMenu implements Screen {
     private final ScrollPane recipePane;
     private final Table mainTable;
 
-    public ArtisanInfoMenu(ArtisanInfoMenuController controller, Skin skin, CraftingItem craftingItem) {
+    public ArtisanInfoMenu(ArtisanInfoMenuController controller, Skin skin, CraftingItemDTO craftingItem) {
         this.controller = controller;
         controller.setView(this);
         this.craftingItem = craftingItem;
@@ -62,7 +64,7 @@ public class ArtisanInfoMenu implements Screen {
         this.recipeTable = new Table();
         this.recipeTable.add(new Label("Recipes", skin)).center();
         for (ArtisanProductType artisanProductType : ArtisanProductType.values()) {
-            if (artisanProductType.getArtisan().equals(craftingItem.getTargetItem())) {
+            if (artisanProductType.getArtisan().getName().equals(craftingItem.getType())) {
                 //Table itemTable = new Table();
                 StringBuilder description = new StringBuilder();
                 description.append("\nItem Name: %s => Ingredients:\n".formatted(artisanProductType.getName()));
@@ -75,8 +77,8 @@ public class ArtisanInfoMenu implements Screen {
                         itemName = ((BackPackableType) key).getName();
                     description.append("\t%s (Count: %d)\n".formatted(itemName, value));
                 });
-                //itemTable.add(new TextArea(description.toString().trim(), skin));
-                //recipeTable.add(itemTable).expandX().row();
+//                itemTable.add(new TextArea(description.toString().trim(), skin));
+//                recipeTable.add(itemTable).expandX().row();
                 recipeTable.add(new Label(description.toString(), skin)).expandX().row();
             }
         }
@@ -95,27 +97,33 @@ public class ArtisanInfoMenu implements Screen {
         mainTable.add(recipePane).colspan(2).width(600).height(300).padBottom(20).row();
 
         Table buttonRow = new Table();
-        if (craftingItem.getArtisanProductInProgress() != null && craftingItem.getArtisanProductInProgress().isReady())
+        if (craftingItem.isInProgress() && craftingItem.isArtisanProductReady())
             buttonRow.add(takeProduct).pad(10);
         buttonRow.add(cheatReadyButton).pad(10);
         buttonRow.add(cancelButton).pad(10);
 
         mainTable.add(buttonRow).colspan(2).center().row();
 
-        if (craftingItem.getArtisanProductInProgress() != null) {
-            Label craftingLabel = new Label("Currently crafting: " +
-                craftingItem.getArtisanProductInProgress().getType().getName(),
-                  GameAssetManagerClient.getGameAssetManager().getSkin());
+        // Only add progress if crafting is in progress
+        if (craftingItem.isInProgress()) {
+            Label craftingLabel = new Label(
+                "Currently crafting: " + craftingItem.getArtisanProductType(),
+                GameAssetManagerClient.getGameAssetManager().getSkin()
+            );
 
-            ProgressBar craftingProgress = craftingItem.getProgressBar();
-            if (craftingProgress != null) {
-                craftingProgress.setWidth(300);
-                craftingProgress.setHeight(50f);
-            }
+            float progress = craftingItem.getProgress(); // should be 0.0 - 1.0
+
+            ProgressBar craftingProgress = new ProgressBar(0f, 1f, 0.01f, false,
+                GameAssetManagerClient.getGameAssetManager().getSkin());
+
+            craftingProgress.setValue(progress);
+            craftingProgress.setWidth(300);
+            craftingProgress.setHeight(20);
 
             mainTable.add(craftingLabel).colspan(2).pad(10).row();
             mainTable.add(craftingProgress).colspan(2).pad(10).row();
         }
+
 
         stage.addActor(mainTable);
     }
@@ -153,7 +161,7 @@ public class ArtisanInfoMenu implements Screen {
 
     }
 
-    public CraftingItem getCraftingItem() {
+    public CraftingItemDTO getCraftingItem() {
         return craftingItem;
     }
 

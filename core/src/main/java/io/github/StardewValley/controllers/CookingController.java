@@ -25,25 +25,26 @@ public class CookingController {
     }
     public void handleIngredients(FoodType foodtype) {
         StringBuilder sb = new StringBuilder();
-        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        for (Map.Entry<BackPackableType, Integer> entry : foodtype.getIngredients().entrySet()) {
-            if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
-                && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
-                //return new Result(false, "not enough ingredient");
-                view.getErrorMessage().setText("not enough ingredients");
-                return;
-            }
-        }
-        for (Map.Entry<BackPackableType, Integer> entry : foodtype.getIngredients().entrySet()) {
-            sb.append(entry.getKey().getName()).append(": ").append(entry.getValue()).append("\n");
-            for (int i = 0; i < entry.getValue(); i++) {
-                player.getBackPack().useItem(entry.getKey());
-            }
-        }
-        Food food = new Food(foodtype);
-        backPack.addItemToInventory(food);
-        view.getErrorMessage().setText("crafted successfully");
+        //TODO
+//        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
+//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+//        for (Map.Entry<BackPackableType, Integer> entry : foodtype.getIngredients().entrySet()) {
+//            if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
+//                && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
+//                //return new Result(false, "not enough ingredient");
+//                view.getErrorMessage().setText("not enough ingredients");
+//                return;
+//            }
+//        }
+//        for (Map.Entry<BackPackableType, Integer> entry : foodtype.getIngredients().entrySet()) {
+//            sb.append(entry.getKey().getName()).append(": ").append(entry.getValue()).append("\n");
+//            for (int i = 0; i < entry.getValue(); i++) {
+//                player.getBackPack().useItem(entry.getKey());
+//            }
+//        }
+//        Food food = new Food(foodtype);
+//        backPack.addItemToInventory(food);
+//        view.getErrorMessage().setText("crafted successfully");
 
 
         view.getIngredients().setText(sb.toString());

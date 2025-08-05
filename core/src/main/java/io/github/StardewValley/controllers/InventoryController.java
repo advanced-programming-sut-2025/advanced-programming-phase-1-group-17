@@ -39,7 +39,7 @@ public class InventoryController {
     public void handleSkillMenu() {
         Main.getMain().getScreen().dispose();
         Main.getMain().setScreen(new SkillMenu(new SkillMenuController(),
-              GameAssetManagerClient.getGameAssetManager().getSkin(), view.getPlayer(), Main.getGameView()));
+              GameAssetManagerClient.getGameAssetManager().getSkin(), Main.getGameView()));
     }
 
     public void handleSocialMenu() {

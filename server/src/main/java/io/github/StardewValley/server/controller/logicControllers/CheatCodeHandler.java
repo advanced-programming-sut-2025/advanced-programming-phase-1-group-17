@@ -1,7 +1,7 @@
 package io.github.StardewValley.server.controller.logicControllers;
 
-import io.github.StardewValley.shared.controller.LightningController;
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.animal.Animal;
@@ -34,7 +34,6 @@ public class CheatCodeHandler {
             App.getCurrentGame().getDate().getMinute());
     }
 
-
     private static Result getDate() {
         return new Result(true, App.getCurrentGame().getDate().getDay() + "/" +
             App.getCurrentGame().getDate().getMonth() + "/" + App.getCurrentGame().getDate().getYear());
@@ -48,17 +47,16 @@ public class CheatCodeHandler {
                 if (craftingItem.getArtisanProductInProgress() == null)
                     continue;
                 craftingItem.getArtisanProductInProgress().goToNextDay(24);
-                craftingItem.updateProgressBar();
             }
         }
         return amount + " days added successfully";
     }
 
-    public static String cheatThor(int x, int y) {
+    public static String cheatThor(int x, int y, Game game) {
         Tile tile = Tile.getTile(x, y);
         if (tile == null)
             return "tile not found";
-        LightningController.getLightningController().triggerLightning();
+        game.getLightningLogicController().triggerLightning();
         tile.lightningStrike();
         return "Successfully lightninged.";
     }

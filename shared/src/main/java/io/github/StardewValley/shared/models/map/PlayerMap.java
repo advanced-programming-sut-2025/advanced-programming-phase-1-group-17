@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.map;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Fence;
 import io.github.StardewValley.shared.models.Game;
@@ -16,7 +15,6 @@ import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 
-import java.applet.AppletStub;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -502,7 +500,7 @@ public class PlayerMap {
                     game.getTile(i, j).setWalkAble(false);
                 }
             }
-            createGreenHouse();
+            createGreenHouse(game);
         } else if (type == 2) {
             this.hut = new Hut("hut.png",40 + row , 40 + col);
             this.lakes.add(new Lake());

@@ -30,7 +30,7 @@ public class GameWorldController {
         if (response.isSuccessful())
             return response;
 
-        response = handleShippingBin(worldCoordinates);
+        response = handleShippingBin(worldCoordinates, player);
         if (response.isSuccessful()) {
             return response;
         }
@@ -61,11 +61,11 @@ public class GameWorldController {
     }
 
 
-    private HandleWorldClickResponse handleShippingBin(Vector3 worldCoordinates) {
+    private HandleWorldClickResponse handleShippingBin(Vector3 worldCoordinates, Player player) {
         HashMap<ShippingBin, Rectangle> bounds = ShippingBin.getShippingBinBounds();
         for (ShippingBin shippingBin : bounds.keySet()) {
             if (bounds.get(shippingBin).contains(worldCoordinates.x, worldCoordinates.y)) {
-                if (shippingBin.getTodayItemOwner() != null && !shippingBin.getTodayItemOwner().equals(App.getCurrentGame().getCurrentPlayingPlayer())) {
+                if (shippingBin.getTodayItemOwner() != null && !shippingBin.getTodayItemOwner().equals(player)) {
 //                    showNotification("Player %s has put some items inside this shipping Bin today.\n Try using another shipping Bin."
 //                        .formatted(shippingBin.getTodayItemOwner().getUser().getUsername()));
                     return new HandleWorldClickResponse(

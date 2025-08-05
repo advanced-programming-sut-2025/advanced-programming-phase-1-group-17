@@ -1,7 +1,9 @@
 package io.github.StardewValley.shared.models.artisan;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.backpack.BackPackType;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.animal.AnimalProductType;
@@ -169,5 +171,19 @@ public enum ArtisanProductType implements BackPackableType {
     @Override
     public String getInventoryTexturePath() {
         return ArtisanAssetManager.getArtisanAssetManager().getTexture(this);
+    }
+
+    public boolean containsDTO(BackpackableTypeDTO backpackableTypeDTO) {
+        String name = backpackableTypeDTO.getName();
+        for (Object ingredient : ingredients.keySet()) {
+            if (ingredient instanceof IngredientGroup ingredientGroup) {
+                if (ingredientGroup.getName().equals(name))
+                    return true;
+            } else if (ingredient instanceof BackPackType backPackType) {
+                if (backPackType.getName().equals(name))
+                    return true;
+            }
+        }
+        return false;
     }
 }

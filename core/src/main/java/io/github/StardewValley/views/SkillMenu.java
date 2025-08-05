@@ -15,10 +15,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
-import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.SkillMenuController;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.AbilityDTO;
 
 public class SkillMenu implements Screen {
     private Stage stage;
@@ -31,11 +30,11 @@ public class SkillMenu implements Screen {
     private final Label foragingLabel;
     private final Label fishingLabel;
 
-    private final Player player = App.getCurrentGame().getCurrentPlayingPlayer();
     private final TextButton exitButton;
+    private AbilityDTO playerAbilities = GameClient.getPlayer().getAbility();
 
 
-    public SkillMenu(SkillMenuController skillMenuController, Skin skin, Player player, GameView gameView) {
+    public SkillMenu(SkillMenuController skillMenuController, Skin skin, GameView gameView) {
         this.controller = skillMenuController;
         this.gameView = gameView;
         this.controller.setView(this);
@@ -46,25 +45,25 @@ public class SkillMenu implements Screen {
         manager.resetTime = 0.1f;
         manager.hideAll();
 
-        this.farmingLabel = new Label("Your farming Ability is Level %d".formatted(player.getAbilities().getFarmingLevel()), skin);
+        this.farmingLabel = new Label("Your farming Ability is Level %d".formatted(playerAbilities.getFarmingLevel()), skin);
         this.farmingLabel.setFontScale(1.6f); this.farmingLabel.setFontScale(1.6f);
         Tooltip<Label> tooltip = new Tooltip<>(new Label("Upgrading this ability increases the probability of harvesting high quality crops and fruits", skin));
         this.farmingLabel.setAlignment(Align.center);
         this.farmingLabel.addListener(tooltip);
 
-        this.miningLabel = new Label("Your mining Ability is Level %d".formatted(player.getAbilities().getMiningLevel()), skin);
+        this.miningLabel = new Label("Your mining Ability is Level %d".formatted(playerAbilities.getMiningLevel()), skin);
         this.miningLabel.setFontScale(1.6f);
         Tooltip<Label> tooltip2 = new Tooltip<>(new Label("Upgrading this ability increases the chance of getting one additional stone", skin));
         this.miningLabel.setAlignment(Align.center);
         this.miningLabel.addListener(tooltip2);
 
-        this.foragingLabel = new Label("Your foraging Ability is Level %d".formatted(player.getAbilities().getForagingLevel()), skin);
+        this.foragingLabel = new Label("Your foraging Ability is Level %d".formatted(playerAbilities.getForagingLevel()), skin);
         this.foragingLabel.setFontScale(1.6f);
         Tooltip<Label> tooltip3 = new Tooltip<>(new Label("Upgrading this ability will decrease the energy needed to use Axe.", skin));
         this.foragingLabel.setAlignment(Align.center);
         this.foragingLabel.addListener(tooltip3);
 
-        this.fishingLabel = new Label("Your fishing Ability is Level %d".formatted(player.getAbilities().getFishingLevel()), skin);
+        this.fishingLabel = new Label("Your fishing Ability is Level %d".formatted(playerAbilities.getFishingLevel()), skin);
         this.fishingLabel.setFontScale(1.6f);
         Tooltip<Label> tooltip4= new Tooltip<>(new Label("Upgrading this ability will increase the chance to catch a legendary fish.", skin));
         this.fishingLabel.setAlignment(Align.center);
@@ -106,87 +105,86 @@ public class SkillMenu implements Screen {
         rightSideDescription.setWidth(300);
         rightSideDescription.setVisible(true);
 
-        GameAssetManager gameAssetManager = GameAssetManager.getGameAssetManager();
+        GameAssetManagerClient gameAssetManager = GameAssetManagerClient.getGameAssetManager();
 
         // Skill rows
-        //TODO texture
-//        SkillRow farming = new SkillRow(
-//            new TextureRegionDrawable(gameAssetManager.getAbilityTextures("Farming")),
-//            player.getAbilities().getFarmingLevel(),
-//            "Increases crop quality chance",
-//            skin,
-//            tooltipManager
-//        );
-//
-//        SkillRow mining = new SkillRow(
-//            new TextureRegionDrawable(gameAssetManager.getAbilityTextures("Mining")),
-//            player.getAbilities().getMiningLevel(),
-//            "Chance to get extra stones when mining",
-//            skin,
-//            tooltipManager
-//        );
-//
-//        SkillRow foraging = new SkillRow(
-//            new TextureRegionDrawable(gameAssetManager.getAbilityTextures("Foraging")),
-//            player.getAbilities().getForagingLevel(),
-//            "Reduces Axe energy cost",
-//            skin,
-//            tooltipManager
-//        );
-//
-//        SkillRow fishing = new SkillRow(
-//            new TextureRegionDrawable(gameAssetManager.getAbilityTextures("Fishing")),
-//            player.getAbilities().getFishingLevel(),
-//            "Increases legendary fish catch rate",
-//            skin,
-//            tooltipManager
-//        );
+        SkillRow farming = new SkillRow(
+            new TextureRegionDrawable(gameAssetManager.getAbilityTextures("Farming")),
+            playerAbilities.getFarmingLevel(),
+            "Increases crop quality chance",
+            skin,
+            tooltipManager
+        );
 
-//        Table leftColumn = new Table().top();
-//        leftColumn.add(farming).padBottom(30).row();
-//        leftColumn.add(mining).padBottom(30).row();
-//        leftColumn.add(foraging).padBottom(30).row();
-//        leftColumn.add(fishing).padBottom(30).row();
-//        leftColumn.add(exitButton).padTop(40).row();
-//
-//        farming.addListener(new ClickListener() {
-//            @Override
-//            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-//                rightSideDescription.setText(farming.getHoverDescription().getText());
-//            }
-//        });
-//        mining.addListener(new ClickListener() {
-//            @Override
-//            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-//                rightSideDescription.setText(mining.getHoverDescription().getText());
-//            }
-//        });
-//        foraging.addListener(new ClickListener() {
-//            @Override
-//            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-//                rightSideDescription.setText(foraging.getHoverDescription().getText());
-//            }
-//        });
-//        fishing.addListener(new ClickListener() {
-//            @Override
-//            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-//                rightSideDescription.setText(fishing.getHoverDescription().getText());
-//            }
-//        });
+        SkillRow mining = new SkillRow(
+            new TextureRegionDrawable(gameAssetManager.getAbilityTextures("Mining")),
+            playerAbilities.getMiningLevel(),
+            "Chance to get extra stones when mining",
+            skin,
+            tooltipManager
+        );
 
-//        // Create a right side table with "Description" title and description label
-//        Table rightColumn = new Table().top().padTop(50).padRight(60);
-//        Label descriptionTitle = new Label("Description", skin);
-//        descriptionTitle.setFontScale(1.6f);
-//        rightColumn.add(descriptionTitle).left().padBottom(20).row();
-//        rightColumn.add(rightSideDescription).width(300).left().top().row();
-//
-//        // Create root layout: left = skills, right = description
-//        Table root = new Table();
-//        root.setFillParent(true);
-//        root.add(leftColumn).left().expandY().padLeft(40).padTop(50).expandX();
-//        root.add(rightColumn).width(350).top().right().padRight(60);
-//        stage.addActor(root);
+        SkillRow foraging = new SkillRow(
+            new TextureRegionDrawable(gameAssetManager.getAbilityTextures("Foraging")),
+            playerAbilities.getForagingLevel(),
+            "Reduces Axe energy cost",
+            skin,
+            tooltipManager
+        );
+
+        SkillRow fishing = new SkillRow(
+            new TextureRegionDrawable(gameAssetManager.getAbilityTextures("Fishing")),
+            playerAbilities.getFishingLevel(),
+            "Increases legendary fish catch rate",
+            skin,
+            tooltipManager
+        );
+
+        Table leftColumn = new Table().top();
+        leftColumn.add(farming).padBottom(30).row();
+        leftColumn.add(mining).padBottom(30).row();
+        leftColumn.add(foraging).padBottom(30).row();
+        leftColumn.add(fishing).padBottom(30).row();
+        leftColumn.add(exitButton).padTop(40).row();
+
+        farming.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                rightSideDescription.setText(farming.getHoverDescription().getText());
+            }
+        });
+        mining.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                rightSideDescription.setText(mining.getHoverDescription().getText());
+            }
+        });
+        foraging.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                rightSideDescription.setText(foraging.getHoverDescription().getText());
+            }
+        });
+        fishing.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                rightSideDescription.setText(fishing.getHoverDescription().getText());
+            }
+        });
+
+        // Create a right side table with "Description" title and description label
+        Table rightColumn = new Table().top().padTop(50).padRight(60);
+        Label descriptionTitle = new Label("Description", skin);
+        descriptionTitle.setFontScale(1.6f);
+        rightColumn.add(descriptionTitle).left().padBottom(20).row();
+        rightColumn.add(rightSideDescription).width(300).left().top().row();
+
+        // Create root layout: left = skills, right = description
+        Table root = new Table();
+        root.setFillParent(true);
+        root.add(leftColumn).left().expandY().padLeft(40).padTop(50).expandX();
+        root.add(rightColumn).width(350).top().right().padRight(60);
+        stage.addActor(root);
     }
 
     @Override
