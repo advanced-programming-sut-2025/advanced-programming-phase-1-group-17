@@ -15,20 +15,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.GiftMenuController;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
+
+import java.util.HashMap;
 
 
 public class GiftMenu implements Screen {
     private final ScrollPane itemsPane;
     private final Skin skin;
     private final GiftMenuController controller;
-    private final Player player;
-    private final BackPack backPack;
     private final Table itemsTable;
     private final Table mainTable;
     private Stage stage;
@@ -36,13 +39,12 @@ public class GiftMenu implements Screen {
     private final TextField amountTextField;
     private final TextButton back;
     private final TextButton gift;
+    private HashMap<BackpackableTypeDTO, Integer> backPackItems;
 
 
-    public GiftMenu(Player player, GiftMenuController controller, Skin skin, Player targetPlayer, GameView gameView, NPC npc) {
-        this.player = player;
+    public GiftMenu( GiftMenuController controller, Skin skin, String targetPlayer, GameView gameView, String npc) {
         this.controller = controller;
         this.skin = skin;
-        this.backPack = player.getBackPack();
         this.itemsTable = new Table();
         this.mainTable = new Table();
         this.itemPickLabel = new Label("", skin);
@@ -50,46 +52,52 @@ public class GiftMenu implements Screen {
         amountTextField.setMessageText("amount");
         this.back = new TextButton("Back", skin);
         this.gift = new TextButton("Gift", skin);
-        for (BackPackableType backPackableType : player.getBackPack().getBackPackItems().keySet()) {
-            // 1. Prepare image button style:
-            //TODO: need to delete this null-check
-            if (backPackableType.getInventoryTexturePath() == null)
-                continue;
 
-            Texture itemTexture =new Texture (backPackableType.getInventoryTexturePath());
+        itemsTable.clear();
+        backPackItems = GameClient.getGameStateApiClient().getBackpackItems().getItems();
+
+        for (BackpackableTypeDTO backpackableTypeDTO : backPackItems.keySet()) {
+            // 1. Prepare image button style:
+            Texture itemTexture = GameAssetManagerClient.getGameAssetManager().getTexture(backpackableTypeDTO.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 
             ImageButton itemButton = new ImageButton(style);
 
+            // 2. Prepare label for count:
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-            Label countLabel = new Label("%d".formatted(backPack.getBackPackItems().get(backPackableType).size()),
+            Label countLabel = new Label("%d".formatted(backPackItems.get(backpackableTypeDTO)),
                 labelStyle);
             countLabel.setTouchable(Touchable.disabled);
             countLabel.setFontScale(1.3f); // Adjust size
             countLabel.setAlignment(Align.bottomRight);
 
+            // 3. Use a Stack:
             Stack itemStack = new Stack();
-            itemStack.setSize(64, Math.min(64, backPack.getBackPackItems().size()));
+            itemStack.setSize(64, Math.min(64, backPackItems.get(backpackableTypeDTO)));
             itemStack.add(itemButton);
             itemStack.add(countLabel);
 
+            // 4. Handle click logic:
             itemButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    controller.handleItemClick(backPackableType);
-                    itemPickLabel.setText("You chose the %s".formatted(backPackableType.getName()));
+                    controller.handleItemClick(backpackableTypeDTO);
+                    itemPickLabel.setText("You picked: %s".formatted(backpackableTypeDTO.getName()));
                 }
             });
 
+            // 5. Add to inventory layout:
             itemsTable.add(itemStack).size(64, 64).pad(5);
         }
+        itemsTable.invalidate();
+
 
         this.itemsPane = new ScrollPane(itemsTable, skin);
         if (npc == null)
-            controller.setView(this, targetPlayer,gameView);
+            controller.setView(this, targetPlayer, gameView);
         else
-            controller.setView(this, npc,gameView);
+            controller.setView(this, npc, gameView ,null);
 
 
     }
@@ -102,13 +110,11 @@ public class GiftMenu implements Screen {
         mainTable.setFillParent(true);
         mainTable.top().pad(10);
         mainTable.add(itemsPane).height(300).width(500).row();
-        mainTable.row().pad(10,0,10,0);
+        mainTable.row().pad(10, 0, 10, 0);
         mainTable.add(itemPickLabel).row();
         mainTable.add(amountTextField).width(100).row();
         mainTable.add(gift).row();
         mainTable.add(back).row();
-
-
 
 
         stage.addActor(mainTable);
@@ -160,13 +166,6 @@ public class GiftMenu implements Screen {
         return controller;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public BackPack getBackPack() {
-        return backPack;
-    }
 
     public Table getItemsTable() {
         return itemsTable;
@@ -183,6 +182,7 @@ public class GiftMenu implements Screen {
     public Label getItemPickLabel() {
         return itemPickLabel;
     }
+
     public void setText(String text) {
         itemPickLabel.setText(text);
     }

@@ -19,19 +19,9 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
-import io.github.StardewValley.controllers.UIControllers.ArtisanCraftMenuController;
-import io.github.StardewValley.controllers.UIControllers.ArtisanInfoMenuController;
-import io.github.StardewValley.controllers.UIControllers.StoreMenuController;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.shared.models.crafting.CraftingItem;
-import io.github.StardewValley.shared.models.market.ShippingBin;
-import io.github.StardewValley.shared.models.market.StoreType;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import io.github.StardewValley.shared.models.enums.Gender;
@@ -159,9 +149,8 @@ public class GameView implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (currentTargetPlayer == null) return;
                 Main.getMain().getScreen().dispose();
-                //TODO handel backpack
-//                Main.getMain().setScreen(new GiftMenu(GameClient.getPlayer().getUser().getUsername(), new GiftMenuController(),
-//                      GameAssetManagerClient.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
+                Main.getMain().setScreen(new GiftMenu( new GiftMenuController(),
+                      GameAssetManagerClient.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
             }
         });
         givingFlower.addListener(new ClickListener() {
