@@ -2,6 +2,7 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.tools.ToolAssetManager;
@@ -18,7 +19,8 @@ public class ToolRenderController {
 
     public ToolRenderController(PlayerClient player) {
         this.player = player;
-        this.toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getCurrentTool().getToolType());
+        //TODO
+        //this.toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getToolType());
         toolSprite.setOriginCenter(); // Rotation around center — adjust if needed
     }
 
@@ -31,7 +33,8 @@ public class ToolRenderController {
 
     public void updateToolAnimation(float delta) {
         if (!isToolAnimating) return;
-        toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getCurrentTool().getToolType());
+        //TODO
+        //toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getCurrentTool().getToolType());
 
         toolAnimationTimer += delta;
         float progress = toolAnimationTimer / TOOL_ANIMATION_DURATION;
@@ -59,13 +62,13 @@ public class ToolRenderController {
     public void update(float delta, PlayerClient player) {
         this.player = player;
         updateToolAnimation(delta);
-        if (player.getCurrentTool() != null)
+        if (!player.getToolTexturePath().isEmpty())
             drawTool();
     }
 
     private void drawTool() {
         if (!isToolAnimating()) {
-            Texture texture =new Texture(player.getCurrentTool().getType().getInventoryTexture());
+            Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture(player.getToolTexturePath());
             Main.getBatch().draw(texture, player.getX(), player.getY());
         } else {
             if (toolSprite == null) return;

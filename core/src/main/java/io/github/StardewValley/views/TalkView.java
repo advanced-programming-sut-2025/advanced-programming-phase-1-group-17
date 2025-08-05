@@ -92,8 +92,9 @@ public class TalkView implements Screen {
 
         int i = 0;
         for (Player player : App.getCurrentGame().getPlayers()) {
-            if (player.getUser().getUsername().equals("NPC") || player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
-                continue;
+            //TODO
+            //            if (player.getUser().getUsername().equals("NPC") || player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
+//                continue;
             players[i] = player;
             i++;
         }

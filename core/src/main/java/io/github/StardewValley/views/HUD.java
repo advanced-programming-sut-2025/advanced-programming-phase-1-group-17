@@ -8,9 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.GameController;
+import io.github.StardewValley.controllers.PlayerClient;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
@@ -122,13 +125,14 @@ public class HUD {
 
 
         // کشیدن مقدار پول
-        int money = (int) App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin();
-        int i = 0;
-        while (money > 0) {
-            font.draw(batch, String.valueOf(money % 10), Gdx.graphics.getWidth() - 35 - 18 * i, Gdx.graphics.getHeight() - 150);
-            money /= 10;
-            i++;
-        }
+        //TODO
+//        int money = (int) App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin();
+//        int i = 0;
+//        while (money > 0) {
+//            font.draw(batch, String.valueOf(money % 10), Gdx.graphics.getWidth() - 35 - 18 * i, Gdx.graphics.getHeight() - 150);
+//            money /= 10;
+//            i++;
+//        }
         dateFont.draw(batch, date.toString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
         timeFont.draw(batch, time.toString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
         batch.end();
@@ -138,7 +142,7 @@ public class HUD {
     }
 
     private void renderEnergyBar(SpriteBatch batch) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        PlayerClient player = GameClient.getPlayer();
         // Set up shape renderer
         shapeRenderer.setProjectionMatrix(hudCamera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -148,8 +152,8 @@ public class HUD {
         shapeRenderer.rect(energyBarBounds.x, energyBarBounds.y, energyBarBounds.width, energyBarBounds.height);
 
         // Filled part (green or red based on energy level)
-        double maxEnergy = App.getCurrentGame().getCurrentPlayingPlayer().getMaxEnergy();
-        float energyPercent = (float) (App.getCurrentGame().getCurrentPlayingPlayer().getEnergy() / maxEnergy);
+        double maxEnergy = player.getMaxEnergy();
+        float energyPercent = (float) (player.getEnergy() / maxEnergy);
         if (player.isEnergyUnlimited())
             energyPercent = 1;
 
@@ -170,7 +174,7 @@ public class HUD {
         // Tooltip still uses batch
         batch.begin();
         if (energyBarBounds.contains(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())) {
-            double energy = App.getCurrentGame().getCurrentPlayingPlayer().getEnergy();
+            double energy = player.getEnergy();
             float x = energyBarBounds.x - 30;
             float y = energyBarBounds.y + energyBarBounds.height + 20;
             if (player.isEnergyUnlimited())
@@ -182,60 +186,61 @@ public class HUD {
     }
 
     public void renderInventoryBar(SpriteBatch batch) {
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-        Map<BackPackableType, ArrayList<BackPackable>> itemTypeCounts = player.getBackPack().getBackPackItems();
-        ArrayList<BackPackableType> itemTypes = new ArrayList<>(itemTypeCounts.keySet());
-
-        int slotSize = 64;
-        int spacing = 10;
-        int totalWidth = inventoryVisibleSlots * slotSize + (inventoryVisibleSlots - 1) * spacing;
-        int startX = (Gdx.graphics.getWidth() - totalWidth) / 2;
-        int y = 10;
-
-        shapeRenderer.setProjectionMatrix(hudCamera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        for (int i = 0; i < inventoryVisibleSlots; i++) {
-            int x = startX + i * (slotSize + spacing);
-
-            // Background slot
-            shapeRenderer.setColor(0.1f, 0.1f, 0.1f, 0.8f);
-            shapeRenderer.rect(x, y, slotSize, slotSize);
-
-            // Selected highlight
-            if (i == selectedItemIndex) {
-                shapeRenderer.setColor(0.2f, 0.8f, 0.2f, 1);
-                shapeRenderer.rect(x - 2, y - 2, slotSize + 4, slotSize + 4);
-            }
-
-            // Item present highlight
-            if (i < itemTypes.size()) {
-                shapeRenderer.setColor(0.8f, 0.8f, 0.2f, 1f);
-                shapeRenderer.rect(x + 4, y + 4, slotSize - 8, slotSize - 8);
-            }
-        }
-
-        shapeRenderer.end();
-
-        // Draw item type name and count
-        batch.begin();
-        BitmapFont itemFont = new BitmapFont();
-        itemFont.getData().setScale(1.2f);
-        itemFont.setColor(1, 1, 1, 1);
-
-        for (int i = 0; i < inventoryVisibleSlots; i++) {
-            if (i < itemTypes.size()) {
-                int x = startX + i * (slotSize + spacing);
-                BackPackableType type = itemTypes.get(i);
-                int count = itemTypeCounts.get(type).size();
-
-                String label = type.toString(); // or type.name() or type.getDisplayName()
-                itemFont.draw(batch, label, x + 5, y + slotSize - 8);
-                itemFont.draw(batch, "x" + count, x + 5, y + 20);
-            }
-        }
-
-        batch.end();
+        //TODO
+//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+//        Map<BackPackableType, ArrayList<BackPackable>> itemTypeCounts = player.getBackPack().getBackPackItems();
+//        ArrayList<BackPackableType> itemTypes = new ArrayList<>(itemTypeCounts.keySet());
+//
+//        int slotSize = 64;
+//        int spacing = 10;
+//        int totalWidth = inventoryVisibleSlots * slotSize + (inventoryVisibleSlots - 1) * spacing;
+//        int startX = (Gdx.graphics.getWidth() - totalWidth) / 2;
+//        int y = 10;
+//
+//        shapeRenderer.setProjectionMatrix(hudCamera.combined);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//
+//        for (int i = 0; i < inventoryVisibleSlots; i++) {
+//            int x = startX + i * (slotSize + spacing);
+//
+//            // Background slot
+//            shapeRenderer.setColor(0.1f, 0.1f, 0.1f, 0.8f);
+//            shapeRenderer.rect(x, y, slotSize, slotSize);
+//
+//            // Selected highlight
+//            if (i == selectedItemIndex) {
+//                shapeRenderer.setColor(0.2f, 0.8f, 0.2f, 1);
+//                shapeRenderer.rect(x - 2, y - 2, slotSize + 4, slotSize + 4);
+//            }
+//
+//            // Item present highlight
+//            if (i < itemTypes.size()) {
+//                shapeRenderer.setColor(0.8f, 0.8f, 0.2f, 1f);
+//                shapeRenderer.rect(x + 4, y + 4, slotSize - 8, slotSize - 8);
+//            }
+//        }
+//
+//        shapeRenderer.end();
+//
+//        // Draw item type name and count
+//        batch.begin();
+//        BitmapFont itemFont = new BitmapFont();
+//        itemFont.getData().setScale(1.2f);
+//        itemFont.setColor(1, 1, 1, 1);
+//
+//        for (int i = 0; i < inventoryVisibleSlots; i++) {
+//            if (i < itemTypes.size()) {
+//                int x = startX + i * (slotSize + spacing);
+//                BackPackableType type = itemTypes.get(i);
+//                int count = itemTypeCounts.get(type).size();
+//
+//                String label = type.toString(); // or type.name() or type.getDisplayName()
+//                itemFont.draw(batch, label, x + 5, y + slotSize - 8);
+//                itemFont.draw(batch, "x" + count, x + 5, y + 20);
+//            }
+//        }
+//
+//        batch.end();
     }
 
 

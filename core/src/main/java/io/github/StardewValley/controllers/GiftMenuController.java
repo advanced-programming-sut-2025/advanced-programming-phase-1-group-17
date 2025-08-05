@@ -24,7 +24,9 @@ public class GiftMenuController {
         this.targetPlayer = targetPlayer;
         this.view = view;
         this.gameView = gameView;
-        currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        //TODO
+        //currentPlayer = App.getCurrentGame().getCurrentPlayingPlayer();
+        currentPlayer = null;
         setListener();
     }
 

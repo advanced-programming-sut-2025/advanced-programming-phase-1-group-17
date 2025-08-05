@@ -67,8 +67,9 @@ public class NPCMenuController {
             public void clicked(InputEvent event, float x, float y) {
                 if (targetNpc == null) return;
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
-                      GameAssetManagerClient.getGameAssetManager().getSkin(), null, gameView,targetNpc));
+                //TODO
+//                Main.getMain().setScreen(new GiftMenu(App.getCurrentGame().getCurrentPlayingPlayer(), new GiftMenuController(),
+//                      GameAssetManagerClient.getGameAssetManager().getSkin(), null, gameView,targetNpc));
             }
         });
         view.getButton10().addListener(new ClickListener() {

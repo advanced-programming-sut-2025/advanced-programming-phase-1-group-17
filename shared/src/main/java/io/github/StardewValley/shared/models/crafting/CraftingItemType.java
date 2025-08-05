@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.crafting;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 

@@ -455,4 +455,179 @@ public class GameStateApiClient {
         }
         return null;
     }
+
+    public Result buildGreenHouse() {
+        try {
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/greenhouse/buildGreenhouse")
+                .addHeader("Authorization", token)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Result.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean sellItem(TileDTO shippingBinTile, BackpackableTypeDTO itemType, int quantity) {
+        try {
+            SellItemRequest requestDTO = new SellItemRequest(shippingBinTile, quantity, itemType);
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(requestDTO);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/shippingBin/sellItem")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Boolean.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean takeArtisanProduct(CraftingItemDTO craftingItem) {
+        try {
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(craftingItem);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/artisanProduct/takeProduct")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Boolean.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean cancelArtisanProduct(CraftingItemDTO craftingItem) {
+        try {
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(craftingItem);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/artisanProduct/cancelProduction")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Boolean.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Result craftArtisan(HashMap<BackpackableTypeDTO, Integer> selectedItems) {
+        try {
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(selectedItems);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/artisanProduct/craftArtisan")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Result.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public GetGameStateResponse getGameState(int minTileX, int maxTileX, int minTileY, int maxTileY) {
+        try {
+            GetGameStateRequest requestDTO = new GetGameStateRequest(minTileX, minTileY, maxTileX, maxTileY);
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(requestDTO);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/map")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, GetGameStateResponse.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

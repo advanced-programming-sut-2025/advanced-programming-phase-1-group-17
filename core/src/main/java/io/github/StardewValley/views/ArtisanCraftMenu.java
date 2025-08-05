@@ -12,11 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.UIControllers.ArtisanCraftMenuController;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 
 import java.util.ArrayList;
@@ -37,7 +40,7 @@ public class ArtisanCraftMenu implements Screen {
     private final Label errorLabel;
     private final TextButton craftButton;
 
-    private final HashMap<BackPackableType, ArrayList<BackPackable>> selectedItems = new HashMap<>();
+    private final HashMap<BackpackableTypeDTO, Integer> selectedItems = new HashMap<>();
 
 
     public ArtisanCraftMenu(ArtisanCraftMenuController controller, Skin skin, CraftingItem craftingItem) {
@@ -71,12 +74,12 @@ public class ArtisanCraftMenu implements Screen {
 
     private void refreshInventory() {
         inventoryTable.clear();
-        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
+        HashMap< BackpackableTypeDTO, Integer> backpackItems = GameClient.getGameStateApiClient().getBackpackItems().getItems();
 
-        for (BackPackableType item : player.getBackPack().getBackPackItems().keySet()) {
+        for (BackpackableTypeDTO item : backpackItems.keySet()) {
             if (item.getInventoryTexturePath() == null) continue;
 
-            int count = player.getBackPack().getBackPackItems().get(item).size();
+            int count = backpackItems.get(item);
             if (count == 0) continue;
 
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
@@ -106,11 +109,13 @@ public class ArtisanCraftMenu implements Screen {
     private void refreshSelectedItems() {
         selectedItemsTable.clear();
 
-        for (Map.Entry<BackPackableType, ArrayList<BackPackable>> entry : selectedItems.entrySet()) {
-            BackPackableType item = entry.getKey();
-            int count = entry.getValue().size();
+        for (Map.Entry<BackpackableTypeDTO, Integer> entry : selectedItems.entrySet()) {
+            BackpackableTypeDTO item = entry.getKey();
+            int count = entry.getValue();
 
-            Image image = new Image(new TextureRegionDrawable(new TextureRegion(new Texture(item.getInventoryTexturePath()))));
+            Image image = new Image(new TextureRegionDrawable(new TextureRegion(
+                GameAssetManagerClient.getGameAssetManager().getTexture(entry.getKey().getInventoryTexturePath()
+            ))));
             Label nameLabel = new Label(item.getName(), skin);
             Label countLabel = new Label("x" + count, skin);
 
@@ -165,7 +170,7 @@ public class ArtisanCraftMenu implements Screen {
         return errorLabel;
     }
 
-    public HashMap<BackPackableType, ArrayList<BackPackable>> getSelectedItems() {
+    public HashMap<BackpackableTypeDTO, Integer> getSelectedItems() {
         return selectedItems;
     }
 }

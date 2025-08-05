@@ -9,12 +9,12 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.UIControllers.*;
-import io.github.StardewValley.controllers.UIControllers.LightningController;
+import io.github.StardewValley.controllers.UIControllers.LightningRenderController;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.map.Lake;
-import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.views.*;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.StoreType;
@@ -31,7 +31,6 @@ public class GameController {
 
     private  WorldController worldController;
     private ToolRenderController toolRenderController;
-    private  LightningController lightningController;
     private  CrowAttackEffect crowAttackEffect;
 
     private PlayerDto player;
@@ -52,7 +51,6 @@ public class GameController {
             this.worldController = new WorldController(this.camera);
             this.worldController.initTransients();
             this.toolRenderController = new ToolRenderController(playerClient);
-            this.lightningController = LightningController.getLightningController();
 
             this.mapWidthInPixels = worldController.getTileWidth();
             this.mapHeightInPixels = worldController.getTileHeight();
@@ -103,7 +101,7 @@ public class GameController {
                 PlayerDto pd = GameClient.getGameStateApiClient().updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
                 playerUpdate(pd);
                 updateCamera(GameClient.getPlayer());
-                worldController.update();
+                worldController.update(delta);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -112,10 +110,6 @@ public class GameController {
 
             //TODO handle connection to server
 //            toolController.update(delta, player);
-
-            //TODO
-            lightningController.updateLightning(delta);
-            lightningController.renderLightning(Main.getBatch(), player);
 
             crowAttackEffect.update(delta);
             crowAttackEffect.render(Main.getBatch());
@@ -296,7 +290,7 @@ public class GameController {
             case OPEN_SHIPPING_BIN_MENU -> {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new ShippingBinScreen(
-                    (ShippingBin) result.getPayload(),
+                    (TileDTO) result.getPayload(),
                     new ShippingBinScreenController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin()
                 ));
@@ -306,7 +300,7 @@ public class GameController {
                 Main.getMain().setScreen(new ArtisanInfoMenu(
                     new ArtisanInfoMenuController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin(),
-                    (CraftingItem) result.getPayload()
+                    (CraftingItemDTO) result.getPayload()
                 ));
             }
             default -> {

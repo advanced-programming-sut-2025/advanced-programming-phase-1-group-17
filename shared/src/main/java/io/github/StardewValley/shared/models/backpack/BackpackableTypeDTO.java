@@ -2,14 +2,16 @@ package io.github.StardewValley.shared.models.backpack;
 
 public class BackpackableTypeDTO {
     private String name;
+    private String className;
     private double price;
     private String inventoryTexturePath;
 
     public BackpackableTypeDTO() {
     }
 
-    public BackpackableTypeDTO(String name, double price, String inventoryTexturePath) {
+    public BackpackableTypeDTO(String name, String className, double price, String inventoryTexturePath) {
         this.name = name;
+        this.className = className;
         this.price = price;
         this.inventoryTexturePath = inventoryTexturePath;
     }
@@ -36,5 +38,13 @@ public class BackpackableTypeDTO {
 
     public void setInventoryTexturePath(String inventoryTexturePath) {
         this.inventoryTexturePath = inventoryTexturePath;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 }
