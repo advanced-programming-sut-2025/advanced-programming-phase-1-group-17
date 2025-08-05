@@ -14,6 +14,7 @@ public class PlayerDto {
     private Player.Direction currentDirection;
     private float animationTimer = 0f;
     private float passOutTimer = 0f;
+    private boolean isNewMessage;
 
     public PlayerDto() {}
     public PlayerDto(boolean isPassedOut
@@ -145,4 +146,11 @@ public class PlayerDto {
         this.passOutTimer = passOutTimer;
     }
 
+    public boolean isNewMessage() {
+        return isNewMessage;
+    }
+
+    public void setNewMessage(boolean newMessage) {
+        isNewMessage = newMessage;
+    }
 }
