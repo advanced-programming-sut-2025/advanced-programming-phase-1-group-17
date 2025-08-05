@@ -27,7 +27,7 @@ public class Game implements Serializable {
     private ArrayList<Tile> treeTile = new ArrayList<Tile>();
 
 
-    public Game(UserDTO user1, UserDTO user2, UserDTO user3,UserDTO user4) {
+    public Game(UserDTO user1, UserDTO user2, UserDTO user3, UserDTO user4) {
         user1.setActiveGame(this);
         user2.setActiveGame(this);
         user3.setActiveGame(this);
@@ -54,50 +54,51 @@ public class Game implements Serializable {
         for (int i = 0; i < players.size(); i++) {
             if (i != 0) {
                 players.get(0).addGift(players.get(i));
-                players.get(0).addTalk(players.get(i),new Talk(players.get(i)));
+                players.get(0).addTalk(players.get(i), new Talk(players.get(i)));
                 players.get(0).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 1) {
                 players.get(1).addGift(players.get(i));
-                players.get(1).addTalk(players.get(i),new Talk(players.get(i)));
+                players.get(1).addTalk(players.get(i), new Talk(players.get(i)));
                 players.get(1).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 2) {
                 players.get(2).addGift(players.get(i));
-                players.get(2).addTalk(players.get(i),new Talk(players.get(i)));
+                players.get(2).addTalk(players.get(i), new Talk(players.get(i)));
                 players.get(2).addFriendShips(players.get(i), 0);
             }
         }
         for (int i = 0; i < players.size(); i++) {
             if (i != 3) {
                 players.get(3).addGift(players.get(i));
-                players.get(3).addTalk(players.get(i),new Talk(players.get(i)));
+                players.get(3).addTalk(players.get(i), new Talk(players.get(i)));
                 players.get(3).addFriendShips(players.get(i), 0);
             }
         }
         App.setCurrentGame(this);
         this.gameMap = new GameMap(players);
-        setTiles(Tile.getTreeTile());
-        setTreeTile(Tile.getTreeTile());
+        setTiles(new ArrayList<>(Tile.getTiles()));
+        setTreeTile(new ArrayList<>(Tile.getTreeTile()));
         Tile.getTiles().clear();
         Tile.getTreeTile().clear();
+
         for (Player player : players) {
             if (player.getUser().getUsername().equals("NPC")) continue;
-            if (player.isGuest()){
-                player.getPlayerMap().setMapType(1,this);
+            if (player.isGuest()) {
+                player.getPlayerMap().setMapType(1, this);
             }
         }
-        this.marketsController.initializeStores();
+//        this.marketsController.initializeStores();
         giveInitialItems();
 
     }
 
     private void giveInitialItems() {
-        for(Player player : players){
+        for (Player player : players) {
             player.getRecipes().add(new Recipe(FoodType.FriedEgg));
             player.getRecipes().add(new Recipe(FoodType.BakedFish));
             player.getRecipes().add(new Recipe(FoodType.Salad));
@@ -136,16 +137,19 @@ public class Game implements Serializable {
     public MarketsController getMarketsController() {
         return marketsController;
     }
+
     public ArrayList<NPC> getNPCs() {
         return NPCs;
     }
-    public ArrayList<NPC> getNPCHuts(){
+
+    public ArrayList<NPC> getNPCHuts() {
         return NPCHuts;
     }
 
     public void addNPCs(NPC npc) {
         this.NPCs.add(npc);
     }
+
     public NPC getNPC(String npcName) {
         for (NPC npc : NPCs) {
             if (npc.getName().equals(npcName)) {
@@ -182,7 +186,8 @@ public class Game implements Serializable {
     public void setTreeTile(ArrayList<Tile> treeTile) {
         this.treeTile = treeTile;
     }
-    public Tile getTile(int x,int y){
+
+    public Tile getTile(int x, int y) {
         for (Tile tile : tiles) {
             if (tile.getX() == x && tile.getY() == y) {
                 return tile;
