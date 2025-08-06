@@ -3,6 +3,7 @@ package io.github.StardewValley.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import io.github.StardewValley.Main;
@@ -21,7 +22,8 @@ public class MapView implements Screen {
 
     @Override
     public void show() {
-        stage = new Stage(new ScreenViewport());
+        //stage = new Stage(new ScreenViewport());
+        stage = new Stage(new FitViewport(1920, 1080));
         Gdx.input.setInputProcessor(stage);
     }
 

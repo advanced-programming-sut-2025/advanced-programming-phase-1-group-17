@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.map;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.cooking.Refrigerator;
 
 public class Hut implements Placeable {

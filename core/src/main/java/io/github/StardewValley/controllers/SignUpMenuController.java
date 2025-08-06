@@ -44,6 +44,8 @@ public class SignUpMenuController {
             return new Result(false, "Password format is invalid. " +
                 "Password can only contain letters, digits, and special characters.");
 
+        } else if (gender == null) {
+            return new Result(false, "You haven't picked a gender");
         }
         Result passwordCheck = isPasswordStrong(password);
         if (!passwordCheck.isSuccessful()) {

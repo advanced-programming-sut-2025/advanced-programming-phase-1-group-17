@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
@@ -76,7 +77,8 @@ public class NPCMenu implements Screen {
 
     @Override
     public void show() {
-        stage = new Stage(new ScreenViewport());
+        //stage = new Stage(new ScreenViewport());
+        stage = new Stage(new FitViewport(1920, 1080));
         Gdx.input.setInputProcessor(stage);
         table.setFillParent(true);
         table2.setFillParent(true);

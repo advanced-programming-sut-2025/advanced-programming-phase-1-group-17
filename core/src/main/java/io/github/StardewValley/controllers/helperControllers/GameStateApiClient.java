@@ -1271,26 +1271,21 @@ public class GameStateApiClient {
 
     public GetGameStateResponse getGameState(int minTileX, int maxTileX, int minTileY, int maxTileY) {
         try {
-            GetGameStateRequest requestDTO = new GetGameStateRequest(minTileX, minTileY, maxTileX, maxTileY);
-            // 2. Serialize to JSON
-            String json = objectMapper.writeValueAsString(requestDTO);
-
-            // 3. Build HTTP request
-            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+            // Build URL with query params
+            String url = String.format("%s/game/map?minX=%d&maxX=%d&minY=%d&maxY=%d",
+                BASE_URL, minTileX, maxTileX, minTileY, maxTileY);
 
             Request request = new Request.Builder()
-                .url(BASE_URL + "/game/map")
+                .url(url)
                 .addHeader("Authorization", token)
-                .post(body)
+                .post(RequestBody.create("", null)) // empty body
                 .build();
 
-            // 4. Execute
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new Exception("Server Error: " + response.code());
                 }
 
-                // 5. Parse response
                 String responseBody = response.body().string();
                 return objectMapper.readValue(responseBody, GetGameStateResponse.class);
             }
@@ -1299,4 +1294,5 @@ public class GameStateApiClient {
         }
         return null;
     }
+
 }

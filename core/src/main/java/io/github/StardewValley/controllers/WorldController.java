@@ -13,15 +13,20 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.dto.GetGameStateResponse;
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Fence;
+import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.TileDTO;
+import io.github.StardewValley.shared.models.backpack.NormalItem;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
+import io.github.StardewValley.shared.models.map.Lake;
 import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CropAssetManager;
 import io.github.StardewValley.shared.models.plant.Tree;
-import io.github.StardewValley.views.GameView;
+import io.github.StardewValley.shared.models.map.Hut;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,15 +108,14 @@ public class WorldController {
                 if (tile.getPlaceableType() == null)
                     continue;
 
-                //TODO handle Placeable
-//                printTileTexture(tile);
+
+                printTileTexture(tile);
             }
         }
 
         drawCraftingItemsProgressBars();
-        //TODO handle app.get...
-//        drawBigTextures();
-//        drawStores();
+        drawBigTextures();
+        drawStores();
         drawTrees();
         drawGiantCrops();
     }
@@ -143,11 +147,11 @@ public class WorldController {
         });
     }
 
-//    private void printTileTexture(TileDTO tile) {
-//        Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture((tile.getTexture()));
-//        float printX = tile.getX() * tileWidth + printPad, printY = tile.getY() * tileHeight + 20;
-//        float printWidth = tileWidth - 2 * printPad, printHeight = tileHeight - 2 * printPad;
-//
+    private void printTileTexture(TileDTO tile) {
+        Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture((tile.getTexture()));
+        float printX = tile.getX() * tileWidth + printPad, printY = tile.getY() * tileHeight + 20;
+        float printWidth = tileWidth - 2 * printPad, printHeight = tileHeight - 2 * printPad;
+
 //        if (tile.getPlaceable() instanceof Crop crop) {
 //            if (crop.isGiant()) {
 //                if (crop.isLeftBottomTileOfGiant())
@@ -155,7 +159,8 @@ public class WorldController {
 //                else
 //                    return;
 //            }
-//        } else if (tile.getPlaceable() instanceof Tree tree) {
+//        }
+//        else if (tile.getPlaceable() instanceof Tree tree) {
 //            if (texture == null) {
 //                TextureRegion textureRegion = TreeAssetManager.getTreeAssetManager().getFullyGrownTexture(tree.getType(), App.getCurrentGame().getDate().getSeason());
 //                printX = (tile.getX() * tileWidth) +
@@ -165,11 +170,12 @@ public class WorldController {
 //            treesInThisFrame.put(tree, new float[]{printX, printY});
 //            return;
 //        }
-//        switch (tile.getPlaceable()) {
-//            case Fence fence -> Main.getBatch().draw(texture, printX, printY, 80, 80);
-//            case Hut hut -> {
-//                return;
-//            }
+        switch (tile.getPlaceableType()) {
+            case "Fence" -> Main.getBatch().draw(texture, printX, printY, 80, 80);
+            case "Hut" -> {
+                return;
+            }
+            //TODo
 //            case NPC npc when !npc.isNPC() -> {
 //                return;
 //            }
@@ -179,12 +185,12 @@ public class WorldController {
 //                Main.getBatch().draw(normalItem.getGrassTextureRegion(),
 //                    printX, printY,
 //                    printWidth, printHeight);
-//            case Lake lake -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-//            case null, default -> Main.getBatch().draw(texture,
-//                printX,  printY,
-//                printWidth, printHeight);
-//        }
-//    }
+            case "Lake" -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
+            case null, default -> Main.getBatch().draw(texture,
+                printX,  printY,
+                printWidth, printHeight);
+        }
+    }
 
     private void drawCraftingItemsProgressBars() {
         for (CraftingItemDTO craftingItem : craftingItems) {

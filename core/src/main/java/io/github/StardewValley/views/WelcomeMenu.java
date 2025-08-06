@@ -5,7 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -37,7 +39,8 @@ public class WelcomeMenu implements Screen {
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
-        viewport = new ScreenViewport(camera); // Full-screen scaling
+        //viewport = new ScreenViewport(camera); // Full-screen scaling
+        viewport = new FitViewport(1920, 1080, camera);
         viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
     }
 

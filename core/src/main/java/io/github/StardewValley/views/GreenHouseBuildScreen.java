@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.controllers.GreenHouseBuildController;
 
@@ -22,7 +23,8 @@ public class GreenHouseBuildScreen implements Screen {
         this.controller = controller;
         this.controller.setView(this);
 
-        this.stage = new Stage(new ScreenViewport());
+        //this.stage = new Stage(new ScreenViewport());
+        stage = new Stage(new FitViewport(1920, 1080));
         Gdx.input.setInputProcessor(stage);
 
         Table mainTable = new Table();
