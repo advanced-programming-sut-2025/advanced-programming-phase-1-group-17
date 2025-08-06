@@ -1,10 +1,5 @@
 package io.github.StardewValley.server.controller;
 
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import ch.qos.logback.core.subst.Token;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
@@ -14,7 +9,6 @@ import io.github.StardewValley.server.controller.logicControllers.ToolController
 import io.github.StardewValley.server.model.User;
 import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.LightningLogicController;
 import io.github.StardewValley.shared.dto.*;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.backpack.BackPack;
@@ -22,12 +16,10 @@ import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.NPCS.Gift;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.NPCS.Quest;
-import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 import io.github.StardewValley.shared.models.backpack.*;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
-import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
 import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
 import io.github.StardewValley.shared.models.enums.Gender;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
@@ -42,15 +34,12 @@ import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.*;
 import java.util.regex.Matcher;
 
 @RestController
@@ -85,7 +74,7 @@ public class GameStateController {
 //        return ResponseEntity.ok(tileDTOs);
 //    }
 
-    @GetMapping("/game/map")
+    @PostMapping("/game/map")
     public ResponseEntity<GetGameStateResponse> getGameMap(
         @RequestHeader("Authorization") String token,
         @RequestParam int minX,

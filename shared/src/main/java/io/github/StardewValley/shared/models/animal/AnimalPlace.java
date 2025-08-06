@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.App;
@@ -22,7 +23,8 @@ public class AnimalPlace implements Placeable {
     private ArrayList<Tile> tiles = new ArrayList<>();
     private AnimalPlaceType animalPlaceType;
     private int capacity;
-    private Stage uiStage = new Stage(new ScreenViewport());
+    //private Stage uiStage = new Stage(new ScreenViewport());
+    private Stage uiStage = new Stage(new FitViewport(1920, 1080));
     private String  skin;
     private boolean isOpen=true;
     private boolean justPlaced = false;

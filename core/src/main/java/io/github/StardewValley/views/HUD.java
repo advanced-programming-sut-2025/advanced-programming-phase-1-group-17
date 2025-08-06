@@ -78,67 +78,67 @@ public class HUD {
     }
 
     public void render(SpriteBatch batch, float v) {
-        // تنظیم دوربین HUD
-        batch.setProjectionMatrix(hudCamera.combined);
-        batch.begin();
-
-        int hudWidth = clock.getWidth();
-        int hudHeight = clock.getHeight();
-
-        int x = Gdx.graphics.getWidth() - hudWidth - 80; // فاصله از لبه راست
-        int y = Gdx.graphics.getHeight() - hudHeight - 125; // فاصله از بالا
-        StringBuilder date = new StringBuilder();
-        date.append(App.getCurrentGame().getDate().getDayOfTheWeek().toString().substring(0, 3)).append(". ")
-            .append(App.getCurrentGame().getDate().getDay()).append(" ");
-        StringBuilder time = new StringBuilder();
-        int hour = App.getCurrentGame().getDate().getHour();
-        time.append(hour % 12).append(":");
-        if (App.getCurrentGame().getDate().getMinute() == 0) {
-            time.append("00");
-        } else {
-            time.append(App.getCurrentGame().getDate().getMinute());
-        }
-        if (hour < 12) {
-            time.append(" am");
-        } else {
-            time.append(" pm");
-        }
-
-
-        batch.draw(clock, x, y, clock.getWidth() * 3, clock.getHeight() * 3);
-        float arrowSize = 3f;
-        int arrowX = 1765;
-        int arrowY = 980;
-
-        angle += v * 50;
-        batch.draw(arrow
-            , arrowX, arrowY
-            , 10, 10
-            , arrow.getRegionWidth() * arrowSize, arrow.getRegionHeight() * arrowSize
-            , 1f, 1f,
-            (float) ((App.getCurrentGame().getDate().getHour() - 9) * 180) / 13
-        );
-        float otherSize = 3.2f;
-        batch.draw(sunny, Gdx.graphics.getWidth() - 126, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
-
-        batch.draw(spring, Gdx.graphics.getWidth() - 53, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
-
-
-        // کشیدن مقدار پول
-        //TODO
-//        int money = (int) App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin();
-//        int i = 0;
-//        while (money > 0) {
-//            font.draw(batch, String.valueOf(money % 10), Gdx.graphics.getWidth() - 35 - 18 * i, Gdx.graphics.getHeight() - 150);
-//            money /= 10;
-//            i++;
+//        // تنظیم دوربین HUD
+//        batch.setProjectionMatrix(hudCamera.combined);
+//        batch.begin();
+//
+//        int hudWidth = clock.getWidth();
+//        int hudHeight = clock.getHeight();
+//
+//        int x = Gdx.graphics.getWidth() - hudWidth - 80; // فاصله از لبه راست
+//        int y = Gdx.graphics.getHeight() - hudHeight - 125; // فاصله از بالا
+//        StringBuilder date = new StringBuilder();
+//        date.append(App.getCurrentGame().getDate().getDayOfTheWeek().toString().substring(0, 3)).append(". ")
+//            .append(App.getCurrentGame().getDate().getDay()).append(" ");
+//        StringBuilder time = new StringBuilder();
+//        int hour = App.getCurrentGame().getDate().getHour();
+//        time.append(hour % 12).append(":");
+//        if (App.getCurrentGame().getDate().getMinute() == 0) {
+//            time.append("00");
+//        } else {
+//            time.append(App.getCurrentGame().getDate().getMinute());
 //        }
-        dateFont.draw(batch, date.toString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
-        timeFont.draw(batch, time.toString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
-        batch.end();
-
-        renderEnergyBar(batch);
-        renderInventoryBar(batch);
+//        if (hour < 12) {
+//            time.append(" am");
+//        } else {
+//            time.append(" pm");
+//        }
+//
+//
+//        batch.draw(clock, x, y, clock.getWidth() * 3, clock.getHeight() * 3);
+//        float arrowSize = 3f;
+//        int arrowX = 1765;
+//        int arrowY = 980;
+//
+//        angle += v * 50;
+//        batch.draw(arrow
+//            , arrowX, arrowY
+//            , 10, 10
+//            , arrow.getRegionWidth() * arrowSize, arrow.getRegionHeight() * arrowSize
+//            , 1f, 1f,
+//            (float) ((App.getCurrentGame().getDate().getHour() - 9) * 180) / 13
+//        );
+//        float otherSize = 3.2f;
+//        batch.draw(sunny, Gdx.graphics.getWidth() - 126, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
+//
+//        batch.draw(spring, Gdx.graphics.getWidth() - 53, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
+//
+//
+//        // کشیدن مقدار پول
+//        //TODO
+////        int money = (int) App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin();
+////        int i = 0;
+////        while (money > 0) {
+////            font.draw(batch, String.valueOf(money % 10), Gdx.graphics.getWidth() - 35 - 18 * i, Gdx.graphics.getHeight() - 150);
+////            money /= 10;
+////            i++;
+////        }
+//        dateFont.draw(batch, date.toString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
+//        timeFont.draw(batch, time.toString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
+//        batch.end();
+//
+//        renderEnergyBar(batch);
+//        renderInventoryBar(batch);
     }
 
     private void renderEnergyBar(SpriteBatch batch) {

@@ -1,6 +1,7 @@
 package io.github.StardewValley;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github.StardewValley.shared.models.UserDTO;
@@ -22,6 +23,7 @@ public class Main extends Game {
 
     @Override
     public void create() {
+        System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
         main = this;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
