@@ -19,7 +19,7 @@ public class CheatCodeHandler {
         int amount = Integer.parseInt(hour);
         for (int i = 0; i < amount; i++)
             App.getCurrentGame().getDate().increaseHour();
-        return getDateTime().getMessage();
+        return getDateTime().message();
     }
 
     private static Result getDateTime() {

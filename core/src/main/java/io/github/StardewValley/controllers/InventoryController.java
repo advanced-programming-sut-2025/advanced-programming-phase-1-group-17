@@ -4,17 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.backpack.BackPackable;
-import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
-import io.github.StardewValley.shared.models.tools.FishingPoleType;
-import io.github.StardewValley.shared.models.tools.Tool;
-import io.github.StardewValley.shared.models.tools.ToolType;
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.views.*;
 
 public class InventoryController {
@@ -72,7 +64,7 @@ public class InventoryController {
         GameMenuController gameMenuController = new GameMenuController();
         Result result =  gameMenuController.exitGame();
         this.view.getItemPickLabel().setText(result.toString());
-        if (result.isSuccessful()) {
+        if (result.successful()) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new MainMenu(new MainMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
         }

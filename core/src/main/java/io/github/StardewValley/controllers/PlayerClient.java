@@ -14,6 +14,7 @@ import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackType;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.enums.Gender;
+import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolMaterial;
 import io.github.StardewValley.shared.models.tools.ToolType;
@@ -46,6 +47,8 @@ public class PlayerClient {
     private ToolType toolType;
     private String toolTexturePath;
     private AbilityDTO ability;
+    private ToolMaterial toolMaterial;
+    private FishingPoleType fishingPoleType;
 
 
     PlayerClient(UserDTO user) {
@@ -347,6 +350,14 @@ public class PlayerClient {
 
     public AbilityDTO getAbility() {
         return ability;
+    }
+
+    public ToolMaterial getToolMaterial() {
+        return toolMaterial;
+    }
+
+    public FishingPoleType getFishingPoleType() {
+        return fishingPoleType;
     }
 }
 

@@ -462,6 +462,7 @@ public class GameStateApiClient {
             Request request = new Request.Builder()
                 .url(BASE_URL + "/game/backpack/getBackpackItems")
                 .addHeader("Authorization", token)
+                .post(RequestBody.create(new byte[0], null)) // Empty body
                 .build();
 
             // 4. Execute
@@ -539,7 +540,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -592,7 +593,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -698,7 +699,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -858,7 +859,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -983,7 +984,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -1007,7 +1008,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -1031,7 +1032,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -1056,7 +1057,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -1123,7 +1124,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -1146,7 +1147,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -1172,7 +1173,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).getMessage();
+                    return mapper.readValue(is, Result.class).message();
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -1358,5 +1359,4 @@ public class GameStateApiClient {
         }
         return null;
     }
-
 }

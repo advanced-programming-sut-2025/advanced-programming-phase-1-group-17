@@ -4,7 +4,6 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
@@ -116,7 +114,7 @@ public class GameView implements Screen, InputProcessor {
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
                     public void run() {
-                        if (r.isSuccessful()) {
+                        if (r.successful()) {
                             Gender playerGender = GameClient.getPlayer().getUser().getGender();
                             Gender targetGender = GameClient.getGameStateApiClient().getGender(currentTargetPlayer).equals("Male") ? Gender.Male : Gender.Female;
                             String imagePath;
@@ -163,7 +161,7 @@ public class GameView implements Screen, InputProcessor {
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
                     public void run() {
-                        if (r.isSuccessful()) {
+                        if (r.successful()) {
                             Image image = new Image(new Texture(Gdx.files.internal("Flower.jpg")));
                             image.setSize(500, 500);
                             image.setPosition(stage.getWidth() / 2f - image.getWidth() / 2f,
@@ -245,26 +243,6 @@ public class GameView implements Screen, InputProcessor {
 //        controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
-
-        handleKeys();
-    }
-
-    private void handleKeys() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new MapView(new MapViewController(), this));
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new TalkView(new TalkController(),
-                GameAssetManagerClient.getGameAssetManager().getSkin(), this));
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-            Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
-                , GameAssetManagerClient.getGameAssetManager().getSkin(), this));
-        }
     }
 
     public void updateInteractions() {

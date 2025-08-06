@@ -2,7 +2,6 @@ package io.github.StardewValley.controllers;
 
 import com.google.gson.Gson;
 import io.github.StardewValley.GameAssetManagerClient;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.SecurityQuestionRequest;
 import io.github.StardewValley.shared.dto.SecurityQuestionResponse;
@@ -38,8 +37,8 @@ public class SecurityQuestionMenuController {
             //SaveUser.saveUser(App.getUsers());
 
             Result serverResponse = sendSecurityQuestion();
-            if (!serverResponse.isSuccessful()) {
-                view.getErrorLabel().setText(serverResponse.getMessage());
+            if (!serverResponse.successful()) {
+                view.getErrorLabel().setText(serverResponse.message());
                 return;
             }
 

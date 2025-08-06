@@ -23,7 +23,6 @@ public class Main extends Game {
 
     @Override
     public void create() {
-        System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
         main = this;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();

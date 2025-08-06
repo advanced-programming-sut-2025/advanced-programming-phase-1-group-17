@@ -3,22 +3,23 @@ package io.github.StardewValley.shared.dto;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class GetBackpackItemsResponse {
-    private HashMap<BackpackableTypeDTO, Integer> items;
+    private List<BackpackableTypeDTO> items;
 
     public GetBackpackItemsResponse() {
     }
 
-    public GetBackpackItemsResponse(HashMap<BackpackableTypeDTO, Integer> items) {
+    public GetBackpackItemsResponse(List<BackpackableTypeDTO> items) {
         this.items = items;
     }
 
-    public HashMap<BackpackableTypeDTO, Integer> getItems() {
+    public List<BackpackableTypeDTO> getItems() {
         return items;
     }
 
-    public void setItems(HashMap<BackpackableTypeDTO, Integer> items) {
+    public void setItems(List<BackpackableTypeDTO> items) {
         this.items = items;
     }
 }
