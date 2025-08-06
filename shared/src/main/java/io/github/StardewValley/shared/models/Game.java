@@ -130,7 +130,7 @@ public class Game implements Serializable {
         } else {
             currentPlayingPlayer = players.get(++currentPlayingPlayerIndex);
         }
-    }
+  }
 
     public void setCurrentPlayingPlayer(Player currentPlayingPlayer) {
         this.currentPlayingPlayer = currentPlayingPlayer;

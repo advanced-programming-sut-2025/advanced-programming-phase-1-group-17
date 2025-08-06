@@ -1,5 +1,6 @@
 package io.github.StardewValley.views;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,11 +9,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.GameController;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.HudDataDTO;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
+
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -33,6 +38,7 @@ public class HUD {
     private TextureRegion storm;
     private TextureRegion snow;
     private float angle = 0;
+    private HudDataDTO hudData;
 
     private Rectangle energyBarBounds;
     private ShapeRenderer shapeRenderer;
@@ -45,6 +51,7 @@ public class HUD {
 
 
     public HUD() {
+        hudData = new HudDataDTO("9:00 am", "Mon. 1", "SPRING", "SUNNY", 0, 200, 200, false, 0);
         clock = new Texture("Clock.png");
         arrow = new TextureRegion(clock, 72, 0, 8, 21);
         spring = new TextureRegion(clock, 80, 9, 13, 9);
@@ -73,47 +80,31 @@ public class HUD {
         tooltipFont.getData().setScale(1f);
         tooltipFont.setColor(1, 1, 1, 1);
     }
-
-    public void render(SpriteBatch batch, float v) {
+    public void updateData(HudDataDTO newData) {
+        this.hudData = newData;
+    }
+    private float timesinceLastUpdate = 0;
+    public void render(SpriteBatch batch, float v) throws Exception {
         // تنظیم دوربین HUD
         batch.setProjectionMatrix(hudCamera.combined);
-        batch.begin();
 
         int hudWidth = clock.getWidth();
         int hudHeight = clock.getHeight();
-
+        int money = hudData.getMoney();
+        int i = 0;
         int x = Gdx.graphics.getWidth() - hudWidth - 80; // فاصله از لبه راست
         int y = Gdx.graphics.getHeight() - hudHeight - 125; // فاصله از بالا
-        StringBuilder date = new StringBuilder();
-        date.append(App.getCurrentGame().getDate().getDayOfTheWeek().toString().substring(0, 3)).append(". ")
-            .append(App.getCurrentGame().getDate().getDay()).append(" ");
-        StringBuilder time = new StringBuilder();
-        int hour = App.getCurrentGame().getDate().getHour();
-        time.append(hour % 12).append(":");
-        if (App.getCurrentGame().getDate().getMinute() == 0) {
-            time.append("00");
-        } else {
-            time.append(App.getCurrentGame().getDate().getMinute());
-        }
-        if (hour < 12) {
-            time.append(" am");
-        } else {
-            time.append(" pm");
-        }
-
-
-        batch.draw(clock, x, y, clock.getWidth() * 3, clock.getHeight() * 3);
         float arrowSize = 3f;
         int arrowX = 1765;
         int arrowY = 980;
 
-        angle += v * 50;
+        batch.draw(clock, x, y, clock.getWidth() * 3, clock.getHeight() * 3);
         batch.draw(arrow
             , arrowX, arrowY
             , 10, 10
             , arrow.getRegionWidth() * arrowSize, arrow.getRegionHeight() * arrowSize
-            , 1f, 1f,
-            (float) ((App.getCurrentGame().getDate().getHour() - 9) * 180) / 13
+            , 1f, 1f
+            ,hudData.getTimeAngle()
         );
         float otherSize = 3.2f;
         batch.draw(sunny, 1794, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
@@ -122,19 +113,23 @@ public class HUD {
 
 
         // کشیدن مقدار پول
-        int money = (int) App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().getCoin();
-        int i = 0;
+
         while (money > 0) {
             font.draw(batch, String.valueOf(money % 10), 1885 - 18 * i, Gdx.graphics.getHeight() - 150);
             money /= 10;
             i++;
         }
-        dateFont.draw(batch, date.toString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
-        timeFont.draw(batch, time.toString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
-        batch.end();
+        dateFont.draw(batch, hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
+        timeFont.draw(batch, hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
 
         renderEnergyBar(batch);
         renderInventoryBar(batch);
+        timesinceLastUpdate +=v;
+        if(timesinceLastUpdate>=1){
+            timesinceLastUpdate = 0;
+            updateData(GameClient.getGameStateApiClient().getHudData());
+        }
+
     }
 
     private void renderEnergyBar(SpriteBatch batch) {

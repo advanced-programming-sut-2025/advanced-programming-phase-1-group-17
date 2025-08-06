@@ -50,7 +50,6 @@ public class GameView implements Screen, InputProcessor {
     private final GameController controller;
     private final FarmingController farmingController = new FarmingController();
     private final GameMenuController menuController;
-    private HUD hud;
     private Window window;
     private TextButton talkButton, tradeButton, hugButton, giftButton, givingFlower, askMarriageButton;
     private Label error;
@@ -67,11 +66,13 @@ public class GameView implements Screen, InputProcessor {
     private Table dialogueTable;
     private BitmapFont font;
     private boolean isSthBuilding=false;
+    private HUD hud;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
         this.font = new BitmapFont();
         int i=0;
+        this.hud = new HUD();
         //TODO handleCurrentPlayerPlaying
 
 
@@ -227,7 +228,6 @@ public class GameView implements Screen, InputProcessor {
         dialogueTable.setFillParent(true);
         InputMultiplexer multiplexer = new InputMultiplexer(stage, this);
         Gdx.input.setInputProcessor(multiplexer);
-        hud = new HUD();
     }
 
     @Override
@@ -237,18 +237,16 @@ public class GameView implements Screen, InputProcessor {
 
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
+        try {
+            hud.render(Main.getBatch(),delta);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         controller.updateGame(delta);
         //TODO handle playe
 //        controller.handlePlayerInput();
+
         //TODO handel app.getCurrentGame()...
-//        for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
-//            animalPlace.render(delta);
-//            for(Animal animal:animalPlace.getAnimals()){
-//                animal.render(Main.getBatch(),delta);
-//                animal.update(delta);
-//            }
-//        }
-        //font.draw(Main.getBatch(),"hello",120,120);
 
         Main.getBatch().end();
         //TODO handel app.getCurrentGame()...
@@ -263,7 +261,6 @@ public class GameView implements Screen, InputProcessor {
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
         stage.addActor(error);
-        hud.render(Main.getBatch(),delta);
         //TODO handle player
 //        controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -558,9 +555,6 @@ public class GameView implements Screen, InputProcessor {
         stage.addActor(window); // Add to current stage
     }
 
-    public HUD getHud() {
-        return hud;
-    }
 
     public boolean isSthBuilding() {
         return isSthBuilding;

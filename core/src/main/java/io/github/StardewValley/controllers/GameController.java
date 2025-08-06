@@ -170,7 +170,7 @@ public class GameController {
 //
 //            crowAttackEffect.update(delta);
 //            crowAttackEffect.render(Main.getBatch());
-            view.getHud().handleInventoryInput();
+            //view.getHud().handleInventoryInput();
         }
     }
     public void playerUpdate(PlayerDto player) {
