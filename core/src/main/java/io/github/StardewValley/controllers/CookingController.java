@@ -2,13 +2,17 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.CraftResponseDTO;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.views.CookingShow;
 import io.github.StardewValley.views.GameView;
 
@@ -23,31 +27,24 @@ public class CookingController {
         handleButtons();
 
     }
-    public void handleIngredients(FoodType foodtype) {
-        StringBuilder sb = new StringBuilder();
-        //TODO
-//        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-//        for (Map.Entry<BackPackableType, Integer> entry : foodtype.getIngredients().entrySet()) {
-//            if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
-//                && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
-//                //return new Result(false, "not enough ingredient");
-//                view.getErrorMessage().setText("not enough ingredients");
-//                return;
-//            }
-//        }
-//        for (Map.Entry<BackPackableType, Integer> entry : foodtype.getIngredients().entrySet()) {
-//            sb.append(entry.getKey().getName()).append(": ").append(entry.getValue()).append("\n");
-//            for (int i = 0; i < entry.getValue(); i++) {
-//                player.getBackPack().useItem(entry.getKey());
-//            }
-//        }
-//        Food food = new Food(foodtype);
-//        backPack.addItemToInventory(food);
-//        view.getErrorMessage().setText("crafted successfully");
+    public void handleIngredients(FoodType item) {
+        try {
+            // 1. درخواست به سرور ارسال می‌شود
+            CookResponseDTO response = GameClient.gameStateApiClient.attemptCook(item);
 
+            // 2. نتیجه‌ای که از سرور آمده نمایش داده می‌شود
+            view.getErrorMessage().setText(response.getMessage());
 
-        view.getIngredients().setText(sb.toString());
+            // اگر موفق بود، می‌توانید صفحه را ببندید یا هر کار دیگری بکنید
+            if (response.isSuccess()) {
+                // مثلا می‌توانید inventory را رفرش کنید
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // نمایش یک خطای عمومی در صورت مشکل در ارتباط با سرور
+            view.getErrorMessage().setText("Error connecting to the server.");
+        }
     }
     public void handleIngredientsLabel(FoodType item) {
         StringBuilder sb = new StringBuilder();

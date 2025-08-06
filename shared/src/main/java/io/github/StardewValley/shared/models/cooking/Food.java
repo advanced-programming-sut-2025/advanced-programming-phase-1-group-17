@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models.cooking;
 
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.backpack.BackPack;
