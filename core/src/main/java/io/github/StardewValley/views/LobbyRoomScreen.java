@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.Gdx;
@@ -32,7 +33,8 @@ public class LobbyRoomScreen implements Screen {
     private TextButton startGameBtn;
 
     public LobbyRoomScreen(LobbyDto lobby, LobbyApiClient apiClient, String currentUsername) {
-        this.stage = new Stage(new ScreenViewport());
+        //this.stage = new Stage(new ScreenViewport());
+        stage = new Stage(new FitViewport(1920, 1080));
         this.lobby = lobby;
         this.left = new TextButton("left", GameAssetManagerClient.getGameAssetManager().getSkin());
         this.apiClient = apiClient;
