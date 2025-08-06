@@ -53,7 +53,7 @@ public class WorldController {
     }
 
     public void initTransients() {
-        this.backgroundTexture =new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture1());
+        this.backgroundTexture = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture1());
         this.backgroundTexture2 = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture2());
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
@@ -82,42 +82,45 @@ public class WorldController {
         lightningRenderController.applyLightningState(gameState.getLightningStateDTO());
         lightningRenderController.renderLightning(Main.getBatch(), GameClient.getPlayer());
 
+
         for (int x = minTileX - 1; x < maxTileX; x++) {
             for (int y = minTileY - 1; y < maxTileY; y++) {
                 if (x < -2 || y < -2 || x > 300 || y > 300)
                     continue;
                 TileDTO tile = null;
                 for (TileDTO tileDTO : tiles) {
-                    if (tileDTO.getX() == x && tileDTO.getY() == y){
+                    if (tileDTO.getX() == x && tileDTO.getY() == y) {
                         tile = tileDTO;
                         break;
                     }
                 }
 
                 if (tile == null) continue;
-                if (tile.getPlaceableType().equals("Store"))
-                    continue;
+
 
                 if ((tile.getX() + tile.getY()) % 2 == 0)
                     Main.getBatch().draw(backgroundTexture2, tile.getX() * tileWidth, tile.getY() * tileHeight);
                 else
                     Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-
-                if (tile.isPlowed())
-                    Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getPlowedTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
                 if (tile.getPlaceableType() == null)
                     continue;
-
+                if (tile.isPlowed())
+                    Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getPlowedTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
+                if (tile.getPlaceableType().equals("Store"))
+                    continue;
 
                 printTileTexture(tile);
             }
         }
 
-        drawCraftingItemsProgressBars();
-        drawBigTextures();
-        drawStores();
-        drawTrees();
-        drawGiantCrops();
+
+        //TODO
+
+//        drawCraftingItemsProgressBars();
+//        drawBigTextures();
+//        drawStores();
+//        drawTrees();
+//        drawGiantCrops();
     }
 
     private void drawGiantCrops() {
@@ -187,7 +190,7 @@ public class WorldController {
 //                    printWidth, printHeight);
             case "Lake" -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
             case null, default -> Main.getBatch().draw(texture,
-                printX,  printY,
+                printX, printY,
                 printWidth, printHeight);
         }
     }
@@ -230,14 +233,14 @@ public class WorldController {
     }
 
     private void drawBigTextures() {
-        for (int i = 0 ; i < 4 ; i++) {
+        for (int i = 0; i < 4; i++) {
             Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getTexture())
-                ,App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getX() * tileWidth,
-                App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getY() * tileHeight, 400 , 400);
+                , App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getX() * tileWidth,
+                App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getY() * tileHeight, 400, 400);
         }
-        for (int i = 0 ; i < 5 ; i++) {
+        for (int i = 0; i < 5; i++) {
             Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(App.getCurrentGame().getNPCHuts().get(i).getTexture()),
-                App.getCurrentGame().getNPCHuts().get(i).x_start * tileWidth, App.getCurrentGame().getNPCHuts().get(i).y_start * tileHeight, 500 , 500);
+                App.getCurrentGame().getNPCHuts().get(i).x_start * tileWidth, App.getCurrentGame().getNPCHuts().get(i).y_start * tileHeight, 500, 500);
         }
         for (GreenHouse greenHouse : GreenHouse.getGreenHouseBounds().keySet()) {
             Main.getBatch().draw(
@@ -253,37 +256,37 @@ public class WorldController {
 
         Store store = App.getCurrentGame().getMarketsController().getStore(StoreType.Blacksmith);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.Blacksmith),
-            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
         store = App.getCurrentGame().getMarketsController().getStore(StoreType.JojaMart);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.JojaMart),
-            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
         store = App.getCurrentGame().getMarketsController().getStore(StoreType.PierresGeneralStore);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.PierresGeneralStore),
-            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
         store = App.getCurrentGame().getMarketsController().getStore(StoreType.CarpentersShop);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.CarpentersShop),
-            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
         store = App.getCurrentGame().getMarketsController().getStore(StoreType.FishShop);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.FishShop),
-            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
         store = App.getCurrentGame().getMarketsController().getStore(StoreType.Ranch);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.Ranch),
-            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
 
         store = App.getCurrentGame().getMarketsController().getStore(StoreType.StardropSaloon);
         Main.getBatch().draw(assets.getStoreTexture(season, StoreType.StardropSaloon),
-            store.getStart_x() * tileWidth, store.getStart_y() *  tileHeight,
+            store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight);
     }
 

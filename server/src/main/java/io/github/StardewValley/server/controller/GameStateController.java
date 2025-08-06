@@ -68,7 +68,7 @@ public class GameStateController {
 //        List<TileDTO> tileDTOs = new ArrayList<>();
 //        for (int i = minX - 1; i < maxX; i++) {
 //            for (int j = minY - 1; j < maxY; j++) {
-//                tileDTOs.add(new TileDTO(Objects.requireNonNull(Tile.getTile(i + 1, j + 1))));
+//                tileDTOs.add(new TileDTO(Objects.requireNonNull(AppServer.getCurrentGame().getTile(i + 1, j + 1))));
 //            }
 //        }
 //        return ResponseEntity.ok(tileDTOs);
@@ -82,12 +82,14 @@ public class GameStateController {
         @RequestParam int minY,
         @RequestParam int maxY
     ) {
-        Game game = getGameFromToken(token);
+        //TODO
+//        Game game = getGameFromToken(token);
+        Game game = AppServer.getCurrentGame();
         List<TileDTO> tileDTOs = new ArrayList<>();
         List<CraftingItemDTO> craftingItemDTOs = new ArrayList<>();
         for (int i = minX - 1; i < maxX; i++) {
             for (int j = minY - 1; j < maxY; j++) {
-                Tile tile = Tile.getTile(i + 1, j + 1);
+                Tile tile = game.getTile(i + 1, j + 1);
                 tileDTOs.add(new TileDTO(Objects.requireNonNull(tile)));
                 if (tile.getPlaceable() instanceof CraftingItem craftingItem) {
                     craftingItemDTOs.add(CraftingItem.getCraftingItemDTO(craftingItem));
@@ -142,7 +144,7 @@ public class GameStateController {
         String token = authHeader.substring(7);
         for (Player p : AppServer.getCurrentGame().getPlayers()) {
             if (p.getUser().getUsername().equals(jwtService.extractUsername(token))) {
-                p.getPlayerMap().setMapType(type,AppServer.getCurrentGame());
+                p.getPlayerMap().setMapType(type, AppServer.getCurrentGame());
                 break;
             }
         }
@@ -292,7 +294,7 @@ public class GameStateController {
 
     @PostMapping("/game/backpack/equipItem")
     public void equipItem(@RequestBody String request,
-                          @RequestHeader("Authorization") String token){
+                          @RequestHeader("Authorization") String token) {
         //TODO: maybe we can delete player.currentTool
         Player player = getPlayerFromToken(token);
         BackPackable backPackable = player.getBackPack().getFromDTO(request);
@@ -353,7 +355,7 @@ public class GameStateController {
                                             @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
         BackPack backPack = player.getBackPack();
-        Tile shippingBinTile = Tile.getTile(request.getShippingBinTile().getX(), request.getShippingBinTile().getY());
+        Tile shippingBinTile = AppServer.getCurrentGame().getTile(request.getShippingBinTile().getX(), request.getShippingBinTile().getY());
         ShippingBin shippingBin = (ShippingBin) shippingBinTile.getPlaceable();
 
         BackpackableTypeDTO itemType = request.getItem();
@@ -370,7 +372,7 @@ public class GameStateController {
                                                       @RequestHeader("Authorization") String token) {
 
         Player player = getPlayerFromToken(token);
-        Tile craftingItemTile = Tile.getTile(craftingItemDTO.getTileX(), craftingItemDTO.getTileY());
+        Tile craftingItemTile = AppServer.getCurrentGame().getTile(craftingItemDTO.getTileX(), craftingItemDTO.getTileY());
         if (craftingItemTile == null)
             return ResponseEntity.ok(false);
         CraftingItem craftingItem = (CraftingItem) craftingItemTile.getPlaceable();
@@ -382,7 +384,7 @@ public class GameStateController {
     @PostMapping("/game/artisanProduct/cancelProduction")
     public ResponseEntity<Boolean> cancelArtisanProduction(@RequestBody CraftingItemDTO craftingItemDTO,
                                                            @RequestHeader("Authorization") String token) {
-        Tile craftingItemTile = Tile.getTile(craftingItemDTO.getTileX(), craftingItemDTO.getTileY());
+        Tile craftingItemTile = AppServer.getCurrentGame().getTile(craftingItemDTO.getTileX(), craftingItemDTO.getTileY());
         if (craftingItemTile == null)
             return ResponseEntity.ok(false);
         CraftingItem craftingItem = (CraftingItem) craftingItemTile.getPlaceable();
@@ -394,7 +396,7 @@ public class GameStateController {
     public ResponseEntity<Result> craftArtisan(@RequestBody CraftArtisanRequest request,
                                                @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
-        Tile craftingItemTile = Tile.getTile(request.getCraftingItemDTO().getTileX(), request.getCraftingItemDTO().getTileY());
+        Tile craftingItemTile = AppServer.getCurrentGame().getTile(request.getCraftingItemDTO().getTileX(), request.getCraftingItemDTO().getTileY());
         if (craftingItemTile == null)
             return ResponseEntity.ok(new Result(false, "Crafting Item not found."));
         CraftingItem artisan = (CraftingItem) craftingItemTile.getPlaceable();
@@ -956,29 +958,32 @@ public class GameStateController {
         Player player = getPlayerFromToken(token);
         for (NPC npc : AppServer.getCurrentGame().getNPCs()) {
             if (sideBySide(player, npc)) {
-                return ResponseEntity.ok(new Result(true,npc.getName()));
+                return ResponseEntity.ok(new Result(true, npc.getName()));
             }
         }
         return ResponseEntity.notFound().build();
     }
+
     @PostMapping("/getNearbyPlayer")
     public ResponseEntity<Result> getNearbyPlayer(@RequestHeader("Authorization") String token) {
         Player player1 = getPlayerFromToken(token);
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (!player.getUser().getUsername().equals("NPC") && !player.equals(player1)) {
                 if (sideBySide(player, player1)) {
-                    return ResponseEntity.ok(new Result(true,player.getUser().getUsername()));
+                    return ResponseEntity.ok(new Result(true, player.getUser().getUsername()));
                 }
             }
         }
         return ResponseEntity.notFound().build();
     }
+
     @PostMapping("/getGender")
     public ResponseEntity<Result> getGender(@RequestParam String username) {
         return ResponseEntity.ok(new Result(true, userRepository.findByUsername(username).get().getGender().toString()));
     }
+
     @PostMapping("/getPlayerDTOByUserName")
-    public ResponseEntity<PlayerDto> getPlayerDTOByUserName(@RequestHeader("Authorization") String token,@RequestParam String username) {
+    public ResponseEntity<PlayerDto> getPlayerDTOByUserName(@RequestHeader("Authorization") String token, @RequestParam String username) {
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
                 PlayerDto pd = new PlayerDto(player.isPassedOut()
@@ -996,16 +1001,18 @@ public class GameStateController {
             }
         }
         return ResponseEntity.notFound().build();
-        }
+    }
+
     @PostMapping("/setNewMessage")
-    public ResponseEntity<Void> setNewMessage(@RequestHeader ("Authorization") String token, @RequestParam String newMessage) {
+    public ResponseEntity<Void> setNewMessage(@RequestHeader("Authorization") String token, @RequestParam String newMessage) {
         Player player = getPlayerFromToken(token);
         player.setNewMessage(newMessage.equals("true"));
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/tradeHistory")
-    public ResponseEntity<Result> tradeHistory(@RequestHeader ("Authorization") String token) {
-        Player currentPlayer =  getPlayerFromToken(token);
+    public ResponseEntity<Result> tradeHistory(@RequestHeader("Authorization") String token) {
+        Player currentPlayer = getPlayerFromToken(token);
         String result = "on going trades : \n";
         for (Trade trade : currentPlayer.getTrades()) {
             if (trade.getTradeType().equals("byMoney")) {
@@ -1052,13 +1059,14 @@ public class GameStateController {
                     + "--------------------------------------------------\n");
             }
         }
-        return ResponseEntity.ok(new Result(true,result));
+        return ResponseEntity.ok(new Result(true, result));
     }
+
     @PostMapping("/tradeList")
-    public ResponseEntity<Result> tradeList(@RequestHeader ("Authorization") String token) {
+    public ResponseEntity<Result> tradeList(@RequestHeader("Authorization") String token) {
         Player currentPlayer = getPlayerFromToken(token);
         if (currentPlayer.getTrades() == null) {
-            return ResponseEntity.ok(new Result(false,"there are nothing trade for you"));
+            return ResponseEntity.ok(new Result(false, "there are nothing trade for you"));
         } else {
             String result = "";
             for (Trade trade : currentPlayer.getTrades()) {
@@ -1086,33 +1094,23 @@ public class GameStateController {
                 }
             }
             if (result.isEmpty()) {
-                return ResponseEntity.ok(new Result(false,"there are nothing trade for you"));
+                return ResponseEntity.ok(new Result(false, "there are nothing trade for you"));
             } else {
-                return ResponseEntity.ok(new Result(true,result));
+                return ResponseEntity.ok(new Result(true, result));
             }
         }
     }
+
     @PostMapping("/getQuestWithIndex")
-    public ResponseEntity<Result> getQuestWithIndex(@RequestHeader ("Authorization") String token,String NpcName, int index) {
+    public ResponseEntity<Result> getQuestWithIndex(@RequestHeader("Authorization") String token, String NpcName, int index) {
         int i = index;
         NPC npc = AppServer.getCurrentGame().getNPC(NpcName);
-        return ResponseEntity.ok(new Result(true,(i + 1) + "- Level: " +
+        return ResponseEntity.ok(new Result(true, (i + 1) + "- Level: " +
             npc.getRequests().get(i).getLevel() +
             " | " + npc.getRequests().get(i).getQuestExplanation() +
             (npc.getRequests().get(i).isCompleted() ? " [COMPLETED]" : "")));
 
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
     public boolean sideBySide(Player currentPlayer, NPC npc) {
