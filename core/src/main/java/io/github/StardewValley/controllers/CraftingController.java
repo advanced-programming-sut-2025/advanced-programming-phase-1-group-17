@@ -2,8 +2,11 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.CraftResponseDTO;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
@@ -13,41 +16,37 @@ import io.github.StardewValley.views.CraftingShow;
 import io.github.StardewValley.views.GameView;
 
 import java.util.Map;
-
 public class CraftingController {
     private CraftingShow view;
     private GameView gameView;
+    private GameStateApiClient apiClient; // اضافه کردن ApiClient
+
     public void setView(CraftingShow view, GameView gameView) {
         this.view = view;
         this.gameView = gameView;
+        this.apiClient = GameClient.getGameStateApiClient(); // گرفتن ApiClient
         handleButtons();
-
     }
+
+    // این متد کاملا بازنویسی می‌شود
     public void handleIngredients(CraftingItemType item) {
-        StringBuilder sb = new StringBuilder();
-        //TODO
-//        BackPack backPack = App.getCurrentGame().getCurrentPlayingPlayer().getBackPack();
-//        Player player = App.getCurrentGame().getCurrentPlayingPlayer();
-//        for (Map.Entry<BackPackableType, Integer> entry : item.getIngredients().entrySet()) {
-//            if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
-//                && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
-//                //return new Result(false, "not enough ingredient");
-//                view.getErrorMessage().setText("not enough ingredients");
-//                return;
-//            }
-//        }
-//        for (Map.Entry<BackPackableType, Integer> entry : item.getIngredients().entrySet()) {
-//            sb.append(entry.getKey().getName()).append(": ").append(entry.getValue()).append("\n");
-//            for (int i = 0; i < entry.getValue(); i++) {
-//                player.getBackPack().useItem(entry.getKey());
-//            }
-//        }
-//        CraftingItem craftingItem = new CraftingItem(item, App.getCurrentGame().getCurrentPlayingPlayer());
-//        backPack.addItemToInventory(craftingItem);
-//        view.getErrorMessage().setText("crafted successfully");
+        try {
+            // 1. درخواست به سرور ارسال می‌شود
+            CraftResponseDTO response = apiClient.attemptCraft(item);
 
+            // 2. نتیجه‌ای که از سرور آمده نمایش داده می‌شود
+            view.getErrorMessage().setText(response.getMessage());
 
-        view.getIngredients().setText(sb.toString());
+            // اگر موفق بود، می‌توانید صفحه را ببندید یا هر کار دیگری بکنید
+            if (response.isSuccess()) {
+                // مثلا می‌توانید inventory را رفرش کنید
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // نمایش یک خطای عمومی در صورت مشکل در ارتباط با سرور
+            view.getErrorMessage().setText("Error connecting to the server.");
+        }
     }
     public void handleIngredientsLabel(CraftingItemType item) {
         StringBuilder sb = new StringBuilder();
