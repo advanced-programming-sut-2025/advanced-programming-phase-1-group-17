@@ -53,7 +53,7 @@ public class HUD {
 
 
     public HUD() {
-        hudData = new HudDataDTO("9:00 am", "Mon. 1", "SPRING", "SUNNY", 0, 200, 200, false, 0);
+        hudData = new HudDataDTO("9:00 am", "Mon. 1", "SPRING", "SUNNY", 10000, 200, 200, false, 0);
         clock = new Texture("Clock.png");
         arrow = new TextureRegion(clock, 72, 0, 8, 21);
         spring = new TextureRegion(clock, 80, 9, 13, 9);
@@ -122,14 +122,21 @@ public class HUD {
             i++;
         }
         dateFont.draw(batch, hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
-        timeFont.draw(batch, hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
+        timeFont.draw(batch, hudData.getTimeString(), (float) Gdx.graphics.getWidth() -120, (float) Gdx.graphics.getHeight() -95);
 
-        renderEnergyBar(batch);
-        renderInventoryBar(batch);
+//        renderEnergyBar(batch);
+//        renderInventoryBar(batch);
         timesinceLastUpdate +=v;
-        if(timesinceLastUpdate>=1){
+        if (timesinceLastUpdate >= 1) {
             timesinceLastUpdate = 0;
-            updateData(GameClient.getGameStateApiClient().getHudData());
+            System.out.println("Attempting to fetch HUD data from server..."); // لاگ ۱
+            try {
+                HudDataDTO newData = GameClient.getGameStateApiClient().getHudData();
+                updateData(newData);
+                System.out.println("SUCCESS! HUD data updated. New money: " + newData.getMoney()); // لاگ ۲
+            } catch (Exception e) {
+                System.err.println("ERROR fetching HUD data: " + e.getMessage()); // لاگ خطا
+            }
         }
 
     }
@@ -165,7 +172,6 @@ public class HUD {
         shapeRenderer.end();
 
         // Tooltip still uses batch
-        batch.begin();
         if (energyBarBounds.contains(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())) {
             double energy = player.getEnergy();
             float x = energyBarBounds.x - 30;
@@ -175,7 +181,6 @@ public class HUD {
             else
                 tooltipFont.draw(batch, "Energy: " + energy, x, y);
         }
-        batch.end();
     }
 
     public void renderInventoryBar(SpriteBatch batch) {

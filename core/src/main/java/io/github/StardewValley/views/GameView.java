@@ -212,17 +212,17 @@ public class GameView implements Screen, InputProcessor {
 
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
-        try {
-            hud.render(Main.getBatch(),delta);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
         controller.updateGame(delta);
         //TODO handle playe
 //        controller.handlePlayerInput();
 
         //TODO handel app.getCurrentGame()...
+        try {
+            hud.render(Main.getBatch(), delta);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
 
         Main.getBatch().end();
         if (GameClient.getPlayer().isNewMessage()) {
@@ -235,12 +235,7 @@ public class GameView implements Screen, InputProcessor {
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
         stage.addActor(error);
-        try {
-            hud.render(Main.getBatch(), delta);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
+
         //TODO handle player
 //        controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));

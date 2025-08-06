@@ -219,7 +219,7 @@ public class GameStateController {
         time.append(String.format("%02d", date.getMinute())); // همیشه دو رقمی
         time.append(hour < 12 ? " am" : " pm");
 
-        String dateString = date.getDayOfTheWeek() + ". " + date.getDay(); // مثال
+        String dateString = date.getDayOfTheWeek().toString().substring(0,3) + ". " + date.getDay(); // مثال
 
         float timeAngle = ((float) ((date.getHour() - 9) * 180) /13 + date.getMinute()) *3/13;
 
