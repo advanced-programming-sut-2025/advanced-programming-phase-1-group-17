@@ -23,12 +23,10 @@ import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
 import io.github.StardewValley.shared.models.enums.Gender;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
-import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
-import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
@@ -44,10 +42,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 
 @RestController
@@ -64,23 +59,6 @@ public class GameStateController {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
     }
-
-//    @GetMapping("/game/map")
-//    public ResponseEntity<List<TileDTO>> getGameMap(
-//        @RequestHeader("Authorization") String token,
-//        @RequestParam int minX,
-//        @RequestParam int maxX,
-//        @RequestParam int minY,
-//        @RequestParam int maxY
-//    ) {
-//        List<TileDTO> tileDTOs = new ArrayList<>();
-//        for (int i = minX - 1; i < maxX; i++) {
-//            for (int j = minY - 1; j < maxY; j++) {
-//                tileDTOs.add(new TileDTO(Objects.requireNonNull(AppServer.getCurrentGame().getTile(i + 1, j + 1))));
-//            }
-//        }
-//        return ResponseEntity.ok(tileDTOs);
-//    }
 
     @PostMapping("/game/map")
     public ResponseEntity<GetGameStateResponse> getGameMap(
@@ -382,7 +360,20 @@ public class GameStateController {
             else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
                 result = farmingController.fertilize(fertilizer, dx, dy, player);
         }
-        return ResponseEntity.ok(new HandleWorldClickResponse(result.isSuccessful(), result.getMessage(), HandleWorldClickResponse.ActionType.NONE));
+        return ResponseEntity.ok(new HandleWorldClickResponse(result.successful(), result.message(), HandleWorldClickResponse.ActionType.NONE));
+    }
+
+
+    @PostMapping("/game/backpack/getBackpackItems")
+    public ResponseEntity<GetBackpackItemsResponse> getBackpackItems(@RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        ArrayList<BackpackableTypeDTO> response = new ArrayList<>();
+        BackPack backPack = player.getBackPack();
+        backPack.getBackPackItems().forEach(((backPackableType, backPackables) -> {
+            response.add(AppServer.getDTO(backPackableType, backPack));
+            })
+        );
+        return ResponseEntity.ok(new GetBackpackItemsResponse(response));
     }
 
 
@@ -619,15 +610,16 @@ public class GameStateController {
 
     public Player getPlayerFromToken(String token) {
         String username = jwtService.extractUsername(token.replace("Bearer ", ""));
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+//        User user = userRepository.findByUsername(username)
+//            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Game activeGame = user.getActiveGame();
-        if (activeGame == null) {
-            throw new RuntimeException("User is not in an active game");
-        }
+//        Game activeGame = user.getActiveGame();
+//        if (activeGame == null) {
+//            throw new RuntimeException("User is not in an active game");
+//        }
 
-        return activeGame.getPlayerByUsername(username);
+        //return activeGame.getPlayerByUsername(username);
+        return App.getCurrentGame().getPlayerByUsername(username);
     }
 
     public Game getGameFromToken(String token) {

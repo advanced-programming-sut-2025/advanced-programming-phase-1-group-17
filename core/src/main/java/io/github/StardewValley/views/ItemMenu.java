@@ -11,9 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.controllers.UIControllers.ItemMenuController;
-import io.github.StardewValley.shared.models.market.ShopItem;
 import io.github.StardewValley.shared.models.market.ShopItemDTO;
 import io.github.StardewValley.shared.models.market.StoreType;
 
@@ -67,7 +65,7 @@ public class ItemMenu implements Screen {
         this.purchaseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                errorLabel.setText(controller.purchase().getMessage());
+                errorLabel.setText(controller.purchase().message());
             }
         });
 

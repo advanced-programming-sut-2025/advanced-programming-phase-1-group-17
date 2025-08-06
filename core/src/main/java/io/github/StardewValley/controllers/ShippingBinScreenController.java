@@ -22,7 +22,7 @@ public class ShippingBinScreenController {
     }
 
     public void sellItem(BackpackableTypeDTO itemType, int quantity) {
-        int stock = view.getBackpackItems().get(itemType);
+        int stock = itemType.getCountInBackPack();
         if (quantity > stock) {
             view.getErrorLabel().setColor(255, 0, 0, 1);
             view.getErrorLabel().setText("You only have %d of item %s".formatted(stock, itemType.getName()));

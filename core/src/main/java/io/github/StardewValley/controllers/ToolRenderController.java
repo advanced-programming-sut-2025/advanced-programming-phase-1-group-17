@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.tools.ToolAssetManager;
+import io.github.StardewValley.shared.models.tools.*;
+
+import java.util.HashMap;
 
 public class ToolRenderController {
     private boolean isToolAnimating = false;
@@ -16,12 +18,29 @@ public class ToolRenderController {
     private PlayerClient player;
 
     private Sprite toolSprite;
+    private final HashMap<ToolType, HashMap<ToolMaterial, Sprite>> toolSprites = new HashMap<>();
+    private final HashMap<FishingPoleType, String> fishingPoleTexturePaths = new HashMap<>();
 
     public ToolRenderController(PlayerClient player) {
         this.player = player;
         //TODO
-        //this.toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getToolType());
-        //toolSprite.setOriginCenter(); // Rotation around center — adjust if needed
+//        this.toolSprite = getToolSprite(player.getToolType(), player.getToolMaterial(), player.getFishingPoleType());
+//        toolSprite.setOriginCenter(); // Rotation around center — adjust if needed
+
+        for (ToolType type : ToolType.values()) {
+            if (type.equals(ToolType.FishingPole))
+                continue;
+            toolSprites.put(type, new HashMap<>());
+        }
+        loadPickaxeTextures();
+        loadScytheTextures();
+        loadHoeTextures();
+        loadAxeTextures();
+        loadWateringCanTextures();
+        loadFishingPoleTextures();
+        loadMilkPailTextures();
+        loadShearTextures();
+        loadTrashCanTextures();
     }
 
 
@@ -80,5 +99,75 @@ public class ToolRenderController {
 
             toolSprite.draw(Main.getBatch());
         }
+    }
+
+    private void loadHoeTextures() {
+        for (ToolMaterial material : ToolMaterial.values()) {
+            String materialName = (material.equals(ToolMaterial.Basic)) ? "" : "%s_".formatted(material.name());
+            Texture texture = new Texture("Hoe/%sHoe.png".formatted(materialName));
+            toolSprites.get(ToolType.Hoe).put(material, new Sprite(texture));
+        }
+    }
+
+    private void loadWateringCanTextures() {
+        for (ToolMaterial material : ToolMaterial.values()) {
+            String materialName = (material.equals(ToolMaterial.Basic)) ? "" : "%s_".formatted(material.name());
+            Texture texture = new Texture("Watering_Can/%sWatering_Can.png".formatted(materialName));
+            toolSprites.get(ToolType.WateringCan).put(material, new Sprite(texture));
+        }
+    }
+
+    private void loadFishingPoleTextures() {
+        fishingPoleTexturePaths.put(FishingPoleType.IridiumFishingPole, "Fishing_Pole/Iridium_Rod.png");
+        fishingPoleTexturePaths.put(FishingPoleType.BambooFishingPole,   "Fishing_Pole/Bamboo_Pole.png");
+        fishingPoleTexturePaths.put(FishingPoleType.TrainingFishingPole,   "Fishing_Pole/Training_Rod.png");
+        fishingPoleTexturePaths.put(FishingPoleType.FiberglassFishingPole,   "Fishing_Pole/Fiberglass_Rod.png");
+    }
+
+    private void loadMilkPailTextures() {
+        toolSprites.get(ToolType.MilkPail).put(null, new Sprite(new Texture("Tools/Milk_Pail.png")));
+    }
+
+    private void loadShearTextures() {
+        Texture texture =   new Texture ("Tools/Shears.png");
+        toolSprites.get(ToolType.Shear).put(null, new Sprite(texture));
+    }
+
+    private void loadTrashCanTextures() {
+        for (ToolMaterial material : ToolMaterial.values()) {
+            String materialName = (material.equals(ToolMaterial.Basic)) ? "_Steel" : "_%s".formatted(material.name());
+            Texture texture =   new Texture ("Tools/Trash_Can%s.png".formatted(materialName));
+            toolSprites.get(ToolType.Axe).put(material, new Sprite(texture));
+        }
+    }
+
+    private void loadScytheTextures() {
+        Texture texture =   new Texture ("Tools/Scythe.png");
+        toolSprites.get(ToolType.Scythe).put(null, new Sprite(texture));
+    }
+
+    private void loadAxeTextures() {
+        for (ToolMaterial material : ToolMaterial.values()) {
+            String materialName = (material.equals(ToolMaterial.Basic)) ? "" : "%s_".formatted(material.name());
+            Texture texture =   new Texture ("Tools/Axe/%sAxe.png".formatted(materialName));
+            toolSprites.get(ToolType.Axe).put(material, new Sprite(texture));
+        }
+    }
+
+    private void loadPickaxeTextures() {
+        for (ToolMaterial material : ToolMaterial.values()) {
+            String materialName = (material.equals(ToolMaterial.Basic)) ? "" : "%s_".formatted(material.name());
+            Texture texture =   new Texture ("Tools/Pickaxe/%sPickaxe.png".formatted(materialName));
+            toolSprites.get(ToolType.Pickaxe).put(material, new Sprite(texture));
+        }
+    }
+
+    public Sprite getToolSprite(ToolType toolType, ToolMaterial toolMaterial, FishingPoleType fishingPoleType) {
+//TODO
+        //        if (toolType.equals(ToolType.FishingPole)) {
+//            FishingPoleType material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).getFirst()).getFishingPoleMaterial();
+//            return fishingPoleTextures.get(material);
+//        }
+        return toolSprites.get(toolType).get(toolMaterial);
     }
 }

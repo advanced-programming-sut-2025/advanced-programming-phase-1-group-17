@@ -5,15 +5,17 @@ public class BackpackableTypeDTO {
     private String className;
     private double price;
     private String inventoryTexturePath;
+    private int countInBackPack;
 
     public BackpackableTypeDTO() {
     }
 
-    public BackpackableTypeDTO(String name, String className, double price, String inventoryTexturePath) {
+    public BackpackableTypeDTO(String name, String className, double price, String inventoryTexturePath, int countInBackPack) {
         this.name = name;
         this.className = className;
         this.price = price;
         this.inventoryTexturePath = inventoryTexturePath;
+        this.countInBackPack = countInBackPack;
     }
 
     public String getName() {
@@ -46,5 +48,13 @@ public class BackpackableTypeDTO {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public int getCountInBackPack() {
+        return countInBackPack;
+    }
+
+    public void setCountInBackPack(int countInBackPack) {
+        this.countInBackPack = countInBackPack;
     }
 }

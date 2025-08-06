@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.tools;
 
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackable;

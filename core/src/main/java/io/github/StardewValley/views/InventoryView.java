@@ -19,12 +19,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.InventoryController;
-import io.github.StardewValley.shared.models.backpack.BackPackableType;
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.tools.ToolType;
-
-import java.util.HashMap;
 
 public class InventoryView implements Screen {
     private Stage stage;
@@ -43,7 +39,7 @@ public class InventoryView implements Screen {
     private final TextButton exitButton;
     private final TextButton saveAndExitButton;
 
-    private HashMap<BackpackableTypeDTO, Integer> backPackItems;
+    private java.util.List<BackpackableTypeDTO> backPackItems;
 
     public InventoryView(InventoryController controller, Skin skin) {
         this.controller = controller;
@@ -182,9 +178,13 @@ public class InventoryView implements Screen {
         itemsTable.clear();
         backPackItems = GameClient.getGameStateApiClient().getBackpackItems().getItems();
 
-        for (BackpackableTypeDTO backpackableTypeDTO : backPackItems.keySet()) {
+        for (BackpackableTypeDTO backpackableTypeDTO : backPackItems) {
             // 1. Prepare image button style:
             Texture itemTexture = GameAssetManagerClient.getGameAssetManager().getTexture(backpackableTypeDTO.getInventoryTexturePath());
+            if (itemTexture == null) {
+                System.out.println(backpackableTypeDTO.getInventoryTexturePath() + " " + backpackableTypeDTO.getName());
+                continue;
+            }
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 
@@ -192,7 +192,7 @@ public class InventoryView implements Screen {
 
             // 2. Prepare label for count:
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-            Label countLabel = new Label("%d".formatted(backPackItems.get(backpackableTypeDTO)),
+            Label countLabel = new Label("%d".formatted(backpackableTypeDTO.getCountInBackPack()),
                 labelStyle);
             countLabel.setTouchable(Touchable.disabled);
             countLabel.setFontScale(1.3f); // Adjust size
@@ -200,7 +200,7 @@ public class InventoryView implements Screen {
 
             // 3. Use a Stack:
             Stack itemStack = new Stack();
-            itemStack.setSize(64, Math.min(64, backPackItems.get(backpackableTypeDTO)));
+            itemStack.setSize(64, Math.min(64, backpackableTypeDTO.getCountInBackPack()));
             itemStack.add(itemButton);
             itemStack.add(countLabel);
 
@@ -222,7 +222,7 @@ public class InventoryView implements Screen {
     public void showOnlyTools() {
         itemsTable.clear();
 
-        for (BackpackableTypeDTO backPackableTypeDTO : backPackItems.keySet()) {
+        for (BackpackableTypeDTO backPackableTypeDTO : backPackItems) {
             if (backPackableTypeDTO.getInventoryTexturePath() == null) continue;
 
             boolean found = false;
@@ -235,7 +235,7 @@ public class InventoryView implements Screen {
             if (!found)
                 continue;
 
-            if (backPackItems.get(backPackableTypeDTO) == 0) continue;
+            if (backPackableTypeDTO.getCountInBackPack() == 0) continue;
 
             Texture itemTexture = GameAssetManagerClient.getGameAssetManager().getTexture(backPackableTypeDTO.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
@@ -244,7 +244,7 @@ public class InventoryView implements Screen {
             ImageButton itemButton = new ImageButton(style);
 
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-            Label countLabel = new Label("%d".formatted(backPackItems.get(backPackableTypeDTO)), labelStyle);
+            Label countLabel = new Label("%d".formatted(backPackableTypeDTO.getCountInBackPack()), labelStyle);
             countLabel.setFontScale(1.3f);
             countLabel.setAlignment(Align.bottomRight);
             countLabel.setTouchable(Touchable.disabled);

@@ -20,6 +20,7 @@ import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.market.ShippingBin;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class ShippingBinScreen implements Screen {
     private Stage stage;
@@ -36,7 +37,7 @@ public class ShippingBinScreen implements Screen {
     private final TextButton minusButton;
 
     private final Table mainTable;
-    private final HashMap<BackpackableTypeDTO, Integer> backpackItems =
+    private final List<BackpackableTypeDTO> backpackItems =
         GameClient.getGameStateApiClient().getBackpackItems().getItems();
 
     public ShippingBinScreen(TileDTO shippingBinTile, ShippingBinScreenController controller, Skin skin) {
@@ -66,8 +67,8 @@ public class ShippingBinScreen implements Screen {
         ScrollPane scrollPane = new ScrollPane(itemTable, skin);
         Label quantityLabel = new Label("Sell: 0", skin);
 
-        for (BackpackableTypeDTO itemType : backpackItems.keySet()) {
-            int available = backpackItems.get(itemType);
+        for (BackpackableTypeDTO itemType : backpackItems) {
+            int available = itemType.getCountInBackPack();
             if (itemType.getInventoryTexturePath() == null) continue;
             //TODO remove new Texture
             Texture texture = new Texture(itemType.getInventoryTexturePath());
@@ -181,7 +182,7 @@ public class ShippingBinScreen implements Screen {
         return errorLabel;
     }
 
-    public HashMap<BackpackableTypeDTO, Integer> getBackpackItems() {
+    public List<BackpackableTypeDTO> getBackpackItems() {
         return backpackItems;
     }
 }

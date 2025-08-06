@@ -2,7 +2,6 @@ package io.github.StardewValley.controllers;
 
 import com.google.gson.Gson;
 import io.github.StardewValley.GameAssetManagerClient;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Result;
@@ -48,7 +47,7 @@ public class SignUpMenuController {
             return new Result(false, "You haven't picked a gender");
         }
         Result passwordCheck = isPasswordStrong(password);
-        if (!passwordCheck.isSuccessful()) {
+        if (!passwordCheck.successful()) {
             return passwordCheck;
         }
         else if (!password.equals(passwordConfirm)) {

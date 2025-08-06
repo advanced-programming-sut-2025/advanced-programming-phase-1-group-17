@@ -2,25 +2,13 @@ package io.github.StardewValley.controllers.UIControllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.shared.models.backpack.BackPackable;
-import io.github.StardewValley.shared.models.backpack.BackPackableType;
-import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
-import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
-import io.github.StardewValley.shared.models.tools.ToolType;
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.views.ArtisanCraftMenu;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ArtisanCraftMenuController {
@@ -54,12 +42,12 @@ public class ArtisanCraftMenuController {
 
     public void craft() {
         Result result = GameClient.getGameStateApiClient().craftArtisan(view.getSelectedItems());
-        if (result.isSuccessful()) {
+        if (result.successful()) {
             view.getSelectedItems().clear();
             view.getErrorLabel().setColor(255, 255, 255, 1);
         } else {
             view.getErrorLabel().setColor(255, 0, 0, 1);
         }
-        view.getErrorLabel().setText(result.getMessage());
+        view.getErrorLabel().setText(result.message());
     }
 }

@@ -48,8 +48,10 @@ public enum ToolType implements BackPackableType  {
 
     @Override
     public String getInventoryTexturePath() {
-        //TODO
-        //return ToolAssetManager.getToolAssetManager().getToolTexturePath(this, player);
         return null;
+    }
+
+    public String getTexturePath(ToolMaterial toolMaterial, FishingPoleType fishingPoleType) {
+        return ToolAssetManager.getToolAssetManager().getToolTexturePath(this, toolMaterial, fishingPoleType);
     }
 }

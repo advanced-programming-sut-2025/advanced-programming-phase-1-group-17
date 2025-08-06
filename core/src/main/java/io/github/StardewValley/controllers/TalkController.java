@@ -60,7 +60,7 @@ public class TalkController {
                 gameView.setError("");
                 view.getStage().addActor(view.getWindow());
                 view.getWindow().getTitleLabel().setText("                     messages");
-                view.setText(gameMenuController.showMessage().getMessage());
+                view.setText(gameMenuController.showMessage().message());
             }
         });
         view.getButton1().addListener(new ClickListener() {

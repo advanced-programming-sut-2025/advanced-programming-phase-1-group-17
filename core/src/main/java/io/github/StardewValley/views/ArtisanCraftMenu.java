@@ -25,6 +25,7 @@ import io.github.StardewValley.shared.models.crafting.CraftingItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ArtisanCraftMenu implements Screen {
@@ -75,12 +76,12 @@ public class ArtisanCraftMenu implements Screen {
 
     private void refreshInventory() {
         inventoryTable.clear();
-        HashMap< BackpackableTypeDTO, Integer> backpackItems = GameClient.getGameStateApiClient().getBackpackItems().getItems();
+        List<BackpackableTypeDTO> backpackItems = GameClient.getGameStateApiClient().getBackpackItems().getItems();
 
-        for (BackpackableTypeDTO item : backpackItems.keySet()) {
+        for (BackpackableTypeDTO item : backpackItems) {
             if (item.getInventoryTexturePath() == null) continue;
 
-            int count = backpackItems.get(item);
+            int count = item.getCountInBackPack();
             if (count == 0) continue;
 
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();

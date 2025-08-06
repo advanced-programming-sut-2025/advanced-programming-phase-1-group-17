@@ -145,7 +145,7 @@ public class ProfileMenuController {
                         return;
                     }
                     String newPassword = view.getNewPassword().getText().trim();
-                    if (SignUpMenuCommands.ValidPassword.getMatcher(newPassword) == null || !new SignUpMenuController().isPasswordStrong(newPassword).isSuccessful()) {
+                    if (SignUpMenuCommands.ValidPassword.getMatcher(newPassword) == null || !new SignUpMenuController().isPasswordStrong(newPassword).successful()) {
                         view.setError("new password format is invalid");
                         return;
                     }

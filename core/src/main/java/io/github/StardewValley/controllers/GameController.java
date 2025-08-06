@@ -44,7 +44,7 @@ public class GameController {
         try {
             PlayerClient playerClient = new PlayerClient(GameClient.getGameStateApiClient().getUserWithUserDTO());
             GameClient.setPlayer(playerClient);
-            PlayerDto player = GameClient.getGameStateApiClient().updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
+            player = GameClient.getGameStateApiClient().updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
             playerUpdate(player);
             this.camera.position.set(player.getX() , player.getY(), 0);
 
@@ -107,6 +107,7 @@ public class GameController {
             }
 
             GameClient.getPlayer().draw(Main.getBatch());
+            handlePlayerInput();
 
             //TODO handle connection to server
 //            toolController.update(delta, player);
@@ -248,6 +249,10 @@ public class GameController {
             Main.getMain().getScreen().dispose();
             //TODO
             //Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
+                , GameAssetManagerClient.getGameAssetManager().getSkin(), view));
         }
     }
 

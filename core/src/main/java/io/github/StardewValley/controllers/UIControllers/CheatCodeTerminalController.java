@@ -29,7 +29,7 @@ public class CheatCodeTerminalController {
             e.printStackTrace();
         }
         view.getOutputArea().setText("%s\n>%s\n%s"
-            .formatted(view.getOutputArea().getText().trim(), view.getInputField().getText(), result.getMessage()));
+            .formatted(view.getOutputArea().getText().trim(), view.getInputField().getText(), result.message()));
     }
 
 

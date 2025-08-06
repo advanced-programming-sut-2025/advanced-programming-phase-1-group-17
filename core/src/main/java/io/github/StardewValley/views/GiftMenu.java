@@ -40,7 +40,7 @@ public class GiftMenu implements Screen {
     private final TextField amountTextField;
     private final TextButton back;
     private final TextButton gift;
-    private HashMap<BackpackableTypeDTO, Integer> backPackItems;
+    private java.util.List<BackpackableTypeDTO> backPackItems;
 
 
     public GiftMenu( GiftMenuController controller, Skin skin, String targetPlayer, GameView gameView, String npc) {
@@ -57,7 +57,7 @@ public class GiftMenu implements Screen {
         itemsTable.clear();
         backPackItems = GameClient.getGameStateApiClient().getBackpackItems().getItems();
 
-        for (BackpackableTypeDTO backpackableTypeDTO : backPackItems.keySet()) {
+        for (BackpackableTypeDTO backpackableTypeDTO : backPackItems) {
             // 1. Prepare image button style:
             Texture itemTexture = GameAssetManagerClient.getGameAssetManager().getTexture(backpackableTypeDTO.getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
@@ -67,7 +67,7 @@ public class GiftMenu implements Screen {
 
             // 2. Prepare label for count:
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-            Label countLabel = new Label("%d".formatted(backPackItems.get(backpackableTypeDTO)),
+            Label countLabel = new Label("%d".formatted(backpackableTypeDTO.getCountInBackPack()),
                 labelStyle);
             countLabel.setTouchable(Touchable.disabled);
             countLabel.setFontScale(1.3f); // Adjust size
@@ -75,7 +75,7 @@ public class GiftMenu implements Screen {
 
             // 3. Use a Stack:
             Stack itemStack = new Stack();
-            itemStack.setSize(64, Math.min(64, backPackItems.get(backpackableTypeDTO)));
+            itemStack.setSize(64, Math.min(64, backpackableTypeDTO.getCountInBackPack()));
             itemStack.add(itemButton);
             itemStack.add(countLabel);
 

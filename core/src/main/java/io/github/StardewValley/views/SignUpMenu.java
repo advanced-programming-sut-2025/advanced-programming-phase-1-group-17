@@ -9,9 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.SecurityQuestionMenuController;
 import io.github.StardewValley.controllers.SignUpMenuController;
@@ -111,7 +109,7 @@ public class SignUpMenu implements Screen {
                     emailField.getText(),
                     selectedGender
                 );
-                if (result.isSuccessful()) {
+                if (result.successful()) {
                     Main.getMain().getScreen().dispose();
                     SecurityQuestionMenuController securityQuestionMenuController = new SecurityQuestionMenuController();
                     //TODO
@@ -120,7 +118,7 @@ public class SignUpMenu implements Screen {
                         securityQuestionMenuController,
                           GameAssetManagerClient.getGameAssetManager().getSkin()));
                 }
-                errorLabel.setText(result.getMessage());
+                errorLabel.setText(result.message());
             }
         });
 
@@ -141,7 +139,6 @@ public class SignUpMenu implements Screen {
     public void show() {
         //this.stage = new Stage(new ScreenViewport());
         this.stage = new Stage(new FitViewport(1920, 1080));
-        System.out.println(stage.getWidth() + " " + stage.getHeight());
         Gdx.input.setInputProcessor(stage);
 
         mainTable.setFillParent(true);
