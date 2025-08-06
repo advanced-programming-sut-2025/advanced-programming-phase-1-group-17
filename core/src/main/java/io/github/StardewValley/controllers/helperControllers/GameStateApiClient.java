@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
+import io.github.StardewValley.shared.models.cooking.FoodType;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.dto.*;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.Result;
@@ -251,6 +255,66 @@ public class GameStateApiClient {
         }
     }
 
+    public HudDataDTO getHudData() throws Exception {
+        URL url = new URL(BASE_URL + "/hudData");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, HudDataDTO.class);
+            }
+        } else {
+            throw new RuntimeException("Failed to fetch HUD data: " + conn.getResponseCode());
+        }
+    }
+    public CraftResponseDTO attemptCraft(CraftingItemType type) throws Exception {
+        // از URLEncoder برای اطمینان از ارسال صحیح نام آیتم استفاده می‌کنیم
+        String urlString = BASE_URL + "/craft?itemTypeName=" + URLEncoder.encode(type.name(), "UTF-8");
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST"); // متد POST است
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, CraftResponseDTO.class);
+            }
+        } else {
+            // می‌توانید خطا را بهتر مدیریت کنید
+            // مثلا متن خطا را از بدنه پاسخ بخوانید
+            throw new RuntimeException("Failed to craft item. Response code: " + responseCode);
+        }
+    }
+    public CookResponseDTO attemptCook (FoodType type) throws Exception {
+        // از URLEncoder برای اطمینان از ارسال صحیح نام آیتم استفاده می‌کنیم
+        String urlString = BASE_URL + "/cook?itemTypeName=" + URLEncoder.encode(type.name(), "UTF-8");
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST"); // متد POST است
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, CookResponseDTO.class);
+            }
+        } else {
+            // می‌توانید خطا را بهتر مدیریت کنید
+            // مثلا متن خطا را از بدنه پاسخ بخوانید
+            throw new RuntimeException("Failed to cook item. Response code: " + responseCode);
+        }
+    }
     public void setToken(String token) {
         this.token = token;
     }

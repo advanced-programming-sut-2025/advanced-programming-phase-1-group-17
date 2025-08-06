@@ -23,6 +23,13 @@ import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
 import io.github.StardewValley.shared.models.enums.Gender;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
+import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
+import io.github.StardewValley.shared.models.cooking.Food;
+import io.github.StardewValley.shared.models.cooking.FoodType;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
 import io.github.StardewValley.shared.models.market.ShippingBin;
@@ -34,6 +41,7 @@ import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -183,6 +191,163 @@ public class GameStateController {
         AppServer.setCurrentGame(null);
         return ResponseEntity.ok(true);
     }
+    @GetMapping("/hudData")
+    public ResponseEntity<HudDataDTO> getHudData(@RequestHeader("Authorization") String token) {
+        String username = jwtService.extractUsername(token.substring(7));
+        Game game = AppServer.getCurrentGame();
+        Player player = null;
+        for (Player p : game.getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                player = p;
+                break;
+            }
+        }
+
+        if (player == null) {
+            return ResponseEntity.status(404).build(); // یا هر خطای مناسب دیگر
+        }
+
+        TimeAndDate date = game.getDate();
+
+
+        StringBuilder time = new StringBuilder();
+        int hour = date.getHour();
+        int displayHour = hour % 12 == 0 ? 12 : hour % 12; // نمایش 12 به جای 0
+        time.append(displayHour).append(":");
+        time.append(String.format("%02d", date.getMinute())); // همیشه دو رقمی
+        time.append(hour < 12 ? " am" : " pm");
+
+        String dateString = date.getDayOfTheWeek() + ". " + date.getDay(); // مثال
+
+        float timeAngle = ((float) ((date.getHour() - 9) * 180) /13 + date.getMinute()) *3/13;
+
+
+        // ساخت DTO
+        HudDataDTO hudData = new HudDataDTO(
+            time.toString(),
+            dateString,
+            game.getDate().getSeason().toString(), // فرض می‌کنیم Season یک enum است
+            game.getDate().getTodayWeatherType().toString(), // فرض می‌کنیم Weather یک enum است
+            (int) player.getBackPack().getCoin(),
+            player.getEnergy(),
+            player.getMaxEnergy(),
+            player.isEnergyUnlimited(),
+            timeAngle
+        );
+
+        return ResponseEntity.ok(hudData);
+    }
+    @PostMapping("/craft")
+    public ResponseEntity<CraftResponseDTO> attemptToCraft(
+        @RequestHeader("Authorization") String token,
+        @RequestParam String itemTypeName) { // نام آیتم را از کلاینت می‌گیریم
+
+        String username = jwtService.extractUsername(token.substring(7));
+        Player player = null;
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                player = p;
+                break;
+            }
+        }
+        if (player == null) {
+            return ResponseEntity.status(401).body(new CraftResponseDTO(false, "Player not found."));
+        }
+
+        CraftingItemType typeToCraft;
+        try {
+            typeToCraft = CraftingItemType.valueOf(itemTypeName);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new CraftResponseDTO(false, "Invalid item type."));
+        }
+
+        // --- تمام منطق از CraftingController به اینجا منتقل می‌شود ---
+        BackPack backPack = player.getBackPack();
+        Map<BackPackableType, Integer> ingredients = typeToCraft.getIngredients();
+
+        // 1. بررسی موجودی (در سرور!)
+        for (Map.Entry<BackPackableType, Integer> entry : typeToCraft.getIngredients().entrySet()) {
+            if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
+                && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
+                String message = "Not enough " + entry.getKey().getName() + ".";
+                return ResponseEntity.ok(new CraftResponseDTO(false, message));
+            }
+        }
+
+        // 2. کم کردن آیتم‌ها (در سرور!)
+        for (Map.Entry<BackPackableType, Integer> entry : ingredients.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                backPack.useItem(entry.getKey());
+            }
+        }
+
+        // 3. اضافه کردن آیتم جدید (در سرور!)
+        CraftingItem craftedItem = new CraftingItem(typeToCraft, player);
+        backPack.addItemToInventory(craftedItem);
+
+        // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
+        return ResponseEntity.ok(new CraftResponseDTO(true, "Crafted successfully!"));
+    }
+    @PostMapping("/cook")
+    public ResponseEntity<CookResponseDTO> attemptToCook(
+        @RequestHeader("Authorization") String token,
+        @RequestParam String itemTypeName) { // نام آیتم را از کلاینت می‌گیریم
+
+        String username = jwtService.extractUsername(token.substring(7));
+        Player player = null;
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                player = p;
+                break;
+            }
+        }
+        if (player == null) {
+            return ResponseEntity.status(401).body(new CookResponseDTO(false, "Player not found."));
+        }
+
+        FoodType type;
+        try {
+            type = FoodType.valueOf(itemTypeName);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new CookResponseDTO(false, "Invalid item type."));
+        }
+
+        // --- تمام منطق از CraftingController به اینجا منتقل می‌شود ---
+        BackPack backPack = player.getBackPack();
+        Map<BackPackableType, Integer> ingredients = type.getIngredients();
+
+        // 1. بررسی موجودی (در سرور!)
+        for (Map.Entry<BackPackableType, Integer> entry : type.getIngredients().entrySet()) {
+            if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
+                && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
+                String message = "Not enough " + entry.getKey().getName() + ".";
+                return ResponseEntity.ok(new CookResponseDTO(false, message));
+            }
+        }
+
+        // 2. کم کردن آیتم‌ها (در سرور!)
+        for (Map.Entry<BackPackableType, Integer> entry : ingredients.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                backPack.useItem(entry.getKey());
+            }
+        }
+
+        // 3. اضافه کردن آیتم جدید (در سرور!)
+        Food food = new Food(type);
+        backPack.addItemToInventory(food);
+
+        // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
+        return ResponseEntity.ok(new CookResponseDTO(true, "Cooked successfully!"));
+    }
+    @Scheduled(fixedRate = 100) // 10 بار در ثانیه
+    public void serverGameLoop() {
+        if (AppServer.getCurrentGame() != null) {
+            // delta time در سرور حدود 0.1 ثانیه است
+            float serverDelta = 0.1f;
+            AppServer.getCurrentGame().getDate().increaseMinute(serverDelta * 5);
+        }
+    }
+
 
 
     @PostMapping("/game/handleClick")
