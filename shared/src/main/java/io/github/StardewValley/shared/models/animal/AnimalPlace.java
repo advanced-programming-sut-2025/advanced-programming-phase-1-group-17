@@ -48,6 +48,7 @@ public class AnimalPlace implements Placeable {
 //            if (this.getHitBox().contains(vector3.x, vector3.y)) {
 //                Main.getMain().getScreen().dispose();
 //                Main.getMain().setScreen(new AnimalPlaceShow(GameAssetManager.getGameAssetManager().getSkin(), App.getGameView(),this));
+
 //            }
         }
         justPlaced = true;

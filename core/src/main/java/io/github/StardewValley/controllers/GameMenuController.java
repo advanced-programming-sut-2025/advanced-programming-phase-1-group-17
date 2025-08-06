@@ -260,7 +260,7 @@ public class GameMenuController {
         if (delta < 0) return -1;
         return 0;
     }
-
+//    public Result walk(int x, int y, Scanner scanner) {
     public List<Tile> aStar(int startX, int startY, int endX, int endY, Player player) {
         int[][] directions = {
             {0, 1}, {1, 0}, {0, -1}, {-1, 0},

@@ -36,6 +36,18 @@ public class TimeAndDate {
         month = 1;
         year = 1;
     }
+    private float increaseAmount = 0;
+    public void increaseMinute(float v) {
+        increaseAmount+= v;
+        if(increaseAmount>1){
+            increaseAmount = 0;
+            minute++;
+        }
+        if(minute==60){
+            minute = 0;
+            increaseHour();
+        }
+    }
 
     public void increaseHour() {
         hour++;
