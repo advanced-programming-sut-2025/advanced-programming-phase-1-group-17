@@ -20,8 +20,8 @@ public class TileDTO {
         this.isWalkAble = tile.isWalkAble();
         this.isPlowed = tile.isPlowed();
         if (tile.getPlaceable() != null) texture = tile.getPlaceable().getTexture();
-        this.placeableType = tile.getPlaceable() != null ? tile.getPlaceable().getClass().getSimpleName() : "s";
-        this.ownerUsername = tile.getOwner() != null ? tile.getOwner().getUser().getUsername() : "s";
+        this.placeableType = tile.getPlaceable() != null ? tile.getPlaceable().getClass().getSimpleName() : null;
+        this.ownerUsername = tile.getOwner() != null ? tile.getOwner().getUser().getUsername() : null;
         this.crowImmunity = tile.isCrowImmunity();
     }
 
