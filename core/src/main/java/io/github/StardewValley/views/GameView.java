@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
@@ -196,7 +197,8 @@ public class GameView implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        stage = new Stage(new ScreenViewport());
+        //stage = new Stage(new ScreenViewport());
+        stage = new Stage(new FitViewport(1920, 1080));
         dialogueTable.setFillParent(true);
         InputMultiplexer multiplexer = new InputMultiplexer(stage, this);
         Gdx.input.setInputProcessor(multiplexer);
@@ -226,8 +228,9 @@ public class GameView implements Screen, InputProcessor {
         if (GameClient.getPlayer().isNewMessage()) {
             error.setText("you have a new message");
         }
-        if (activeWindow) updateInteractions();
-        updateDialogue(delta);
+        //TODO
+//        if (activeWindow) updateInteractions();
+//        updateDialogue(delta);
 
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);

@@ -21,7 +21,7 @@ public class ToolRenderController {
         this.player = player;
         //TODO
         //this.toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getToolType());
-        toolSprite.setOriginCenter(); // Rotation around center — adjust if needed
+        //toolSprite.setOriginCenter(); // Rotation around center — adjust if needed
     }
 
 
