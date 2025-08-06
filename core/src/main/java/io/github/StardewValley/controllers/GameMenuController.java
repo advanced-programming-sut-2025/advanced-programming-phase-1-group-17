@@ -288,7 +288,7 @@ public class GameMenuController {
 //    public Result deleteAndExitThisGame(Scanner scanner) {
 //        System.out.println("enter your comment about deleting this game");
 //        for (Player player : App.getCurrentGame().getPlayers()) {
-//            if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer())) continue;
+ //          if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer())) continue;
 //            if (player.getUser().getUsername().equals("NPC") || player.isGuest()) continue;
 //            System.out.println(player.getUser().getUsername() + " please enter your comment (y/n)");
 //            String input = scanner.nextLine();
