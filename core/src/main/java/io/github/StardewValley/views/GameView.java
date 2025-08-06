@@ -215,7 +215,8 @@ public class GameView implements Screen, InputProcessor {
         try {
             hud.render(Main.getBatch(),delta);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         controller.updateGame(delta);
         //TODO handle playe
@@ -237,7 +238,8 @@ public class GameView implements Screen, InputProcessor {
         try {
             hud.render(Main.getBatch(), delta);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         //TODO handle player
 //        controller.handlePlayerInput();
