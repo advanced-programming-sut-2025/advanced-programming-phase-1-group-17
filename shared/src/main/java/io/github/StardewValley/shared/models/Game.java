@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class Game implements Serializable {
     private final Player creator;
-    private final TimeAndDate date = new TimeAndDate();
+    private final TimeAndDate date;
     private final ArrayList<Player> players = new ArrayList<Player>();
     private final GameMap gameMap;
     private final ArrayList<NPC> NPCs = new ArrayList<>();
@@ -28,6 +28,7 @@ public class Game implements Serializable {
 
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3, UserDTO user4) {
+        this.date = new TimeAndDate();
         user1.setActiveGame(this);
         user2.setActiveGame(this);
         user3.setActiveGame(this);
@@ -94,7 +95,6 @@ public class Game implements Serializable {
         }
 //        this.marketsController.initializeStores();
         giveInitialItems();
-
     }
 
     private void giveInitialItems() {

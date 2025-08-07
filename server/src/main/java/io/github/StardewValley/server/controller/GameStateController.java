@@ -63,7 +63,7 @@ public class GameStateController {
     }
 
     @PostMapping("/game/map")
-    public ResponseEntity<GetGameStateResponse> getGameMap(
+    public ResponseEntity<GameState> getGameMap(
         @RequestHeader("Authorization") String token,
         @RequestParam int minX,
         @RequestParam int maxX,
@@ -84,10 +84,11 @@ public class GameStateController {
                 }
             }
         }
-        return ResponseEntity.ok(new GetGameStateResponse(
+        return ResponseEntity.ok(new GameState(
             craftingItemDTOs,
             tileDTOs,
-            game.getLightningLogicController().getLightningStateDTO()
+            game.getLightningLogicController().getLightningStateDTO(),
+            TimeAndDate.getDTO(game.getDate())
         ));
     }
 
@@ -350,9 +351,10 @@ public class GameStateController {
         float x = request.getX();
         float y = request.getY();
         int button = request.getButton();
+        System.out.println("%f %f %d".formatted(x, y, button));
 
         HandleWorldClickResponse response = gameWorldController.checkBounds(x, y, button, player);
-        if (!response.isSuccessful() || !response.getActionType().equals(HandleWorldClickResponse.ActionType.NONE))
+        if (response.isSuccessful())
             return ResponseEntity.ok(response);
 
         // Convert world coordinates to tile positions
@@ -361,7 +363,8 @@ public class GameStateController {
         int dx = clickedTileX - player.getTileX();
         int dy = clickedTileY - player.getTileY();
 
-        Result result = new Result(false, "");
+        HandleWorldClickResponse result = new HandleWorldClickResponse(false, "", HandleWorldClickResponse.ActionType.NONE);
+        System.out.println(player.getEquippedItem().getName());
         if (Math.abs(dx) + Math.abs(dy) == 1) {
             if (player.getEquippedItem() instanceof Tool)
                 result = toolController.toolUse(dx, dy, player);
@@ -374,7 +377,8 @@ public class GameStateController {
             else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
                 result = farmingController.fertilize(fertilizer, dx, dy, player);
         }
-        return ResponseEntity.ok(new HandleWorldClickResponse(result.successful(), result.message(), HandleWorldClickResponse.ActionType.NONE));
+        System.out.println(result.getMessage());
+        return ResponseEntity.ok(result);
     }
 
 

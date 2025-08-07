@@ -380,33 +380,51 @@ public class PlayerMap {
     }
 
     private void createShippingBins() {
-        if (Tile.getTile(10, 5).getPlaceable() == null) {
-            Tile.getTile(10, 5).setPlaceable(new ShippingBin(10, 5));
+        Tile tile = Tile.getTile(10, 5);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(10, 5));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(30, 230).getPlaceable() == null) {
-            Tile.getTile(30, 230).setPlaceable(new ShippingBin(30, 230));
+        tile = Tile.getTile(30, 230);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(30, 230));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(280, 30).getPlaceable() == null) {
-            Tile.getTile(280, 30).setPlaceable(new ShippingBin(280, 30));
+        tile = Tile.getTile(280, 30);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(280, 30));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(180, 130).getPlaceable() == null) {
-            Tile.getTile(180, 130).setPlaceable(new ShippingBin(180, 130));
+        tile = Tile.getTile(180, 130);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(180, 130));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(70, 50).getPlaceable() == null) {
-            Tile.getTile(70, 50).setPlaceable(new ShippingBin(70, 50));
+        tile = Tile.getTile(70, 50);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(70, 50));
+            tile.setWalkAble(false);
 
         }
-        if (Tile.getTile(70, 250).getPlaceable() == null) {
-            Tile.getTile(70, 250).setPlaceable(new ShippingBin(70, 250));
+        tile = Tile.getTile(70, 250);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(70, 250));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(100, 105).getPlaceable() == null) {
-            Tile.getTile(100, 105).setPlaceable(new ShippingBin(100, 105));
+        tile = Tile.getTile(100, 105);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(100, 105));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(220, 50).getPlaceable() == null) {
-            Tile.getTile(220, 50).setPlaceable(new ShippingBin(220, 50));
+        tile = Tile.getTile(220, 50);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(220, 50));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(220, 250).getPlaceable() == null) {
-            Tile.getTile(220, 250).setPlaceable(new ShippingBin(220, 250));
+        tile = Tile.getTile(220, 250);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(220, 250));
+            tile.setWalkAble(false);
         }
     }
 
