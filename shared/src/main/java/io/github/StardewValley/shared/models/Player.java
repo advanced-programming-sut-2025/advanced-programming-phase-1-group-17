@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -452,7 +453,7 @@ public class Player {
             trashCan = new Tool(ToolType.TrashCan, ToolMaterial.Iridium, null);
     }
 
-    public void update(float delta, boolean up, boolean down, boolean left, boolean right) {
+    public void update(Game game, float delta, boolean up, boolean down, boolean left, boolean right) {
         if (isPassedOut) {
             passOutTimer -= delta;
             if (passOutTimer <= 0) {
@@ -530,7 +531,7 @@ public class Player {
             if (tileX == 0) tileX = 1;
             if (tileY == 0) tileY = 1;
 
-            Tile destination = Tile.getTile(tileX, tileY);
+            Tile destination = game.getTile(tileX, tileY);
             if (destination != null) {
                 if (!(destination.getOwner().equals(this.getPartner())
                     || destination.getOwner().equals(this)

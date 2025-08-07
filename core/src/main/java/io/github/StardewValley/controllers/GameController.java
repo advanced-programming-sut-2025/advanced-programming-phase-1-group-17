@@ -141,16 +141,16 @@ public class GameController {
 
     public void setKey(int keycode, boolean pressed) {
         switch (keycode) {
-            case com.badlogic.gdx.Input.Keys.W:
+            case Input.Keys.W:
                 upPressed = pressed;
                 break;
-            case com.badlogic.gdx.Input.Keys.S:
+            case Input.Keys.S:
                 downPressed = pressed;
                 break;
-            case com.badlogic.gdx.Input.Keys.A:
+            case Input.Keys.A:
                 leftPressed = pressed;
                 break;
-            case com.badlogic.gdx.Input.Keys.D:
+            case Input.Keys.D:
                 rightPressed = pressed;
                 break;
             case Input.Keys.E:
