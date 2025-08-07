@@ -227,8 +227,8 @@ public class GameView implements Screen, InputProcessor {
             error.setText("you have a new message");
         }
         //TODO
-        if (activeWindow) updateInteractions();
-        updateDialogue(delta);
+//        if (activeWindow) updateInteractions();
+//        updateDialogue(delta);
 
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
