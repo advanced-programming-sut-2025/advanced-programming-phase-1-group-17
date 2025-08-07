@@ -975,11 +975,11 @@ public class GameStateApiClient {
 
     public String getNearbyNPC() {
         try {
-            String baseUrl = BASE_URL + "/getNearbyNPC";
+            String baseUrl = BASE_URL + "/get/getNearbyNPC";
             URL url = new URL(baseUrl);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod("GET");
             conn.setRequestProperty("Authorization", "Bearer " + token);
             conn.setDoOutput(true);
 
@@ -987,7 +987,7 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream is = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).message();
+                    return mapper.readValue(is, String.class);
                 }
             } else {
                 throw new RuntimeException("Error: HTTP " + responseCode);
@@ -1000,28 +1000,28 @@ public class GameStateApiClient {
 
     public String getNearbyPlayer() {
         try {
-            String baseUrl = BASE_URL + "/getNearbyPlayer";
-            URL url = new URL(baseUrl);
+            String url = BASE_URL + "/get/getNearbyPlayer";
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Authorization", "Bearer " + token);
-            conn.setDoOutput(true);
+            Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + token)
+                .post(RequestBody.create("", null))
+                .build();
 
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                try (InputStream is = conn.getInputStream()) {
-                    ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).message();
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return "Error: HTTP " + response.code();
                 }
-            } else {
-                throw new RuntimeException("Error: HTTP " + responseCode);
+
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, String.class);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return e.getMessage();
+            return "Exception: " + e.getMessage();
         }
     }
+
 
     public String getGender(String username) {
         try {
@@ -1389,6 +1389,7 @@ public class GameStateApiClient {
             return new HashMap<>();
         }
     }
+
     public Map<Integer, ArrayList<Integer>> getNPCSHutsLocationsFromServer() {
         try {
             String urlStr = BASE_URL + "/sendNPCMap";
@@ -1412,6 +1413,7 @@ public class GameStateApiClient {
             return new HashMap<>();
         }
     }
+
     public boolean isStarted() {
         try {
             String urlStr = BASE_URL + "/isStarted";
@@ -1424,7 +1426,7 @@ public class GameStateApiClient {
             if (code == 200) {
                 ObjectMapper mapper = new ObjectMapper();
                 try (InputStream is = conn.getInputStream()) {
-                    return mapper.readValue(is,boolean.class);
+                    return mapper.readValue(is, boolean.class);
                 }
             } else {
                 throw new RuntimeException("HTTP error: " + code);
