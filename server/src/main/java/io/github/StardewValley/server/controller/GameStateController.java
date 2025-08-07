@@ -109,7 +109,7 @@ public class GameStateController {
             }
         }
         if (player != null)
-            player.update(delta, up, down, left, right);
+            player.update(AppServer.getCurrentGame(),delta, up, down, left, right);
 
         PlayerDto pd = new PlayerDto(player.isPassedOut()
             , player.getEnergy()
@@ -171,6 +171,7 @@ public class GameStateController {
         AppServer.setCurrentGame(null);
         return ResponseEntity.ok(true);
     }
+
     @GetMapping("/hudData")
     public ResponseEntity<HudDataDTO> getHudData(@RequestHeader("Authorization") String token) {
         String username = jwtService.extractUsername(token.substring(7));
@@ -199,7 +200,7 @@ public class GameStateController {
 
         String dateString = date.getDayOfTheWeek() + ". " + date.getDay(); // مثال
 
-        float timeAngle = ((float) ((date.getHour() - 9) * 180) /13 + date.getMinute()) *3/13;
+        float timeAngle = ((float) ((date.getHour() - 9) * 180) / 13 + date.getMinute()) * 3 / 13;
 
 
         // ساخت DTO
@@ -217,6 +218,7 @@ public class GameStateController {
 
         return ResponseEntity.ok(hudData);
     }
+
     @PostMapping("/craft")
     public ResponseEntity<CraftResponseDTO> attemptToCraft(
         @RequestHeader("Authorization") String token,
@@ -268,6 +270,7 @@ public class GameStateController {
         // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
         return ResponseEntity.ok(new CraftResponseDTO(true, "Crafted successfully!"));
     }
+
     @PostMapping("/cook")
     public ResponseEntity<CookResponseDTO> attemptToCook(
         @RequestHeader("Authorization") String token,
@@ -319,6 +322,7 @@ public class GameStateController {
         // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
         return ResponseEntity.ok(new CookResponseDTO(true, "Cooked successfully!"));
     }
+
     @Scheduled(fixedRate = 100) // 10 بار در ثانیه
     public void serverGameLoop() {
         if (AppServer.getCurrentGame() != null) {
@@ -327,7 +331,6 @@ public class GameStateController {
             AppServer.getCurrentGame().getDate().increaseMinute(serverDelta * 5);
         }
     }
-
 
 
     @PostMapping("/game/handleClick")
@@ -370,7 +373,7 @@ public class GameStateController {
         ArrayList<BackpackableTypeDTO> response = new ArrayList<>();
         BackPack backPack = player.getBackPack();
         backPack.getBackPackItems().forEach(((backPackableType, backPackables) -> {
-            response.add(AppServer.getDTO(backPackableType, backPack));
+                response.add(AppServer.getDTO(backPackableType, backPack));
             })
         );
         return ResponseEntity.ok(new GetBackpackItemsResponse(response));
