@@ -1340,7 +1340,7 @@ public class GameStateApiClient {
         return null;
     }
 
-    public GetGameStateResponse getGameState(int minTileX, int maxTileX, int minTileY, int maxTileY) {
+    public GameState getGameState(int minTileX, int maxTileX, int minTileY, int maxTileY) {
         try {
             // Build URL with query params
             String url = String.format("%s/game/map?minX=%d&maxX=%d&minY=%d&maxY=%d",
@@ -1358,7 +1358,7 @@ public class GameStateApiClient {
                 }
 
                 String responseBody = response.body().string();
-                return objectMapper.readValue(responseBody, GetGameStateResponse.class);
+                return objectMapper.readValue(responseBody, GameState.class);
             }
         } catch (Exception e) {
             e.printStackTrace();

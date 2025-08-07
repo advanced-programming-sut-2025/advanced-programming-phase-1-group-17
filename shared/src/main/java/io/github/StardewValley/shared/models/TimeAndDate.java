@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models;
 
+import io.github.StardewValley.shared.TimeAndDateDTO;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.animal.Animal;
@@ -299,4 +300,17 @@ public class TimeAndDate {
         this.dayOfTheWeek = dayOfTheWeek;
     }
 
+    public static TimeAndDateDTO getDTO(TimeAndDate timeAndDate) {
+        return new TimeAndDateDTO(
+            timeAndDate.todayWeather,
+            timeAndDate.tomorrowWeather,
+            timeAndDate.hour,
+            timeAndDate.minute,
+            timeAndDate.day,
+            timeAndDate.month,
+            timeAndDate.year,
+            timeAndDate.season,
+            timeAndDate.dayOfTheWeek
+        );
+    }
 }

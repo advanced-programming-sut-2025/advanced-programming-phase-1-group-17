@@ -1,6 +1,8 @@
 package io.github.StardewValley.server.controller.logicControllers;
 
+import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
@@ -39,18 +41,18 @@ public class ToolController {
     private double leverage;
     private Tile tile;
 
-    public Result toolUse(int dx, int dy, Player player) {
+    public HandleWorldClickResponse toolUse(int dx, int dy, Player player) {
         leverage = App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
         int x = player.getTileX() + dx;
         int y = player.getTileY() + dy;
 
         tool = player.getCurrentTool();
-        tile = Tile.getTile(x, y);
+        tile = AppServer.getCurrentGame().getTile(x, y);
 
         if (tile == null) {
-            return new Result(false, "Invalid Tile");
+            return new HandleWorldClickResponse(false, "Invalid Tile", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
-        Result result = null;
+        HandleWorldClickResponse result = null;
 
         if (tool.getToolType().equals(ToolType.Hoe)) {
             result = useHoe(player);
@@ -75,7 +77,8 @@ public class ToolController {
     }
 
 
-    private Result useHoe(Player player) {
+    private HandleWorldClickResponse useHoe(Player player) {
+        System.out.println("Using Hoe");
         double energy = ToolType.Hoe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getFarmingLevel() == 4) {
             energy--;
@@ -88,14 +91,14 @@ public class ToolController {
             tile.setPlowed(true);
             player.setEnergy(player.getEnergy() - energy * leverage);
             player.getAbilities().increaseFarmingAbility();
-            return new Result(true, "Plowed successfully");
+            return new HandleWorldClickResponse(true, "Plowed successfully", HandleWorldClickResponse.ActionType.NONE);
         }
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return new Result(false, "Hoe used but incorrectly");
+        return new HandleWorldClickResponse(false, "Hoe used but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 
 
-    private Result usePickAxe(Player player) {
+    private HandleWorldClickResponse usePickAxe(Player player) {
         double energy = ToolType.Pickaxe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getMiningLevel() == 4) {
             energy--;
@@ -109,10 +112,10 @@ public class ToolController {
                 energy--;
                 energy = Math.max(energy, 0);
                 player.setEnergy(player.getEnergy() - energy * leverage);
-                return new Result(false, "This type of Pickaxe (%s) cannot break this mineral (%s)".formatted(
+                return new HandleWorldClickResponse(false, "This type of Pickaxe (%s) cannot break this mineral (%s)".formatted(
                     tool.getMaterial(),
                     mineral.getType().name()
-                ));
+                ), HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
             player.getAbilities().increaseMiningAbility();
 
@@ -127,28 +130,29 @@ public class ToolController {
             if (player.getAbilities().getMiningLevel() >= 2) {
                 player.getBackPack().addItemToInventory(mineral);
                 tile.setWalkAble(true);
-                return new Result(false, "stone broke successfully and you also got 1 more because of mining level");
+                return new HandleWorldClickResponse(true, "stone broke successfully and you also got 1 more because of mining level",
+                HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
 
         } else if (tile.isPlowed()) {
             tile.setPlowed(false);
             energy = Math.max(energy, 0);
             player.setEnergy(player.getEnergy() - energy * leverage);
-            return new Result(true, "unplowed successfully");
+            return new HandleWorldClickResponse(true, "unplowed successfully", HandleWorldClickResponse.ActionType.NONE);
         } else if (tile.getPlaceable() instanceof BackPackable item) {
             tile.setPlaceable(null);
             tile.setWalkAble(true);
             energy = Math.max(energy, 0);
             player.setEnergy(player.getEnergy() - energy * leverage);
-            return new Result(true, item.getName() + " destroyed successfully");
+            return new HandleWorldClickResponse(true, item.getName() + " destroyed successfully", HandleWorldClickResponse.ActionType.NONE);
         }
         energy = Math.max(energy - 1, 0);
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return new Result(true, "you used pickaxe but incorrectly");
+        return new HandleWorldClickResponse(true, "you used pickaxe but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 
 
-    private Result useAxe(Player player) {
+    private HandleWorldClickResponse useAxe(Player player) {
         double energy = ToolType.Axe.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getForagingLevel() == 4) {
             energy--;
@@ -160,7 +164,7 @@ public class ToolController {
             player.getAbilities().increaseForagingAbility();
             tile.setPlaceable(new NormalItem(NormalItemType.Wood));
             player.setEnergy(player.getEnergy() - energy * leverage);
-            return new Result(true, "you broke tree successfully");
+            return new HandleWorldClickResponse(true, "you broke tree successfully", HandleWorldClickResponse.ActionType.NONE);
         }
         if (tile.getPlaceable() instanceof NormalItem normalItem) {
             if (normalItem.getType().equals(NormalItemType.Wood)) {
@@ -168,17 +172,17 @@ public class ToolController {
                 player.getAbilities().increaseForagingAbility();
                 player.setEnergy(player.getEnergy() - energy * leverage);
                 tile.setWalkAble(true);
-                return new Result(false, "You destroyed Wood");
+                return new HandleWorldClickResponse(false, "You destroyed Wood", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
         }
         energy--;
         energy = Math.max(energy, 0);
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return new Result(false, "You used Axe but incorrectly");
+        return new HandleWorldClickResponse(true, "You used Axe but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 
 
-    private Result useWateringCan(Player player) {
+    private HandleWorldClickResponse useWateringCan(Player player) {
         double energy = ToolType.WateringCan.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getForagingLevel() == 4) {
             energy--;
@@ -191,19 +195,22 @@ public class ToolController {
                 plant.wateringPlant();
                 tool.setWateringCanStorage(tool.getWateringCanStorage() - 1);
                 player.getAbilities().increaseForagingAbility();
-                return new Result(true, "plant watered sucessfully");
+                return new HandleWorldClickResponse(true, "plant watered sucessfully",
+                    HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
         } else if (tile.isWater()) {
             player.setEnergy(player.getEnergy() - energy * leverage);
             if (tool.isWateringCanFull())
-                return new Result(true, "watering can is already full");
+                return new HandleWorldClickResponse(true,
+                    "watering can is already full", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             tool.handleWateringCanStorage();
         }
-        return new Result(true, "watering can is now full of water");
+        return new HandleWorldClickResponse(true,
+            "watering can is now full of water", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 
 
-    private Result useScythe(Player player) {
+    private HandleWorldClickResponse useScythe(Player player) {
         player.setEnergy(player.getEnergy() - 2 * leverage);
         if (tile.getPlaceable() instanceof NormalItem normalItem) {
             if (normalItem.getType().equals(NormalItemType.Grass)) {
@@ -219,12 +226,15 @@ public class ToolController {
             player.getAbilities().increaseFarmingAbility();
             if (plant instanceof Tree tree) {
                 if (!tree.isFullyGrown()) {
-                    return new Result(false, "Tree (%s) is not Fully Grown Yet\n(Days till Fully Growth: %d)"
-                        .formatted(tree.getType().name(), tree.getDaysTillFullGrowth()));
+                    return new HandleWorldClickResponse(true,
+                        "Tree (%s) is not Fully Grown Yet\n(Days till Fully Growth: %d)"
+                        .formatted(tree.getType().name(), tree.getDaysTillFullGrowth()),
+                        HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                 }
                 else if (!tree.hasFruit()) {
-                    return new Result(false, "Tree (%s) is Fully Grown but doesn't have fruit today\n(Days till next harvest time: %d)"
-                        .formatted(tree.getType().name(), tree.getDaysTillNextHarvest()));
+                    return new HandleWorldClickResponse(true, "Tree (%s) is Fully Grown but doesn't have fruit today\n(Days till next harvest time: %d)"
+                        .formatted(tree.getType().name(), tree.getDaysTillNextHarvest()),
+                        HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                 }
                 tree.harvest(player);
                 Fruit fruit = new Fruit(tree.getType().getFruitType());
@@ -234,21 +244,23 @@ public class ToolController {
                     player.getAbilities().increaseForagingAbility();
             } else if (plant instanceof Crop crop) {
                 if (!crop.isFullyGrown()) {
-                    return new Result(false, "Crop (%s) is not Fully Grown Yet\n(Days till Fully Growth: %d)"
-                        .formatted(crop.getName(), crop.getDaysTillFullGrowth()));
+                    return new HandleWorldClickResponse(true, "Crop (%s) is not Fully Grown Yet\n(Days till Fully Growth: %d)"
+                        .formatted(crop.getName(), crop.getDaysTillFullGrowth()),
+                        HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                 }
                 else if (!crop.hasFruit()) {
-                    return new Result(false, "Crop (%s) is Fully Grown but doesn't have fruit today\n(Days till next harvest time: %d)"
-                        .formatted(crop.getName(), crop.getDaysTillNextHarvest()));
+                    return new HandleWorldClickResponse(true, "Crop (%s) is Fully Grown but doesn't have fruit today\n(Days till next harvest time: %d)"
+                        .formatted(crop.getName(), crop.getDaysTillNextHarvest()),
+                        HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                 }
                 crop.harvest(player);
             }
         }
-        return new Result(true, "");
+        return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.NONE);
     }
 
 
-    private Result useMilkPail(Player player) {
+    private HandleWorldClickResponse useMilkPail(Player player) {
         player.setEnergy(player.getEnergy() - 4 * leverage);
         if (tile.getPlaceable() instanceof Animal animal) {
             if (animal.getAnimalType().equals(AnimalType.Cow)) {
@@ -263,8 +275,8 @@ public class ToolController {
                             sb.append(entry.getKey().getAnimalProductType().name()).append(" : ")
                                 .append(entry.getValue()).append("\n");
                         }
-                        return new Result(false, "backpack gets full , you collect these -> \n"
-                            + sb.toString());
+                        return new HandleWorldClickResponse(false, "backpack gets full , you collect these -> \n"
+                            + sb.toString(), HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                     }
                 }
                 StringBuilder sb = new StringBuilder();
@@ -273,20 +285,21 @@ public class ToolController {
                         .append(entry.getValue()).append("\n");
                 }
                 animal.getAnimalProducts().removeAll(toRemoved);
-                return new Result(true, "you collected all product -> \n " +
-                    sb.toString());
+                return new HandleWorldClickResponse(true, "you collected all product -> \n " +
+                    sb.toString(), HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
         }
-        return new Result(true, "");
+        return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.NONE);
     }
 
 
-    private Result useShear(Player player) {
+    private HandleWorldClickResponse useShear(Player player) {
         player.setEnergy(player.getEnergy() - 4 * leverage);
         if (tile.getPlaceable() instanceof Animal animal) {
             if (animal.getAnimalType().equals(AnimalType.Sheep)) {
                 if (animal.getAnimalProducts().isEmpty()) {
-                    return new Result(false, "this sheep has no product");
+                    return new HandleWorldClickResponse(false, "this sheep has no product"
+                    , HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                 }
                 ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
                 for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
@@ -294,21 +307,24 @@ public class ToolController {
                     toRemoved.add(animalProduct);
                     if (player.getBackPack().isBackPackFull()) {
                         animal.getAnimalProducts().removeAll(toRemoved);
-                        return new Result(false, "back pack gets full , you collected these -> \n" +
-                            animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size());
+                        return new HandleWorldClickResponse(false, "back pack gets full , you collected these -> \n" +
+                            animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size(),
+                            HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                     }
                 }
                 animal.getAnimalProducts().removeAll(toRemoved);
-                return new Result(true, "you collected all " + toRemoved.size() + " wools of " + animal.getName());
+                return new HandleWorldClickResponse(true, "you collected all " + toRemoved.size() + " wools of " + animal.getName(),
+                    HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
         }
-        return new Result(true, "");
+        return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.NONE);
     }
 
 
-    private Result useFishingPole(Player player) {
+    private HandleWorldClickResponse useFishingPole(Player player) {
         if (!tile.isWater()) {
-            return new Result(false, "you should catch fish near water and lakes , here is not water");
+            return new HandleWorldClickResponse(false, "you should catch fish near water and lakes , here is not water",
+                HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
         double energy = 2;
         switch (tool.getFishingPoleMaterial()) {
@@ -328,21 +344,25 @@ public class ToolController {
     }
 
 
-    public Result fishing(String fishingPole, Player player) {
+    public HandleWorldClickResponse fishing(String fishingPole, Player player) {
         if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
-            return new Result(false, "first go near water");
+            return new HandleWorldClickResponse(false, "first go near water",
+                HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
         if (player.getBackPack().isBackPackFull()) {
-            return new Result(false, "your backpack is full");
+            return new HandleWorldClickResponse(false, "your backpack is full",
+                HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
         FishingPoleType fishingPoleType;
         try {
             fishingPoleType = FishingPoleType.valueOf(fishingPole);
         } catch (Exception e) {
-            return new Result(false, "invalid fishing pole");
+            return new HandleWorldClickResponse(false, "invalid fishing pole",
+                HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
         if (!player.getBackPack().getBackPackItems().containsKey(fishingPoleType)) {
-            return new Result(false, "you dont have this fishing pole in your backpack");
+            return new HandleWorldClickResponse(false, "you dont have this fishing pole in your backpack",
+                HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
 
 
@@ -399,19 +419,21 @@ public class ToolController {
             player.getBackPack().addItemToInventory(fish);
         }
         player.getAbilities().increaseFishingAbility();
-        return new Result(true, count + " " + fish.getFishType().getName() + " got caught successfully");
+        return new HandleWorldClickResponse(true, count + " " + fish.getFishType().getName() + " got caught successfully",
+            HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 
 
-    public Result placeCraftingItem(int dx, int dy, Player player) {
+    public HandleWorldClickResponse placeCraftingItem(int dx, int dy, Player player) {
+        System.out.println("Placing Crafting Item.");
         CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
 
         int x = player.getX() / GameAssetManager.getGameAssetManager().getTileWidth() + dx;
         int y = player.getY() / GameAssetManager.getGameAssetManager().getTileHeight() + dy;
-        Tile tile = Tile.getTile(x, y);
+        Tile tile = AppServer.getCurrentGame().getTile(x, y);
 
         if (tile.getPlaceable() != null) {
-            return new Result(false, "tile is full");
+            return new HandleWorldClickResponse(false, "tile is full", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
 
         player.getBackPack().useItem(craftingItemType);
@@ -566,7 +588,8 @@ public class ToolController {
 
             }
         }
-        return new Result(true, "Item placed Successfully.");
+        return new HandleWorldClickResponse(true, "Item placed Successfully.",
+            HandleWorldClickResponse.ActionType.NONE);
     }
 
     public void handleRefund(BackPackable backPackable, Player player) {
