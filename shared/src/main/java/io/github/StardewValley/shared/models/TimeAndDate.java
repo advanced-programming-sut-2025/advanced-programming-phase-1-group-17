@@ -38,7 +38,8 @@ public class TimeAndDate {
         year = 1;
     }
     private float increaseAmount = 0;
-    public void increaseMinute(float v) {
+
+    public void increaseMinute(float v, Game game) {
         increaseAmount+= v;
         if(increaseAmount>1){
             increaseAmount = 0;
@@ -46,18 +47,18 @@ public class TimeAndDate {
         }
         if(minute==60){
             minute = 0;
-            increaseHour();
+            increaseHour(game);
         }
     }
 
-    public void increaseHour() {
+    public void increaseHour(Game game) {
         hour++;
         for (CraftingItem craftingItem :  CraftingItem.getAllCraftingItems()) {
             if (craftingItem.getArtisanProductInProgress() == null)
                 continue;
             craftingItem.getArtisanProductInProgress().goToNextHour();
         }
-        for (Player player : App.getCurrentGame().getPlayers()) {
+        for (Player player : game.getPlayers()) {
             player.updateTemporaryBoostTimer();
             player.updateBuff();
         }
@@ -70,18 +71,18 @@ public class TimeAndDate {
 
             hour = 9;
             minute = 0;
-            goToNextDay();
+            goToNextDay(game);
         }
     }
 
-    public void goToNextDay() {
-        for (Player player : App.getCurrentGame().getPlayers()) {
+    public void goToNextDay(Game game) {
+        for (Player player : game.getPlayers()) {
             player.setInitialEnergyForTomorrow(player.isHasPassedOutToday());
             if (player.getUser().getUsername().equals("NPC")) continue;
             player.setX(player.getPlayerMap().getX_start() - 1);
             player.setY(player.getPlayerMap().getY_start() - 1);
         }
-        for (Player player : App.getCurrentGame().getPlayers()) {
+        for (Player player : game.getPlayers()) {
             player.setEnergy(player.getMaxEnergy());
             player.setInteractionWithPartner(false);
             if (player.getIsbrokenUp() > 0) {
@@ -89,11 +90,11 @@ public class TimeAndDate {
                 player.setIsbrokenUp(player.getIsbrokenUp() - 1);
             }
         }
-        for (Player player : App.getCurrentGame().getPlayers()) {
+        for (Player player : game.getPlayers()) {
             if (player.getUser().getUsername().equals("NPC")) {
                 continue;
             }
-            for (NPC npc : App.getCurrentGame().getNPCs()) {
+            for (NPC npc : game.getNPCs()) {
                 player.getTalkedNPCToday().put(npc, false);
                 player.getGiftNPCToday().put(npc, false);
             }
@@ -101,11 +102,11 @@ public class TimeAndDate {
         // fifty percent chance of receiving a gift from an NPC
         int a = ThreadLocalRandom.current().nextInt(1, 3);
         if (a == 2) {
-            for (Player player : App.getCurrentGame().getPlayers()) {
+            for (Player player : game.getPlayers()) {
                 if (player.getUser().getUsername().equals("NPC")) {
                     continue;
                 }
-                for (NPC npc : App.getCurrentGame().getNPCs()) {
+                for (NPC npc : game.getNPCs()) {
                     if (player.getFriendShipsWithNPCs().get(npc) >= 600) {
                         Flower flower = new Flower(FlowerType.FLOWER);
                         //TODO flower
@@ -119,15 +120,15 @@ public class TimeAndDate {
         todayWeather = tomorrowWeather;
         setTomorrowWeather(getRandomWeather());
 
-        if (!App.getCurrentGame().getPlayers().isEmpty()) { //Added for Unit Test
+        if (!game.getPlayers().isEmpty()) { //Added for Unit Test
             Animal.goToNextDay();
-            normalizeMaxEnergies();
+            normalizeMaxEnergies(game);
             //Actions Needed to be done every day
             weatherEffect();
-            PlantGrowthController.growOneDay();
-            ForagingController.setForagingForNextDay();
+            PlantGrowthController.growOneDay(game);
+            ForagingController.setForagingForNextDay(game);
             ShippingBin.goToNextDay();
-            App.getCurrentGame().getMarketsController().resetDailyLimits();
+            game.getMarketsController().resetDailyLimits();
         }
 
         changeDayOfTheWeek();
@@ -135,7 +136,7 @@ public class TimeAndDate {
         if (day > 28) {
             changeSeason();
             // active quest 3
-            for (NPC npc : App.getCurrentGame().getNPCs()) {
+            for (NPC npc : game.getNPCs()) {
                 npc.getRequests().get(2).setActive(true);
             }
             day = 1;
@@ -169,8 +170,8 @@ public class TimeAndDate {
 //        }
     }
 
-    private void normalizeMaxEnergies() {
-        for (Player player : App.getCurrentGame().getPlayers()) {
+    private void normalizeMaxEnergies(Game game) {
+        for (Player player : game.getPlayers()) {
             player.setEnergy(player.getMaxEnergy());
             player.setInteractionWithPartner(false);
             if (player.getIsbrokenUp() > 0) {
@@ -195,8 +196,8 @@ public class TimeAndDate {
         //handleIncompatiblePlants();
     }
 
-    private void handleIncompatiblePlants() {
-        for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
+    private void handleIncompatiblePlants(Game game) {
+        for (PlayerMap playerMap : game.getGameMap().getPlayerMaps()) {
             for (Tile tile : playerMap.getTiles()) {
                 if (tile.getPlaceable() instanceof Tree tree) {
                     if (tree.isInsideGreenhouse())

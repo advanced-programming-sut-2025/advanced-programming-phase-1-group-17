@@ -1,14 +1,14 @@
-package io.github.StardewValley.shared.models;
+package io.github.StardewValley;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.UserDTO;
 
 public class App {
     private static Game currentGame;
 //    private static String jwtToken;
     private static UserDTO LoggedInUser;
-
-
 
 
     public static Game getCurrentGame() {

@@ -2,6 +2,7 @@ package io.github.StardewValley.controllers.helperControllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
@@ -1435,5 +1436,30 @@ public class GameStateApiClient {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Map<Integer, ArrayList<Integer>> getGreenHouseLocationsFromServer() {
+        try {
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/greenhouse/getGreenHouseLocations")
+                .addHeader("Authorization", token)
+                .post(RequestBody.create(new byte[0], null)) // Empty body
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, new TypeReference<Map<Integer, ArrayList<Integer>>>() {
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

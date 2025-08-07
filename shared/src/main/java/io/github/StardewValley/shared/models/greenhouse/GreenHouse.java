@@ -2,6 +2,7 @@ package io.github.StardewValley.shared.models.greenhouse;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 
@@ -18,10 +19,8 @@ public class GreenHouse implements Placeable {
     private int starting_y;
     private Player owner;
 
-    private static HashMap<GreenHouse, Rectangle> greenHouseBounds = new HashMap<>();
 
-
-    public GreenHouse(Player owner, int width, int height, int starting_x, int starting_y, GreenHouseLake lake) {
+    public GreenHouse(Player owner, int width, int height, int starting_x, int starting_y, GreenHouseLake lake, Game game) {
         this.fence = new GreenHouseFence();
         this.isActive = false;
         this.width = width;
@@ -30,20 +29,7 @@ public class GreenHouse implements Placeable {
         this.starting_y = starting_y;
         this.lake = lake;
         this.owner = owner;
-        //TODO
-        //App.getCurrentGame().addGreenHouses(this);
-        addBound();
-    }
-
-    private void addBound() {
-        float tileWidth = GameAssetManager.getGameAssetManager().getTileWidth();
-        float tileHeight = GameAssetManager.getGameAssetManager().getTileHeight();
-        greenHouseBounds.put(this, new Rectangle(
-            starting_x * tileWidth,
-            starting_y * tileHeight,
-            width * tileWidth,
-            height * tileHeight
-        ));
+        game.addGreenHouses(this);
     }
 
     public GreenHouseFence getFence() {
@@ -85,10 +71,6 @@ public class GreenHouse implements Placeable {
 
     public GreenHouseLake getLake() {
         return lake;
-    }
-
-    public static HashMap<GreenHouse, Rectangle> getGreenHouseBounds() {
-        return greenHouseBounds;
     }
 
     public Player getOwner() {

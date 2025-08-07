@@ -6,11 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.google.gson.Gson;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.TokenStorage;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 
 import io.github.StardewValley.shared.dto.*;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.enums.NetworkRequests;
 import io.github.StardewValley.views.LoginMenu;
 import io.github.StardewValley.views.MainMenu;

@@ -31,16 +31,17 @@ public class AppServer {
 
     public static BackpackableTypeDTO getDTO(BackPackableType backPackableType, BackPack backPack) {
         String texturePath = backPackableType.getInventoryTexturePath();
-        if (backPackableType instanceof ToolType toolType)
+        if (backPackableType instanceof ToolType toolType) {
             if (toolType.equals(ToolType.FishingPole))
                 texturePath = toolType.getTexturePath(
                     null,
                     ((Tool) backPack.getBackPackItems().get(toolType).get(0)).getFishingPoleMaterial()
                 );
-        else texturePath = toolType.getTexturePath(
+            else texturePath = toolType.getTexturePath(
                 ((Tool) backPack.getBackPackItems().get(toolType).get(0)).getMaterial(),
                 null
             );
+        }
         return new BackpackableTypeDTO(
             backPackableType.getName(),
             backPackableType.getClass().getSimpleName(),

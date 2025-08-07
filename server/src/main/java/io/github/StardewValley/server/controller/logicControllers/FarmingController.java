@@ -1,9 +1,8 @@
 package io.github.StardewValley.server.controller.logicControllers;
 
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.plant.*;
@@ -43,7 +42,7 @@ public class FarmingController {
     }
 
 
-    public HandleWorldClickResponse plantSeed(Seed seed, int dx, int dy, Player player) {
+    public HandleWorldClickResponse plantSeed(Seed seed, int dx, int dy, Player player, Game game) {
         int newX = player.getTileX() + dx;
         int newY = player.getTileY() + dy;
 
@@ -72,12 +71,12 @@ public class FarmingController {
             if (!greenHouse.isActive())
                 return new HandleWorldClickResponse(false, "You need to Build the Greenhouse first",
                     HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
-            tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType), tile, true));
+            tile.setPlaceable(new Crop(false, CropType.getCropTypeBySeedType(seedType, game), tile, true));
         } else if (tile.getPlaceable() == null) {
-            CropType cropType = CropType.getCropTypeBySeedType(seedType);
-            if (!cropType.getSeasons().contains(App.getCurrentGame().getDate().getSeason()))
+            CropType cropType = CropType.getCropTypeBySeedType(seedType, game);
+            if (!cropType.getSeasons().contains(game.getDate().getSeason()))
                 return new HandleWorldClickResponse(false, "Can not plant crop of type %s in season %s outside the greenhouse.".formatted(
-                    cropType.name(), App.getCurrentGame().getDate().getSeason()
+                    cropType.name(), game.getDate().getSeason()
                 ), HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             tile.setPlaceable(new Crop(false, cropType, tile, false));
             ((Crop) tile.getPlaceable()).checkCouldBeGiant();
@@ -92,7 +91,7 @@ public class FarmingController {
     }
 
 
-    public HandleWorldClickResponse plantSapling(Sapling sapling, int dx, int dy, Player player) {
+    public HandleWorldClickResponse plantSapling(Sapling sapling, int dx, int dy, Player player, Game game) {
         int newX = player.getTileX() + dx;
         int newY = player.getTileY() + dy;
 
@@ -125,9 +124,9 @@ public class FarmingController {
             tile.setPlaceable(new Tree(false, TreeType.getTreeTypeBySaplingType(saplingType), tile, true));
         } else if (tile.getPlaceable() == null) {
             TreeType treeType = TreeType.getTreeTypeBySaplingType(saplingType);
-            if (!treeType.getSeasons().contains(App.getCurrentGame().getDate().getSeason()))
+            if (!treeType.getSeasons().contains(game.getDate().getSeason()))
                 return new HandleWorldClickResponse(false, "Can not plant tree of type %s in season %s outside the greenhouse.".formatted(
-                    treeType.name(), App.getCurrentGame().getDate().getSeason()
+                    treeType.name(), game.getDate().getSeason()
                 ), HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             tile.setPlaceable(new Tree(false, treeType, tile, false));
         }

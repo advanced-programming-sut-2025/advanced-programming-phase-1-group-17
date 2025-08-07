@@ -17,6 +17,7 @@ public class GameClient {
     private static ArrayList<CraftingItemDTO> craftingItems = new ArrayList<>();
     private static HashMap<Integer, ArrayList<Integer>> playersHutLocations = new HashMap<>();
     private static HashMap<Integer, ArrayList<Integer>> NPCsHutsLocations = new HashMap<>();
+    private static HashMap<Integer, ArrayList<Integer>> greenHouseLocations = new HashMap<>();
 
 
     public static PlayerClient getPlayer() {
@@ -70,6 +71,12 @@ public class GameClient {
             NPCsHutsLocations = new HashMap<>(getGameStateApiClient().getNPCSHutsLocationsFromServer());
         }
         return NPCsHutsLocations;
+    }
+    public static HashMap<Integer, ArrayList<Integer>> getGreenHouseLocations() {
+        if (greenHouseLocations.isEmpty()) {
+            greenHouseLocations = new HashMap<>(getGameStateApiClient().getGreenHouseLocationsFromServer());
+        }
+        return greenHouseLocations;
     }
 
 }
