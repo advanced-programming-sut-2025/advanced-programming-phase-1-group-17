@@ -152,7 +152,6 @@ public class Player {
         this.getRecipes().add(new Recipe(FoodType.MakiRoll));
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
         this.buff = new Buff(BuffType.None, 0);
-
     }
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {

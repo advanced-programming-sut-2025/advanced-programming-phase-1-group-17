@@ -1,5 +1,6 @@
 package io.github.StardewValley.server.controller;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
@@ -1172,6 +1173,8 @@ public class GameStateController {
                     , player.getCurrentTool().getMaterial()
                     , player.getCurrentTool().getFishingPoleMaterial());
                 pd.setNewMessage(player.isNewMessage());
+                pd.setGender(player.getUser().getGender().equals(Gender.Male) ? "Male" : "Female");
+
 
                 return ResponseEntity.ok(pd);
             }
@@ -1333,7 +1336,7 @@ public class GameStateController {
             ArrayList<Integer> temp = new ArrayList<>();
             temp.add(AppServer.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getX());
             temp.add(AppServer.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getY());
-            map.put(i,temp);
+            map.put(i, temp);
         }
         return ResponseEntity.ok(map);
     }
@@ -1345,7 +1348,7 @@ public class GameStateController {
             ArrayList<Integer> temp = new ArrayList<>();
             temp.add(AppServer.getCurrentGame().getNPCHuts().get(i).x_start);
             temp.add(AppServer.getCurrentGame().getNPCHuts().get(i).y_start);
-            map.put(i,temp);
+            map.put(i, temp);
         }
         return ResponseEntity.ok(map);
     }
@@ -1362,4 +1365,5 @@ public class GameStateController {
         }
         return ResponseEntity.ok(isStarted);
     }
+
 }
