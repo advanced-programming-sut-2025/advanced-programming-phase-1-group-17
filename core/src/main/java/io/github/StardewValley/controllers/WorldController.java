@@ -266,11 +266,12 @@ public class WorldController {
             Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture("hut2.png"),
                 GameClient.getNPCsHutsLocations().get(x).get(0) * tileWidth, GameClient.getNPCsHutsLocations().get(x).get(1) * tileHeight, 600, 600);
         }
-        for (GreenHouse greenHouse : GreenHouse.getGreenHouseBounds().keySet()) {
+        for (int x : GameClient.getGreenHouseLocations().keySet()) {
+            List<Integer> values = GameClient.getGreenHouseLocations().get(x);
             Main.getBatch().draw(
                 GameAssetManagerClient.getGameAssetManager().getTexture(GameAssetManager.getGameAssetManager().getGreenHouseTexture()),
-                greenHouse.getStarting_x() * tileWidth, greenHouse.getStarting_y() * tileHeight,
-                greenHouse.getWidth() * tileWidth, greenHouse.getHeight() * tileHeight);
+                values.get(0) * tileWidth, values.get(1) * tileHeight,
+                values.get(2) * tileWidth, values.get(3) * tileHeight);
         }
     }
 

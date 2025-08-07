@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.foraging;
 
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public final class ForagingController {
-    public static void setForagingForNextDay() {
+    public static void setForagingForNextDay(Game game) {
         Random random = new Random();
         for (Tile tile : Tile.getTiles()) {
             if (tile.getPlaceable() instanceof Quarry) {
@@ -32,12 +32,12 @@ public final class ForagingController {
 
             if (randInt == 1) {
                 if (tile.isPlowed()) {
-                    setSeedForaging(tile);
+                    setSeedForaging(tile, game);
                     continue;
                 }
                 randInt = random.nextInt(5) + 1;
                 if (randInt == 1) {
-                    setCropForaging(tile);
+                    setCropForaging(tile, game);
                 } else if (randInt == 2) {
                     setTreeForaging(tile);
                 } else if (randInt == 3) {
@@ -106,28 +106,28 @@ public final class ForagingController {
     }
 
 
-    public static void setCropForaging(Tile tile) {
+    public static void setCropForaging(Tile tile, Game game) {
         Random random = new Random();
         ForagingCropType foragingCrop;
         do {
             int randInt = random.nextInt(ForagingCropType.values().length);
             foragingCrop = ForagingCropType.values()[randInt];
-        } while (!foragingCrop.getSeasons().contains(App.getCurrentGame().getDate().getSeason()));
+        } while (!foragingCrop.getSeasons().contains(game.getDate().getSeason()));
         tile.setPlaceable(new Crop(true, foragingCrop.getCropType(), tile, false));
         tile.setWalkAble(false);
     }
 
 
-    public static void setSeedForaging(Tile tile) {
-        Season currentSeason = App.getCurrentGame().getDate().getSeason();
+    public static void setSeedForaging(Tile tile, Game game) {
+        Season currentSeason = game.getDate().getSeason();
         List<SeedType> validSeeds = ForagingSeed.getSeedTypesBySeason(currentSeason);
 
         Random random = new Random();
         SeedType chosenSeed = validSeeds.get(random.nextInt(validSeeds.size()));
 
-        if (CropType.getCropTypeBySeedType(chosenSeed) == null)
+        if (CropType.getCropTypeBySeedType(chosenSeed, game) == null)
             return;
-        Crop crop = new Crop(false, Objects.requireNonNull(CropType.getCropTypeBySeedType(chosenSeed)), tile, false);
+        Crop crop = new Crop(false, Objects.requireNonNull(CropType.getCropTypeBySeedType(chosenSeed, game)), tile, false);
         tile.setPlowed(false);
         tile.setPlaceable(crop);
         tile.setWalkAble(false);

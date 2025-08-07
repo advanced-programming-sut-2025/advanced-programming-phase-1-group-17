@@ -1,8 +1,6 @@
 package io.github.StardewValley.shared.models.cooking;
 
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.map.Placeable;
 
 public class Recipe {
     private FoodType foodToBeCooked;

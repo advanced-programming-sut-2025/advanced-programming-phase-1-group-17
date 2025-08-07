@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
@@ -16,13 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameWorldController {
-    public HandleWorldClickResponse checkBounds(float x, float y, int button, Player player) {
+    public HandleWorldClickResponse checkBounds(float x, float y, int button, Player player, Game game) {
         Vector3 worldCoordinates = new Vector3(x, y, 0);
         HandleWorldClickResponse response;
         if (button == Input.Buttons.RIGHT)
             return checkCraftingItemBounds(worldCoordinates, false);
 
-        response = checkGreenHouseBounds(worldCoordinates, player);
+        response = checkGreenHouseBounds(worldCoordinates, player, game);
         if (response.isSuccessful())
             return response;
 
@@ -37,12 +36,12 @@ public class GameWorldController {
         return checkStoreBounds(worldCoordinates, player);
     }
 
-    private HandleWorldClickResponse checkGreenHouseBounds(Vector3 worldCoordinates, Player player) {
-        HashMap<GreenHouse, Rectangle> bounds = GreenHouse.getGreenHouseBounds();
+    private HandleWorldClickResponse checkGreenHouseBounds(Vector3 worldCoordinates, Player player, Game game) {
+        HashMap<GreenHouse, Rectangle> bounds = game.getGreenHouseBounds();
         for (GreenHouse greenHouse : bounds.keySet()) {
             if (bounds.get(greenHouse).contains(worldCoordinates.x, worldCoordinates.y)) {
                 if (greenHouse.isActive()) {
-                    GreenHouse.getGreenHouseBounds().remove(greenHouse);
+                    game.getGreenHouseBounds().remove(greenHouse);
                     return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.NONE);
                 }
                 if (!greenHouse.getOwner().equals(player)) {

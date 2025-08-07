@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Tile;

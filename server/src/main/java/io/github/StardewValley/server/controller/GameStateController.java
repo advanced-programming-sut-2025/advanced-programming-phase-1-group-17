@@ -1,6 +1,5 @@
 package io.github.StardewValley.server.controller;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
@@ -29,6 +28,7 @@ import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
 import io.github.StardewValley.shared.models.market.ShippingBin;
@@ -41,7 +41,6 @@ import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -337,10 +336,11 @@ public class GameStateController {
 
     @Scheduled(fixedRate = 100) // 10 بار در ثانیه
     public void serverGameLoop() {
+        Game game = AppServer.getCurrentGame();
         if (AppServer.getCurrentGame() != null) {
             // delta time در سرور حدود 0.1 ثانیه است
             float serverDelta = 0.1f;
-            AppServer.getCurrentGame().getDate().increaseMinute(serverDelta * 5);
+            AppServer.getCurrentGame().getDate().increaseMinute(serverDelta * 5, game);
         }
     }
 
@@ -348,12 +348,13 @@ public class GameStateController {
     @PostMapping("/game/handleClick")
     public ResponseEntity<HandleWorldClickResponse> handleClick(@RequestBody HandleWorldClickRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token); // Authenticate and get the correct Player
+        Game game = AppServer.getCurrentGame();
         float x = request.getX();
         float y = request.getY();
         int button = request.getButton();
         System.out.println("%f %f %d".formatted(x, y, button));
 
-        HandleWorldClickResponse response = gameWorldController.checkBounds(x, y, button, player);
+        HandleWorldClickResponse response = gameWorldController.checkBounds(x, y, button, player, game);
         if (response.isSuccessful())
             return ResponseEntity.ok(response);
 
@@ -367,13 +368,13 @@ public class GameStateController {
         System.out.println(player.getEquippedItem().getName());
         if (Math.abs(dx) + Math.abs(dy) == 1) {
             if (player.getEquippedItem() instanceof Tool)
-                result = toolController.toolUse(dx, dy, player);
+                result = toolController.toolUse(dx, dy, player, game);
             else if (player.getEquippedItem() instanceof CraftingItem)
                 result = toolController.placeCraftingItem(dx, dy, player);
             else if (player.getEquippedItem() instanceof Seed seed)
-                result = farmingController.plantSeed(seed, dx, dy, player);
+                result = farmingController.plantSeed(seed, dx, dy, player, game);
             else if (player.getEquippedItem() instanceof Sapling sapling)
-                result = farmingController.plantSapling(sapling, dx, dy, player);
+                result = farmingController.plantSapling(sapling, dx, dy, player, game);
             else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
                 result = farmingController.fertilize(fertilizer, dx, dy, player);
         }
@@ -398,6 +399,7 @@ public class GameStateController {
     @PostMapping("/game/cheatCode/handleCheatCode")
     public ResponseEntity<Result> handleCheatCode(@RequestBody HashMap<String, String> input, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
         String result = "invalid Command";
         Matcher matcher;
         String command = input.get("input");
@@ -405,11 +407,11 @@ public class GameStateController {
 
         if ((matcher = CheatCodeCommands.CheatAdvanceTime.getMatcher(command)) != null) {
             result = CheatCodeHandler.changeTime(
-                matcher.group("hour")
+                matcher.group("hour"), game
             );
         } else if ((matcher = CheatCodeCommands.CheatAdvanceDate.getMatcher(command)) != null) {
             result = CheatCodeHandler.changeDate(
-                matcher.group("day")
+                matcher.group("day"), game
             );
         } else if ((matcher = CheatCodeCommands.CheatThor.getMatcher(command)) != null) {
             result = CheatCodeHandler.cheatThor(
@@ -419,7 +421,7 @@ public class GameStateController {
             );
         } else if ((matcher = CheatCodeCommands.CheatWeatherSet.getMatcher(command)) != null) {
             result = CheatCodeHandler.changeWeather(
-                matcher.group("type")
+                matcher.group("type"), game
             );
         } else if ((matcher = CheatCodeCommands.EnergyUnlimited.getMatcher(command)) != null) {
             result = CheatCodeHandler.energyUnlimited(player);
@@ -447,11 +449,11 @@ public class GameStateController {
     @PostMapping("/game/market/purchase")
     public ResponseEntity<Result> purchaseItem(@RequestBody PurchaseRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
-        Game game = player.getUser().getActiveGame();
+        Game game = AppServer.getCurrentGame();
         MarketsController marketsController = player.getUser().getActiveGame().getMarketsController();
         return ResponseEntity.ok(
             marketsController.purchase(request.getShopItemDTO(), request.getCount(),
-                request.getStoreType(), player, game.getDate().getSeason())
+                request.getStoreType(), player, game.getDate().getSeason(), game)
         );
     }
 
@@ -639,7 +641,7 @@ public class GameStateController {
 //        }
 
         //return activeGame.getPlayerByUsername(username);
-        return App.getCurrentGame().getPlayerByUsername(username);
+        return AppServer.getCurrentGame().getPlayerByUsername(username);
     }
 
     public Game getGameFromToken(String token) {
@@ -1368,6 +1370,22 @@ public class GameStateController {
             }
         }
         return ResponseEntity.ok(isStarted);
+    }
+
+    @PostMapping("/game/greenhouse/getGreenHouseLocations")
+    public ResponseEntity<Map<Integer, ArrayList<Integer>>> sendGreenHouseLocations(@RequestHeader("Authorization") String token) {
+        Game game = AppServer.getCurrentGame();
+        Map<Integer, ArrayList<Integer>> response = new HashMap<>();
+        for (int i = 0; i < game.getGreenHouses().size(); i++) {
+            GreenHouse greenHouse = game.getGreenHouses().get(i);
+            response.put(i, new ArrayList<>() {{
+                add(greenHouse.getStarting_x());
+                add(greenHouse.getStarting_y());
+                add(greenHouse.getWidth());
+                add(greenHouse.getHeight());
+            }});
+        }
+        return ResponseEntity.ok(response);
     }
 
 }

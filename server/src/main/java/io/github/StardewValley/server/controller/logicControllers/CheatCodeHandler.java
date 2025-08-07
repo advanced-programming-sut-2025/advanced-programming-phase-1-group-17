@@ -1,6 +1,5 @@
 package io.github.StardewValley.server.controller.logicControllers;
 
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
@@ -15,34 +14,34 @@ import io.github.StardewValley.shared.models.market.MarketsController;
 import java.util.ArrayList;
 
 public class CheatCodeHandler {
-    public static String changeTime(String hour) {
+    public static String changeTime(String hour, Game game) {
         int amount = Integer.parseInt(hour);
         for (int i = 0; i < amount; i++)
-            App.getCurrentGame().getDate().increaseHour();
-        return getDateTime().message();
+            game.getDate().increaseHour(game);
+        return getDateTime(game).message();
     }
 
-    private static Result getDateTime() {
+    private static Result getDateTime(Game game) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getTime()).append("\n")
-            .append(getDate());
+        sb.append(getTime(game)).append("\n")
+            .append(getDate(game));
         return new Result(true, sb.toString());
     }
 
-    private static Result getTime() {
-        return new Result(true, App.getCurrentGame().getDate().getHour() + " : " +
-            App.getCurrentGame().getDate().getMinute());
+    private static Result getTime(Game game) {
+        return new Result(true, game.getDate().getHour() + " : " +
+            game.getDate().getMinute());
     }
 
-    private static Result getDate() {
-        return new Result(true, App.getCurrentGame().getDate().getDay() + "/" +
-            App.getCurrentGame().getDate().getMonth() + "/" + App.getCurrentGame().getDate().getYear());
+    private static Result getDate(Game game) {
+        return new Result(true, game.getDate().getDay() + "/" +
+            game.getDate().getMonth() + "/" + game.getDate().getYear());
     }
 
-    public static String changeDate(String day) {
+    public static String changeDate(String day, Game game) {
         int amount = Integer.parseInt(day);
         for (int i = 0; i < amount; i++) {
-            App.getCurrentGame().getDate().goToNextDay();
+            game.getDate().goToNextDay(game);
             for (CraftingItem craftingItem : CraftingItem.getAllCraftingItems()) {
                 if (craftingItem.getArtisanProductInProgress() == null)
                     continue;
@@ -61,11 +60,11 @@ public class CheatCodeHandler {
         return "Successfully lightninged.";
     }
 
-    public static String changeWeather(String input) {
+    public static String changeWeather(String input, Game game) {
         try {
-            App.getCurrentGame().getDate().setTomorrowWeather(WeatherType.valueOf(input));
+            game.getDate().setTomorrowWeather(WeatherType.valueOf(input));
             return "tomorrow weather changed to "
-                + App.getCurrentGame().getDate().getTomorrowWeather().name() + " successfully";
+                + game.getDate().getTomorrowWeather().name() + " successfully";
         } catch (Exception e) {
             return "valid options : Sunny,Rainy,Storm,Snow";
         }

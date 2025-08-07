@@ -1,6 +1,6 @@
 package io.github.StardewValley.shared.models.plant;
 
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
@@ -11,8 +11,8 @@ import java.util.Random;
 public abstract class PlantGrowthController {
     private static final Random random = new Random();
 
-    public static void growOneDay() {
-        for (PlayerMap playerMap : App.getCurrentGame().getGameMap().getPlayerMaps()) {
+    public static void growOneDay(Game game) {
+        for (PlayerMap playerMap : game.getGameMap().getPlayerMaps()) {
             ArrayList<Plant> plants = new ArrayList<>();
 
             for (Tile tile : playerMap.getTiles()) {

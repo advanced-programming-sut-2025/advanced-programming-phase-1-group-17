@@ -1,11 +1,14 @@
 package io.github.StardewValley.shared.models;
 
+import com.badlogic.gdx.math.Rectangle;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.LightningLogicController;
 import io.github.StardewValley.shared.models.NPCS.*;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.cooking.Recipe;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.GameMap;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
@@ -13,10 +16,11 @@ import io.github.StardewValley.shared.models.market.MarketsController;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Game implements Serializable {
     private final Player creator;
-    private final TimeAndDate date;
+    private final TimeAndDate date = new TimeAndDate();
     private final ArrayList<Player> players = new ArrayList<Player>();
     private final GameMap gameMap;
     private final ArrayList<NPC> NPCs = new ArrayList<>();
@@ -25,10 +29,12 @@ public class Game implements Serializable {
     private final ArrayList<NPC> NPCHuts = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private ArrayList<Tile> treeTile = new ArrayList<Tile>();
+    private final ArrayList<GreenHouse> greenHouses = new ArrayList<>();
+    private final HashMap<GreenHouse, Rectangle> greenHouseBounds = new HashMap<>();
 
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3, UserDTO user4) {
-        this.date = new TimeAndDate();
+        System.out.println("Game creation started");
         user1.setActiveGame(this);
         user2.setActiveGame(this);
         user3.setActiveGame(this);
@@ -80,8 +86,8 @@ public class Game implements Serializable {
                 players.get(3).addFriendShips(players.get(i), 0);
             }
         }
-        App.setCurrentGame(this);
-        this.gameMap = new GameMap(players);
+        //App.setCurrentGame(this);
+        this.gameMap = new GameMap(players, this);
         setTiles(new ArrayList<>(Tile.getTiles()));
         setTreeTile(new ArrayList<>(Tile.getTreeTile()));
         Tile.getTiles().clear();
@@ -95,6 +101,7 @@ public class Game implements Serializable {
         }
 //        this.marketsController.initializeStores();
         giveInitialItems();
+        System.out.println("Game creation finished");
     }
 
     private void giveInitialItems() {
@@ -194,5 +201,25 @@ public class Game implements Serializable {
             }
         }
         return null;
+    }
+
+    public void addGreenHouses(GreenHouse greenHouse) {
+        greenHouses.add(greenHouse);
+        float tileWidth = GameAssetManager.getGameAssetManager().getTileWidth();
+        float tileHeight = GameAssetManager.getGameAssetManager().getTileHeight();
+        greenHouseBounds.put(greenHouse, new Rectangle(
+            greenHouse.getStarting_x() * tileWidth,
+            greenHouse.getStarting_y() * tileHeight,
+            greenHouse.getWidth() * tileWidth,
+            greenHouse.getHeight() * tileHeight
+        ));
+    }
+
+    public ArrayList<GreenHouse> getGreenHouses() {
+        return greenHouses;
+    }
+
+    public HashMap<GreenHouse, Rectangle> getGreenHouseBounds() {
+        return greenHouseBounds;
     }
 }

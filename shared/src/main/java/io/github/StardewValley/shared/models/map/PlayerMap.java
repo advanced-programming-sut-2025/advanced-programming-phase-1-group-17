@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.map;
 
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Fence;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
@@ -55,7 +54,8 @@ public class PlayerMap {
         this.player = player;
     }
 
-    public PlayerMap(int index, Player owner) {
+    public PlayerMap(int index, Player owner, Game game) {
+        System.out.println("Player Map Creation started");
         this.animalPlaces = new ArrayList<>();
         this.animals = new ArrayList<>();
         if (index == 0) {
@@ -140,22 +140,24 @@ public class PlayerMap {
             this.player = owner;
             owner.setPlayerMap(this);
 
-            Abigail abigail2 = (Abigail) App.getCurrentGame().getNPCs().get(0);
-            Harvey harvey2 = (Harvey) App.getCurrentGame().getNPCs().get(1);
-            Lia lia2 = (Lia) App.getCurrentGame().getNPCs().get(2);
-            Robin robin2 = (Robin) App.getCurrentGame().getNPCs().get(3);
-            Sebastian sebastian2 = (Sebastian) App.getCurrentGame().getNPCs().get(4);
+            System.out.println("NPC creation started.");
+            Abigail abigail2 = (Abigail) game.getNPCs().get(0);
+            Harvey harvey2 = (Harvey) game.getNPCs().get(1);
+            Lia lia2 = (Lia) game.getNPCs().get(2);
+            Robin robin2 = (Robin) game.getNPCs().get(3);
+            Sebastian sebastian2 = (Sebastian) game.getNPCs().get(4);
             Abigail abigail = new Abigail(false, 145, 102);
             Harvey harvey = new Harvey(false, 145, 122);
             Lia lia = new Lia(false, 145, 142);
             Robin robin = new Robin(false, 145, 162);
             Sebastian sebastian = new Sebastian(false, 145, 182);
 
-            App.getCurrentGame().getNPCHuts().add(abigail);
-            App.getCurrentGame().getNPCHuts().add(harvey);
-            App.getCurrentGame().getNPCHuts().add(lia);
-            App.getCurrentGame().getNPCHuts().add(robin);
-            App.getCurrentGame().getNPCHuts().add(sebastian);
+            System.out.println("NPC creation started.");
+            game.getNPCHuts().add(abigail);
+            game.getNPCHuts().add(harvey);
+            game.getNPCHuts().add(lia);
+            game.getNPCHuts().add(robin);
+            game.getNPCHuts().add(sebastian);
             for (int k = 0; k < 81; k += 20) {
                 for (int i = 145; i <= 149; i++) {
                     for (int j = 102 + k; j <= 106 + k; j++) {
@@ -263,9 +265,9 @@ public class PlayerMap {
                     if (counter < 2)
                         ForagingController.setTreeForaging(tile);
                     else if (counter < 4)
-                        ForagingController.setCropForaging(tile);
+                        ForagingController.setCropForaging(tile, game);
                     else if (counter < 6)
-                        ForagingController.setSeedForaging(tile);
+                        ForagingController.setSeedForaging(tile, game);
                     else
                         ForagingController.setMineralForaging(tile);
                     tile.setWalkAble(false);
@@ -499,7 +501,7 @@ public class PlayerMap {
             this.hut = new Hut("hut.png", 4 + row, 4 + col);
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
-            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
+            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake(), game);
             this.x_start = 4 + row;
             this.y_start = 4 + col;
             for (int x = 0; x < 4; x++) {
@@ -525,7 +527,7 @@ public class PlayerMap {
             this.hut = new Hut("hut.png", 40 + row, 40 + col);
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
-            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
+            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake(), game);
             this.quarry = new Quarry();
             this.x_start = 40 + row;
             this.y_start = 40 + col;
@@ -604,9 +606,9 @@ public class PlayerMap {
                 if (counter < 2)
                     ForagingController.setTreeForaging(tile);
                 else if (counter < 4)
-                    ForagingController.setCropForaging(tile);
+                    ForagingController.setCropForaging(tile, game);
                 else if (counter < 6)
-                    ForagingController.setSeedForaging(tile);
+                    ForagingController.setSeedForaging(tile, game);
                 tile.setWalkAble(false);
                 numOfForagings--;
                 counter++;

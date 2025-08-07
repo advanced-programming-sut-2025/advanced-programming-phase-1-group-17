@@ -3,9 +3,8 @@ package io.github.StardewValley.server.controller.logicControllers;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.TimeAndDate;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
@@ -41,8 +40,8 @@ public class ToolController {
     private double leverage;
     private Tile tile;
 
-    public HandleWorldClickResponse toolUse(int dx, int dy, Player player) {
-        leverage = App.getCurrentGame().getDate().getTodayWeatherType().getEnergyConsume();
+    public HandleWorldClickResponse toolUse(int dx, int dy, Player player, Game game) {
+        leverage = game.getDate().getTodayWeatherType().getEnergyConsume();
         int x = player.getTileX() + dx;
         int y = player.getTileY() + dy;
 
@@ -69,7 +68,7 @@ public class ToolController {
         } else if (tool.getToolType().equals(ToolType.Shear)) {
             result = useShear(player);
         } else if (tool.getToolType().equals(ToolType.FishingPole)) {
-            result =  useFishingPole(player);
+            result =  useFishingPole(player, game);
         }
         //TODO
         //startToolAnimation();
@@ -321,7 +320,7 @@ public class ToolController {
     }
 
 
-    private HandleWorldClickResponse useFishingPole(Player player) {
+    private HandleWorldClickResponse useFishingPole(Player player, Game game) {
         if (!tile.isWater()) {
             return new HandleWorldClickResponse(false, "you should catch fish near water and lakes , here is not water",
                 HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
@@ -340,11 +339,11 @@ public class ToolController {
             energy--;
         }
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return fishing(tool.getFishingPoleMaterial().name(), player);
+        return fishing(tool.getFishingPoleMaterial().name(), player, game);
     }
 
 
-    public HandleWorldClickResponse fishing(String fishingPole, Player player) {
+    public HandleWorldClickResponse fishing(String fishingPole, Player player, Game game) {
         if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
             return new HandleWorldClickResponse(false, "first go near water",
                 HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
@@ -368,7 +367,7 @@ public class ToolController {
 
         double R = Math.random();
         double M = 1;
-        TimeAndDate date = App.getCurrentGame().getDate();
+        TimeAndDate date = game.getDate();
         switch (date.getTodayWeatherType()) {
             case Sunny -> M = 1.5;
             case Rainy -> M = 1.2;
