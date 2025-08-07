@@ -1021,7 +1021,7 @@ public class GameStateApiClient {
     public String getGender(String username) {
         try {
             String baseUrl = BASE_URL + "/getGender";
-            String params = "?username" + URLEncoder.encode(username, "UTF-8");
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8");
             URL url = new URL(baseUrl + params);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
@@ -1045,7 +1045,7 @@ public class GameStateApiClient {
     public String getDialogueTextNPCByName(String Name) {
         try {
             String baseUrl = BASE_URL + "/getDialogueTextNPCByName";
-            String params = "?Name" + URLEncoder.encode(Name, "UTF-8");
+            String params = "?Name=" + URLEncoder.encode(Name, "UTF-8");
             URL url = new URL(baseUrl + params);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -1070,7 +1070,7 @@ public class GameStateApiClient {
     public PlayerDto getPlayerDTOByUserName(String username){
         try {
             String baseUrl = BASE_URL + "/getPlayerDTOByUserName";
-            String params = "?username" + URLEncoder.encode(username, "UTF-8");
+            String params = "?username=" + URLEncoder.encode(username, "UTF-8");
             URL url = new URL(baseUrl + params);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
@@ -1094,7 +1094,7 @@ public class GameStateApiClient {
     public void setNewMessage(boolean newMessage) {
         try {
             String baseUrl = BASE_URL + "/setNewMessage";
-            String params = "?newMessage" + URLEncoder.encode(String.valueOf(newMessage), "UTF-8");
+            String params = "?newMessage=" + URLEncoder.encode(String.valueOf(newMessage), "UTF-8");
             URL url = new URL(baseUrl + params);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
