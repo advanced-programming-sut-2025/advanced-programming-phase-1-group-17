@@ -1,13 +1,13 @@
 package io.github.StardewValley.shared.models.map;
 
+import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Fence;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouseLake;
 import io.github.StardewValley.shared.models.NPCS.*;
-import io.github.StardewValley.shared.models.animal.Animal;
-import io.github.StardewValley.shared.models.animal.AnimalPlace;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.plant.Tree;
@@ -26,12 +26,13 @@ public class PlayerMap {
     private ArrayList<Tile> tiles = new ArrayList<>();
     private Player player;
     private int type;
-    private ArrayList<Animal> animals = new ArrayList<>();
-    private ArrayList<AnimalPlace> animalPlaces;
+    private ArrayList<AnimalDTO> animals = new ArrayList<>();
+    private ArrayList<AnimalPlaceDTO> animalPlaces;
     private GreenHouse greenHouse;
     private Hut hut;
     private ArrayList<Lake> lakes = new ArrayList<>();
     private Quarry quarry;
+
 
 
     public GreenHouse getGreenHouse() {
@@ -676,11 +677,11 @@ public class PlayerMap {
     }
 
 
-    public ArrayList<Animal> getAnimals() {
+    public ArrayList<AnimalDTO> getAnimals() {
         return animals;
     }
 
-    public ArrayList<AnimalPlace> getAnimalPlaces() {
+    public ArrayList<AnimalPlaceDTO> getAnimalPlaces() {
         return animalPlaces;
     }
 }

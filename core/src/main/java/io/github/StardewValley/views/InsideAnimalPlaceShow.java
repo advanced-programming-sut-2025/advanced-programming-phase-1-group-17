@@ -11,21 +11,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.animal.AnimalPlace;
-import org.w3c.dom.Text;
 
-import java.util.ArrayList;
-
-public class AnimalPlaceShow implements Screen {
+public class InsideAnimalPlaceShow implements Screen {
     private Stage stage;
     private Table table;
     private Label label;
     private Skin skin;
 
-    public AnimalPlaceShow(Skin skin, GameView gameView, AnimalPlace animalPlace) {
+    public InsideAnimalPlaceShow(Skin skin, GameView gameView, AnimalPlace animalPlace) {
         this.skin = skin;
 
         //stage = new Stage(new ScreenViewport());

@@ -5,7 +5,7 @@ import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.TimeAndDate;
-import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.server.model.Animal;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
@@ -329,9 +329,9 @@ public class ToolController {
 
 
     public Result fishing(String fishingPole, Player player) {
-        if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
-            return new Result(false, "first go near water");
-        }
+//        if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
+//            return new Result(false, "first go near water");
+//        }
         if (player.getBackPack().isBackPackFull()) {
             return new Result(false, "your backpack is full");
         }

@@ -4,7 +4,7 @@ import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.server.model.Animal;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
@@ -105,16 +105,16 @@ public class CheatCodeHandler {
         return count + " x " + itemName + " added to backpack.";
     }
 
-    public static String setFriendship(String animalName, String amount) {
-        Animal animal = Animal.findAnimalByName(animalName);
-        if (animal == null) {
-            return "animal not found";
-        }
-
-        int amountInt = Integer.parseInt(amount);
-        animal.cheatSetFriendship(amountInt);
-        return "friendship is now " + animal.getFriendship();
-    }
+//    public static String setFriendship(String animalName, String amount) {
+//        Animal animal = Animal.findAnimalByName(animalName);
+//        if (animal == null) {
+//            return "animal not found";
+//        }
+//
+//        int amountInt = Integer.parseInt(amount);
+//        animal.cheatSetFriendship(amountInt);
+//        return "friendship is now " + animal.getFriendship();
+//    }
 
     public static String cheatAddDollars(String count, Player player) {
         double amount;

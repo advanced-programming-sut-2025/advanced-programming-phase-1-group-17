@@ -65,6 +65,7 @@ public class GameStateController {
         this.jwtService = jwtService;
     }
 
+
 //    @GetMapping("/game/map")
 //    public ResponseEntity<List<TileDTO>> getGameMap(
 //        @RequestHeader("Authorization") String token,

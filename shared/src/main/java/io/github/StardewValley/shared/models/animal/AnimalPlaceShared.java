@@ -1,16 +1,9 @@
 package io.github.StardewValley.shared.models.animal;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.map.Placeable;
@@ -18,8 +11,8 @@ import io.github.StardewValley.shared.models.map.Tile;
 
 import java.util.ArrayList;
 
-public class AnimalPlace implements Placeable {
-    private ArrayList<Animal> animals = new ArrayList<>();
+public class AnimalPlaceShared implements Placeable {
+    //private ArrayList<Animal> animals = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<>();
     private AnimalPlaceType animalPlaceType;
     private int capacity;
@@ -33,7 +26,7 @@ public class AnimalPlace implements Placeable {
         this.animalPlaceType = animalPlaceType;
         this.capacity = animalPlaceType.getCapacity();
         this.skin = GameAssetManager.getGameAssetManager().getSkin();
-        this.animals=new ArrayList<>();
+        //this.animals=new ArrayList<>();
     }
     private float x=1500f;
     private float y=1500f;
@@ -54,10 +47,7 @@ public class AnimalPlace implements Placeable {
         justPlaced = true;
     }
 
-    public ArrayList<Animal> getAnimals() {
-        return animals;
 
-    }
 
     public boolean isFull(){
         return animals.size() >= capacity;
@@ -127,36 +117,7 @@ public class AnimalPlace implements Placeable {
     public void setOpen(boolean open) {
         isOpen = open;
     }
-//    public static void animalHouseBuy( SpriteBatch batch,AnimalPlace animalPlace,GameView gameView) {
-//
-//                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-//                Vector3 worldPos = App.getCamera().unproject(mousePos);
-//
-//                float width = animalPlace.animalPlaceType.getInventoryTexture().getWidth();
-//                float height = animalPlace.animalPlaceType.getInventoryTexture().getHeight();
-//                batch.setColor(1, 1, 1, 0.5f); //
-//                batch.draw(animalPlace.animalPlaceType.getInventoryTexture(), worldPos.x - width / 2, worldPos.y - height / 2, width, height);
-//                batch.setColor(1, 1, 1, 1f);
-//                if (Gdx.input.justTouched()) {
-//                    for (int i = (int) (worldPos.x - width/2); i < worldPos.x + width/2; i += 110) {
-//                        for (int j = (int) (worldPos.y - height/2); j < worldPos.y + height/2; j += 110) {
-//                            Tile tile = Tile.getTileFromPixel(i, j);
-//                            if (tile == null || !tile.isWalkAble()) {
-//                                gameView.setSthBuilding(false);
-//                                if(tile == null) System.out.println("tile is null!");
-//                                if(!tile.isWalkAble()) System.out.println("tile is not walkable!");
-//                                return;
-//                            }
-//
-//                        }
-//                    }
-//                    animalPlace.setX(worldPos.x - width / 2);
-//                    animalPlace.setY(worldPos.y - height / 2);
-//                    animalPlace.justPlaced = true;
-//                    App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces().add(animalPlace);
-//                    gameView.setSthBuilding(false);
-//                }
-//    }
+
     //TODO
     @Override
     public String getTexture() {
