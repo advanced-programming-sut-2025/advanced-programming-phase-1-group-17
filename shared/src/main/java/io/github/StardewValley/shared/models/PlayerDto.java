@@ -25,8 +25,11 @@ public class PlayerDto {
     private AbilityDTO ability;
     private ToolMaterial toolMaterial;
     private FishingPoleType fishingPoleType;
+    private String gender;
 
-    public PlayerDto() {}
+    public PlayerDto() {
+    }
+
     public PlayerDto(boolean isPassedOut
         , double energy
         , double maxEnergy
@@ -203,5 +206,13 @@ public class PlayerDto {
 
     public void setFishingPoleType(FishingPoleType fishingPoleType) {
         this.fishingPoleType = fishingPoleType;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

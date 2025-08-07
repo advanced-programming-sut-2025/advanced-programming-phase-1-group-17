@@ -3,6 +3,7 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManagerClient;
@@ -30,9 +31,9 @@ public class GameController {
     int mapHeightInPixels;
     private static GameClient gameClient = new GameClient();
 
-    private  WorldController worldController;
+    private WorldController worldController;
     private ToolRenderController toolRenderController;
-    private  CrowAttackEffect crowAttackEffect;
+    private CrowAttackEffect crowAttackEffect;
 
     private PlayerDto player;
 
@@ -47,7 +48,7 @@ public class GameController {
             GameClient.setPlayer(playerClient);
             player = GameClient.getGameStateApiClient().updateStateOfPlayer(0.0001f, upPressed, downPressed, leftPressed, rightPressed);
             playerUpdate(player);
-            this.camera.position.set(player.getX() , player.getY(), 0);
+            this.camera.position.set(player.getX(), player.getY(), 0);
 
             this.worldController = new WorldController(this.camera);
             this.worldController.initTransients();
@@ -61,7 +62,7 @@ public class GameController {
 
             App.setCamera(this.camera);
             GameClient.setCamera(this.camera);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -108,6 +109,7 @@ public class GameController {
             }
 
             GameClient.getPlayer().draw(Main.getBatch());
+            printOtherPlayers();
             handlePlayerInput();
 
             //TODO handle connection to server
@@ -118,8 +120,19 @@ public class GameController {
             view.getHud().handleInventoryInput();
         }
     }
+
+    public void printOtherPlayers() {
+        for (String username : GameClient.getUserNameOfPlayers()) {
+            if (username.equals(GameClient.getPlayer().getUser().getUsername())) continue;
+            PlayerDto pd = GameClient.getGameStateApiClient().getPlayerDTOByUserName(username);
+            Main.getBatch().draw(new Texture(pd.getGender().equals("Male") ? "Alex/Alex11.png" : "Emily/Emily11.png"), pd.getX() == 0 ? 1 : pd.getX(), pd.getY() == 0 ? 1 : pd.getY(), (float) GameClient.getPlayer().getBackgroundTexture().getWidth() / 1.5f, (float) GameClient.getPlayer().getBackgroundTexture().getHeight() / 1.5f);
+        }
+    }
+
     public void playerUpdate(PlayerDto player) {
-        if (player == null ){return;}
+        if (player == null) {
+            return;
+        }
         PlayerClient playerClient = GameClient.getPlayer();
         playerClient.setX(player.getX());
         playerClient.setY(player.getY());
@@ -140,7 +153,6 @@ public class GameController {
     }
 
 
-
     private boolean upPressed, downPressed, leftPressed, rightPressed;
 
     public void setKey(int keycode, boolean pressed) {
@@ -159,11 +171,11 @@ public class GameController {
                 break;
             case Input.Keys.E:
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new CookingShow(  GameAssetManagerClient.getGameAssetManager().getSkin(), view,new CookingController()));
+                Main.getMain().setScreen(new CookingShow(GameAssetManagerClient.getGameAssetManager().getSkin(), view, new CookingController()));
                 break;
             case Input.Keys.R:
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new CraftingShow(  GameAssetManagerClient.getGameAssetManager().getSkin(), view,new CraftingController()));
+                Main.getMain().setScreen(new CraftingShow(GameAssetManagerClient.getGameAssetManager().getSkin(), view, new CraftingController()));
                 break;
             case Input.Keys.P:
 //                for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
@@ -203,11 +215,11 @@ public class GameController {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
-            Main.getMain().setScreen(new TalkView(new TalkController(),   GameAssetManagerClient.getGameAssetManager().getSkin(), view));
+            Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManagerClient.getGameAssetManager().getSkin(), view));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             try {
                 App.getCurrentGame().getDate().goToNextDay();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
@@ -222,15 +234,14 @@ public class GameController {
 
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
-            Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
+            Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
         //TODO handle player
         else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new InventoryView(new InventoryController(),
-                  GameAssetManagerClient.getGameAssetManager().getSkin()));
-        }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+                GameAssetManagerClient.getGameAssetManager().getSkin()));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new Journal(new JournalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
@@ -239,8 +250,7 @@ public class GameController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else if(Gdx.input.isTouched()) {
+        } else if (Gdx.input.isTouched()) {
             //TODO
 //            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 //            App.getCamera().unproject(vector3);
@@ -249,7 +259,7 @@ public class GameController {
 //                Main.getMain().getScreen().dispose();
 //                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
 //            }
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Main.getMain().getScreen().dispose();
             //TODO
             //Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
