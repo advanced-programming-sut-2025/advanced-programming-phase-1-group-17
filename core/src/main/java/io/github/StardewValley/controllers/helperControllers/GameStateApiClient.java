@@ -20,10 +20,12 @@ import okhttp3.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -271,6 +273,7 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to fetch HUD data: " + conn.getResponseCode());
         }
     }
+
     public CraftResponseDTO attemptCraft(CraftingItemType type) throws Exception {
         String urlString = BASE_URL + "/craft?itemTypeName=" + URLEncoder.encode(type.name(), "UTF-8");
         URL url = new URL(urlString);
@@ -290,7 +293,8 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to craft item. Response code: " + responseCode);
         }
     }
-    public CookResponseDTO attemptCook (FoodType type) throws Exception {
+
+    public CookResponseDTO attemptCook(FoodType type) throws Exception {
         String urlString = BASE_URL + "/cook?itemTypeName=" + URLEncoder.encode(type.name(), "UTF-8");
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -309,6 +313,7 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to cook item. Response code: " + responseCode);
         }
     }
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -521,6 +526,7 @@ public class GameStateApiClient {
         }
         return null;
     }
+
     public String friendship(String userNameOfPlayer) {
         try {
             String baseUrl = BASE_URL + "/friendship";
@@ -604,7 +610,7 @@ public class GameStateApiClient {
         try {
             String baseUrl = BASE_URL + "/gift";
             String params = "?username=" + URLEncoder.encode(username, "UTF-8")
-                +  "&massage=" + URLEncoder.encode(item, "UTF-8")
+                + "&massage=" + URLEncoder.encode(item, "UTF-8")
                 + "&amount=" + URLEncoder.encode(amount, "UTF-8");
             URL url = new URL(baseUrl + params);
 
@@ -657,7 +663,7 @@ public class GameStateApiClient {
         try {
             String baseUrl = BASE_URL + "/giftRate";
             String params = "?username=" + URLEncoder.encode(giftNumber, "UTF-8")
-                 + "&massage=" + URLEncoder.encode(rate, "UTF-8");
+                + "&massage=" + URLEncoder.encode(rate, "UTF-8");
             URL url = new URL(baseUrl + params);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -919,7 +925,7 @@ public class GameStateApiClient {
     public Result showMessage() {
         try {
             String baseUrl = BASE_URL + "/showMessage";
-            URL url = new URL(baseUrl );
+            URL url = new URL(baseUrl);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
@@ -966,6 +972,7 @@ public class GameStateApiClient {
             return new Result(false, "Exception: " + e.getMessage());
         }
     }
+
     public String getNearbyNPC() {
         try {
             String baseUrl = BASE_URL + "/getNearbyNPC";
@@ -990,6 +997,7 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
+
     public String getNearbyPlayer() {
         try {
             String baseUrl = BASE_URL + "/getNearbyPlayer";
@@ -1014,6 +1022,7 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
+
     public String getGender(String username) {
         try {
             String baseUrl = BASE_URL + "/getGender";
@@ -1038,6 +1047,7 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
+
     public String getDialogueTextNPCByName(String Name) {
         try {
             String baseUrl = BASE_URL + "/getDialogueTextNPCByName";
@@ -1063,7 +1073,8 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
-    public PlayerDto getPlayerDTOByUserName(String username){
+
+    public PlayerDto getPlayerDTOByUserName(String username) {
         try {
             String baseUrl = BASE_URL + "/getPlayerDTOByUserName";
             String params = "?username=" + URLEncoder.encode(username, "UTF-8");
@@ -1082,11 +1093,12 @@ public class GameStateApiClient {
             } else {
                 throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
     public void setNewMessage(boolean newMessage) {
         try {
             String baseUrl = BASE_URL + "/setNewMessage";
@@ -1106,7 +1118,8 @@ public class GameStateApiClient {
             e.printStackTrace();
         }
     }
-    public String tradeHistory(){
+
+    public String tradeHistory() {
         try {
             String baseUrl = BASE_URL + "/tradeHistory";
             URL url = new URL(baseUrl);
@@ -1130,7 +1143,8 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
-    public String tradeList(){
+
+    public String tradeList() {
         try {
             String baseUrl = BASE_URL + "/tradeList";
             URL url = new URL(baseUrl);
@@ -1153,7 +1167,8 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
-    public String getQuestWithIndex(String NpcName, int index){
+
+    public String getQuestWithIndex(String NpcName, int index) {
         try {
             String baseUrl = BASE_URL + "/getQuestWithIndex";
             String params = "?NpcName" + URLEncoder.encode(NpcName, "UTF-8")
@@ -1179,11 +1194,6 @@ public class GameStateApiClient {
             return e.getMessage();
         }
     }
-
-
-
-
-
 
 
     public Result buildGreenHouse() {
@@ -1354,5 +1364,74 @@ public class GameStateApiClient {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Map<Integer, ArrayList<Integer>> getPlayerHutsLocationsFromServer() {
+        try {
+            String urlStr = BASE_URL + "/sendMap";
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            int code = conn.getResponseCode();
+            if (code == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                try (InputStream is = conn.getInputStream()) {
+                    return mapper.readValue(is, new TypeReference<Map<Integer, ArrayList<Integer>>>() {
+                    });
+                }
+            } else {
+                throw new RuntimeException("HTTP error: " + code);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
+    public Map<Integer, ArrayList<Integer>> getNPCSHutsLocationsFromServer() {
+        try {
+            String urlStr = BASE_URL + "/sendNPCMap";
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            int code = conn.getResponseCode();
+            if (code == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                try (InputStream is = conn.getInputStream()) {
+                    return mapper.readValue(is, new TypeReference<Map<Integer, ArrayList<Integer>>>() {
+                    });
+                }
+            } else {
+                throw new RuntimeException("HTTP error: " + code);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
+    public boolean isStarted() {
+        try {
+            String urlStr = BASE_URL + "/isStarted";
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            int code = conn.getResponseCode();
+            if (code == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                try (InputStream is = conn.getInputStream()) {
+                    return mapper.readValue(is,boolean.class);
+                }
+            } else {
+                throw new RuntimeException("HTTP error: " + code);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

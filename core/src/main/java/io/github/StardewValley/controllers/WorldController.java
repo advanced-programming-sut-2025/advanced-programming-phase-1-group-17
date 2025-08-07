@@ -57,7 +57,6 @@ public class WorldController {
         this.backgroundTexture2 = new Texture(GameAssetManager.getGameAssetManager().getBackgroundTexture2());
         this.tileWidth = backgroundTexture.getWidth();
         this.tileHeight = backgroundTexture.getHeight();
-        System.out.println(tileHeight + " " + tileWidth);
     }
 
     public void update(float delta) throws Exception {
@@ -117,7 +116,7 @@ public class WorldController {
         //TODO
 
 //        drawCraftingItemsProgressBars();
-//        drawBigTextures();
+        drawBigTextures();
 //        drawStores();
 //        drawTrees();
 //        drawGiantCrops();
@@ -179,19 +178,37 @@ public class WorldController {
                 return;
             }
             //TODo
-//            case NPC npc when !npc.isNPC() -> {
-//                return;
-//            }
-//            case NPC npc when npc.isNPC() ->
-//                Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+            case "Sebastian" -> {
+                if (!tile.getTexture().startsWith("hut")) {
+                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+                }
+            }
+            case "Robin" -> {
+                if (!tile.getTexture().startsWith("hut")) {
+                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+                }
+            }
+            case "Lia" -> {
+                if (!tile.getTexture().startsWith("hut")) {
+                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+                }
+            }
+            case "Harvey" -> {
+                if (!tile.getTexture().startsWith("hut")) {
+                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+                }
+            }
+            case "Abigail" -> {
+                if (!tile.getTexture().startsWith("hut")) {
+                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
+                }
+            }
 //            case NormalItem normalItem when normalItem.getType().equals(NormalItemType.Grass) ->
 //                Main.getBatch().draw(normalItem.getGrassTextureRegion(),
 //                    printX, printY,
 //                    printWidth, printHeight);
             case "Lake" -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
-            case null, default -> Main.getBatch().draw(texture,
-                printX, printY,
-                printWidth, printHeight);
+            case null, default -> Main.getBatch().draw(texture, printX, printY, printWidth, printHeight);
         }
     }
 
@@ -233,14 +250,14 @@ public class WorldController {
     }
 
     private void drawBigTextures() {
-        for (int i = 0; i < 4; i++) {
-            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getTexture())
-                , App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getX() * tileWidth,
-                App.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getY() * tileHeight, 400, 400);
+        for (int x : GameClient.getPlayersHutLocations().keySet()) {
+            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture("hut.png")
+                , GameClient.getPlayersHutLocations().get(x).get(0) * tileWidth,
+                GameClient.getPlayersHutLocations().get(x).get(1) * tileHeight, 400, 400);
         }
-        for (int i = 0; i < 5; i++) {
-            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(App.getCurrentGame().getNPCHuts().get(i).getTexture()),
-                App.getCurrentGame().getNPCHuts().get(i).x_start * tileWidth, App.getCurrentGame().getNPCHuts().get(i).y_start * tileHeight, 500, 500);
+        for (int x : GameClient.getNPCsHutsLocations().keySet()) {
+            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture("hut2.png"),
+                GameClient.getNPCsHutsLocations().get(x).get(0) * tileWidth, GameClient.getNPCsHutsLocations().get(x).get(1) * tileHeight, 600, 600);
         }
         for (GreenHouse greenHouse : GreenHouse.getGreenHouseBounds().keySet()) {
             Main.getBatch().draw(

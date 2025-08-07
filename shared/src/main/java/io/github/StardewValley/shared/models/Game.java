@@ -33,9 +33,9 @@ public class Game implements Serializable {
         user3.setActiveGame(this);
         user4.setActiveGame(this);
         players.add(creator = new Player(user1, false));
-        players.add(new Player(user2, user1.getUsername().startsWith("guest")));
-        players.add(new Player(user3, user2.getUsername().startsWith("guest")));
-        players.add(new Player(user4, user3.getUsername().startsWith("guest")));
+        players.add(new Player(user2, user2.getUsername().startsWith("guest")));
+        players.add(new Player(user3, user3.getUsername().startsWith("guest")));
+        players.add(new Player(user4, user4.getUsername().startsWith("guest")));
         addNPCs(new Abigail(true));
         addNPCs(new Harvey(true));
         addNPCs(new Lia(true));

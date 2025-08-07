@@ -10,7 +10,6 @@ import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.chooseMap;
 
 
-
 public class ChooseMapController {
     private chooseMap view;
     public boolean done = false;
@@ -36,16 +35,16 @@ public class ChooseMapController {
         view.getNext().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
 
-                if (!done) {
+                if (!(GameClient.getGameStateApiClient().isStarted())) {
                     try {
                         GameClient.getGameStateApiClient().selectMap(view.getCheckBox1().isChecked() ? 1 : 2);
                         done = true;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
                     Main.getMain().getScreen().dispose();
-                    Main.getMain().setScreen(new GameView(new GameController(),new GameMenuController()));
+                    Main.getMain().setScreen(new GameView(new GameController(), new GameMenuController()));
                 }
             }
         });
