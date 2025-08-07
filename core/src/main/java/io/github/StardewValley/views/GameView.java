@@ -220,7 +220,7 @@ public class GameView implements Screen, InputProcessor {
         //TODO handle playe
 //        controller.handlePlayerInput();
 
-        //TODO handel app.getCurrentGame()...
+
 
         Main.getBatch().end();
         if (GameClient.getPlayer().isNewMessage()) {
