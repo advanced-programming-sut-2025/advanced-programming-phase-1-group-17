@@ -272,11 +272,10 @@ public class GameStateApiClient {
         }
     }
     public CraftResponseDTO attemptCraft(CraftingItemType type) throws Exception {
-        // از URLEncoder برای اطمینان از ارسال صحیح نام آیتم استفاده می‌کنیم
         String urlString = BASE_URL + "/craft?itemTypeName=" + URLEncoder.encode(type.name(), "UTF-8");
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST"); // متد POST است
+        conn.setRequestMethod("POST");
         conn.setDoOutput(true);
         conn.setRequestProperty("Authorization", "Bearer " + token);
         conn.connect();
@@ -288,17 +287,14 @@ public class GameStateApiClient {
                 return mapper.readValue(inputStream, CraftResponseDTO.class);
             }
         } else {
-            // می‌توانید خطا را بهتر مدیریت کنید
-            // مثلا متن خطا را از بدنه پاسخ بخوانید
             throw new RuntimeException("Failed to craft item. Response code: " + responseCode);
         }
     }
     public CookResponseDTO attemptCook (FoodType type) throws Exception {
-        // از URLEncoder برای اطمینان از ارسال صحیح نام آیتم استفاده می‌کنیم
         String urlString = BASE_URL + "/cook?itemTypeName=" + URLEncoder.encode(type.name(), "UTF-8");
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST"); // متد POST است
+        conn.setRequestMethod("POST");
         conn.setDoOutput(true);
         conn.setRequestProperty("Authorization", "Bearer " + token);
         conn.connect();
@@ -310,8 +306,6 @@ public class GameStateApiClient {
                 return mapper.readValue(inputStream, CookResponseDTO.class);
             }
         } else {
-            // می‌توانید خطا را بهتر مدیریت کنید
-            // مثلا متن خطا را از بدنه پاسخ بخوانید
             throw new RuntimeException("Failed to cook item. Response code: " + responseCode);
         }
     }
@@ -1345,7 +1339,7 @@ public class GameStateApiClient {
             Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", token)
-                .post(RequestBody.create("", null)) // empty body
+                .post(RequestBody.create("", null))
                 .build();
 
             try (Response response = client.newCall(request).execute()) {
