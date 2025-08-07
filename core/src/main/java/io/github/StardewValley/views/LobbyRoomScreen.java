@@ -144,6 +144,13 @@ public class LobbyRoomScreen implements Screen {
         }
         if (lobby.getStatus() != null) {
             if (lobby.getStatus().equals(LobbyStatus.STARTED)) {
+                List<String> playerUsernames = lobby.getPlayerUsernames();
+                int i = 1 ;
+                while (playerUsernames.size() < 4) {
+                    playerUsernames.add("guest" + i);
+                    i++;
+                }
+                GameClient.setUserNameOfPlayers(playerUsernames);
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new chooseMap(new ChooseMapController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
             }

@@ -1126,24 +1126,24 @@ public class GameStateController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/getNearbyNPC")
-    public ResponseEntity<Result> getNearbyNPC(@RequestHeader("Authorization") String token) {
+    @GetMapping("/get/getNearbyNPC")
+    public ResponseEntity<String> getNearbyNPC(@RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
         for (NPC npc : AppServer.getCurrentGame().getNPCs()) {
             if (sideBySide(player, npc)) {
-                return ResponseEntity.ok(new Result(true, npc.getName()));
+                return ResponseEntity.ok(npc.getName());
             }
         }
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/getNearbyPlayer")
-    public ResponseEntity<Result> getNearbyPlayer(@RequestHeader("Authorization") String token) {
+    @PostMapping("/get/getNearbyPlayer")
+    public ResponseEntity<String> getNearbyPlayer(@RequestHeader("Authorization") String token) {
         Player player1 = getPlayerFromToken(token);
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (!player.getUser().getUsername().equals("NPC") && !player.equals(player1)) {
                 if (sideBySide(player, player1)) {
-                    return ResponseEntity.ok(new Result(true, player.getUser().getUsername()));
+                    return ResponseEntity.ok(player.getUser().getUsername());
                 }
             }
         }

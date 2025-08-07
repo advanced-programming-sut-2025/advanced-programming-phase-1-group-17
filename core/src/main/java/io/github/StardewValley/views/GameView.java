@@ -21,6 +21,7 @@ import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.Result;
+
 import java.util.Objects;
 
 import io.github.StardewValley.shared.models.enums.Gender;
@@ -46,6 +47,9 @@ public class GameView implements Screen, InputProcessor {
     private BitmapFont font;
     private boolean isSthBuilding = false;
     private HUD hud;
+    private float timer = 0.0f;
+    private String targetPlayer;
+    private String nearbyNPC;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
@@ -149,8 +153,8 @@ public class GameView implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (currentTargetPlayer == null) return;
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new GiftMenu( new GiftMenuController(),
-                      GameAssetManagerClient.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
+                Main.getMain().setScreen(new GiftMenu(new GiftMenuController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin(), currentTargetPlayer, gameView, null));
             }
         });
         givingFlower.addListener(new ClickListener() {
@@ -211,7 +215,7 @@ public class GameView implements Screen, InputProcessor {
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
         try {
-            hud.render(Main.getBatch(),delta);
+            hud.render(Main.getBatch(), delta);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -221,14 +225,18 @@ public class GameView implements Screen, InputProcessor {
 //        controller.handlePlayerInput();
 
 
-
         Main.getBatch().end();
         if (GameClient.getPlayer().isNewMessage()) {
             error.setText("you have a new message");
         }
-        //TODO
+//        timer += delta;
+//        if (timer >= 3) {
+//            updateNearPlayerAndNpc();
+//            timer = 0;
+//        }
 //        if (activeWindow) updateInteractions();
 //        updateDialogue(delta);
+
 
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
@@ -245,13 +253,17 @@ public class GameView implements Screen, InputProcessor {
         stage.draw();
     }
 
+    public void updateNearPlayerAndNpc() {
+        targetPlayer = GameClient.getGameStateApiClient().getNearbyPlayer();
+        nearbyNPC = getNearbyNPC();
+    }
+
     public void updateInteractions() {
-        String targetPlayer = GameClient.getGameStateApiClient().getNearbyPlayer();
-        if (targetPlayer.isEmpty()) {
+        if (targetPlayer == null) {
             window.setVisible(false);
         }
 
-        if (!targetPlayer.isEmpty()) {
+        if (targetPlayer != null) {
             window.setVisible(true);
             currentTargetPlayer = targetPlayer;
             showInteractionWindow(currentTargetPlayer);
@@ -259,6 +271,7 @@ public class GameView implements Screen, InputProcessor {
     }
 
     private void showInteractionWindow(String targetPlayer) {
+        if (targetPlayer.isEmpty()) return;
         PlayerDto playerDto = GameClient.getGameStateApiClient().getPlayerDTOByUserName(targetPlayer);
         Vector3 screenPos = controller.getCamera().project(new Vector3(playerDto.getX(), playerDto.getY(), 0));
         window.setSize(250, 350);
@@ -365,7 +378,6 @@ public class GameView implements Screen, InputProcessor {
     }
 
     private void updateDialogue(float delta) {
-        String nearbyNPC = getNearbyNPC();
         if (nearbyNPC != null) {
             if (!dialogueActive || !Objects.equals(currentNPC, nearbyNPC)) {
                 currentNPC = nearbyNPC;
