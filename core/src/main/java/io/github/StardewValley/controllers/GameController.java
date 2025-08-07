@@ -13,6 +13,7 @@ import io.github.StardewValley.controllers.UIControllers.LightningRenderControll
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.animal.FishingController;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.map.Lake;
 import io.github.StardewValley.views.*;
@@ -133,6 +134,9 @@ public class GameController {
         playerClient.setCurrentDirection(player.getCurrentDirection());
         playerClient.setLastDirection(player.getLastDirection());
         playerClient.setNewMessage(player.isNewMessage());
+        playerClient.setAbility(player.getAbility());
+        playerClient.setFishingPoleType(player.getFishingPoleType());
+        playerClient.setToolMaterial(player.getToolMaterial());
     }
 
 
@@ -237,14 +241,14 @@ public class GameController {
             }
         }
         else if(Gdx.input.isTouched()) {
-            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            App.getCamera().unproject(vector3);
-            Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
-            if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
-                Main.getMain().getScreen().dispose();
-                //TODO
-                //Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
-            }
+            //TODO
+//            Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+//            App.getCamera().unproject(vector3);
+//            Tile tile = Tile.getTileByClick((int)vector3.x,(int)vector3.y);
+//            if(tile != null && tile.getPlaceable() != null && tile.getPlaceable() instanceof Lake) {
+//                Main.getMain().getScreen().dispose();
+//                Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
+//            }
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Main.getMain().getScreen().dispose();
             //TODO

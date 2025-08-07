@@ -352,12 +352,32 @@ public class PlayerClient {
         return ability;
     }
 
+    public void setAbility(AbilityDTO abilityDTO) {
+        this.ability = abilityDTO;
+    }
+
     public ToolMaterial getToolMaterial() {
         return toolMaterial;
     }
 
     public FishingPoleType getFishingPoleType() {
         return fishingPoleType;
+    }
+
+    public void setToolType(ToolType toolType) {
+        this.toolType = toolType;
+    }
+
+    public void setToolTexturePath(String toolTexturePath) {
+        this.toolTexturePath = toolTexturePath;
+    }
+
+    public void setToolMaterial(ToolMaterial toolMaterial) {
+        this.toolMaterial = toolMaterial;
+    }
+
+    public void setFishingPoleType(FishingPoleType fishingPoleType) {
+        this.fishingPoleType = fishingPoleType;
     }
 }
 

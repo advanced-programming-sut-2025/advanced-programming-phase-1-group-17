@@ -373,7 +373,9 @@ public class GameStateApiClient {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Authorization", "Bearer " + token);
 
-        String jsonInput = String.format("{\"input\":%s}", command);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInput = mapper.writeValueAsString(Map.of("input", command));
+
 
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = jsonInput.getBytes("utf-8");
@@ -381,8 +383,8 @@ public class GameStateApiClient {
         }
         if (conn.getResponseCode() == 200) {
             try (InputStream inputStream = conn.getInputStream()) {
-                ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(inputStream, Result.class);
+                ObjectMapper mapper2 = new ObjectMapper();
+                return mapper2.readValue(inputStream, Result.class);
             }
         } else {
             throw new RuntimeException("Failed to handle click: " + conn.getResponseCode());
