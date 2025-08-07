@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github.StardewValley.shared.models.UserDTO;
-import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.*;
 
 public class Main extends Game {

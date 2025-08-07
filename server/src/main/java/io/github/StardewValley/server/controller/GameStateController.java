@@ -40,6 +40,7 @@ import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -109,7 +110,7 @@ public class GameStateController {
             }
         }
         if (player != null)
-            player.update(AppServer.getCurrentGame(),delta, up, down, left, right);
+            player.update(AppServer.getCurrentGame(), delta, up, down, left, right);
 
         Tool currentTool = player.getCurrentTool();
         PlayerDto pd = new PlayerDto(player.isPassedOut()
@@ -135,8 +136,12 @@ public class GameStateController {
         String token = authHeader.substring(7);
         for (Player p : AppServer.getCurrentGame().getPlayers()) {
             if (p.getUser().getUsername().equals(jwtService.extractUsername(token))) {
-                p.getPlayerMap().setMapType(type, AppServer.getCurrentGame());
-                break;
+                if (!p.getPlayerMap().isSetType()) {
+                    p.getPlayerMap().setMapType(type, AppServer.getCurrentGame());
+                    break;
+                } else {
+                    break;
+                }
             }
         }
         return ResponseEntity.ok().build();
@@ -1321,4 +1326,40 @@ public class GameStateController {
         } else return false;
     }
 
+    @GetMapping("/sendMap")
+    public ResponseEntity<Map<Integer, ArrayList<Integer>>> sendMap() {
+        Map<Integer, ArrayList<Integer>> map = new HashMap<>();
+        for (int i = 0; i < 4; i++) {
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(AppServer.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getX());
+            temp.add(AppServer.getCurrentGame().getPlayers().get(i).getPlayerMap().getHut().getY());
+            map.put(i,temp);
+        }
+        return ResponseEntity.ok(map);
+    }
+
+    @GetMapping("/sendNPCMap")
+    public ResponseEntity<Map<Integer, ArrayList<Integer>>> sendNPCSMap() {
+        Map<Integer, ArrayList<Integer>> map = new HashMap<>();
+        for (int i = 0; i < 5; i++) {
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(AppServer.getCurrentGame().getNPCHuts().get(i).x_start);
+            temp.add(AppServer.getCurrentGame().getNPCHuts().get(i).y_start);
+            map.put(i,temp);
+        }
+        return ResponseEntity.ok(map);
+    }
+
+    @GetMapping("/isStarted")
+    public ResponseEntity<Boolean> isStarted() {
+        boolean isStarted = true;
+        for (Player player : AppServer.getCurrentGame().getPlayers()) {
+            if (player.getUser().getUsername().startsWith("NPC")) continue;
+            if (!player.getPlayerMap().isSetType()) {
+                isStarted = false;
+                break;
+            }
+        }
+        return ResponseEntity.ok(isStarted);
+    }
 }

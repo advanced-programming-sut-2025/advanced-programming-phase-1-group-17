@@ -81,6 +81,9 @@ public class chooseMap implements Screen {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        }else {
+            setPlayerUserName("please wait...");
+
         }
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

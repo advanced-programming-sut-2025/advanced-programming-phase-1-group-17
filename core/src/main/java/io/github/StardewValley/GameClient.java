@@ -6,6 +6,7 @@ import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GameClient {
@@ -14,15 +15,22 @@ public class GameClient {
     private static Camera camera;
     private static PlayerClient player;
     private static ArrayList<CraftingItemDTO> craftingItems = new ArrayList<>();
+    private static HashMap<Integer, ArrayList<Integer>> playersHutLocations = new HashMap<>();
+    private static HashMap<Integer, ArrayList<Integer>> NPCsHutsLocations = new HashMap<>();
+
+
     public static PlayerClient getPlayer() {
         return player;
     }
+
     public static void setPlayer(PlayerClient player) {
         GameClient.player = player;
     }
+
     public static Camera getCamera() {
         return camera;
     }
+
     public static void setCamera(Camera camera) {
         GameClient.camera = camera;
     }
@@ -50,4 +58,18 @@ public class GameClient {
     public static void setCraftingItems(ArrayList<CraftingItemDTO> craftingItems) {
         GameClient.craftingItems = craftingItems;
     }
+
+    public static HashMap<Integer,ArrayList<Integer>> getPlayersHutLocations() {
+        if (playersHutLocations.isEmpty()) {
+            playersHutLocations = new HashMap<>(getGameStateApiClient().getPlayerHutsLocationsFromServer());
+        }
+        return playersHutLocations;
+    }
+    public static HashMap<Integer, ArrayList<Integer>> getNPCsHutsLocations() {
+        if (NPCsHutsLocations.isEmpty()) {
+            NPCsHutsLocations = new HashMap<>(getGameStateApiClient().getNPCSHutsLocationsFromServer());
+        }
+        return NPCsHutsLocations;
+    }
+
 }

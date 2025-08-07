@@ -32,6 +32,7 @@ public class PlayerMap {
     private Hut hut;
     private ArrayList<Lake> lakes = new ArrayList<>();
     private Quarry quarry;
+    private boolean setType = false;
 
 
     public GreenHouse getGreenHouse() {
@@ -475,6 +476,7 @@ public class PlayerMap {
     }
 
     public void setMapType(int type, Game game) {
+        this.setType = true;
         if (type == 1) {
             this.hut = new Hut("hut.png", 4 + row, 4 + col);
             this.lakes.add(new Lake());
@@ -682,5 +684,13 @@ public class PlayerMap {
 
     public ArrayList<AnimalPlace> getAnimalPlaces() {
         return animalPlaces;
+    }
+
+    public boolean isSetType() {
+        return setType;
+    }
+
+    public void setSetType(boolean setType) {
+        this.setType = setType;
     }
 }
