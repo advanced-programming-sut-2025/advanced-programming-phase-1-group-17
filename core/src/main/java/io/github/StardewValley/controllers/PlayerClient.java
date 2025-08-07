@@ -2,6 +2,7 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
@@ -283,7 +284,7 @@ public class PlayerClient {
         this.currentDirection = currentDirection;
     }
 
-    public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
+    public void draw(SpriteBatch batch) {
         if (isPassedOut) {
             batch.draw(
                 new Texture(user.getGender().equals(Gender.Male) ? "Alex.png" : "Emily.png"),
