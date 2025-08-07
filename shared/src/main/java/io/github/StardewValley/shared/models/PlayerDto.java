@@ -1,5 +1,7 @@
 package io.github.StardewValley.shared.models;
 
+import io.github.StardewValley.shared.models.tools.FishingPoleType;
+import io.github.StardewValley.shared.models.tools.ToolMaterial;
 import io.github.StardewValley.shared.models.tools.ToolType;
 
 public class PlayerDto {
@@ -19,7 +21,10 @@ public class PlayerDto {
     private boolean isNewMessage;
 
     private ToolType toolType;
-    private String toolTexturePath;
+    //private String toolTexturePath;
+    private AbilityDTO ability;
+    private ToolMaterial toolMaterial;
+    private FishingPoleType fishingPoleType;
 
     public PlayerDto() {}
     public PlayerDto(boolean isPassedOut
@@ -30,7 +35,11 @@ public class PlayerDto {
         , int x, int y, Player.Direction currentDirection
         , float speed, Player.Direction lastDirection
         , int coin, float animationTimer
-        , float passOutTimer) {
+        , float passOutTimer
+        , AbilityDTO abilityDTO
+        , ToolType toolType
+        , ToolMaterial toolMaterial
+        , FishingPoleType fishingPoleType) {
         this.isPassedOut = isPassedOut;
         this.energy = energy;
         this.maxEnergy = maxEnergy;
@@ -44,6 +53,11 @@ public class PlayerDto {
         this.coin = coin;
         this.animationTimer = animationTimer;
         this.passOutTimer = passOutTimer;
+        this.ability = abilityDTO;
+        this.toolType = toolType;
+        this.toolMaterial = toolMaterial;
+        this.fishingPoleType = fishingPoleType;
+        //this.toolTexturePath = toolTexturePath;
     }
 
 
@@ -151,14 +165,43 @@ public class PlayerDto {
         this.passOutTimer = passOutTimer;
     }
 
-    public String getToolTexturePath() {
-        return toolTexturePath;
-    }
     public boolean isNewMessage() {
         return isNewMessage;
     }
 
     public void setNewMessage(boolean newMessage) {
         isNewMessage = newMessage;
+    }
+
+    public ToolType getToolType() {
+        return toolType;
+    }
+
+    public void setToolType(ToolType toolType) {
+        this.toolType = toolType;
+    }
+
+    public AbilityDTO getAbility() {
+        return ability;
+    }
+
+    public void setAbility(AbilityDTO ability) {
+        this.ability = ability;
+    }
+
+    public ToolMaterial getToolMaterial() {
+        return toolMaterial;
+    }
+
+    public void setToolMaterial(ToolMaterial toolMaterial) {
+        this.toolMaterial = toolMaterial;
+    }
+
+    public FishingPoleType getFishingPoleType() {
+        return fishingPoleType;
+    }
+
+    public void setFishingPoleType(FishingPoleType fishingPoleType) {
+        this.fishingPoleType = fishingPoleType;
     }
 }

@@ -111,6 +111,7 @@ public class GameStateController {
         if (player != null)
             player.update(delta, up, down, left, right);
 
+        Tool currentTool = player.getCurrentTool();
         PlayerDto pd = new PlayerDto(player.isPassedOut()
             , player.getEnergy()
             , player.getMaxEnergy()
@@ -119,7 +120,11 @@ public class GameStateController {
             , player.getX(), player.getY(), player.getCurrentDirection()
             , player.getSpeed(), player.getLastDirection()
             , player.getCoin(), player.getAnimationTimer()
-            , player.getPassOutTimer());
+            , player.getPassOutTimer()
+            , Ability.getDTO(player.getAbilities())
+            , currentTool == null ? null : currentTool.getToolType()
+            , currentTool == null ? null : currentTool.getMaterial()
+            , currentTool == null ? null : currentTool.getFishingPoleMaterial());
         pd.setNewMessage(player.isNewMessage());
 
         return ResponseEntity.ok(pd);
@@ -378,10 +383,12 @@ public class GameStateController {
 
 
     @PostMapping("/game/cheatCode/handleCheatCode")
-    public ResponseEntity<Result> handleCheatCode(@RequestBody String command, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result> handleCheatCode(@RequestBody HashMap<String, String> input, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
         String result = "invalid Command";
         Matcher matcher;
+        String command = input.get("input");
+        System.out.println(command);
 
         if ((matcher = CheatCodeCommands.CheatAdvanceTime.getMatcher(command)) != null) {
             result = CheatCodeHandler.changeTime(
@@ -1151,7 +1158,11 @@ public class GameStateController {
                     , player.getX(), player.getY(), player.getCurrentDirection()
                     , player.getSpeed(), player.getLastDirection()
                     , player.getCoin(), player.getAnimationTimer()
-                    , player.getPassOutTimer());
+                    , player.getPassOutTimer()
+                    , Ability.getDTO(player.getAbilities())
+                    , player.getCurrentTool().getToolType()
+                    , player.getCurrentTool().getMaterial()
+                    , player.getCurrentTool().getFishingPoleMaterial());
                 pd.setNewMessage(player.isNewMessage());
 
                 return ResponseEntity.ok(pd);

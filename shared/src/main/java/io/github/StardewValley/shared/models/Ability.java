@@ -139,4 +139,13 @@ public class Ability {
     public int getFishingLevel() {
         return fishingLevel;
     }
+
+    public static AbilityDTO getDTO(Ability ability) {
+        return new AbilityDTO(
+            ability.farmingLevel,
+            ability.miningLevel,
+            ability.foragingLevel,
+            ability.fishingLevel
+        );
+    }
 }
