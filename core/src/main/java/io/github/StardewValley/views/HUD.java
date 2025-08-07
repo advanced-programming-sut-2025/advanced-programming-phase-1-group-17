@@ -124,8 +124,8 @@ public class HUD {
         dateFont.draw(batch, hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
         timeFont.draw(batch, hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
 
-        renderEnergyBar(batch);
-        renderInventoryBar(batch);
+//        renderEnergyBar(batch);
+//        renderInventoryBar(batch);
         timesinceLastUpdate +=v;
         if(timesinceLastUpdate>=1){
             timesinceLastUpdate = 0;
