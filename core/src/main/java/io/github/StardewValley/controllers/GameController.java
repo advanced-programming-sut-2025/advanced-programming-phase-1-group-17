@@ -97,7 +97,7 @@ public class GameController {
                 PlayerDto pd = GameClient.getGameStateApiClient().updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
                 playerUpdate(pd);
                 updateCamera(GameClient.getPlayer());
-                worldController.update(delta);
+                worldController.update();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -209,15 +209,8 @@ public class GameController {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
             Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManagerClient.getGameAssetManager().getSkin(), view));
-        }
-//        else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-//            try {
-//                App.getCurrentGame().getDate().goToNextDay();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            System.out.println("C pressed.");
             HandleWorldClickResponse result = null;
             try {
                 result = GameClient.getGameStateApiClient().handleWorldClick(dx, dy, Input.Buttons.LEFT);

@@ -40,7 +40,6 @@ import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -336,18 +335,6 @@ public class GameStateController {
         return ResponseEntity.ok(new CookResponseDTO(true, "Cooked successfully!"));
     }
 
-    @Scheduled(fixedRate = 100) // 10 بار در ثانیه
-    public void serverGameLoop() {
-        Game game = AppServer.getCurrentGame();
-        if (AppServer.getCurrentGame() != null) {
-            // delta time در سرور حدود 0.1 ثانیه است
-            float serverDelta = 0.1f;
-            game.getLightningLogicController().updateLightning(serverDelta);
-            game.getDate().increaseMinute(serverDelta * 5, game);
-        }
-    }
-
-
     @PostMapping("/game/handleClick")
     public ResponseEntity<HandleWorldClickResponse> handleClick(@RequestBody HandleWorldClickRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token); // Authenticate and get the correct Player
@@ -355,7 +342,6 @@ public class GameStateController {
         float x = request.getX();
         float y = request.getY();
         int button = request.getButton();
-        System.out.println("%f %f %d".formatted(x, y, button));
 
         HandleWorldClickResponse response = gameWorldController.checkBounds(x, y, button, player, game);
         if (response.isSuccessful())
@@ -368,7 +354,6 @@ public class GameStateController {
         int dy = clickedTileY - player.getTileY();
 
         HandleWorldClickResponse result = new HandleWorldClickResponse(false, "", HandleWorldClickResponse.ActionType.NONE);
-        System.out.println(player.getEquippedItem().getName());
         if (Math.abs(dx) + Math.abs(dy) == 1) {
             if (player.getEquippedItem() instanceof Tool)
                 result = toolController.toolUse(dx, dy, player, game);
@@ -381,7 +366,6 @@ public class GameStateController {
             else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
                 result = farmingController.fertilize(fertilizer, dx, dy, player, game);
         }
-        System.out.println(result.getMessage());
         return ResponseEntity.ok(result);
     }
 

@@ -3,6 +3,7 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.GameAssetManagerClient;
@@ -14,10 +15,12 @@ import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.dto.GameState;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CropAssetManager;
 import io.github.StardewValley.shared.models.plant.Tree;
+import io.github.StardewValley.shared.models.plant.TreeAssetManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,14 +34,15 @@ public class WorldController {
     private int tileWidth;
     private int tileHeight;
     private final int printPad = 30;
-    private HashMap<Tree, float[]> treesInThisFrame = new HashMap<>();
-    private HashMap<Crop, float[]> giantCropsInThisFrame = new HashMap<>();
+    private final HashMap<Texture, float[]> treesInThisFrame = new HashMap<>();
+    private final HashMap<String, float[]> giantCropsInThisFrame = new HashMap<>();
+    private final HashMap<TextureRegion, float[]> treeTextureRegions = new HashMap<>();
 
     private GameState gameState;
 
     private List<CraftingItemDTO> craftingItems = new ArrayList<>();
     private final HashMap<String, ProgressBar> progressBarMap = new HashMap<>();
-    private LightningRenderController lightningRenderController;
+    private final LightningRenderController lightningRenderController;
 
     public WorldController(OrthographicCamera camera) {
         this.lightningRenderController = LightningRenderController.getLightningController();
@@ -52,7 +56,7 @@ public class WorldController {
         this.tileHeight = backgroundTexture.getHeight();
     }
 
-    public void update(float delta) throws Exception {
+    public void update() throws Exception {
         float camLeft = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
         float camRight = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
         float camBottom = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
@@ -65,6 +69,7 @@ public class WorldController {
 
         treesInThisFrame.clear();
         giantCropsInThisFrame.clear();
+        treeTextureRegions.clear();
 
         gameState = GameClient.getGameStateApiClient().getGameState(minTileX, maxTileX, minTileY, maxTileY);
         List<TileDTO> tiles = gameState.getTiles();
@@ -98,15 +103,12 @@ public class WorldController {
                     Main.getBatch().draw(backgroundTexture, tile.getX() * tileWidth, tile.getY() * tileHeight);
                 if (tile.getPlaceableType() == null)
                     continue;
-                if (tile.getPlaceableType().equals("Store"))
+                if (tile.getPlaceableType().equals(Store.class.getSimpleName()))
                     continue;
 
-                printTileTexture(tile);
+                printTileTexture(tile, gameState.getTimeAndDateDTO().getSeason());
             }
         }
-
-
-        //TODO
 
         drawCraftingItemsProgressBars();
         drawBigTextures();
@@ -116,9 +118,9 @@ public class WorldController {
     }
 
     private void drawGiantCrops() {
-        giantCropsInThisFrame.forEach((crop, coordinates) -> {
+        giantCropsInThisFrame.forEach((texturePath, coordinates) -> {
             Main.getBatch().draw(
-                GameAssetManagerClient.getGameAssetManager().getTexture(CropAssetManager.getCropAssetManager().getGiantTexture(crop.getType())),
+                GameAssetManagerClient.getGameAssetManager().getTexture(texturePath),
                 coordinates[0],
                 coordinates[1],
                 tileWidth * 2 - 10,
@@ -128,43 +130,39 @@ public class WorldController {
     }
 
     private void drawTrees() {
-        treesInThisFrame.forEach((tree, coordinates) -> {
-            Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture((tree.getTexture()));
-            if (texture != null)
-                Main.getBatch().draw(texture, coordinates[0], coordinates[1]);
-            //TODO handle app.get..
-//            else
-//                Main.getBatch().draw(
-//                    TreeAssetManager.getTreeAssetManager().getFullyGrownTexture(tree.getType(), App.getCurrentGame().getDate().getSeason()),
-//                    coordinates[0],
-//                    coordinates[1]
-//                );
+        treesInThisFrame.forEach((texture, coordinates) -> {
+            Main.getBatch().draw(texture, coordinates[0], coordinates[1]);
         });
+        treeTextureRegions.forEach(((textureRegion, floats) -> {
+            Main.getBatch().draw(textureRegion, floats[0], floats[1]);
+        }));
     }
 
-    private void printTileTexture(TileDTO tile) {
-        Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture((tile.getTexture()));
+    private void printTileTexture(TileDTO tile, Season season) {
+        Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture((tile.getTexturePath()));
         float printX = tile.getX() * tileWidth + printPad, printY = tile.getY() * tileHeight + 20;
         float printWidth = tileWidth - 2 * printPad, printHeight = tileHeight - 2 * printPad;
 
-//        if (tile.getPlaceable() instanceof Crop crop) {
-//            if (crop.isGiant()) {
-//                if (crop.isLeftBottomTileOfGiant())
-//                    giantCropsInThisFrame.put(crop, new float[]{printX, printY});
-//                else
-//                    return;
-//            }
-//        }
-//        else if (tile.getPlaceable() instanceof Tree tree) {
-//            if (texture == null) {
-//                TextureRegion textureRegion = TreeAssetManager.getTreeAssetManager().getFullyGrownTexture(tree.getType(), App.getCurrentGame().getDate().getSeason());
-//                printX = (tile.getX() * tileWidth) +
-//                    ((tileWidth - textureRegion.getRegionWidth()) / 2f);
-//                printY = (tile.getY() * tileHeight) + 10;
-//            }
-//            treesInThisFrame.put(tree, new float[]{printX, printY});
-//            return;
-//        }
+        if (tile.getPlaceableType().equals(Crop.class.getSimpleName())) {
+            if (tile.isCropGiant()) {
+                if (tile.isLeftBottomCornerOfGiantCrop())
+                    giantCropsInThisFrame.put(tile.getTexturePath(), new float[]{printX, printY});
+                else
+                    return;
+            }
+        }
+        else if (tile.getPlaceableType().equals(Tree.class.getSimpleName())) {
+            if (texture == null) {
+                TextureRegion textureRegion = GameAssetManagerClient.getGameAssetManager().
+                    getFullyGrownTexture(tile.getTreeType(), season);
+                printX = (tile.getX() * tileWidth) +
+                    ((tileWidth - textureRegion.getRegionWidth()) / 2f);
+                printY = (tile.getY() * tileHeight) + 10;
+                treeTextureRegions.put(textureRegion, new float[]{printX, printY});
+            } else
+                treesInThisFrame.put(texture, new float[]{printX, printY});
+            return;
+        }
         switch (tile.getPlaceableType()) {
             case "Fence" -> Main.getBatch().draw(texture, printX, printY, 80, 80);
             case "Hut" -> {
@@ -175,7 +173,7 @@ public class WorldController {
                     Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getPlowedTexture(), printX, printY);
             }
             case "Sebastian", "Robin", "Lia", "Harvey", "Abigail" -> {
-                if (!tile.getTexture().startsWith("hut")) {
+                if (!tile.getTexturePath().startsWith("hut")) {
                     Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
                 }
             }

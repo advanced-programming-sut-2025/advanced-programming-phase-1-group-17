@@ -1333,10 +1333,11 @@ public class GameStateApiClient {
         return false;
     }
 
-    public Result craftArtisan(HashMap<BackpackableTypeDTO, Integer> selectedItems) {
+    public Result craftArtisan(HashMap<BackpackableTypeDTO, Integer> selectedItems, CraftingItemDTO craftingItemDTO) {
         try {
+            CraftArtisanRequest craftArtisanRequest = new CraftArtisanRequest(selectedItems, craftingItemDTO);
             // 2. Serialize to JSON
-            String json = objectMapper.writeValueAsString(selectedItems);
+            String json = objectMapper.writeValueAsString(craftArtisanRequest);
 
             // 3. Build HTTP request
             RequestBody body = RequestBody.create(json, MediaType.get("application/json"));

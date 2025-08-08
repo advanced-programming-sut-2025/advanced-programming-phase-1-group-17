@@ -8,9 +8,12 @@ import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.market.StoreType;
+import io.github.StardewValley.shared.models.plant.TreeType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class GameAssetManagerClient {
     private static GameAssetManagerClient gameAssetManager;
@@ -46,10 +49,15 @@ public class GameAssetManagerClient {
     private final HashMap<Season, Texture > seasonalMapTextures = new HashMap<>();
     private final HashMap<StoreType, HashMap<Season, TextureRegion>> storeTextures = new HashMap<>();
 
+    private final HashMap<TreeType, HashMap<Season, TextureRegion>> fullyGrownTextures = new HashMap<>();
+    private final HashMap<TreeType, ArrayList<String>> stageTextures = new HashMap<>();
+
     private GameAssetManagerClient() {
         loadStoreTextures();
         loadNormalItemTextures();
         loadGrassTextures();
+        //loadFullyGrownTextures();
+        //loadStageTextures();
     }
 
     public static GameAssetManagerClient getGameAssetManager() {
@@ -147,11 +155,38 @@ public class GameAssetManagerClient {
         }
     }
 
-    private Texture createFilteredTexture(String path) {
-        Texture texture = new Texture(path);
-        texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        return texture;
+
+    private void loadFullyGrownTextures() {
+        List<Season> seasons = Arrays.asList(Season.Spring, Season.Summer, Season.Fall, Season.Winter);
+        for (TreeType treeType : TreeType.values()) {
+            if (treeType.equals(TreeType.MushroomTree))
+                continue;
+            HashMap<Season, TextureRegion> seasonalTextures = new HashMap<>();
+            Texture texture = new Texture(stageTextures.get(treeType).getLast());
+
+            for (int i = 0; i < 4; i++) {
+                seasonalTextures.put(seasons.get(i), new TextureRegion(
+                    texture,
+                    texture.getWidth() / 4 * i,
+                    0,
+                    texture.getWidth() / 4,
+                    texture.getHeight()
+                ));
+            }
+            fullyGrownTextures.put(treeType, seasonalTextures);
+        }
     }
+
+
+    private void loadStageTextures() {
+        for (TreeType treeType : TreeType.values()) {
+            stageTextures.put(treeType, new ArrayList<>());
+            for (String stageTexturePath : treeType.getStageTexturePaths()) {
+                stageTextures.get(treeType).add(stageTexturePath);
+            }
+        }
+    }
+
 
     public String getNormalItemTexture(NormalItemType normalItemType) {
         return normalItemTextures.get(normalItemType);
@@ -206,5 +241,38 @@ public class GameAssetManagerClient {
 
     public String getFenceTexture2() {
         return "Fence/Hardwood_Fence.png";
+    }
+
+    public TextureRegion getFullyGrownTexture(TreeType treeType, Season season) {
+        HashMap<Season, TextureRegion> textures = fullyGrownTextures.get(treeType);
+        if (textures == null) {
+            List<Season> seasons = Arrays.asList(Season.Spring, Season.Summer, Season.Fall, Season.Winter);
+            if (treeType.equals(TreeType.MushroomTree)) {
+                String path = TreeType.MushroomTree.getStageTexturePaths()[TreeType.MushroomTree.getStageTexturePaths().length - 1];
+                TextureRegion textureRegion = new TextureRegion(new Texture(path));
+                HashMap<Season, TextureRegion> seasonalTextures = new HashMap<>();
+                for (Season s : seasons) {
+                    seasonalTextures.put(s, textureRegion);
+                }
+                fullyGrownTextures.put(treeType, seasonalTextures);
+            }
+            else {
+
+                HashMap<Season, TextureRegion> seasonalTextures = new HashMap<>();
+                Texture texture = new Texture(stageTextures.get(treeType).getLast());
+
+                for (int i = 0; i < 4; i++) {
+                    seasonalTextures.put(seasons.get(i), new TextureRegion(
+                        texture,
+                        texture.getWidth() / 4 * i,
+                        0,
+                        texture.getWidth() / 4,
+                        texture.getHeight()
+                    ));
+                }
+                fullyGrownTextures.put(treeType, seasonalTextures);
+            }
+        }
+        return fullyGrownTextures.get(treeType).get(season);
     }
 }

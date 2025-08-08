@@ -38,6 +38,7 @@ public class GameLoopService {
 
         // ۱. آپدیت زمان بازی (منطق قبلی شما)
         currentGame.getDate().increaseMinute(delta * 5,AppServer.getCurrentGame());
+        currentGame.getLightningLogicController().updateLightning(delta);
 
         // ۲. آپدیت تمام حیوانات (منطق جدید، دقیقا کنار قبلی)
         List<AnimalDTO> allAnimals = animalDataService.findAll();
