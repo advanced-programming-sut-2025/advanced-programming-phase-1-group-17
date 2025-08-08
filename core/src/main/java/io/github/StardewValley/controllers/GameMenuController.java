@@ -242,7 +242,7 @@ public class GameMenuController {
             return new Result(false, e.getMessage());
         }
     }
-//    TODO App...
+    //TODO App...
 //    public Result getTime() {
 //        return new Result(true, App.getCurrentGame().getDate().getHour() + " : " +
 //            App.getCurrentGame().getDate().getMinute());
