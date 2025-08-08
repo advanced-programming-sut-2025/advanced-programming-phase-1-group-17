@@ -18,12 +18,17 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
+import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.Result;
 
+import java.util.ArrayList;
+
 import java.util.Objects;
 
+import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Gender;
 
 public class GameView implements Screen, InputProcessor {
@@ -51,8 +56,21 @@ public class GameView implements Screen, InputProcessor {
     private String targetPlayer;
     private String nearbyNPC;
 
+    //animal
+    private GameStateApiClient apiClient;
+
+    // --- بخش‌های جدید ---
+    private AnimalView animalView; // هنرمند ما
+    private ArrayList<AnimalDTO> animalsFromServer; // لیستی برای نگهداری آخرین وضعیت حیوانات
+    private float timeSinceLastApiCall = 0f;
+    private static final float API_CALL_INTERVAL = 0.1f; //
+
 
     public GameView(GameController controller, GameMenuController menuController) {
+        this.apiClient = GameClient.getGameStateApiClient();
+        this.animalView = new AnimalView(); // هنرمند را استخدام کن
+        this.animalsFromServer = new ArrayList<AnimalDTO>(); // لیست را خالی مقداردهی اولیه کن
+        animalsFromServer.add(new AnimalDTO("number1", AnimalType.Pig,200,200));
         this.hud = new HUD();
         this.font = new BitmapFont();
         int i = 0;
@@ -206,21 +224,45 @@ public class GameView implements Screen, InputProcessor {
         InputMultiplexer multiplexer = new InputMultiplexer(stage, this);
         Gdx.input.setInputProcessor(multiplexer);
     }
+    public void updateAnimal(float delta){
+        animalView.updateAnimationTime(delta);
+
+        // آپدیت کردن داده‌ها از سرور
+        timeSinceLastApiCall += delta;
+        if (timeSinceLastApiCall >= API_CALL_INTERVAL) {
+            timeSinceLastApiCall = 0f; // ریست کردن تایمر
+
+            try {
+                // TODO: شما باید ابتدا Endpoint و متد getAnimals را در سرور و ApiClient بسازید
+                System.out.println("Fetching animal data from server...");
+                this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
+            } catch (Exception e) {
+                System.err.println("Failed to fetch animal data: " + e.getMessage());
+            }
+        }
+    }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
         controller.getCamera().update();
-
+        updateAnimal(delta);
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
+
+        controller.updateGame(delta);
+
         try {
             hud.render(Main.getBatch(), delta);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
-        controller.updateGame(delta);
+        if (animalsFromServer != null) {
+            for (AnimalDTO animalDto : animalsFromServer) {
+                animalView.render(Main.getBatch(), animalDto,delta);
+            }
+        }
         //TODO handle playe
 //        controller.handlePlayerInput();
 
@@ -241,12 +283,6 @@ public class GameView implements Screen, InputProcessor {
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
         stage.addActor(error);
-        try {
-            hud.render(Main.getBatch(), delta);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
         //TODO handle player
 //        controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
