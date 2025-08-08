@@ -171,4 +171,8 @@ public class ArtisanCraftMenu implements Screen {
     public HashMap<BackpackableTypeDTO, Integer> getSelectedItems() {
         return selectedItems;
     }
+
+    public CraftingItemDTO getCraftingItemDTO() {
+        return craftingItemDTO;
+    }
 }

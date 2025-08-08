@@ -424,7 +424,6 @@ public class ToolController {
 
 
     public HandleWorldClickResponse placeCraftingItem(int dx, int dy, Player player, Game game) {
-        System.out.println("Placing Crafting Item.");
         CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
 
         int x = player.getX() / GameAssetManager.getGameAssetManager().getTileWidth() + dx;

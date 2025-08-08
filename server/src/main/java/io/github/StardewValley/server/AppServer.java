@@ -32,6 +32,7 @@ public class AppServer {
     public static BackpackableTypeDTO getDTO(BackPackableType backPackableType, BackPack backPack) {
         String texturePath = backPackableType.getInventoryTexturePath();
         if (backPackableType instanceof ToolType toolType) {
+            System.out.println("Fishing Pole texture ...");
             if (toolType.equals(ToolType.FishingPole))
                 texturePath = toolType.getTexturePath(
                     null,

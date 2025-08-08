@@ -89,10 +89,8 @@ public class GameWorldController {
     }
 
     private HandleWorldClickResponse checkCraftingItemBounds(Vector3 worldCoordinates , boolean isLeftClick, Game game) {
-        System.out.println("checking crafting Item Bounds");
         for (Map.Entry<CraftingItem, Rectangle> entry:  game.getCraftingItemBounds().entrySet()) {
             if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
-                System.out.println("crafting Item found.");
                 if (isLeftClick)
                     return new HandleWorldClickResponse(true, "",
                         HandleWorldClickResponse.ActionType.OPEN_ARTISAN_CRAFT_MENU, CraftingItem.getCraftingItemDTO(entry.getKey()));

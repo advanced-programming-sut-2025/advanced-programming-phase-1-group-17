@@ -42,7 +42,7 @@ public class ArtisanCraftMenuController {
     }
 
     public void craft() {
-        Result result = GameClient.getGameStateApiClient().craftArtisan(view.getSelectedItems());
+        Result result = GameClient.getGameStateApiClient().craftArtisan(view.getSelectedItems(), view.getCraftingItemDTO());
         if (result.successful()) {
             view.getSelectedItems().clear();
             view.getErrorLabel().setColor(255, 255, 255, 1);

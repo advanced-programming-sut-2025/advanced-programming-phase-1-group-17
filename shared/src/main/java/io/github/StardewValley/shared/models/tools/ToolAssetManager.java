@@ -89,6 +89,7 @@ public class ToolAssetManager {
             System.out.println(fishingPoleType);
             return fishingPoleTexturePaths.get(fishingPoleType);
         }
+        System.out.println(toolMaterial);
         return toolTexturePaths.get(toolType).get(toolMaterial);
     }
 }

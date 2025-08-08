@@ -11,7 +11,6 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.NPCdto;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.TileDTO;
-import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.views.MapView;
 
 public class MapViewController {
@@ -50,10 +49,10 @@ public class MapViewController {
         for (TileDTO tile : GameClient.getGameStateApiClient().getAllTiles()) {
             float drawX = offsetX + tile.getX() * tileSize;
             float drawY = offsetY + tile.getY() * tileSize;
-            if (tile.getPlaceableType() == null || tile.getTexture() == null)
+            if (tile.getPlaceableType() == null || tile.getTexturePath() == null)
                 continue;
             try {
-                Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(tile.getTexture()), drawX, drawY, tileSize, tileSize);
+                Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(tile.getTexturePath()), drawX, drawY, tileSize, tileSize);
             } catch (Exception e) {
                 e.printStackTrace();
             }
