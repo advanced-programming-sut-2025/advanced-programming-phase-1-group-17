@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.market.ShippingBin;
@@ -19,17 +20,17 @@ public class GameWorldController {
         Vector3 worldCoordinates = new Vector3(x, y, 0);
         HandleWorldClickResponse response;
         if (button == Input.Buttons.RIGHT)
-            return checkCraftingItemBounds(worldCoordinates, false);
+            return checkCraftingItemBounds(worldCoordinates, false, game);
 
         response = checkGreenHouseBounds(worldCoordinates, player, game);
         if (response.isSuccessful())
             return response;
 
-        response = checkCraftingItemBounds(worldCoordinates, true);
+        response = checkCraftingItemBounds(worldCoordinates, true, game);
         if (response.isSuccessful())
             return response;
 
-        response = handleShippingBin(worldCoordinates, player);
+        response = handleShippingBin(worldCoordinates, player, game);
         if (response.isSuccessful()) {
             return response;
         }
@@ -45,14 +46,8 @@ public class GameWorldController {
                     return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.NONE);
                 }
                 if (!greenHouse.getOwner().equals(player)) {
-                    //showNotification("This greenhouse is not yours.");
                     return new HandleWorldClickResponse(true, "This greenhouse is not yours.", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                 }
-//                Main.getMain().getScreen().dispose();
-//                Main.getMain().setScreen(new GreenHouseBuildScreen(
-//                    new GreenHouseBuildController(),
-//                    GameAssetManagerClient.getGameAssetManager().getSkin()
-//                ));
                 return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.OPEN_GREENHOUSE_BUILD);
             }
         }
@@ -60,13 +55,11 @@ public class GameWorldController {
     }
 
 
-    private HandleWorldClickResponse handleShippingBin(Vector3 worldCoordinates, Player player) {
-        HashMap<ShippingBin, Rectangle> bounds = ShippingBin.getShippingBinBounds();
+    private HandleWorldClickResponse handleShippingBin(Vector3 worldCoordinates, Player player, Game game) {
+        HashMap<ShippingBin, Rectangle> bounds = game.getShippingBinBounds();
         for (ShippingBin shippingBin : bounds.keySet()) {
             if (bounds.get(shippingBin).contains(worldCoordinates.x, worldCoordinates.y)) {
                 if (shippingBin.getTodayItemOwner() != null && !shippingBin.getTodayItemOwner().equals(player)) {
-//                    showNotification("Player %s has put some items inside this shipping Bin today.\n Try using another shipping Bin."
-//                        .formatted(shippingBin.getTodayItemOwner().getUser().getUsername()));
                     return new HandleWorldClickResponse(
                         true,
                         "Player %s has put some items inside this shipping Bin today.\n Try using another shipping Bin."
@@ -74,13 +67,9 @@ public class GameWorldController {
                         HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION
                         );
                 }
-//                Main.getMain().getScreen().dispose();
-//                Main.getMain().setScreen(new ShippingBinScreen(
-//                    shippingBin,
-//                    new ShippingBinScreenController(),
-//                    GameAssetManagerClient.getGameAssetManager().getSkin()
-//                ));
-                return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.OPEN_SHIPPING_BIN_MENU, shippingBin);
+                return new HandleWorldClickResponse(true, "",
+                    HandleWorldClickResponse.ActionType.OPEN_SHIPPING_BIN_MENU,
+                    new TileDTO(game.getTile(shippingBin.getTileX(), shippingBin.getTileY())));
             }
         }
         return new HandleWorldClickResponse(false);
@@ -93,27 +82,23 @@ public class GameWorldController {
         for (StoreType storeType : storeBounds.keySet()) {
             Rectangle rectangle = storeBounds.get(storeType);
             if (rectangle.contains(worldCoordinates.x, worldCoordinates.y)) {
-//                Main.getMain().getScreen().dispose();
-//                Main.getMain().setScreen(new StoreMenu(new StoreMenuController(),
-//                    GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
                 return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.OPEN_STORE, storeType);
             }
         }
         return new HandleWorldClickResponse(false);
     }
 
-    private HandleWorldClickResponse checkCraftingItemBounds(Vector3 worldCoordinates , boolean isLeftClick) {
-        for (Map.Entry<CraftingItem, Rectangle> entry:  CraftingItem.getCraftingItemBounds().entrySet()) {
+    private HandleWorldClickResponse checkCraftingItemBounds(Vector3 worldCoordinates , boolean isLeftClick, Game game) {
+        System.out.println("checking crafting Item Bounds");
+        for (Map.Entry<CraftingItem, Rectangle> entry:  game.getCraftingItemBounds().entrySet()) {
             if (entry.getValue().contains(worldCoordinates.x, worldCoordinates.y)) {
-                //Main.getScreen().dispose();
+                System.out.println("crafting Item found.");
                 if (isLeftClick)
-                    return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.OPEN_ARTISAN_CRAFT_MENU, entry.getKey());
-//                    Main.getMain().setScreen(new ArtisanCraftMenu(new ArtisanCraftMenuController(),
-//                        GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
+                    return new HandleWorldClickResponse(true, "",
+                        HandleWorldClickResponse.ActionType.OPEN_ARTISAN_CRAFT_MENU, CraftingItem.getCraftingItemDTO(entry.getKey()));
                 else
-                    return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.OPEN_ARTISAN_INFO_MENU, entry.getKey());
-//                    Main.getMain().setScreen(new ArtisanInfoMenu(new ArtisanInfoMenuController(),
-//                        GameAssetManagerClient.getGameAssetManager().getSkin(), entry.getKey()));
+                    return new HandleWorldClickResponse(true, "",
+                        HandleWorldClickResponse.ActionType.OPEN_ARTISAN_INFO_MENU, CraftingItem.getCraftingItemDTO(entry.getKey()));
             }
         }
         return new HandleWorldClickResponse(false);

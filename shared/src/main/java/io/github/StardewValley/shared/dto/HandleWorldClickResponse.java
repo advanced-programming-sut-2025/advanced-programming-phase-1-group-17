@@ -1,10 +1,15 @@
 package io.github.StardewValley.shared.dto;
 
+import io.github.StardewValley.shared.models.TileDTO;
+import io.github.StardewValley.shared.models.market.StoreType;
+
 public class HandleWorldClickResponse {
     private boolean successful;
     private String message;        // for notifications
     private ActionType actionType; // what should client do?
-    private Object payload;        // extra info (e.g. store type, crafting item id, etc.)
+    private StoreType storeType;
+    private CraftingItemDTO craftingItemDTO;
+    private TileDTO tileDTO;
 
     public enum ActionType {
         NONE,
@@ -19,25 +24,38 @@ public class HandleWorldClickResponse {
     public HandleWorldClickResponse() {
     }
 
-    public HandleWorldClickResponse(boolean successful, String message, ActionType actionType, Object payload) {
+    public HandleWorldClickResponse(boolean successful, String message, ActionType actionType, StoreType storeType) {
         this.successful = successful;
         this.message = message;
         this.actionType = actionType;
-        this.payload = payload;
+        this.storeType = storeType;
+    }
+
+    public HandleWorldClickResponse(boolean successful, String message, ActionType actionType, CraftingItemDTO craftingItemDTO) {
+        this.successful = successful;
+        this.message = message;
+        this.actionType = actionType;
+        this.craftingItemDTO = craftingItemDTO;
+    }
+
+
+    public HandleWorldClickResponse(boolean successful, String message, ActionType actionType, TileDTO tileDTO) {
+        this.successful = successful;
+        this.message = message;
+        this.actionType = actionType;
+        this.tileDTO = tileDTO;
     }
 
     public HandleWorldClickResponse(boolean successful, String message, ActionType actionType) {
         this.successful = successful;
         this.message = message;
         this.actionType = actionType;
-        this.payload = null;
     }
 
     public HandleWorldClickResponse(boolean successful) {
         this.successful = successful;
         this.message = "";
         this.actionType = ActionType.NONE;
-        this.payload = null;
     }
 
     public boolean isSuccessful() {
@@ -64,11 +82,15 @@ public class HandleWorldClickResponse {
         this.actionType = actionType;
     }
 
-    public Object getPayload() {
-        return payload;
+    public StoreType getStoreType() {
+        return storeType;
     }
 
-    public void setPayload(Object payload) {
-        this.payload = payload;
+    public CraftingItemDTO getCraftingItemDTO() {
+        return craftingItemDTO;
+    }
+
+    public TileDTO getTileDTO() {
+        return tileDTO;
     }
 }

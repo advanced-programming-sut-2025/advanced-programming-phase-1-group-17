@@ -122,10 +122,4 @@ public class CraftingItemDTO {
     public void setArtisanProductTexturePath(String artisanProductTexturePath) {
         this.artisanProductTexturePath = artisanProductTexturePath;
     }
-
-    public float getProgress() {
-        float progressed = daysInProgress * 24 + hoursInProgress;
-        float all = artisanProductionDays * 24 + artisanProductionHours;
-        return progressed / all;
-    }
 }

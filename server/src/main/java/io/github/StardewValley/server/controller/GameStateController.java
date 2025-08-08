@@ -247,6 +247,7 @@ public class GameStateController {
         if (player == null) {
             return ResponseEntity.status(401).body(new CraftResponseDTO(false, "Player not found."));
         }
+        Game game = AppServer.getCurrentGame();
 
         CraftingItemType typeToCraft;
         try {
@@ -276,7 +277,7 @@ public class GameStateController {
         }
 
         // 3. اضافه کردن آیتم جدید (در سرور!)
-        CraftingItem craftedItem = new CraftingItem(typeToCraft, player);
+        CraftingItem craftedItem = new CraftingItem(typeToCraft, player, game);
         backPack.addItemToInventory(craftedItem);
 
         // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
@@ -335,7 +336,16 @@ public class GameStateController {
         return ResponseEntity.ok(new CookResponseDTO(true, "Cooked successfully!"));
     }
 
-
+    @Scheduled(fixedRate = 100) // 10 بار در ثانیه
+    public void serverGameLoop() {
+        Game game = AppServer.getCurrentGame();
+        if (AppServer.getCurrentGame() != null) {
+            // delta time در سرور حدود 0.1 ثانیه است
+            float serverDelta = 0.1f;
+            game.getLightningLogicController().updateLightning(serverDelta);
+            game.getDate().increaseMinute(serverDelta * 5, game);
+        }
+    }
 
 
     @PostMapping("/game/handleClick")
@@ -363,13 +373,13 @@ public class GameStateController {
             if (player.getEquippedItem() instanceof Tool)
                 result = toolController.toolUse(dx, dy, player, game);
             else if (player.getEquippedItem() instanceof CraftingItem)
-                result = toolController.placeCraftingItem(dx, dy, player);
+                result = toolController.placeCraftingItem(dx, dy, player, game);
             else if (player.getEquippedItem() instanceof Seed seed)
                 result = farmingController.plantSeed(seed, dx, dy, player, game);
             else if (player.getEquippedItem() instanceof Sapling sapling)
                 result = farmingController.plantSapling(sapling, dx, dy, player, game);
             else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
-                result = farmingController.fertilize(fertilizer, dx, dy, player);
+                result = farmingController.fertilize(fertilizer, dx, dy, player, game);
         }
         System.out.println(result.getMessage());
         return ResponseEntity.ok(result);
@@ -419,7 +429,7 @@ public class GameStateController {
         } else if ((matcher = CheatCodeCommands.EnergyUnlimited.getMatcher(command)) != null) {
             result = CheatCodeHandler.energyUnlimited(player);
         } else if ((matcher = CheatCodeCommands.CheatAddItem.getMatcher(command)) != null) {
-            result = CheatCodeHandler.addItem(matcher.group("itemName"), matcher.group("count"), player);
+            result = CheatCodeHandler.addItem(matcher.group("itemName"), matcher.group("count"), player, game);
         } else if ((matcher = CheatCodeCommands.CheatSetFriendshipWithAnimal.getMatcher(command)) != null) {
             result = CheatCodeHandler.setFriendship(matcher.group("animalName"),
                 matcher.group("amount"));
@@ -502,6 +512,7 @@ public class GameStateController {
 
     @PostMapping("/game/greenhouse/buildGreenhouse")
     public ResponseEntity<Result> buildGreenhouse(@RequestHeader("Authorization") String token) {
+        System.out.println("bildGreenhouse request recieved");
         Player player = getPlayerFromToken(token);
         if (player.getBackPack().getCoin() < 1000) {
             return ResponseEntity.ok(new Result(false, "You only have %.2f coin. (not enough)".formatted(
@@ -1158,6 +1169,7 @@ public class GameStateController {
     public ResponseEntity<PlayerDto> getPlayerDTOByUserName(@RequestHeader("Authorization") String token, @RequestParam String username) {
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
+                Tool currentTool = player.getCurrentTool();
                 PlayerDto pd = new PlayerDto(player.isPassedOut()
                     , player.getEnergy()
                     , player.getMaxEnergy()
@@ -1168,9 +1180,9 @@ public class GameStateController {
                     , player.getCoin(), player.getAnimationTimer()
                     , player.getPassOutTimer()
                     , Ability.getDTO(player.getAbilities())
-                    , player.getCurrentTool().getToolType()
-                    , player.getCurrentTool().getMaterial()
-                    , player.getCurrentTool().getFishingPoleMaterial());
+                    , currentTool == null ? null : currentTool.getToolType()
+                    , currentTool == null ? null : currentTool.getMaterial()
+                    , currentTool == null ? null : currentTool.getFishingPoleMaterial());
                 pd.setNewMessage(player.isNewMessage());
                 pd.setGender(player.getUser().getGender().equals(Gender.Male) ? "Male" : "Female");
 

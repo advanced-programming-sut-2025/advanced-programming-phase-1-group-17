@@ -1,5 +1,7 @@
 package io.github.StardewValley.shared.models;
 
+import io.github.StardewValley.shared.models.backpack.NormalItem;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.map.Tile;
 
 public class TileDTO {
@@ -12,6 +14,8 @@ public class TileDTO {
     private String placeableType;
     private String ownerUsername;
     private boolean isPlowed = false;
+    private int grassTextureID;
+
     public TileDTO(){}
 
     public TileDTO(Tile tile) {
@@ -24,6 +28,10 @@ public class TileDTO {
         this.placeableType = tile.getPlaceable() != null ? tile.getPlaceable().getClass().getSimpleName() : null;
         this.ownerUsername = tile.getOwner() != null ? tile.getOwner().getUser().getUsername() : null;
         this.crowImmunity = tile.isCrowImmunity();
+        if (tile.getPlaceable() instanceof NormalItem normalItem) {
+            if (normalItem.getType().equals(NormalItemType.Grass))
+                grassTextureID = normalItem.getGrassTextureID();
+        }
     }
 
     public int getX() {
@@ -89,5 +97,9 @@ public class TileDTO {
 
     public void setOwnerUsername(String ownerUsername) {
         this.ownerUsername = ownerUsername;
+    }
+
+    public int getGrassTextureID() {
+        return grassTextureID;
     }
 }

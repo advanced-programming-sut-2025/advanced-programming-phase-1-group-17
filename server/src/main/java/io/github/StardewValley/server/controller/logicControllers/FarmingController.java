@@ -8,12 +8,12 @@ import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.plant.*;
 
 public class FarmingController {
-    public HandleWorldClickResponse fertilize(Fertilizer fertilizer, int dx, int dy, Player player) {
+    public HandleWorldClickResponse fertilize(Fertilizer fertilizer, int dx, int dy, Player player, Game game) {
         FertilizerType fertilizerType = fertilizer.getType();
 
         int newX = player.getTileX() + dx;
         int newY = player.getTileY() + dy;
-        Tile tile = Tile.getTile(newX, newY);
+        Tile tile = game.getTile(newX, newY);
 
         if (tile == null) {
             return new HandleWorldClickResponse(false, "Tile out of map.",
@@ -46,7 +46,7 @@ public class FarmingController {
         int newX = player.getTileX() + dx;
         int newY = player.getTileY() + dy;
 
-        Tile tile = Tile.getTile(newX, newY);
+        Tile tile = game.getTile(newX, newY);
         if (tile == null) {
             return new HandleWorldClickResponse(false, "Tile out of map",
                 HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
@@ -95,7 +95,7 @@ public class FarmingController {
         int newX = player.getTileX() + dx;
         int newY = player.getTileY() + dy;
 
-        Tile tile = Tile.getTile(newX, newY);
+        Tile tile = game.getTile(newX, newY);
         if (tile == null) {
             return new HandleWorldClickResponse(false, "Tile out of map",
                 HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);

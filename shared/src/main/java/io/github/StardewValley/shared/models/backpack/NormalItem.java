@@ -8,14 +8,13 @@ import java.util.Random;
 
 public class NormalItem implements BackPackable, Placeable {
     private NormalItemType type;
-    private transient TextureRegion grassTextureRegion = null;
+    private int grassTextureID;
 
     public NormalItem(NormalItemType type) {
         this.type = type;
         if (type.equals(NormalItemType.Grass)) {
             Random random = new Random();
             int randInt = random.nextInt(33);
-            grassTextureRegion = GameAssetManager.getGameAssetManager().getGrassTextures().get(randInt);
         }
     }
 
@@ -38,7 +37,8 @@ public class NormalItem implements BackPackable, Placeable {
     public String getTexture() {
         return type.getInventoryTexturePath();
     }
-    public TextureRegion getGrassTextureRegion() {
-        return grassTextureRegion;
+
+    public int getGrassTextureID() {
+        return grassTextureID;
     }
 }

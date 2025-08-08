@@ -82,6 +82,12 @@ public class GameClient {
         return greenHouseLocations;
     }
 
+    public static float getArtisanProductionProgress(CraftingItemDTO craftingItemDTO) {
+        float progressed = craftingItemDTO.getDaysInProgress() * 24 + craftingItemDTO.getHoursInProgress();
+        float all = craftingItemDTO.getArtisanProductionDays() * 24 + craftingItemDTO.getArtisanProductionHours();
+        return progressed / all;
+    }
+
     public static UserDTO getLoggedInUser() {
         return LoggedInUser;
     }
