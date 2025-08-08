@@ -1175,8 +1175,8 @@ public class GameStateApiClient {
     public String getQuestWithIndex(String NpcName, int index) {
         try {
             String baseUrl = BASE_URL + "/getQuestWithIndex";
-            String params = "?NpcName" + URLEncoder.encode(NpcName, "UTF-8")
-                + "&index" + index;
+            String params = "?NpcName=" + URLEncoder.encode(NpcName, "UTF-8")
+                + "&index=" + index;
             URL url = new URL(baseUrl + params);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
