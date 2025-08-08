@@ -24,12 +24,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GameStateApiClient {
     private static final String BASE_URL = "http://%s:%d/api/gameState".formatted(Main.getServerIP(), Main.getServerPort());
+    private static final String AnimalURL = "http://%s:%d/api/animals".formatted(Main.getServerIP(), Main.getServerPort());
+
     private String token;
 
     private static final OkHttpClient client = new OkHttpClient();
@@ -56,6 +59,25 @@ public class GameStateApiClient {
             }
         } else {
             throw new RuntimeException("Could not fetch tiles: code " + conn.getResponseCode());
+        }
+    }
+    public ArrayList<AnimalDTO> getAllAnimals() throws Exception {
+        URL url = new URL(AnimalURL + "/allAnimals"); // آدرس Endpoint در سرور
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
+                // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalDTO>>() {});
+            }
+        } else {
+            // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
+            throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
         }
     }
 

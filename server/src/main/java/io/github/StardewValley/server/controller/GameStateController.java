@@ -111,6 +111,7 @@ public class GameStateController {
         ));
     }
 
+
     @PostMapping("/game/player/update")
     public ResponseEntity<PlayerDto> updatePlayer(
         @RequestHeader("Authorization") String token,
@@ -219,7 +220,7 @@ public class GameStateController {
         time.append(String.format("%02d", date.getMinute())); // همیشه دو رقمی
         time.append(hour < 12 ? " am" : " pm");
 
-        String dateString = date.getDayOfTheWeek() + ". " + date.getDay(); // مثال
+        String dateString = date.getDayOfTheWeek().toString().substring(0,3) + ". " + date.getDay(); // مثال
 
         float timeAngle = ((float) ((date.getHour() - 9) * 180) /13 + date.getMinute()) *3/13;
 
@@ -341,14 +342,7 @@ public class GameStateController {
         // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
         return ResponseEntity.ok(new CookResponseDTO(true, "Cooked successfully!"));
     }
-    @Scheduled(fixedRate = 100) // 10 بار در ثانیه
-    public void serverGameLoop() {
-        if (AppServer.getCurrentGame() != null) {
-            // delta time در سرور حدود 0.1 ثانیه است
-            float serverDelta = 0.1f;
-            AppServer.getCurrentGame().getDate().increaseMinute(serverDelta * 5);
-        }
-    }
+
 
 
 
