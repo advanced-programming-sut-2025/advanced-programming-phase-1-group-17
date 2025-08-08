@@ -3,6 +3,7 @@ package io.github.StardewValley.shared.models.market;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.map.Placeable;
@@ -16,26 +17,29 @@ import java.util.HashMap;
 
 public class ShippingBin implements Placeable, BackPackable {
     private ShippingBinType type = ShippingBinType.Basic;
-    private static HashMap<ShippingBin, Rectangle> shippingBinBounds = new HashMap<>();
     private ArrayList<BackPackable> items = new ArrayList<>();
     //only one player can have items in a shipping bin each day
     private Player todayItemOwner = null;
+    private int tileX;
+    private int tileY;
 
-    public ShippingBin(int x, int y) {
-        shippingBinBounds.put(this, new Rectangle(
+    public ShippingBin(int x, int y, Game game) {
+        game.getShippingBinBounds().put(this, new Rectangle(
                 x * GameAssetManager.getGameAssetManager().getTileWidth(),
                 y * GameAssetManager.getGameAssetManager().getTileHeight(),
                 GameAssetManager.getGameAssetManager().getTileWidth(),
                 GameAssetManager.getGameAssetManager().getTileHeight())
         );
+        this.tileX = x;
+        this.tileY = y;
     }
 
     public void addItem(BackPackable backPackable) {
         items.add(backPackable);
     }
 
-    public static void goToNextDay() {
-        for (ShippingBin shippingBin : shippingBinBounds.keySet()) {
+    public static void goToNextDay(Game game) {
+        for (ShippingBin shippingBin : game.getShippingBinBounds().keySet()) {
             double total = 0;
             for (BackPackable item : shippingBin.items) {
                 if (item.getClass().equals(Crop.class)) {
@@ -94,7 +98,15 @@ public class ShippingBin implements Placeable, BackPackable {
         return type;
     }
 
-    public static HashMap<ShippingBin, Rectangle> getShippingBinBounds() {
-        return shippingBinBounds;
+    public ArrayList<BackPackable> getItems() {
+        return items;
+    }
+
+    public int getTileX() {
+        return tileX;
+    }
+
+    public int getTileY() {
+        return tileY;
     }
 }

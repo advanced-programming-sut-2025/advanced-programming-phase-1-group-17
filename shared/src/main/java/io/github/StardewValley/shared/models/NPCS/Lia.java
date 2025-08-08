@@ -1,6 +1,8 @@
 package io.github.StardewValley.shared.models.NPCS;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.cooking.Food;
@@ -67,7 +69,7 @@ public class Lia extends NPC implements Placeable {
         requests.add(new Quest("Delivery of a salmon fish",1,false,"salmon",1));
         requests.add(new Quest("Delivery of 200 woods",2,false,"Wood",200));
     }
-    public void giveReward(Player player, int index) {
+    public void giveReward(Player player, int index, Game game) {
         if (index == 0) {
             player.getBackPack().addcoin(500);
         } else if (index == 1) {
@@ -76,7 +78,7 @@ public class Lia extends NPC implements Placeable {
             player.getBackPack().addItemToInventory(f);
         } else {
             for (int i =0 ; i < 3; i++) {
-                CraftingItem c = new CraftingItem(CraftingItemType.DeluxeScarecrow, player);
+                CraftingItem c = new CraftingItem(CraftingItemType.DeluxeScarecrow, player, game);
                 player.getBackPack().addItemToInventory(c);
             }
         }

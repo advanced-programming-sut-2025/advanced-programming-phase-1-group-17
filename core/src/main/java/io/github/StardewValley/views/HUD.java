@@ -74,6 +74,7 @@ public class HUD {
         tooltipFont.getData().setScale(1f);
         tooltipFont.setColor(1, 1, 1, 1);
     }
+
     public void updateData(HudDataDTO newData) {
         this.hudData = newData;
     }
@@ -81,11 +82,8 @@ public class HUD {
 
     public void render(SpriteBatch batch, float v) throws Exception {
         // تنظیم دوربین HUD
-        Main.getBatch().setProjectionMatrix(hudCamera.combined);
-
-        renderEnergyBar(batch);
-        renderInventoryBar(batch);
-        Main.getBatch().begin();
+        batch.begin();
+        batch.setProjectionMatrix(hudCamera.combined);
 
         int hudWidth = clock.getWidth();
         int hudHeight = clock.getHeight();
@@ -97,8 +95,8 @@ public class HUD {
         int arrowX = 1765;
         int arrowY = 980;
 
-        Main.getBatch().draw(clock, x, y, clock.getWidth() * 3, clock.getHeight() * 3);
-        Main.getBatch().draw(arrow
+        batch.draw(clock, x, y, clock.getWidth() * 3, clock.getHeight() * 3);
+        batch.draw(arrow
             , arrowX, arrowY
             , 10, 10
             , arrow.getRegionWidth() * arrowSize, arrow.getRegionHeight() * arrowSize
@@ -106,22 +104,24 @@ public class HUD {
             ,hudData.getTimeAngle()
         );
         float otherSize = 3.2f;
-        Main.getBatch().draw(sunny, 1794, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
+        batch.draw(sunny, 1794, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
 
-        Main.getBatch().draw(spring, 1867, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
+        batch.draw(spring, 1867, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
 
 
         // کشیدن مقدار پول
 
         while (money > 0) {
-            font.draw(Main.getBatch(), String.valueOf(money % 10), 1885 - 18 * i, Gdx.graphics.getHeight() - 150);
+            font.draw(batch, String.valueOf(money % 10), 1885 - 18 * i, Gdx.graphics.getHeight() - 150);
             money /= 10;
             i++;
         }
-        dateFont.draw(Main.getBatch(), hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
-        timeFont.draw(Main.getBatch(), hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
+        dateFont.draw(batch, hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
+        timeFont.draw(batch, hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
+        batch.end();
 
-        Main.getBatch().end();
+        renderEnergyBar(batch);
+        renderInventoryBar(batch);
         timesinceLastUpdate +=v;
         if(timesinceLastUpdate>=1){
             timesinceLastUpdate = 0;

@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.NPCS;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
@@ -80,13 +81,13 @@ public class Abigail extends NPC implements Placeable {
         requests.add(new Quest("Delivery of 50 wheat", 2, false, "Wheat", 50));
     }
 
-    public void giveReward(Player player, int index) {
+    public void giveReward(Player player, int index, Game game) {
         if (index == 0) {
             player.getFriendShipsWithNPCs().put(this, Math.min(799, player.getFriendShipsWithNPCs().get(this) + 200));
         } else if (index == 1) {
             player.getBackPack().addcoin(500);
         } else {
-            CraftingItem c = new CraftingItem(CraftingItemType.IridiumSprinkler, player);
+            CraftingItem c = new CraftingItem(CraftingItemType.IridiumSprinkler, player, game);
             player.getBackPack().addItemToInventory(c);
         }
     }

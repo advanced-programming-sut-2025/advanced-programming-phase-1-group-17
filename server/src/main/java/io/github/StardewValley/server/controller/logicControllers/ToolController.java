@@ -423,23 +423,23 @@ public class ToolController {
     }
 
 
-    public HandleWorldClickResponse placeCraftingItem(int dx, int dy, Player player) {
+    public HandleWorldClickResponse placeCraftingItem(int dx, int dy, Player player, Game game) {
         System.out.println("Placing Crafting Item.");
         CraftingItemType craftingItemType = (CraftingItemType) player.getEquippedItem().getType();
 
         int x = player.getX() / GameAssetManager.getGameAssetManager().getTileWidth() + dx;
         int y = player.getY() / GameAssetManager.getGameAssetManager().getTileHeight() + dy;
-        Tile tile = AppServer.getCurrentGame().getTile(x, y);
+        Tile tile = game.getTile(x, y);
 
         if (tile.getPlaceable() != null) {
             return new HandleWorldClickResponse(false, "tile is full", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
 
         player.getBackPack().useItem(craftingItemType);
-        CraftingItem craftingItem = new CraftingItem(craftingItemType, player);
+        CraftingItem craftingItem = new CraftingItem(craftingItemType, player, game);
         craftingItem.setStart_x(x);
         craftingItem.setStart_y(y);
-        craftingItem.addCraftingItemBound();
+        game.addCraftingItem(craftingItem);
 
         tile.setPlaceable(craftingItem);
         tile.setWalkAble(false);

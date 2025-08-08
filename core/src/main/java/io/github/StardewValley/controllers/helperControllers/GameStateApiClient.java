@@ -1223,6 +1223,7 @@ public class GameStateApiClient {
             Request request = new Request.Builder()
                 .url(BASE_URL + "/game/greenhouse/buildGreenhouse")
                 .addHeader("Authorization", token)
+                .post(RequestBody.create(new byte[0], null)) // Empty body
                 .build();
 
             // 4. Execute

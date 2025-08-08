@@ -236,8 +236,8 @@ public class PlayerMap {
 
 
             //Creating Stores
-            createStores();
-            createShippingBins();
+            createStores(game);
+            createShippingBins(game);
 
             //TREE FORAGING STONES
             int numOfTrees = randomInt(15, 25);
@@ -378,60 +378,60 @@ public class PlayerMap {
 
     }
 
-    private void createShippingBins() {
+    private void createShippingBins(Game game) {
         Tile tile = Tile.getTile(10, 5);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(10, 5));
+            tile.setPlaceable(new ShippingBin(10, 5, game));
             tile.setWalkAble(false);
         }
         tile = Tile.getTile(30, 230);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(30, 230));
+            tile.setPlaceable(new ShippingBin(30, 230, game));
             tile.setWalkAble(false);
         }
         tile = Tile.getTile(280, 30);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(280, 30));
+            tile.setPlaceable(new ShippingBin(280, 30, game));
             tile.setWalkAble(false);
         }
         tile = Tile.getTile(180, 130);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(180, 130));
+            tile.setPlaceable(new ShippingBin(180, 130, game));
             tile.setWalkAble(false);
         }
         tile = Tile.getTile(70, 50);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(70, 50));
+            tile.setPlaceable(new ShippingBin(70, 50, game));
             tile.setWalkAble(false);
 
         }
         tile = Tile.getTile(70, 250);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(70, 250));
+            tile.setPlaceable(new ShippingBin(70, 250, game));
             tile.setWalkAble(false);
         }
         tile = Tile.getTile(100, 105);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(100, 105));
+            tile.setPlaceable(new ShippingBin(100, 105, game));
             tile.setWalkAble(false);
         }
         tile = Tile.getTile(220, 50);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(220, 50));
+            tile.setPlaceable(new ShippingBin(220, 50, game));
             tile.setWalkAble(false);
         }
         tile = Tile.getTile(220, 250);
         if (tile.getPlaceable() == null) {
-            tile.setPlaceable(new ShippingBin(220, 250));
+            tile.setPlaceable(new ShippingBin(220, 250, game));
             tile.setWalkAble(false);
         }
     }
 
-    private void createStores() {
+    private void createStores(Game game) {
         Store store = new Store(StoreType.Blacksmith, 60, 130, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //game.getStoreManager().addStore(StoreType.Blacksmith, store);
+                game.getMarketsController().addStore(StoreType.Blacksmith, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -440,7 +440,7 @@ public class PlayerMap {
         store = new Store(StoreType.Ranch, 80, 180, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //game.getStoreManager().addStore(StoreType.Ranch, store);
+                game.getMarketsController().addStore(StoreType.Ranch, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -449,7 +449,7 @@ public class PlayerMap {
         store = new Store(StoreType.StardropSaloon, 160, 30, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //game.getStoreManager().addStore(StoreType.StardropSaloon, store);
+                game.getMarketsController().addStore(StoreType.StardropSaloon, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -458,7 +458,7 @@ public class PlayerMap {
         store = new Store(StoreType.CarpentersShop, 180, 80, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //game.getStoreManager().addStore(StoreType.CarpentersShop, store);
+                game.getMarketsController().addStore(StoreType.CarpentersShop, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -467,7 +467,7 @@ public class PlayerMap {
         store = new Store(StoreType.JojaMart, 230, 180, 12, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //game.getStoreManager().addStore(StoreType.JojaMart, store);
+                game.getMarketsController().addStore(StoreType.JojaMart, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -476,7 +476,7 @@ public class PlayerMap {
         store = new Store(StoreType.PierresGeneralStore, 110, 230, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //game.getStoreManager().addStore(StoreType.PierresGeneralStore, store);
+                game.getMarketsController().addStore(StoreType.PierresGeneralStore, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -485,7 +485,7 @@ public class PlayerMap {
         store = new Store(StoreType.FishShop, 130, 280, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //game.getStoreManager().addStore(StoreType.FishShop, store);
+                game.getMarketsController().addStore(StoreType.FishShop, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }

@@ -14,7 +14,6 @@ import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.dto.GameState;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.enums.Season;
-import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CropAssetManager;
@@ -172,41 +171,24 @@ public class WorldController {
                 return;
             }
             case "GreenHouse" -> {
-                return;
+                if (tile.isPlowed())
+                    Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getPlowedTexture(), printX, printY);
             }
-            //TODo
-            case "Sebastian" -> {
+            case "Sebastian", "Robin", "Lia", "Harvey", "Abigail" -> {
                 if (!tile.getTexture().startsWith("hut")) {
                     Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
                 }
             }
-            case "Robin" -> {
-                if (!tile.getTexture().startsWith("hut")) {
-                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-                }
+            case "normalItem" -> {
+                if (tile.getGrassTextureID() != 0)
+                    Main.getBatch().draw(GameAssetManager.getGameAssetManager().getGrassTextures().get(tile.getGrassTextureID()),
+                        printX, printY,
+                        printWidth, printHeight);
+                else
+                    Main.getBatch().draw(texture,
+                        printX, printY,
+                        printWidth, printHeight);
             }
-            case "Lia" -> {
-                if (!tile.getTexture().startsWith("hut")) {
-                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-                }
-            }
-            case "Harvey" -> {
-                if (!tile.getTexture().startsWith("hut")) {
-                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-                }
-            }
-            case "Abigail" -> {
-                if (!tile.getTexture().startsWith("hut")) {
-                    Main.getBatch().draw(texture, printX, printY, (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-                }
-            }
-//            case NormalItem normalItem when normalItem.getType().equals(NormalItemType.Grass) ->
-//                Main.getBatch().draw(normalItem.getGrassTextureRegion(),
-//                    printX, printY,
-//                    printWidth, printHeight);
-//                else
-//
-//            }
             case "Lake" -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
             case null, default -> {
                 if (texture == null)
@@ -231,7 +213,7 @@ public class WorldController {
 
             if (bar != null) {
                 if (craftingItem.isInProgress() && !craftingItem.isArtisanProductReady()) {
-                    float value = craftingItem.getProgress(); // e.g., returns 0.0 to 1.0
+                    float value = GameClient.getArtisanProductionProgress(craftingItem); // e.g., returns 0.0 to 1.0
                     bar.setValue(value);
                     bar.setPosition(craftingItem.getTileX() * tileWidth,
                         craftingItem.getTileY() * tileHeight + GameAssetManager.getGameAssetManager().getTileHeight() + 5);
@@ -276,7 +258,7 @@ public class WorldController {
     }
 
     private void drawStores() {
-        GameAssetManager assets = GameAssetManager.getGameAssetManager();
+        GameAssetManagerClient assets = GameAssetManagerClient.getGameAssetManager();
         Season season = gameState.getTimeAndDateDTO().getSeason();
 
         for (StoreType storeType : StoreType.values()) {

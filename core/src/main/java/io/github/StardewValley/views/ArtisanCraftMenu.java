@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.UIControllers.ArtisanCraftMenuController;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 
@@ -26,7 +27,7 @@ public class ArtisanCraftMenu implements Screen {
     private final ArtisanCraftMenuController controller;
     private Stage stage;
     private final Skin skin;
-    private final CraftingItem craftingItem;
+    private final CraftingItemDTO craftingItemDTO;
 
     private final Table mainTable;
     private final Label titleLabel;
@@ -39,17 +40,17 @@ public class ArtisanCraftMenu implements Screen {
     private final HashMap<BackpackableTypeDTO, Integer> selectedItems = new HashMap<>();
 
 
-    public ArtisanCraftMenu(ArtisanCraftMenuController controller, Skin skin, CraftingItem craftingItem) {
+    public ArtisanCraftMenu(ArtisanCraftMenuController controller, Skin skin, CraftingItemDTO craftingItemDTO) {
         this.controller = controller;
         controller.setView(this);
-        this.craftingItem = craftingItem;
-        controller.setArtisan(craftingItem);
+        this.craftingItemDTO = craftingItemDTO;
+        controller.setArtisan(this.craftingItemDTO);
 
         this.skin = skin;
 
         this.mainTable = new Table();
 
-        this.titleLabel = new Label("%s Crafting Menu".formatted(craftingItem.getName()), skin);
+        this.titleLabel = new Label("%s Crafting Menu".formatted(this.craftingItemDTO.getType()), skin);
         this.titleLabel.setFontScale(2f);
         titleLabel.setAlignment(Align.center);
 
@@ -58,7 +59,7 @@ public class ArtisanCraftMenu implements Screen {
         this.errorLabel = new Label("", skin);
         this.errorLabel.setAlignment(Align.center);
 
-        this.craftButton = new TextButton("Craft %s".formatted(craftingItem.getName()), skin);
+        this.craftButton = new TextButton("Craft %s".formatted(this.craftingItemDTO.getType()), skin);
         this.craftButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

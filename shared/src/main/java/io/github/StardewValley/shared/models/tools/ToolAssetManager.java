@@ -56,7 +56,7 @@ public class ToolAssetManager {
     private void loadTrashCanTextures() {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "_Steel" : "_%s".formatted(material.name());
-            toolTexturePaths.get(ToolType.Axe).put(material, "Tools/Trash_Can%s.png".formatted(materialName));
+            toolTexturePaths.get(ToolType.TrashCan).put(material, "Tools/Trash_Can%s.png".formatted(materialName));
         }
     }
 

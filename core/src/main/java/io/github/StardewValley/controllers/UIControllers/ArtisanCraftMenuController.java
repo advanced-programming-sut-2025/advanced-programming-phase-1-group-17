@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
@@ -13,13 +14,13 @@ import java.util.HashMap;
 
 public class ArtisanCraftMenuController {
     private ArtisanCraftMenu view;
-    private CraftingItem artisan;
+    private CraftingItemDTO artisan;
 
     public void setView(ArtisanCraftMenu view) {
         this.view = view;
     }
 
-    public void setArtisan(CraftingItem artisan) {
+    public void setArtisan(CraftingItemDTO artisan) {
         this.artisan = artisan;
     }
 

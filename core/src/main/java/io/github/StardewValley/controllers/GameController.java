@@ -185,7 +185,6 @@ public class GameController {
     }
 
     public void handlePlayerInput() {
-        //player = App.getCurrentGame().getCurrentPlayingPlayer();
         int dx = 0, dy = 0;
         switch (player.getLastDirection()) {
             case UP:
@@ -232,7 +231,6 @@ public class GameController {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
-        //TODO handle player
         else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new InventoryView(new InventoryController(),
@@ -285,7 +283,7 @@ public class GameController {
                 Main.getMain().setScreen(new StoreMenu(
                     new StoreMenuController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin(),
-                    (StoreType) result.getPayload()
+                    result.getStoreType()
                 ));
             }
             case OPEN_ARTISAN_CRAFT_MENU -> {
@@ -293,7 +291,7 @@ public class GameController {
                 Main.getMain().setScreen(new ArtisanCraftMenu(
                     new ArtisanCraftMenuController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin(),
-                    (CraftingItem) result.getPayload()
+                    result.getCraftingItemDTO()
                 ));
             }
             case OPEN_GREENHOUSE_BUILD -> {
@@ -306,7 +304,7 @@ public class GameController {
             case OPEN_SHIPPING_BIN_MENU -> {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new ShippingBinScreen(
-                    (TileDTO) result.getPayload(),
+                    result.getTileDTO(),
                     new ShippingBinScreenController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin()
                 ));
@@ -316,7 +314,7 @@ public class GameController {
                 Main.getMain().setScreen(new ArtisanInfoMenu(
                     new ArtisanInfoMenuController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin(),
-                    (CraftingItemDTO) result.getPayload()
+                    result.getCraftingItemDTO()
                 ));
             }
             default -> {
