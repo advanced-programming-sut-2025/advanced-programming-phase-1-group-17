@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.map;
 
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Fence;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
@@ -55,7 +54,7 @@ public class PlayerMap {
         this.player = player;
     }
 
-    public PlayerMap(int index, Player owner) {
+    public PlayerMap(int index, Player owner,Game game) {
         this.animalPlaces = new ArrayList<>();
         this.animals = new ArrayList<>();
         if (index == 0) {
@@ -140,22 +139,22 @@ public class PlayerMap {
             this.player = owner;
             owner.setPlayerMap(this);
 
-            Abigail abigail2 = (Abigail) App.getCurrentGame().getNPCs().get(0);
-            Harvey harvey2 = (Harvey) App.getCurrentGame().getNPCs().get(1);
-            Lia lia2 = (Lia) App.getCurrentGame().getNPCs().get(2);
-            Robin robin2 = (Robin) App.getCurrentGame().getNPCs().get(3);
-            Sebastian sebastian2 = (Sebastian) App.getCurrentGame().getNPCs().get(4);
+            Abigail abigail2 = (Abigail) game.getNPCs().get(0);
+            Harvey harvey2 = (Harvey) game.getNPCs().get(1);
+            Lia lia2 = (Lia) game.getNPCs().get(2);
+            Robin robin2 = (Robin) game.getNPCs().get(3);
+            Sebastian sebastian2 = (Sebastian) game.getNPCs().get(4);
             Abigail abigail = new Abigail(false, 145, 102);
             Harvey harvey = new Harvey(false, 145, 122);
             Lia lia = new Lia(false, 145, 142);
             Robin robin = new Robin(false, 145, 162);
             Sebastian sebastian = new Sebastian(false, 145, 182);
 
-            App.getCurrentGame().getNPCHuts().add(abigail);
-            App.getCurrentGame().getNPCHuts().add(harvey);
-            App.getCurrentGame().getNPCHuts().add(lia);
-            App.getCurrentGame().getNPCHuts().add(robin);
-            App.getCurrentGame().getNPCHuts().add(sebastian);
+            game.getNPCHuts().add(abigail);
+            game.getNPCHuts().add(harvey);
+            game.getNPCHuts().add(lia);
+            game.getNPCHuts().add(robin);
+            game.getNPCHuts().add(sebastian);
             for (int k = 0; k < 81; k += 20) {
                 for (int i = 145; i <= 149; i++) {
                     for (int j = 102 + k; j <= 106 + k; j++) {
@@ -414,7 +413,7 @@ public class PlayerMap {
         Store store = new Store(StoreType.Blacksmith, 60, 130, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //App.getCurrentGame().getStoreManager().addStore(StoreType.Blacksmith, store);
+                //game.getStoreManager().addStore(StoreType.Blacksmith, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -423,7 +422,7 @@ public class PlayerMap {
         store = new Store(StoreType.Ranch, 80, 180, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //App.getCurrentGame().getStoreManager().addStore(StoreType.Ranch, store);
+                //game.getStoreManager().addStore(StoreType.Ranch, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -432,7 +431,7 @@ public class PlayerMap {
         store = new Store(StoreType.StardropSaloon, 160, 30, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //App.getCurrentGame().getStoreManager().addStore(StoreType.StardropSaloon, store);
+                //game.getStoreManager().addStore(StoreType.StardropSaloon, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -441,7 +440,7 @@ public class PlayerMap {
         store = new Store(StoreType.CarpentersShop, 180, 80, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //App.getCurrentGame().getStoreManager().addStore(StoreType.CarpentersShop, store);
+                //game.getStoreManager().addStore(StoreType.CarpentersShop, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -450,7 +449,7 @@ public class PlayerMap {
         store = new Store(StoreType.JojaMart, 230, 180, 12, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //App.getCurrentGame().getStoreManager().addStore(StoreType.JojaMart, store);
+                //game.getStoreManager().addStore(StoreType.JojaMart, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -459,7 +458,7 @@ public class PlayerMap {
         store = new Store(StoreType.PierresGeneralStore, 110, 230, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //App.getCurrentGame().getStoreManager().addStore(StoreType.PierresGeneralStore, store);
+                //game.getStoreManager().addStore(StoreType.PierresGeneralStore, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
@@ -468,7 +467,7 @@ public class PlayerMap {
         store = new Store(StoreType.FishShop, 130, 280, 8, 8);
         for (int i = store.getStart_x(); i < store.getStart_x() + store.getWidth(); i++) {
             for (int j = store.getStart_y(); j < store.getStart_y() + store.getHeight(); j++) {
-                //App.getCurrentGame().getStoreManager().addStore(StoreType.FishShop, store);
+                //game.getStoreManager().addStore(StoreType.FishShop, store);
                 Tile.getTile(i, j).setPlaceable(store);
                 Tile.getTile(i, j).setWalkAble(false);
             }
