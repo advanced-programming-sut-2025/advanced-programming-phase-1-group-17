@@ -21,6 +21,7 @@ import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
+import io.github.StardewValley.shared.models.NPCdto;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.Result;
 
@@ -95,13 +96,15 @@ public class GameView implements Screen, InputProcessor {
         dialogueTable.add(dialogueLabel).padTop(50);
 
 
-        window = new Window("Interactions", skin);
-        talkButton = new TextButton("Talk", skin);
-        tradeButton = new TextButton("Trade", skin);
-        hugButton = new TextButton("Hug", skin);
-        giftButton = new TextButton("Gift", skin);
-        givingFlower = new TextButton("Giving Flower", skin);
-        askMarriageButton = new TextButton("Ask Marriage", skin);
+        Skin skin2 = new Skin(Gdx.files.internal("Skin/skin2/star-soldier-ui.json"));
+        window = new Window("Interactions", skin2);
+        talkButton = new TextButton("Talk", skin2);
+        tradeButton = new TextButton("Trade", skin2);
+        hugButton = new TextButton("Hug", skin2);
+        giftButton = new TextButton("Gift", skin2);
+        givingFlower = new TextButton("Giving Flower", skin2);
+        askMarriageButton = new TextButton("Ask Marriage", skin2);
+
         error = new Label("", skin);
         content = new Table(skin);
 
@@ -276,13 +279,13 @@ public class GameView implements Screen, InputProcessor {
         if (GameClient.getPlayer().isNewMessage()) {
             error.setText("you have a new message");
         }
-//        timer += delta;
-//        if (timer >= 3) {
-//            updateNearPlayerAndNpc();
-//            timer = 0;
-//        }
-//        if (activeWindow) updateInteractions();
-//        updateDialogue(delta);
+        timer += delta;
+        if (timer >= 3) {
+            updateNearPlayerAndNpc();
+            timer = 0;
+        }
+        if (activeWindow) updateInteractions();
+        updateDialogue(delta);
 
 
         stage.addActor(dialogueTable);
@@ -297,6 +300,7 @@ public class GameView implements Screen, InputProcessor {
 
     public void updateNearPlayerAndNpc() {
         targetPlayer = null;
+        nearbyNPC = null;
         for (String username : GameClient.getUserNameOfPlayers()) {
             if (username.equals(GameClient.getPlayer().getUser().getUsername())) continue;
             PlayerDto pd = GameClient.getGameStateApiClient().getPlayerDTOByUserName(username);
@@ -305,14 +309,38 @@ public class GameView implements Screen, InputProcessor {
                 break;
             }
         }
-//        nearbyNPC = getNearbyNPC();
+        for (int i = 0; i < 5; i++) {
+            NPCdto npc = GameClient.getGameStateApiClient().getNPCDtoByIndex(i);
+            if (sideBySide(npc, GameClient.getPlayer())) {
+                nearbyNPC = npc.getName();
+                break;
+            }
+        }
+    }
+
+    public boolean sideBySide(NPCdto npc, PlayerClient player) {
+        int x = npc.getX();
+        int y = npc.getY();
+        int x1 = player.getTileX();
+        int y1 = player.getTileY();
+        if ((x == x1 && y == y1)
+            || (x == x1 + 1 && y == y1)
+            || (x == x1 - 1 && y == y1)
+            || (x == x1 && y == y1 + 1)
+            || (x == x1 - 1 && y == y1 + 1)
+            || (x == x1 + 1 && y == y1 + 1)
+            || (x == x1 && y == y1 - 1)
+            || (x == x1 + 1 && y == y1 - 1)
+            || (x == x1 - 1 && y == y1 - 1)) {
+            return true;
+        } else return false;
     }
 
     public boolean sideBySide(PlayerDto currentPlayer, PlayerClient player) {
         int playerWidth = 120;
         float centerX = currentPlayer.getX() + playerWidth / 2f;
         int x = (int) (centerX / 120);
-        float centerY = currentPlayer.getX() + playerWidth / 2f;
+        float centerY = currentPlayer.getY() + playerWidth / 2f;
         int y = (int) (centerY / 120);
         int x1 = player.getTileX();
         int y1 = player.getTileY();
@@ -445,9 +473,6 @@ public class GameView implements Screen, InputProcessor {
         this.error.setText(error);
     }
 
-    public String getNearbyNPC() {
-        return GameClient.gameStateApiClient.getNearbyNPC();
-    }
 
     public String getDialogueTextNPCByName(String Name) {
         return GameClient.gameStateApiClient.getDialogueTextNPCByName(Name);

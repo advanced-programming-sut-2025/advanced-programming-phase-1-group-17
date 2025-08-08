@@ -1380,5 +1380,18 @@ public class GameStateController {
         }
         return ResponseEntity.ok(response);
     }
+    @PostMapping("/getNPCDtoByIndex")
+    public ResponseEntity<NPCdto> getNPCDtoByIndex(@RequestHeader("Authorization") String token, @RequestParam int index) {
+        NPC npc = AppServer.getCurrentGame().getNPCs().get(index);
+        return ResponseEntity.ok(new NPCdto(npc.getX(), npc.getY(), npc.getName(),npc.getTexture()));
+    }
+    @GetMapping("/getAllTiles")
+    public ResponseEntity<List<TileDTO>> getAllTiles(@RequestHeader("Authorization") String token) {
+        List<TileDTO> list = new ArrayList<>();
+        for (Tile tile : AppServer.getCurrentGame().getTiles()) {
+            list.add(new TileDTO(tile));
+        }
+        return ResponseEntity.ok(list);
+    }
 
 }
