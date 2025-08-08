@@ -1,18 +1,10 @@
 package io.github.StardewValley.shared.models.animal;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
 
@@ -44,7 +36,8 @@ public class AnimalPlace implements Placeable {
 //        );
         if (Gdx.input.justTouched()) {
             Vector3 vector3 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            App.getCamera().unproject(vector3);
+            //TODO
+            //App.getCamera().unproject(vector3);
 //            if (this.getHitBox().contains(vector3.x, vector3.y)) {
 //                Main.getMain().getScreen().dispose();
 //                Main.getMain().setScreen(new AnimalPlaceShow(GameAssetManager.getGameAssetManager().getSkin(), App.getGameView(),this));

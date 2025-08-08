@@ -32,7 +32,7 @@ public class SkillMenu implements Screen {
     private final Label fishingLabel;
 
     private final TextButton exitButton;
-    private AbilityDTO playerAbilities = GameClient.getPlayer().getAbility();
+    private AbilityDTO playerAbilities;
 
 
     public SkillMenu(SkillMenuController skillMenuController, Skin skin, GameView gameView) {
@@ -46,6 +46,7 @@ public class SkillMenu implements Screen {
         manager.resetTime = 0.1f;
         manager.hideAll();
 
+        this.playerAbilities = GameClient.getPlayer().getAbility();
         this.farmingLabel = new Label("Your farming Ability is Level %d".formatted(playerAbilities.getFarmingLevel()), skin);
         this.farmingLabel.setFontScale(1.6f); this.farmingLabel.setFontScale(1.6f);
         Tooltip<Label> tooltip = new Tooltip<>(new Label("Upgrading this ability increases the probability of harvesting high quality crops and fruits", skin));

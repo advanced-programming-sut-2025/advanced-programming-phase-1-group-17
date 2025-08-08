@@ -10,19 +10,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.GameClient;
-import io.github.StardewValley.controllers.GameController;
-import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.controllers.PlayerClient;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.HudDataDTO;
-import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.PlayerDto;
-import io.github.StardewValley.shared.models.backpack.BackPackable;
-import io.github.StardewValley.shared.models.backpack.BackPackableType;
-
-
-import java.util.ArrayList;
-import java.util.Map;
 
 public class HUD {
     private Texture clock;
@@ -86,6 +75,7 @@ public class HUD {
         this.hudData = newData;
     }
     private float timesinceLastUpdate = 0;
+
     public void render(SpriteBatch batch, float v) throws Exception {
 //        // تنظیم دوربین HUD
 //        batch.setProjectionMatrix(hudCamera.combined);
@@ -124,7 +114,7 @@ public class HUD {
 //        dateFont.draw(batch, hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
 //        timeFont.draw(batch, hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
 //
-//        renderEnergyBar(batch);
+        renderEnergyBar(batch);
 //        renderInventoryBar(batch);
 //        timesinceLastUpdate +=v;
 //        if(timesinceLastUpdate>=1){

@@ -4,21 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import io.github.StardewValley.App;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.UIControllers.*;
-import io.github.StardewValley.controllers.UIControllers.LightningRenderController;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.animal.FishingController;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
-import io.github.StardewValley.shared.models.map.Lake;
 import io.github.StardewValley.views.*;
-import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MapView;
@@ -216,13 +212,15 @@ public class GameController {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
             Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManagerClient.getGameAssetManager().getSkin(), view));
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            try {
-                App.getCurrentGame().getDate().goToNextDay();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+        }
+//        else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+//            try {
+//                App.getCurrentGame().getDate().goToNextDay();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             HandleWorldClickResponse result = null;
             try {
                 result = GameClient.getGameStateApiClient().handleWorldClick(dx, dy, Input.Buttons.LEFT);

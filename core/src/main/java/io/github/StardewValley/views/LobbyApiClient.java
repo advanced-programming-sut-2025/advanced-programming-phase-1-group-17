@@ -2,7 +2,6 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.GameDTO;
 import io.github.StardewValley.shared.models.LobbyDto;
 import io.github.StardewValley.shared.models.LobbyStatus;

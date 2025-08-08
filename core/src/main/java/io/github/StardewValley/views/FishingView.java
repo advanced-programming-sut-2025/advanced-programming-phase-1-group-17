@@ -7,13 +7,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.animal.FishingController;
 import io.github.StardewValley.shared.models.market.Fish;
-import io.github.StardewValley.shared.models.tools.FishingPoleType;
-import io.github.StardewValley.shared.models.tools.Tool;
-import io.github.StardewValley.shared.models.tools.ToolMaterial;
-import io.github.StardewValley.shared.models.tools.ToolType;
 
 public class FishingView implements Screen {
     private FishingController controller;

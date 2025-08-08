@@ -12,18 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.UIControllers.ArtisanCraftMenuController;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.backpack.BackPackable;
-import io.github.StardewValley.shared.models.backpack.BackPackableType;
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

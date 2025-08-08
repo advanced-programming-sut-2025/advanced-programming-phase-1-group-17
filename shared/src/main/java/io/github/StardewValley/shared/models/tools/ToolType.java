@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.tools;
 
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum ToolType implements BackPackableType  {

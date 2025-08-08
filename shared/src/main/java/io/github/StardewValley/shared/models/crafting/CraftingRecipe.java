@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.crafting;
 
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.Player;
 
 public class CraftingRecipe {
