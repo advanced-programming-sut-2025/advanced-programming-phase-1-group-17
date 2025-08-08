@@ -2,8 +2,8 @@ package io.github.StardewValley.controllers;
 
 import com.google.gson.Gson;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.dto.RegisterRequest;
@@ -83,7 +83,7 @@ public class SignUpMenuController {
             RegisterResponse registerResponse = gson.fromJson(responseJson, RegisterResponse.class);
 
             if (registerResponse.isSuccess()) {
-                App.setLoggedInUser(new UserDTO(username, nickname, gender));
+                GameClient.setLoggedInUser(new UserDTO(username, nickname, gender));
                 return new Result(true, "User registered successfully!");
             } else {
                 return new Result(false, registerResponse.getMessage());

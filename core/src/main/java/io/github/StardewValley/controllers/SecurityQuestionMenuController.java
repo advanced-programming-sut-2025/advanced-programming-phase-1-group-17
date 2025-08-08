@@ -2,10 +2,10 @@ package io.github.StardewValley.controllers;
 
 import com.google.gson.Gson;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.SecurityQuestionRequest;
 import io.github.StardewValley.shared.dto.SecurityQuestionResponse;
-import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.enums.NetworkRequests;
@@ -22,7 +22,7 @@ public class SecurityQuestionMenuController {
 
     public void setQuestion(String question) {
         this.question = question;
-        this.user = App.getLoggedInUser();
+        this.user = GameClient.getLoggedInUser();
     }
 
     public void checkAnswer() {
@@ -33,8 +33,7 @@ public class SecurityQuestionMenuController {
 
             user.setSecurityQuestion(question);
             user.setSecurityAnswer(view.getSecurityAnswer().getText());
-            //TODo
-            //SaveUser.saveUser(App.getUsers());
+
 
             Result serverResponse = sendSecurityQuestion();
             if (!serverResponse.successful()) {

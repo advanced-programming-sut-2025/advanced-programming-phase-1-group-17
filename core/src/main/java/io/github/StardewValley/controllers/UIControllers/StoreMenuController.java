@@ -9,7 +9,6 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.GetMarketInventoryResponse;
-import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.market.*;
 import io.github.StardewValley.views.ItemMenu;
 import io.github.StardewValley.views.StoreMenu;
@@ -83,8 +82,8 @@ public class StoreMenuController {
             upgradeTable.add(new Label("Service",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(200);
             upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
-
-            MarketsController manager = App.getCurrentGame().getMarketsController();
+            //TODO App...
+//            MarketsController manager = App.getCurrentGame().getMarketsController();
             for (UpgradeServiceDTO upgradeServiceDTO : marketInventory.getUpgradeServices()) {
                 TextButton textButton = new TextButton(upgradeServiceDTO.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
                 textButton.addListener(new ClickListener() {
@@ -141,8 +140,8 @@ public class StoreMenuController {
             upgradeTable.add(new Label("Service",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(200);
             upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
-
-            MarketsController manager = App.getCurrentGame().getMarketsController();
+            //TODO App...
+//            MarketsController manager = App.getCurrentGame().getMarketsController();
             for (UpgradeServiceDTO upgradeServiceDTO : marketInventory.getUpgradeServices()) {
                 if (upgradeServiceDTO.getSoldToday() >= upgradeServiceDTO.getDailyLimit())
                     continue;
