@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.GameClient;
+import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.GameController;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.controllers.PlayerClient;
 import io.github.StardewValley.shared.models.HudDataDTO;
 
@@ -77,50 +80,50 @@ public class HUD {
     private float timesinceLastUpdate = 0;
 
     public void render(SpriteBatch batch, float v) throws Exception {
-//        // تنظیم دوربین HUD
-//        batch.setProjectionMatrix(hudCamera.combined);
-//
-//        int hudWidth = clock.getWidth();
-//        int hudHeight = clock.getHeight();
-//        int money = hudData.getMoney();
-//        int i = 0;
-//        int x = Gdx.graphics.getWidth() - hudWidth - 80; // فاصله از لبه راست
-//        int y = Gdx.graphics.getHeight() - hudHeight - 125; // فاصله از بالا
-//        float arrowSize = 3f;
-//        int arrowX = 1765;
-//        int arrowY = 980;
-//
-//        batch.draw(clock, x, y, clock.getWidth() * 3, clock.getHeight() * 3);
-//        batch.draw(arrow
-//            , arrowX, arrowY
-//            , 10, 10
-//            , arrow.getRegionWidth() * arrowSize, arrow.getRegionHeight() * arrowSize
-//            , 1f, 1f
-//            ,hudData.getTimeAngle()
-//        );
-//        float otherSize = 3.2f;
-//        batch.draw(sunny, 1794, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
-//
-//        batch.draw(spring, 1867, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
-//
-//
-//        // کشیدن مقدار پول
-//
-//        while (money > 0) {
-//            font.draw(batch, String.valueOf(money % 10), 1885 - 18 * i, Gdx.graphics.getHeight() - 150);
-//            money /= 10;
-//            i++;
-//        }
-//        dateFont.draw(batch, hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
-//        timeFont.draw(batch, hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
-//
-        renderEnergyBar(batch);
+        // تنظیم دوربین HUD
+        Main.getBatch().setProjectionMatrix(hudCamera.combined);
+
+        int hudWidth = clock.getWidth();
+        int hudHeight = clock.getHeight();
+        int money = hudData.getMoney();
+        int i = 0;
+        int x = Gdx.graphics.getWidth() - hudWidth - 80; // فاصله از لبه راست
+        int y = Gdx.graphics.getHeight() - hudHeight - 125; // فاصله از بالا
+        float arrowSize = 3f;
+        int arrowX = 1765;
+        int arrowY = 980;
+
+        Main.getBatch().draw(clock, x, y, clock.getWidth() * 3, clock.getHeight() * 3);
+        Main.getBatch().draw(arrow
+            , arrowX, arrowY
+            , 10, 10
+            , arrow.getRegionWidth() * arrowSize, arrow.getRegionHeight() * arrowSize
+            , 1f, 1f
+            ,hudData.getTimeAngle()
+        );
+        float otherSize = 3.2f;
+        Main.getBatch().draw(sunny, 1794, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
+
+        Main.getBatch().draw(spring, 1867, 973, spring.getRegionWidth() * otherSize, spring.getRegionHeight() * otherSize);
+
+
+        // کشیدن مقدار پول
+
+        while (money > 0) {
+            font.draw(Main.getBatch(), String.valueOf(money % 10), 1885 - 18 * i, Gdx.graphics.getHeight() - 150);
+            money /= 10;
+            i++;
+        }
+        dateFont.draw(Main.getBatch(), hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
+        timeFont.draw(Main.getBatch(), hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
+
+//        renderEnergyBar(batch);
 //        renderInventoryBar(batch);
-//        timesinceLastUpdate +=v;
-//        if(timesinceLastUpdate>=1){
-//            timesinceLastUpdate = 0;
-//            updateData(GameClient.getGameStateApiClient().getHudData());
-//        }
+        timesinceLastUpdate +=v;
+        if(timesinceLastUpdate>=1){
+            timesinceLastUpdate = 0;
+            updateData(GameClient.getGameStateApiClient().getHudData());
+        }
 
     }
 
