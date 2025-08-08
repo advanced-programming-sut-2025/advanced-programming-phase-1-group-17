@@ -85,7 +85,7 @@ public class WelcomeMenu implements Screen {
                 return mapper.readValue(is, boolean.class);
             }
         } else {
-            System.out.println("Error: " + responseCode);
+            System.out.println("Error: " + responseCode + "1");
             return false;
         }
 

@@ -39,6 +39,7 @@ public class GameClient {
     }
 
     public static GameStateApiClient getGameStateApiClient() {
+        gameStateApiClient.setToken(Main.getJwtToken());
         return gameStateApiClient;
     }
 
