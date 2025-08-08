@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Direction;
@@ -68,6 +69,7 @@ public class AnimalView {
     public void render(SpriteBatch batch, AnimalDTO dto, float delta) {
         stateTime += delta;
 
+
         EnumMap<Direction, Animation<TextureRegion>> animalAnims = animalsAnimationMap.get(dto.getAnimalType());
         if (animalAnims == null) return;
 
@@ -79,7 +81,6 @@ public class AnimalView {
         // رسم خود حیوان
         int width = GameAssetManagerClient.getGameAssetManager().getTexture(dto.getAnimalType().getInventoryTexturePath()).getWidth();
         int height = GameAssetManagerClient.getGameAssetManager().getTexture(dto.getAnimalType().getInventoryTexturePath()).getHeight();
-
         batch.draw(frame, dto.getX(), dto.getY(), width, height);
 
         // رسم علوفه اگر در حال خوردن است
