@@ -31,6 +31,7 @@ import java.util.Objects;
 
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Gender;
+import models.PlayerClient;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -241,7 +242,7 @@ public class GameView implements Screen, InputProcessor {
 
             try {
                 // TODO: شما باید ابتدا Endpoint و متد getAnimals را در سرور و ApiClient بسازید
-                System.out.println("Fetching animal data from server...");
+                //System.out.println("Fetching animal data from server...");
                 this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
             } catch (Exception e) {
                 System.err.println("Failed to fetch animal data: " + e.getMessage());

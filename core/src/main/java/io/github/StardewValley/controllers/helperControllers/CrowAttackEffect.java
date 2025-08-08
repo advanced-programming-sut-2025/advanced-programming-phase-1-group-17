@@ -1,4 +1,4 @@
-package io.github.StardewValley.models.plant;
+package io.github.StardewValley.controllers.helperControllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

@@ -1,11 +1,11 @@
-package io.github.StardewValley.controllers;
+package io.github.StardewValley.controllers.helperControllers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.tools.*;
+import models.PlayerClient;
 
 import java.util.HashMap;
 
@@ -15,18 +15,13 @@ public class ToolRenderController {
     private float toolAnimationTimer = 0;
     private final float TOOL_ANIMATION_DURATION = 0.4f;
 
-    private PlayerClient player;
+    private PlayerDto player;
 
     private Sprite toolSprite;
     private final HashMap<ToolType, HashMap<ToolMaterial, Sprite>> toolSprites = new HashMap<>();
     private final HashMap<FishingPoleType, String> fishingPoleTexturePaths = new HashMap<>();
 
-    public ToolRenderController(PlayerClient player) {
-        this.player = player;
-        //TODO
-//        this.toolSprite = getToolSprite(player.getToolType(), player.getToolMaterial(), player.getFishingPoleType());
-//        toolSprite.setOriginCenter(); // Rotation around center — adjust if needed
-
+    public ToolRenderController() {
         for (ToolType type : ToolType.values()) {
             if (type.equals(ToolType.FishingPole))
                 continue;
@@ -52,8 +47,7 @@ public class ToolRenderController {
 
     public void updateToolAnimation(float delta) {
         if (!isToolAnimating) return;
-        //TODO
-        //toolSprite = ToolAssetManager.getToolAssetManager().getToolSprite(player.getCurrentTool().getToolType());
+        toolSprite = getToolSprite(player.getToolType(), player.getToolMaterial(), player.getFishingPoleType());
 
         toolAnimationTimer += delta;
         float progress = toolAnimationTimer / TOOL_ANIMATION_DURATION;
@@ -78,17 +72,16 @@ public class ToolRenderController {
         return toolRotation;
     }
 
-    public void update(float delta, PlayerClient player) {
+    public void update(float delta, PlayerDto player) {
         this.player = player;
         updateToolAnimation(delta);
-        if (!player.getToolTexturePath().isEmpty())
-            drawTool();
+        drawTool();
     }
 
     private void drawTool() {
         if (!isToolAnimating()) {
-            Texture texture = GameAssetManagerClient.getGameAssetManager().getTexture(player.getToolTexturePath());
-            Main.getBatch().draw(texture, player.getX(), player.getY());
+            toolSprite = getToolSprite(player.getToolType(), player.getToolMaterial(), player.getFishingPoleType());
+            Main.getBatch().draw(toolSprite, player.getX(), player.getY());
         } else {
             if (toolSprite == null) return;
             // Position tool sprite relative to player position
@@ -163,10 +156,9 @@ public class ToolRenderController {
     }
 
     public Sprite getToolSprite(ToolType toolType, ToolMaterial toolMaterial, FishingPoleType fishingPoleType) {
-//TODO
+        //TODO make sprites texture
         //        if (toolType.equals(ToolType.FishingPole)) {
-//            FishingPoleType material = ((Tool)player.getBackPack().getBackPackItems().get(toolType).getFirst()).getFishingPoleMaterial();
-//            return fishingPoleTextures.get(material);
+//            return fishingPoleTextures.get(fishingPoleType);
 //        }
         return toolSprites.get(toolType).get(toolMaterial);
     }

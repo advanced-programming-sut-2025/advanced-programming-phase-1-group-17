@@ -10,6 +10,7 @@ public class HandleWorldClickResponse {
     private StoreType storeType;
     private CraftingItemDTO craftingItemDTO;
     private TileDTO tileDTO;
+    private boolean startToolAnimation = false;
 
     public enum ActionType {
         NONE,
@@ -47,6 +48,13 @@ public class HandleWorldClickResponse {
     }
 
     public HandleWorldClickResponse(boolean successful, String message, ActionType actionType) {
+        this.successful = successful;
+        this.message = message;
+        this.actionType = actionType;
+    }
+
+    public HandleWorldClickResponse(boolean startToolAnimation, boolean successful, String message, ActionType actionType) {
+        this.startToolAnimation = startToolAnimation;
         this.successful = successful;
         this.message = message;
         this.actionType = actionType;
@@ -92,5 +100,9 @@ public class HandleWorldClickResponse {
 
     public TileDTO getTileDTO() {
         return tileDTO;
+    }
+
+    public boolean isStartToolAnimation() {
+        return startToolAnimation;
     }
 }

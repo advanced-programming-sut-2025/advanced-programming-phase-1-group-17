@@ -10,6 +10,7 @@ import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.views.ArtisanCraftMenu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ArtisanCraftMenuController {
@@ -42,7 +43,9 @@ public class ArtisanCraftMenuController {
     }
 
     public void craft() {
-        Result result = GameClient.getGameStateApiClient().craftArtisan(view.getSelectedItems(), view.getCraftingItemDTO());
+        view.getSelectedItems().forEach(BackpackableTypeDTO::setCountInBackPack);
+        ArrayList<BackpackableTypeDTO> backpackableTypeDTOS = new ArrayList<>(view.getSelectedItems().keySet());
+        Result result = GameClient.getGameStateApiClient().craftArtisan(backpackableTypeDTOS, view.getCraftingItemDTO());
         if (result.successful()) {
             view.getSelectedItems().clear();
             view.getErrorLabel().setColor(255, 255, 255, 1);

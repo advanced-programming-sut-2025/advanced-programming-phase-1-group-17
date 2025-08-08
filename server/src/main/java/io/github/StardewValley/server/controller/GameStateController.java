@@ -429,7 +429,8 @@ public class GameStateController {
     @PostMapping("/game/Foraging/pickForaging")
     public void pickForaging(@RequestBody PickForaingRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
-        ForagingController.pickForaging(request.getDx(), request.getDy(), player);
+        Game game = AppServer.getCurrentGame();
+        ForagingController.pickForaging(request.getDx(), request.getDy(), player, game);
     }
 
 
@@ -575,14 +576,14 @@ public class GameStateController {
 
         // Try to match an ArtisanProductType with given artisan and ingredients
         for (ArtisanProductType product : ArtisanProductType.values()) {
-            if (!product.getArtisan().equals(artisan.getType())) continue;
+            if (!product.getArtisan().equals(artisan.getCraftingItemType())) continue;
 
             boolean matched = true;
-            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems().keySet()) {
+            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems()) {
                 if (!product.containsDTO(backPackableTypeDTO)) {
                     matched = false;
                     break;
-                } else if (request.getSelectedItems().get(backPackableTypeDTO) < product.getIngredients().get(backPackableTypeDTO)) {
+                } else if (backPackableTypeDTO.getCountInBackPack() < product.getIngredients().get(backPackableTypeDTO)) {
                     matched = false;
                     break;
                 }
@@ -591,7 +592,7 @@ public class GameStateController {
                 continue;
 
             ArrayList<BackPackableType> provided = new ArrayList<>();
-            for (BackpackableTypeDTO backpackableTypeDTO : request.getSelectedItems().keySet()) {
+            for (BackpackableTypeDTO backpackableTypeDTO : request.getSelectedItems()) {
                 try {
                     BackPackableType item = AppServer.getEnumInstance(backpackableTypeDTO.getClassName(), backpackableTypeDTO.getName());
                     provided.add(item);
@@ -602,11 +603,11 @@ public class GameStateController {
             ArtisanProduct artisanProduct = new ArtisanProduct(product, ArtisanProduct.getIngredient(product, provided));
             artisan.setArtisanProductInProgress(artisanProduct);
 
-            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems().keySet()) {
+            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems()) {
                 try {
                     BackPackableType backPackableType = AppServer.getEnumInstance(backPackableTypeDTO.getClassName(), backPackableTypeDTO.getName());
-                    if (request.getSelectedItems().get(backPackableTypeDTO) > 0) {
-                        player.getBackPack().getBackPackItems().get(backPackableType).subList(0, request.getSelectedItems().get(backPackableTypeDTO)).clear();
+                    if (backPackableTypeDTO.getCountInBackPack() > 0) {
+                        player.getBackPack().getBackPackItems().get(backPackableType).subList(0, backPackableTypeDTO.getCountInBackPack()).clear();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

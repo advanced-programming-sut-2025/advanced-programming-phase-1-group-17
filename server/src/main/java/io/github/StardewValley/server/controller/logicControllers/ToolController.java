@@ -70,8 +70,6 @@ public class ToolController {
         } else if (tool.getToolType().equals(ToolType.FishingPole)) {
             result =  useFishingPole(player, game);
         }
-        //TODO
-        //startToolAnimation();
         return result;
     }
 
@@ -90,10 +88,10 @@ public class ToolController {
             tile.setPlowed(true);
             player.setEnergy(player.getEnergy() - energy * leverage);
             player.getAbilities().increaseFarmingAbility();
-            return new HandleWorldClickResponse(true, "Plowed successfully", HandleWorldClickResponse.ActionType.NONE);
+            return new HandleWorldClickResponse(true, true, "Plowed successfully", HandleWorldClickResponse.ActionType.NONE);
         }
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return new HandleWorldClickResponse(false, "Hoe used but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
+        return new HandleWorldClickResponse(true, false, "Hoe used but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 
 
@@ -129,7 +127,7 @@ public class ToolController {
             if (player.getAbilities().getMiningLevel() >= 2) {
                 player.getBackPack().addItemToInventory(mineral);
                 tile.setWalkAble(true);
-                return new HandleWorldClickResponse(true, "stone broke successfully and you also got 1 more because of mining level",
+                return new HandleWorldClickResponse(true, true, "stone broke successfully and you also got 1 more because of mining level",
                 HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
 
@@ -137,7 +135,7 @@ public class ToolController {
             tile.setPlowed(false);
             energy = Math.max(energy, 0);
             player.setEnergy(player.getEnergy() - energy * leverage);
-            return new HandleWorldClickResponse(true, "unplowed successfully", HandleWorldClickResponse.ActionType.NONE);
+            return new HandleWorldClickResponse(true, true, "unplowed successfully", HandleWorldClickResponse.ActionType.NONE);
         } else if (tile.getPlaceable() instanceof BackPackable item) {
             tile.setPlaceable(null);
             tile.setWalkAble(true);
@@ -147,7 +145,7 @@ public class ToolController {
         }
         energy = Math.max(energy - 1, 0);
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return new HandleWorldClickResponse(true, "you used pickaxe but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
+        return new HandleWorldClickResponse(true, true, "you used pickaxe but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 
 
@@ -163,7 +161,7 @@ public class ToolController {
             player.getAbilities().increaseForagingAbility();
             tile.setPlaceable(new NormalItem(NormalItemType.Wood));
             player.setEnergy(player.getEnergy() - energy * leverage);
-            return new HandleWorldClickResponse(true, "you broke tree successfully", HandleWorldClickResponse.ActionType.NONE);
+            return new HandleWorldClickResponse(true, true, "you broke tree successfully", HandleWorldClickResponse.ActionType.NONE);
         }
         if (tile.getPlaceable() instanceof NormalItem normalItem) {
             if (normalItem.getType().equals(NormalItemType.Wood)) {
@@ -171,13 +169,13 @@ public class ToolController {
                 player.getAbilities().increaseForagingAbility();
                 player.setEnergy(player.getEnergy() - energy * leverage);
                 tile.setWalkAble(true);
-                return new HandleWorldClickResponse(false, "You destroyed Wood", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
+                return new HandleWorldClickResponse(true, false, "You destroyed Wood", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
         }
         energy--;
         energy = Math.max(energy, 0);
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return new HandleWorldClickResponse(true, "You used Axe but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
+        return new HandleWorldClickResponse(true, true, "You used Axe but incorrectly", HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 
 
@@ -194,7 +192,7 @@ public class ToolController {
                 plant.wateringPlant();
                 tool.setWateringCanStorage(tool.getWateringCanStorage() - 1);
                 player.getAbilities().increaseForagingAbility();
-                return new HandleWorldClickResponse(true, "plant watered sucessfully",
+                return new HandleWorldClickResponse(true, true, "plant watered sucessfully",
                     HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
         } else if (tile.isWater()) {
@@ -255,7 +253,7 @@ public class ToolController {
                 crop.harvest(player);
             }
         }
-        return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.NONE);
+        return new HandleWorldClickResponse(true, true, "", HandleWorldClickResponse.ActionType.NONE);
     }
 
 
@@ -288,7 +286,7 @@ public class ToolController {
                     sb.toString(), HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
         }
-        return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.NONE);
+        return new HandleWorldClickResponse(true, true, "", HandleWorldClickResponse.ActionType.NONE);
     }
 
 
@@ -312,11 +310,11 @@ public class ToolController {
                     }
                 }
                 animal.getAnimalProducts().removeAll(toRemoved);
-                return new HandleWorldClickResponse(true, "you collected all " + toRemoved.size() + " wools of " + animal.getName(),
+                return new HandleWorldClickResponse(true, true, "you collected all " + toRemoved.size() + " wools of " + animal.getName(),
                     HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
         }
-        return new HandleWorldClickResponse(true, "", HandleWorldClickResponse.ActionType.NONE);
+        return new HandleWorldClickResponse(true, true, "", HandleWorldClickResponse.ActionType.NONE);
     }
 
 
@@ -418,7 +416,7 @@ public class ToolController {
             player.getBackPack().addItemToInventory(fish);
         }
         player.getAbilities().increaseFishingAbility();
-        return new HandleWorldClickResponse(true, count + " " + fish.getFishType().getName() + " got caught successfully",
+        return new HandleWorldClickResponse(true, true, count + " " + fish.getFishType().getName() + " got caught successfully",
             HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
     }
 

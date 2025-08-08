@@ -134,10 +134,10 @@ public final class ForagingController {
     }
 
 
-    public static void pickForaging(int dx, int dy, Player player) {
+    public static void pickForaging(int dx, int dy, Player player, Game game) {
         int x = player.getX() / GameAssetManager.getGameAssetManager().getTileWidth() + dx;
         int y = player.getY() / GameAssetManager.getGameAssetManager().getTileHeight() + dy;
-        Tile tile = Tile.getTile(x, y);
+        Tile tile = game.getTile(x, y);
 
         Placeable placeable = tile.getPlaceable();
         if (placeable instanceof Crop crop) {

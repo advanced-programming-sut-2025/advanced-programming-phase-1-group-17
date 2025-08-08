@@ -61,6 +61,10 @@ public class CraftingItem implements BackPackable, Placeable {
         return type;
     }
 
+    public CraftingItemType getCraftingItemType() {
+        return type;
+    }
+
     public ArtisanProduct getArtisanProductInProgress() {
         return artisanProductInProgress;
     }
