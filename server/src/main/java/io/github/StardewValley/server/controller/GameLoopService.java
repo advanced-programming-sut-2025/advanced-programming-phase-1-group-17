@@ -37,7 +37,7 @@ public class GameLoopService {
         }
 
         // ۱. آپدیت زمان بازی (منطق قبلی شما)
-        currentGame.getDate().increaseMinute(delta * 5);
+        currentGame.getDate().increaseMinute(delta * 5,AppServer.getCurrentGame());
 
         // ۲. آپدیت تمام حیوانات (منطق جدید، دقیقا کنار قبلی)
         List<AnimalDTO> allAnimals = animalDataService.findAll();

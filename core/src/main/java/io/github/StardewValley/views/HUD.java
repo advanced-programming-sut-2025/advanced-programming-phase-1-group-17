@@ -82,6 +82,9 @@ public class HUD {
     public void render(SpriteBatch batch, float v) throws Exception {
         // تنظیم دوربین HUD
         Main.getBatch().setProjectionMatrix(hudCamera.combined);
+        renderEnergyBar(batch);
+        renderInventoryBar(batch);
+        Main.getBatch().begin();
 
         int hudWidth = clock.getWidth();
         int hudHeight = clock.getHeight();
@@ -117,8 +120,7 @@ public class HUD {
         dateFont.draw(Main.getBatch(), hudData.getDateString(), Gdx.graphics.getWidth() - 110, Gdx.graphics.getHeight() - 25);
         timeFont.draw(Main.getBatch(), hudData.getTimeString(), Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 92);
 
-//        renderEnergyBar(batch);
-//        renderInventoryBar(batch);
+        Main.getBatch().end();
         timesinceLastUpdate +=v;
         if(timesinceLastUpdate>=1){
             timesinceLastUpdate = 0;

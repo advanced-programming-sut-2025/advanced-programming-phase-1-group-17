@@ -231,6 +231,10 @@ public class GameView implements Screen, InputProcessor {
         timeSinceLastApiCall += delta;
         if (timeSinceLastApiCall >= API_CALL_INTERVAL) {
             timeSinceLastApiCall = 0f; // ریست کردن تایمر
+            if (apiClient == null) {
+                System.err.println("FATAL ERROR in updateAnimal: apiClient is NULL!");
+                return; // از ادامه متد جلوگیری کن تا اسپم نشود
+            }
 
             try {
                 // TODO: شما باید ابتدا Endpoint و متد getAnimals را در سرور و ApiClient بسازید
@@ -252,22 +256,23 @@ public class GameView implements Screen, InputProcessor {
 
         controller.updateGame(delta);
 
+
+
+        //TODO handle playe
+//        controller.handlePlayerInput();
+        if (animalsFromServer != null) {
+            for (AnimalDTO animalDto : animalsFromServer) {
+                animalView.render(Main.getBatch(), animalDto,delta);
+            }
+        }
+
+        Main.getBatch().end();
         try {
             hud.render(Main.getBatch(), delta);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
-        if (animalsFromServer != null) {
-            for (AnimalDTO animalDto : animalsFromServer) {
-                animalView.render(Main.getBatch(), animalDto,delta);
-            }
-        }
-        //TODO handle playe
-//        controller.handlePlayerInput();
-
-
-        Main.getBatch().end();
         if (GameClient.getPlayer().isNewMessage()) {
             error.setText("you have a new message");
         }
@@ -287,6 +292,7 @@ public class GameView implements Screen, InputProcessor {
 //        controller.handlePlayerInput();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+
     }
 
     public void updateNearPlayerAndNpc() {
