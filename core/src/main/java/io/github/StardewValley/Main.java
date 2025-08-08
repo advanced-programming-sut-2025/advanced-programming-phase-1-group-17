@@ -1,7 +1,6 @@
 package io.github.StardewValley;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github.StardewValley.shared.models.UserDTO;
@@ -18,7 +17,7 @@ public class Main extends Game {
     private static final int serverPort = 8080;
 
     private static String jwtToken;
-    private static UserDTO loggedInUser;
+
 
     @Override
     public void create() {
@@ -77,11 +76,6 @@ public class Main extends Game {
     public static String getJwtToken() {
         return jwtToken;
     }
-
-    public static UserDTO getLoggedInUser() {
-        return loggedInUser;
-    }
-
     public static void setJwt(String jwtToken) {
         Main.jwtToken = jwtToken;
     }

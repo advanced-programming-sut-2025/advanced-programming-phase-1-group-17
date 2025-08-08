@@ -144,13 +144,13 @@ public class LoginMenuController {
 
             String responseJson = response.body().string();
             LoginResponse loginResponse = gson.fromJson(responseJson, LoginResponse.class);
-            GameClient.setLoggedInUser(loginResponse.getUserDTO());
             if (view.getCheckBox().isChecked())
                 TokenStorage.saveToken(loginResponse.getToken());
             else {
                 TokenStorage.clearToken();
             }
             Main.setJwt(loginResponse.getToken());
+            GameClient.setLoggedInUser(loginResponse.getUserDTO());
             Main.getMain().getScreen().dispose();
             view.getCheckBox().setChecked(false);
             Main.getMain().setScreen(new MainMenu(new MainMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
