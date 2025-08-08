@@ -1465,6 +1465,30 @@ public class GameStateApiClient {
         }
         return null;
     }
+    public NPCdto getNPCDtoByIndex(int index) {
+        try {
+            String baseUrl = BASE_URL + "/getNPCDtoByIndex";
+            String params = "?index=" + index;
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, NPCdto.class);
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
 
