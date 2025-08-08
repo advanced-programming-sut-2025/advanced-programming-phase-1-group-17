@@ -46,9 +46,10 @@ public class GiftMenuController {
             public void clicked(InputEvent event, float x, float y) {
                 if (backPackableType != null) {
                     String amount = view.getAmountTextField().getText().trim();
-                    if (targetPlayer != null)
+                    if (targetPlayer != null) {
                         view.setText(gameMenuController.gift(targetPlayer, backPackableType.getName(), amount).toString());
-                    else
+
+                    }else
                         view.setText(gameMenuController.giftNPC(targetNpc, backPackableType.getName(), amount).toString());
                 } else {
                     view.setText("please choose a gift");

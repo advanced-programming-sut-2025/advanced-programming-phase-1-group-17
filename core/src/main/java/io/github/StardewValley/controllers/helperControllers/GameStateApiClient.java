@@ -614,7 +614,7 @@ public class GameStateApiClient {
         try {
             String baseUrl = BASE_URL + "/gift";
             String params = "?username=" + URLEncoder.encode(username, "UTF-8")
-                + "&massage=" + URLEncoder.encode(item, "UTF-8")
+                + "&item=" + URLEncoder.encode(item, "UTF-8")
                 + "&amount=" + URLEncoder.encode(amount, "UTF-8");
             URL url = new URL(baseUrl + params);
 
@@ -630,7 +630,7 @@ public class GameStateApiClient {
                     return mapper.readValue(is, Result.class);
                 }
             } else {
-                throw new RuntimeException("Error: HTTP " + responseCode);
+                throw new RuntimeException("Error: HTTP " + responseCode  );
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -666,8 +666,8 @@ public class GameStateApiClient {
     public Result giftRate(String giftNumber, String rate) {
         try {
             String baseUrl = BASE_URL + "/giftRate";
-            String params = "?username=" + URLEncoder.encode(giftNumber, "UTF-8")
-                + "&massage=" + URLEncoder.encode(rate, "UTF-8");
+            String params = "?giftNumber=" + URLEncoder.encode(giftNumber, "UTF-8")
+                + "&rate=" + URLEncoder.encode(rate, "UTF-8");
             URL url = new URL(baseUrl + params);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
