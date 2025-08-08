@@ -19,6 +19,7 @@ import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
+import io.github.StardewValley.shared.models.NPCdto;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.Result;
 
@@ -214,12 +215,12 @@ public class GameView implements Screen, InputProcessor {
 
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
-        try {
-            hud.render(Main.getBatch(), delta);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            hud.render(Main.getBatch(), delta);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//        }
         controller.updateGame(delta);
         //TODO handle playe
 //        controller.handlePlayerInput();
@@ -229,13 +230,13 @@ public class GameView implements Screen, InputProcessor {
         if (GameClient.getPlayer().isNewMessage()) {
             error.setText("you have a new message");
         }
-//        timer += delta;
-//        if (timer >= 3) {
-//            updateNearPlayerAndNpc();
-//            timer = 0;
-//        }
-//        if (activeWindow) updateInteractions();
-//        updateDialogue(delta);
+        timer += delta;
+        if (timer >= 3) {
+            updateNearPlayerAndNpc();
+            timer = 0;
+        }
+        if (activeWindow) updateInteractions();
+        updateDialogue(delta);
 
 
         stage.addActor(dialogueTable);
@@ -255,6 +256,7 @@ public class GameView implements Screen, InputProcessor {
 
     public void updateNearPlayerAndNpc() {
         targetPlayer = null;
+        nearbyNPC = null;
         for (String username : GameClient.getUserNameOfPlayers()) {
             if (username.equals(GameClient.getPlayer().getUser().getUsername())) continue;
             PlayerDto pd = GameClient.getGameStateApiClient().getPlayerDTOByUserName(username);
@@ -263,14 +265,38 @@ public class GameView implements Screen, InputProcessor {
                 break;
             }
         }
-//        nearbyNPC = getNearbyNPC();
+        for (int i = 0; i < 5; i++) {
+            NPCdto npc = GameClient.getGameStateApiClient().getNPCDtoByIndex(i);
+            if (sideBySide(npc, GameClient.getPlayer())) {
+                nearbyNPC = npc.getName();
+                break;
+            }
+        }
+    }
+
+    public boolean sideBySide(NPCdto npc, PlayerClient player) {
+        int x = npc.getX();
+        int y = npc.getY();
+        int x1 = player.getTileX();
+        int y1 = player.getTileY();
+        if ((x == x1 && y == y1)
+            || (x == x1 + 1 && y == y1)
+            || (x == x1 - 1 && y == y1)
+            || (x == x1 && y == y1 + 1)
+            || (x == x1 - 1 && y == y1 + 1)
+            || (x == x1 + 1 && y == y1 + 1)
+            || (x == x1 && y == y1 - 1)
+            || (x == x1 + 1 && y == y1 - 1)
+            || (x == x1 - 1 && y == y1 - 1)) {
+            return true;
+        } else return false;
     }
 
     public boolean sideBySide(PlayerDto currentPlayer, PlayerClient player) {
         int playerWidth = 120;
         float centerX = currentPlayer.getX() + playerWidth / 2f;
         int x = (int) (centerX / 120);
-        float centerY = currentPlayer.getX() + playerWidth / 2f;
+        float centerY = currentPlayer.getY() + playerWidth / 2f;
         int y = (int) (centerY / 120);
         int x1 = player.getTileX();
         int y1 = player.getTileY();
@@ -403,9 +429,6 @@ public class GameView implements Screen, InputProcessor {
         this.error.setText(error);
     }
 
-    public String getNearbyNPC() {
-        return GameClient.gameStateApiClient.getNearbyNPC();
-    }
 
     public String getDialogueTextNPCByName(String Name) {
         return GameClient.gameStateApiClient.getDialogueTextNPCByName(Name);

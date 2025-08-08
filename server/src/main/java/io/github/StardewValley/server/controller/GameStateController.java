@@ -1387,5 +1387,10 @@ public class GameStateController {
         }
         return ResponseEntity.ok(response);
     }
+    @PostMapping("/getNPCDtoByIndex")
+    public ResponseEntity<NPCdto> getNPCDtoByIndex(@RequestHeader("Authorization") String token, @RequestParam int index) {
+        NPC npc = AppServer.getCurrentGame().getNPCs().get(index);
+        return ResponseEntity.ok(new NPCdto(npc.getX(), npc.getY(), npc.getName()));
+    }
 
 }
