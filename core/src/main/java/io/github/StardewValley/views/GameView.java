@@ -78,13 +78,15 @@ public class GameView implements Screen, InputProcessor {
         dialogueTable.add(dialogueLabel).padTop(50);
 
 
-        window = new Window("Interactions", skin);
-        talkButton = new TextButton("Talk", skin);
-        tradeButton = new TextButton("Trade", skin);
-        hugButton = new TextButton("Hug", skin);
-        giftButton = new TextButton("Gift", skin);
-        givingFlower = new TextButton("Giving Flower", skin);
-        askMarriageButton = new TextButton("Ask Marriage", skin);
+        Skin skin2 = new Skin(Gdx.files.internal("Skin/skin2/star-soldier-ui.json"));
+        window = new Window("Interactions", skin2);
+        talkButton = new TextButton("Talk", skin2);
+        tradeButton = new TextButton("Trade", skin2);
+        hugButton = new TextButton("Hug", skin2);
+        giftButton = new TextButton("Gift", skin2);
+        givingFlower = new TextButton("Giving Flower", skin2);
+        askMarriageButton = new TextButton("Ask Marriage", skin2);
+
         error = new Label("", skin);
         content = new Table(skin);
 

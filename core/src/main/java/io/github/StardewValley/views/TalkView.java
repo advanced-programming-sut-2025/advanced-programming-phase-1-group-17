@@ -48,7 +48,8 @@ public class TalkView implements Screen {
     private String[] players = new String[3];
 
 
-    public TalkView(TalkController controller, Skin skin, GameView gameView) {
+    public TalkView(TalkController controller, Skin skin3, GameView gameView) {
+        this.skin = new Skin(Gdx.files.internal("Skin/skin2/star-soldier-ui.json"));;
         label1 = new Label("", skin);
         label1.setWrap(true);
         label1.setColor(Color.GREEN);
