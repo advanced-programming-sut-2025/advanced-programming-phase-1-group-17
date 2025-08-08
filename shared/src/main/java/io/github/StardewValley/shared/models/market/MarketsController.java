@@ -2,7 +2,7 @@ package io.github.StardewValley.shared.models.market;
 
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.NPCS.Ring;
@@ -51,7 +51,7 @@ public class MarketsController {
         return shopInventories.get(shopType);
     }
 
-    public void initializeStores() {
+    public void initializeStores(Game game) {
         // === Blacksmith ===
         initializeBlackSmith();
 
@@ -73,7 +73,7 @@ public class MarketsController {
         // === Fish Shop ===
         initializeFishShop();
 
-        initializeStoreBounds();
+        initializeStoreBounds(game);
     }
 
     private void initializeFishShop() {
@@ -366,35 +366,35 @@ public class MarketsController {
     }
 
 
-    private void initializeStoreBounds() {
+    private void initializeStoreBounds(Game game) {
         int tileWidth = GameAssetManager.getGameAssetManager().getTileWidth();
         int tileHeight = GameAssetManager.getGameAssetManager().getTileHeight();
 
-        Store store = App.getCurrentGame().getMarketsController().getStore(StoreType.Blacksmith);
+        Store store = game.getMarketsController().getStore(StoreType.Blacksmith);
         storeBounds.put(StoreType.Blacksmith, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
 
-        store = App.getCurrentGame().getMarketsController().getStore(StoreType.Ranch);
+        store = game.getMarketsController().getStore(StoreType.Ranch);
         storeBounds.put(StoreType.Ranch, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
 
-        store = App.getCurrentGame().getMarketsController().getStore(StoreType.StardropSaloon);
+        store = game.getMarketsController().getStore(StoreType.StardropSaloon);
         storeBounds.put(StoreType.StardropSaloon, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
 
-        store = App.getCurrentGame().getMarketsController().getStore(StoreType.CarpentersShop);
+        store = game.getMarketsController().getStore(StoreType.CarpentersShop);
         storeBounds.put(StoreType.CarpentersShop, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
 
-        store = App.getCurrentGame().getMarketsController().getStore(StoreType.JojaMart);
+        store = game.getMarketsController().getStore(StoreType.JojaMart);
         storeBounds.put(StoreType.JojaMart, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
 
-        store = App.getCurrentGame().getMarketsController().getStore(StoreType.PierresGeneralStore);
+        store = game.getMarketsController().getStore(StoreType.PierresGeneralStore);
         storeBounds.put(StoreType.PierresGeneralStore, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
 
-        store = App.getCurrentGame().getMarketsController().getStore(StoreType.FishShop);
+        store = game.getMarketsController().getStore(StoreType.FishShop);
         storeBounds.put(StoreType.FishShop, new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
             store.getWidth() * tileWidth, store.getHeight() * tileHeight));
     }
@@ -414,8 +414,8 @@ public class MarketsController {
         }
     }
 
-    public boolean isStoreOpen(StoreType storeType) {
-        int hour = App.getCurrentGame().getDate().getHour();
+    public boolean isStoreOpen(StoreType storeType, Game game) {
+        int hour = game.getDate().getHour();
         return hour >= storeType.getOpeningHour() && hour <= storeType.getClosingHour();
     }
 
@@ -631,7 +631,7 @@ public class MarketsController {
         return result;
     }
 
-    public Result purchase(ShopItemDTO shopItem2, int count, StoreType storeType, Player player, Season season) {
+    public Result purchase(ShopItemDTO shopItem2, int count, StoreType storeType, Player player, Season season, Game game) {
         ShopItem shopItem = null;
         for (ShopItem item : getInventory(storeType).getItems()) {
             if (item.getType().getName().equals(shopItem2.getType())) {
@@ -639,7 +639,7 @@ public class MarketsController {
                 break;
             }
         }
-        if (!isStoreOpen(storeType))
+        if (!isStoreOpen(storeType, game))
             return new Result(false, "Store is open from %d to %d".formatted(
                 storeType.getOpeningHour(), storeType.getClosingHour()
             ));

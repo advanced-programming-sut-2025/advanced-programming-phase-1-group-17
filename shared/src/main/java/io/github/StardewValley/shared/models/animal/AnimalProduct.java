@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.market.ItemQuality;
@@ -93,7 +92,8 @@ public class AnimalProduct implements BackPackable {
 //        }
         if(Gdx.input.justTouched()){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            App.getCamera().unproject(touchPos);
+            //TODo
+            //App.getCamera().unproject(touchPos);
             if(this.getHitBox().contains(touchPos.x,touchPos.y)){
                 //TODo
                 // App.getCurrentGame().getCurrentPlayingPlayer().getBackPack().addItemToInventory(this);

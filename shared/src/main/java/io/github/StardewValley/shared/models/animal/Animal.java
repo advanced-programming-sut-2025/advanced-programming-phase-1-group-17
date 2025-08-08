@@ -10,8 +10,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import io.github.StardewValley.shared.models.App;
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.enums.Direction;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
@@ -497,7 +495,8 @@ public class Animal implements Placeable {
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
             Vector3 clickPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            App.getCamera().unproject(clickPos);
+            //TODo
+            //App.getCamera().unproject(clickPos);
             if(this.getHitBox().contains(clickPos.x,clickPos.y ) && !this.isFedToday){
                 lastDirection = direction;
                 timeSinceLastDirectionChange = 0;
@@ -564,7 +563,8 @@ public class Animal implements Placeable {
         float scale = 1f;
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            App.getCamera().unproject(touchPos);
+            //TODO
+            //App.getCamera().unproject(touchPos);
             if(this.getHitBox().contains(touchPos.x,touchPos.y) && !showHeart ){
                 System.out.println(this.isPettedToday);
                 if(!this.isPettedToday){

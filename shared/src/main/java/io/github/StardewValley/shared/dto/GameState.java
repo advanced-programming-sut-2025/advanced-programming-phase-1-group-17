@@ -1,22 +1,25 @@
 package io.github.StardewValley.shared.dto;
 
+import io.github.StardewValley.shared.TimeAndDateDTO;
 import io.github.StardewValley.shared.models.TileDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class GetGameStateResponse {
+public class GameState {
     private List<CraftingItemDTO> craftingItems;
     private List<TileDTO> tiles;
     private LightningStateDTO lightningStateDTO;
+    TimeAndDateDTO timeAndDateDTO;
 
-    public GetGameStateResponse() {
+    public GameState() {
     }
 
-    public GetGameStateResponse(List<CraftingItemDTO> craftingItems, List<TileDTO> tiles, LightningStateDTO lightningStateDTO) {
+    public GameState(List<CraftingItemDTO> craftingItems, List<TileDTO> tiles, LightningStateDTO lightningStateDTO,
+                     TimeAndDateDTO timeAndDateDTO) {
         this.craftingItems = craftingItems;
         this.tiles = tiles;
         this.lightningStateDTO = lightningStateDTO;
+        this.timeAndDateDTO = timeAndDateDTO;
     }
 
     public List<CraftingItemDTO> getCraftingItems() {
@@ -41,5 +44,13 @@ public class GetGameStateResponse {
 
     public void setLightningStateDTO(LightningStateDTO lightningStateDTO) {
         this.lightningStateDTO = lightningStateDTO;
+    }
+
+    public TimeAndDateDTO getTimeAndDateDTO() {
+        return timeAndDateDTO;
+    }
+
+    public void setTimeAndDateDTO(TimeAndDateDTO timeAndDateDTO) {
+        this.timeAndDateDTO = timeAndDateDTO;
     }
 }

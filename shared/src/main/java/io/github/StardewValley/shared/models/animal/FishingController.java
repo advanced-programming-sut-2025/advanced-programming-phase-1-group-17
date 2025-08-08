@@ -3,7 +3,7 @@ package io.github.StardewValley.shared.models.animal;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.TimeAndDate;
 import io.github.StardewValley.shared.models.enums.FishType;
@@ -249,7 +249,9 @@ public class FishingController {
 
         double R = Math.random();
         double M = 1;
-        TimeAndDate date = App.getCurrentGame().getDate();
+        //TODO
+        //TimeAndDate date = App.getCurrentGame().getDate();
+        TimeAndDate date = null;
         switch (date.getTodayWeatherType()) {
             case Sunny -> M = 1.5;
             case Rainy -> M = 1.2;

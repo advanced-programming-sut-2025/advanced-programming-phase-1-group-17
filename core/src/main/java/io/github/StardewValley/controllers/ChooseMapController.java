@@ -4,8 +4,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
-import io.github.StardewValley.shared.models.App;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.chooseMap;
 

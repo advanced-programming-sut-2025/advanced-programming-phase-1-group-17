@@ -5,7 +5,7 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.SecurityQuestionRequest;
 import io.github.StardewValley.shared.dto.SecurityQuestionResponse;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.enums.NetworkRequests;

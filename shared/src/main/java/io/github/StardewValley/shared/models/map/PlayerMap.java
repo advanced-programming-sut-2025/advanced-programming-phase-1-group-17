@@ -262,9 +262,9 @@ public class PlayerMap {
                     if (counter < 2)
                         ForagingController.setTreeForaging(tile);
                     else if (counter < 4)
-                        ForagingController.setCropForaging(tile);
+                        ForagingController.setCropForaging(tile, game);
                     else if (counter < 6)
-                        ForagingController.setSeedForaging(tile);
+                        ForagingController.setSeedForaging(tile, game);
                     else
                         ForagingController.setMineralForaging(tile);
                     tile.setWalkAble(false);
@@ -379,33 +379,51 @@ public class PlayerMap {
     }
 
     private void createShippingBins() {
-        if (Tile.getTile(10, 5).getPlaceable() == null) {
-            Tile.getTile(10, 5).setPlaceable(new ShippingBin(10, 5));
+        Tile tile = Tile.getTile(10, 5);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(10, 5));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(30, 230).getPlaceable() == null) {
-            Tile.getTile(30, 230).setPlaceable(new ShippingBin(30, 230));
+        tile = Tile.getTile(30, 230);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(30, 230));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(280, 30).getPlaceable() == null) {
-            Tile.getTile(280, 30).setPlaceable(new ShippingBin(280, 30));
+        tile = Tile.getTile(280, 30);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(280, 30));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(180, 130).getPlaceable() == null) {
-            Tile.getTile(180, 130).setPlaceable(new ShippingBin(180, 130));
+        tile = Tile.getTile(180, 130);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(180, 130));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(70, 50).getPlaceable() == null) {
-            Tile.getTile(70, 50).setPlaceable(new ShippingBin(70, 50));
+        tile = Tile.getTile(70, 50);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(70, 50));
+            tile.setWalkAble(false);
 
         }
-        if (Tile.getTile(70, 250).getPlaceable() == null) {
-            Tile.getTile(70, 250).setPlaceable(new ShippingBin(70, 250));
+        tile = Tile.getTile(70, 250);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(70, 250));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(100, 105).getPlaceable() == null) {
-            Tile.getTile(100, 105).setPlaceable(new ShippingBin(100, 105));
+        tile = Tile.getTile(100, 105);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(100, 105));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(220, 50).getPlaceable() == null) {
-            Tile.getTile(220, 50).setPlaceable(new ShippingBin(220, 50));
+        tile = Tile.getTile(220, 50);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(220, 50));
+            tile.setWalkAble(false);
         }
-        if (Tile.getTile(220, 250).getPlaceable() == null) {
-            Tile.getTile(220, 250).setPlaceable(new ShippingBin(220, 250));
+        tile = Tile.getTile(220, 250);
+        if (tile.getPlaceable() == null) {
+            tile.setPlaceable(new ShippingBin(220, 250));
+            tile.setWalkAble(false);
         }
     }
 
@@ -480,7 +498,7 @@ public class PlayerMap {
             this.hut = new Hut("hut.png", 4 + row, 4 + col);
             this.lakes.add(new Lake());
             this.quarry = new Quarry();
-            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
+            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake(), game);
             this.x_start = 4 + row;
             this.y_start = 4 + col;
             for (int x = 0; x < 4; x++) {
@@ -506,7 +524,7 @@ public class PlayerMap {
             this.hut = new Hut("hut.png", 40 + row, 40 + col);
             this.lakes.add(new Lake());
             this.lakes.add(new Lake());
-            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake());
+            this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake(), game);
             this.quarry = new Quarry();
             this.x_start = 40 + row;
             this.y_start = 40 + col;
@@ -585,9 +603,9 @@ public class PlayerMap {
                 if (counter < 2)
                     ForagingController.setTreeForaging(tile);
                 else if (counter < 4)
-                    ForagingController.setCropForaging(tile);
+                    ForagingController.setCropForaging(tile, game);
                 else if (counter < 6)
-                    ForagingController.setSeedForaging(tile);
+                    ForagingController.setSeedForaging(tile, game);
                 tile.setWalkAble(false);
                 numOfForagings--;
                 counter++;

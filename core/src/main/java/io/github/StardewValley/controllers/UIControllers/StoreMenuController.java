@@ -9,7 +9,7 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.GetMarketInventoryResponse;
-import io.github.StardewValley.shared.models.App;
+import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.market.*;
 import io.github.StardewValley.views.ItemMenu;
 import io.github.StardewValley.views.StoreMenu;
