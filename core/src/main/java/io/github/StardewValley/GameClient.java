@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import io.github.StardewValley.controllers.PlayerClient;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
+import io.github.StardewValley.shared.models.UserDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class GameClient {
     private static HashMap<Integer, ArrayList<Integer>> playersHutLocations = new HashMap<>();
     private static HashMap<Integer, ArrayList<Integer>> NPCsHutsLocations = new HashMap<>();
     private static HashMap<Integer, ArrayList<Integer>> greenHouseLocations = new HashMap<>();
+    public static UserDTO LoggedInUser;
 
 
     public static PlayerClient getPlayer() {
@@ -79,4 +81,11 @@ public class GameClient {
         return greenHouseLocations;
     }
 
+    public static UserDTO getLoggedInUser() {
+        return LoggedInUser;
+    }
+
+    public static void setLoggedInUser(UserDTO loggedInUser) {
+        LoggedInUser = loggedInUser;
+    }
 }

@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.TokenStorage;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.App;
 import io.github.StardewValley.views.*;
 
 public class MainMenuController {
@@ -32,7 +31,6 @@ public class MainMenuController {
         view.getLogoutAndGotoLoginMenuButton().addListener(
             new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
-                    App.setLoggedInUser(null);
                     TokenStorage.clearToken();
                     Main.getMain().getScreen().dispose();
                     Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),  GameAssetManagerClient.getGameAssetManager().getSkin()));
