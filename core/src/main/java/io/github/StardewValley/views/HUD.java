@@ -82,6 +82,7 @@ public class HUD {
     public void render(SpriteBatch batch, float v) throws Exception {
         // تنظیم دوربین HUD
         Main.getBatch().setProjectionMatrix(hudCamera.combined);
+
         renderEnergyBar(batch);
         renderInventoryBar(batch);
         Main.getBatch().begin();
