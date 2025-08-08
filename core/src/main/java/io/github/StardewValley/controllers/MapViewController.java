@@ -8,6 +8,9 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.models.NPCdto;
+import io.github.StardewValley.shared.models.PlayerDto;
+import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.views.MapView;
 
@@ -44,12 +47,16 @@ public class MapViewController {
         float offsetX = screenCenterX - totalMapWidth / 2f;
         float offsetY = screenCenterY - totalMapHeight / 2f;
 
-        for (Tile tile : Tile.getTiles()) {
+        for (TileDTO tile : GameClient.getGameStateApiClient().getAllTiles()) {
             float drawX = offsetX + tile.getX() * tileSize;
             float drawY = offsetY + tile.getY() * tileSize;
-            if (tile.getPlaceable() == null || tile.getPlaceable().getTexture() == null)
+            if (tile.getPlaceableType() == null || tile.getTexture() == null)
                 continue;
-            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(tile.getPlaceable().getTexture()), drawX, drawY, tileSize, tileSize);
+            try {
+                Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(tile.getTexture()), drawX, drawY, tileSize, tileSize);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         for (int x : GameClient.getPlayersHutLocations().keySet()) {
@@ -61,6 +68,18 @@ public class MapViewController {
             Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture("hut2.png"),
                 offsetX + GameClient.getNPCsHutsLocations().get(x).get(0) * tileSize, offsetY + GameClient.getNPCsHutsLocations().get(x).get(1) * tileSize, tileSize * 10, tileSize * 10);
         }
+        for (String username : GameClient.getUserNameOfPlayers()) {
+            PlayerDto pd = GameClient.getGameStateApiClient().getPlayerDTOByUserName(username);
+            int playerWidth = 120;
+            float centerX = (pd.getX() == 0 ? 1 : pd.getX()) + playerWidth / 2f;
+            float centerY = (pd.getY() == 0 ? 1 : pd.getY()) + playerWidth / 2f;
+            Main.getBatch().draw(new Texture(pd.getGender().equals("Male") ? "Alex/Alex11.png" : "Emily/Emily11.png"), offsetX + ((int) (centerX / 120)) * tileSize, offsetY + ((int) (centerY / 120)) * tileSize, (float) GameClient.getPlayer().getBackgroundTexture().getWidth() / 4f, (float) GameClient.getPlayer().getBackgroundTexture().getHeight() / 4f);
+        }
+        for (int i = 0; i < 5; i++) {
+            NPCdto npc = GameClient.getGameStateApiClient().getNPCDtoByIndex(i);
+            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(npc.getTexture()), offsetX + npc.getX() * tileSize, offsetY + npc.getY() * tileSize, (float) GameClient.getPlayer().getBackgroundTexture().getWidth() / 4f, (float) GameClient.getPlayer().getBackgroundTexture().getHeight() / 4f);
+        }
+
 
     }
 
