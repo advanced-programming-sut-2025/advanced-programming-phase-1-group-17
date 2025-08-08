@@ -2,11 +2,9 @@ package io.github.StardewValley.controllers.helperControllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
@@ -22,7 +20,6 @@ import okhttp3.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -635,7 +632,7 @@ public class GameStateApiClient {
         try {
             String baseUrl = BASE_URL + "/gift";
             String params = "?username=" + URLEncoder.encode(username, "UTF-8")
-                + "&massage=" + URLEncoder.encode(item, "UTF-8")
+                + "&item=" + URLEncoder.encode(item, "UTF-8")
                 + "&amount=" + URLEncoder.encode(amount, "UTF-8");
             URL url = new URL(baseUrl + params);
 
@@ -651,7 +648,7 @@ public class GameStateApiClient {
                     return mapper.readValue(is, Result.class);
                 }
             } else {
-                throw new RuntimeException("Error: HTTP " + responseCode);
+                throw new RuntimeException("Error: HTTP " + responseCode  );
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -687,8 +684,8 @@ public class GameStateApiClient {
     public Result giftRate(String giftNumber, String rate) {
         try {
             String baseUrl = BASE_URL + "/giftRate";
-            String params = "?username=" + URLEncoder.encode(giftNumber, "UTF-8")
-                + "&massage=" + URLEncoder.encode(rate, "UTF-8");
+            String params = "?giftNumber=" + URLEncoder.encode(giftNumber, "UTF-8")
+                + "&rate=" + URLEncoder.encode(rate, "UTF-8");
             URL url = new URL(baseUrl + params);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -1196,8 +1193,8 @@ public class GameStateApiClient {
     public String getQuestWithIndex(String NpcName, int index) {
         try {
             String baseUrl = BASE_URL + "/getQuestWithIndex";
-            String params = "?NpcName" + URLEncoder.encode(NpcName, "UTF-8")
-                + "&index" + index;
+            String params = "?NpcName=" + URLEncoder.encode(NpcName, "UTF-8")
+                + "&index=" + index;
             URL url = new URL(baseUrl + params);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -1485,6 +1482,53 @@ public class GameStateApiClient {
             e.printStackTrace();
         }
         return null;
+    }
+    public NPCdto getNPCDtoByIndex(int index) {
+        try {
+            String baseUrl = BASE_URL + "/getNPCDtoByIndex";
+            String params = "?index=" + index;
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, NPCdto.class);
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public List<TileDTO> getAllTiles(){
+        try {
+            String baseUrl = BASE_URL + "/getAllTiles";
+            URL url = new URL(baseUrl );
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, new TypeReference<List<TileDTO>>() {});
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
