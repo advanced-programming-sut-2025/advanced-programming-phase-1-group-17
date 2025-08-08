@@ -2,25 +2,25 @@ package io.github.StardewValley.shared.dto;
 
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class CraftArtisanRequest {
-    private HashMap<BackpackableTypeDTO, Integer> selectedItems;
+    private ArrayList<BackpackableTypeDTO> selectedItems;
     private CraftingItemDTO craftingItemDTO;
 
     public CraftArtisanRequest() {
     }
 
-    public CraftArtisanRequest(HashMap<BackpackableTypeDTO, Integer> selectedItems, CraftingItemDTO craftingItemDTO) {
+    public CraftArtisanRequest(ArrayList<BackpackableTypeDTO> selectedItems, CraftingItemDTO craftingItemDTO) {
         this.selectedItems = selectedItems;
         this.craftingItemDTO = craftingItemDTO;
     }
 
-    public HashMap<BackpackableTypeDTO, Integer> getSelectedItems() {
+    public ArrayList<BackpackableTypeDTO> getSelectedItems() {
         return selectedItems;
     }
 
-    public void setSelectedItems(HashMap<BackpackableTypeDTO, Integer> selectedItems) {
+    public void setSelectedItems(ArrayList<BackpackableTypeDTO> selectedItems) {
         this.selectedItems = selectedItems;
     }
 

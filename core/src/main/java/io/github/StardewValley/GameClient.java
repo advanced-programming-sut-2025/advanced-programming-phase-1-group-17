@@ -1,7 +1,7 @@
 package io.github.StardewValley;
 
 import com.badlogic.gdx.graphics.Camera;
-import io.github.StardewValley.controllers.PlayerClient;
+import models.PlayerClient;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.models.UserDTO;

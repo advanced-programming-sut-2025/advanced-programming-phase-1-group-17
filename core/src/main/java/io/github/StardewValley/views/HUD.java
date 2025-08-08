@@ -10,10 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.GameClient;
-import io.github.StardewValley.Main;
-import io.github.StardewValley.controllers.GameController;
-import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
-import io.github.StardewValley.controllers.PlayerClient;
+import models.PlayerClient;
 import io.github.StardewValley.shared.models.HudDataDTO;
 
 public class HUD {

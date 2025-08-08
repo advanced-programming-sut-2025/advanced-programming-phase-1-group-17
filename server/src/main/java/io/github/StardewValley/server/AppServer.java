@@ -33,11 +33,13 @@ public class AppServer {
         String texturePath = backPackableType.getInventoryTexturePath();
         if (backPackableType instanceof ToolType toolType) {
             System.out.println("Fishing Pole texture ...");
-            if (toolType.equals(ToolType.FishingPole))
+            if (toolType.equals(ToolType.FishingPole)) {
+                System.out.println("Fishing Pole texture ...2");
                 texturePath = toolType.getTexturePath(
                     null,
                     ((Tool) backPack.getBackPackItems().get(toolType).get(0)).getFishingPoleMaterial()
                 );
+            }
             else texturePath = toolType.getTexturePath(
                 ((Tool) backPack.getBackPackItems().get(toolType).get(0)).getMaterial(),
                 null

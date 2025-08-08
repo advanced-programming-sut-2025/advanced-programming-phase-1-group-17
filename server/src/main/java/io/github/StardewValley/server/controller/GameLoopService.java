@@ -43,6 +43,7 @@ public class GameLoopService {
         // ۲. آپدیت تمام حیوانات (منطق جدید، دقیقا کنار قبلی)
         List<AnimalDTO> allAnimals = animalDataService.findAll();
         for (AnimalDTO animal : allAnimals) {
+            //TODO nullPointer
             animalLogicService.updateAnimalState(animal, delta);
         }
 

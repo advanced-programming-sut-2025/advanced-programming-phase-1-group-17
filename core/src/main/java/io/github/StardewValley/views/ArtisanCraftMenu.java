@@ -59,12 +59,11 @@ public class ArtisanCraftMenu implements Screen {
         this.errorLabel = new Label("", skin);
         this.errorLabel.setAlignment(Align.center);
 
-        this.craftButton = new TextButton("Craft %s".formatted(this.craftingItemDTO.getType()), skin);
+        this.craftButton = new TextButton("Craft", skin);
         this.craftButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //used to delay the method call so that the UI input is executed(selectedItems is updated properly)
-                Gdx.app.postRunnable(controller::craft);
+                controller.craft();
             }
         });
     }

@@ -86,6 +86,7 @@ public class ToolAssetManager {
 
     public String getToolTexturePath(ToolType toolType, ToolMaterial toolMaterial, FishingPoleType fishingPoleType) {
         if (toolType.equals(ToolType.FishingPole)) {
+            System.out.println("Fishing Pole texture ...3");
             System.out.println(fishingPoleType);
             return fishingPoleTexturePaths.get(fishingPoleType);
         }

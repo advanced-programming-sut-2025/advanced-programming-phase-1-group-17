@@ -21,6 +21,7 @@ import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CropAssetManager;
 import io.github.StardewValley.shared.models.plant.Tree;
 import io.github.StardewValley.shared.models.plant.TreeAssetManager;
+import kotlin.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,9 +35,9 @@ public class WorldController {
     private int tileWidth;
     private int tileHeight;
     private final int printPad = 30;
-    private final HashMap<Texture, float[]> treesInThisFrame = new HashMap<>();
-    private final HashMap<String, float[]> giantCropsInThisFrame = new HashMap<>();
-    private final HashMap<TextureRegion, float[]> treeTextureRegions = new HashMap<>();
+    private final List<Pair<Texture, float[]>> treesInThisFrame = new ArrayList<>();
+    private final List<Pair<TextureRegion, float[]>> treeTextureRegions = new ArrayList<>();
+    private final List<Pair<String, float[]>> giantCropsInThisFrame = new ArrayList<>();
 
     private GameState gameState;
 
@@ -73,12 +74,10 @@ public class WorldController {
 
         gameState = GameClient.getGameStateApiClient().getGameState(minTileX, maxTileX, minTileY, maxTileY);
         List<TileDTO> tiles = gameState.getTiles();
-        //tiles = GameClient.getGameStateApiClient().getMapTilesAroundPlayer(minTileX,maxTileX,minTileY,maxTileY);
         craftingItems = gameState.getCraftingItems();
 
         lightningRenderController.applyLightningState(gameState.getLightningStateDTO());
         lightningRenderController.renderLightning(Main.getBatch(), GameClient.getPlayer());
-
 
         for (int x = minTileX - 1; x < maxTileX; x++) {
             for (int y = minTileY - 1; y < maxTileY; y++) {
@@ -93,7 +92,6 @@ public class WorldController {
                 }
 
                 if (tile == null) continue;
-
 
                 if (tile.isPlowed())
                     Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getPlowedTexture(), tile.getX() * tileWidth, tile.getY() * tileHeight);
@@ -118,24 +116,24 @@ public class WorldController {
     }
 
     private void drawGiantCrops() {
-        giantCropsInThisFrame.forEach((texturePath, coordinates) -> {
+        for (var entry : giantCropsInThisFrame) {
             Main.getBatch().draw(
-                GameAssetManagerClient.getGameAssetManager().getTexture(texturePath),
-                coordinates[0],
-                coordinates[1],
+                GameAssetManagerClient.getGameAssetManager().getTexture(entry.getFirst()),
+                entry.getSecond()[0],
+                entry.getSecond()[1],
                 tileWidth * 2 - 10,
                 tileHeight * 2 - 10
             );
-        });
+        }
     }
 
     private void drawTrees() {
-        treesInThisFrame.forEach((texture, coordinates) -> {
-            Main.getBatch().draw(texture, coordinates[0], coordinates[1]);
-        });
-        treeTextureRegions.forEach(((textureRegion, floats) -> {
-            Main.getBatch().draw(textureRegion, floats[0], floats[1]);
-        }));
+        for (var entry : treesInThisFrame) {
+            Main.getBatch().draw(entry.getFirst(), entry.getSecond()[0], entry.getSecond()[1]);
+        }
+        for (var entry : treeTextureRegions) {
+            Main.getBatch().draw(entry.getFirst(), entry.getSecond()[0], entry.getSecond()[1]);
+        }
     }
 
     private void printTileTexture(TileDTO tile, Season season) {
@@ -146,7 +144,7 @@ public class WorldController {
         if (tile.getPlaceableType().equals(Crop.class.getSimpleName())) {
             if (tile.isCropGiant()) {
                 if (tile.isLeftBottomCornerOfGiantCrop())
-                    giantCropsInThisFrame.put(tile.getTexturePath(), new float[]{printX, printY});
+                    giantCropsInThisFrame.add(new Pair<>(tile.getTexturePath(), new float[]{printX, printY}));
                 else
                     return;
             }
@@ -158,9 +156,9 @@ public class WorldController {
                 printX = (tile.getX() * tileWidth) +
                     ((tileWidth - textureRegion.getRegionWidth()) / 2f);
                 printY = (tile.getY() * tileHeight) + 10;
-                treeTextureRegions.put(textureRegion, new float[]{printX, printY});
+                treeTextureRegions.add(new Pair<>(textureRegion, new float[]{printX, printY}));
             } else
-                treesInThisFrame.put(texture, new float[]{printX, printY});
+                treesInThisFrame.add(new Pair<>(texture, new float[]{printX, printY}));
             return;
         }
         switch (tile.getPlaceableType()) {

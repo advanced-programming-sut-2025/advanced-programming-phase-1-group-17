@@ -17,8 +17,8 @@ public class TileDTO {
     private String ownerUsername;
     private boolean isPlowed = false;
     private int grassTextureID;
-    private boolean isCropGiant = false;
-    private boolean isLeftBottomCornerOfGiantCrop = false;
+    private boolean cropGiant = false;
+    private boolean leftBottomCornerOfGiantCrop = false;
     private TreeType treeType;
 
     public TileDTO(){}
@@ -38,8 +38,8 @@ public class TileDTO {
                 grassTextureID = normalItem.getGrassTextureID();
         }
         if (tile.getPlaceable() instanceof Crop crop) {
-            isCropGiant = crop.isGiant();
-            isLeftBottomCornerOfGiantCrop = crop.isLeftBottomTileOfGiant();
+            cropGiant = crop.isGiant();
+            leftBottomCornerOfGiantCrop = crop.isLeftBottomTileOfGiant();
         }
         if (tile.getPlaceable() instanceof Tree tree) {
             treeType = tree.getType();
@@ -116,11 +116,11 @@ public class TileDTO {
     }
 
     public boolean isCropGiant() {
-        return isCropGiant;
+        return cropGiant;
     }
 
     public boolean isLeftBottomCornerOfGiantCrop() {
-        return isLeftBottomCornerOfGiantCrop;
+        return leftBottomCornerOfGiantCrop;
     }
 
     public TreeType getTreeType() {

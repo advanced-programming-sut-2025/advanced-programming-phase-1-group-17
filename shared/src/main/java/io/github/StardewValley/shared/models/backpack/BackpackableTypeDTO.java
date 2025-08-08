@@ -5,7 +5,7 @@ public class BackpackableTypeDTO {
     private String className;
     private double price;
     private String inventoryTexturePath;
-    private int countInBackPack;
+    private int countInBackPack; //or count used in crafting Artisan
 
     public BackpackableTypeDTO() {
     }

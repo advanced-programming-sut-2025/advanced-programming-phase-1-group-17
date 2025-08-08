@@ -1333,7 +1333,7 @@ public class GameStateApiClient {
         return false;
     }
 
-    public Result craftArtisan(HashMap<BackpackableTypeDTO, Integer> selectedItems, CraftingItemDTO craftingItemDTO) {
+    public Result craftArtisan(ArrayList<BackpackableTypeDTO> selectedItems, CraftingItemDTO craftingItemDTO) {
         try {
             CraftArtisanRequest craftArtisanRequest = new CraftArtisanRequest(selectedItems, craftingItemDTO);
             // 2. Serialize to JSON
