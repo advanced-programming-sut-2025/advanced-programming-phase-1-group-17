@@ -84,7 +84,6 @@ public class PlayerClient {
     }
 
 
-
     private Player.Direction currentDirection = Player.Direction.IDLE;
 
 
@@ -129,19 +128,18 @@ public class PlayerClient {
     }
 
     public int getTileX() {
-        int playerWidth = (int)GameAssetManager.getGameAssetManager().getTileWidth();;
+        int playerWidth = 120;
         float centerX = x + playerWidth / 2f;
-        return (int) (centerX / (int)GameAssetManager.getGameAssetManager().getTileHeight());
-
-
+        return (int) (centerX / 120);
     }
 
     public int getTileY() {
-        int playerHeight = (int)GameAssetManager.getGameAssetManager().getTileHeight();;
+        int playerHeight = 120;
         float centerY = y + playerHeight / 2f;
-        return (int) (centerY / (int)GameAssetManager.getGameAssetManager().getTileHeight());
+        return (int) (centerY / 120);
 
     }
+
     public int getCoin() {
         return coin;
     }

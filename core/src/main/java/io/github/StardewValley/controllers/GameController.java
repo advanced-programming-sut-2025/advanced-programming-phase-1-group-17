@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
-import io.github.StardewValley.App;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
@@ -56,7 +55,6 @@ public class GameController {
             //TODO
 //            initializeStoreRectangles();
 
-            App.setCamera(this.camera);
             GameClient.setCamera(this.camera);
         } catch (Exception e) {
             e.printStackTrace();

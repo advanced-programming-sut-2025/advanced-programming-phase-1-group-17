@@ -60,6 +60,10 @@ public class GiftMenu implements Screen {
         for (BackpackableTypeDTO backpackableTypeDTO : backPackItems) {
             // 1. Prepare image button style:
             Texture itemTexture = GameAssetManagerClient.getGameAssetManager().getTexture(backpackableTypeDTO.getInventoryTexturePath());
+            if (itemTexture == null) {
+                System.out.println(backpackableTypeDTO.getInventoryTexturePath() + " " + backpackableTypeDTO.getName());
+                continue;
+            }
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(itemTexture));
 

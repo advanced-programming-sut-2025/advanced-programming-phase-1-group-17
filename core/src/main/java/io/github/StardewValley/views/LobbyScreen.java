@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.LobbyDto;
 
 import java.util.List;
@@ -117,14 +117,14 @@ public class LobbyScreen implements Screen {
                                     LobbyDto joined = apiClient.joinLobbyByCode(lobby.getInviteCode());
                                     System.out.println("Joined lobby: " + joined.getName());
                                     Main.getMain().getScreen().dispose();
-                                    Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, App.getLoggedInUser().getUsername()));
+                                    Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, GameClient.getLoggedInUser().getUsername()));
                                 }
                             }
                             else {
                                 LobbyDto joined = apiClient.joinLobbyByCode(lobby.getInviteCode());
                                 System.out.println("Joined lobby: " + joined.getName());
                                 Main.getMain().getScreen().dispose();
-                                Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, App.getLoggedInUser().getUsername()));
+                                Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, GameClient.getLoggedInUser().getUsername()));
                             }
                         } catch (Exception e) {
                             System.err.println("Error joining lobby:");
@@ -199,7 +199,7 @@ public class LobbyScreen implements Screen {
                     );
                     System.out.println("Lobby created: " + newLobby.getInviteCode());
                     Main.getMain().getScreen().dispose();
-                    Main.getMain().setScreen(new LobbyRoomScreen(newLobby, apiClient, App.getLoggedInUser().getUsername()));
+                    Main.getMain().setScreen(new LobbyRoomScreen(newLobby, apiClient, GameClient.getLoggedInUser().getUsername()));
                     refreshLobbyList(GameAssetManagerClient.getGameAssetManager().getSkin());
                 } catch (Exception e) {
                     System.err.println("Error while creating lobby:");
@@ -216,7 +216,7 @@ public class LobbyScreen implements Screen {
                         System.out.println("Joined lobby: " + joined.getName());
                         refreshLobbyList(GameAssetManagerClient.getGameAssetManager().getSkin());
                         Main.getMain().getScreen().dispose();
-                        Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, App.getLoggedInUser().getUsername()));
+                        Main.getMain().setScreen(new LobbyRoomScreen(joined, apiClient, GameClient.getLoggedInUser().getUsername()));
                     } catch (Exception e) {
                         System.err.println("Error while joining lobby:");
                         e.printStackTrace();

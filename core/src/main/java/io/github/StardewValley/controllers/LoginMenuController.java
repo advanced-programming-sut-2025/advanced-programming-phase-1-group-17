@@ -5,11 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import com.google.gson.Gson;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.TokenStorage;
 import io.github.StardewValley.Main;
 
 import io.github.StardewValley.shared.dto.*;
-import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.enums.NetworkRequests;
 import io.github.StardewValley.views.LoginMenu;
 import io.github.StardewValley.views.MainMenu;
@@ -144,14 +144,13 @@ public class LoginMenuController {
 
             String responseJson = response.body().string();
             LoginResponse loginResponse = gson.fromJson(responseJson, LoginResponse.class);
-
-            App.setLoggedInUser(loginResponse.getUserDTO());
             if (view.getCheckBox().isChecked())
                 TokenStorage.saveToken(loginResponse.getToken());
             else {
                 TokenStorage.clearToken();
             }
             Main.setJwt(loginResponse.getToken());
+            GameClient.setLoggedInUser(loginResponse.getUserDTO());
             Main.getMain().getScreen().dispose();
             view.getCheckBox().setChecked(false);
             Main.getMain().setScreen(new MainMenu(new MainMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
