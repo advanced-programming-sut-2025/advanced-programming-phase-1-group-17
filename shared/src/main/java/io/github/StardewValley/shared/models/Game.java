@@ -86,8 +86,7 @@ public class Game implements Serializable {
                 players.get(3).addFriendShips(players.get(i), 0);
             }
         }
-        //App.setCurrentGame(this);
-        this.gameMap = new GameMap(players, this);
+        this.gameMap = new GameMap(players,this);
         setTiles(new ArrayList<>(Tile.getTiles()));
         setTreeTile(new ArrayList<>(Tile.getTreeTile()));
         Tile.getTiles().clear();

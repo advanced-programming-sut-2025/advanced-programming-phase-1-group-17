@@ -6,9 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.GameMenuController;
-import io.github.StardewValley.App;
 
 import java.util.Scanner;
 
@@ -29,7 +29,7 @@ public class GameMenu implements Screen {
     private TextButton User2;
     private TextButton User3;
     private TextButton User4;
-    private  TextButton deleteUser1;
+    private TextButton deleteUser1;
     private TextButton deleteUser2;
     private TextButton deleteUser3;
     private TextButton deleteUser4;
@@ -37,49 +37,46 @@ public class GameMenu implements Screen {
     private Scanner scanner = new Scanner(System.in);
 
 
-
-
     public GameMenu(GameMenuController controller, Skin skin) {
         this.skin = skin;
         this.controller = controller;
         this.table = new Table();
-        this.Users =new Table();
+        this.Users = new Table();
         this.buttons = new Table();
         this.error = new Label("", skin);
-        error.setColor(1,0,0,1);
+        error.setColor(1, 0, 0, 1);
         MenuTitle = new TextButton("GameMenu", skin);
-        MenuTitle.setColor(0,1,0,1);
+        MenuTitle.setColor(0, 1, 0, 1);
         startGame = new TextButton("StartGame", skin);
-        startGame.setColor(0,0,1,1);
+        startGame.setColor(0, 0, 1, 1);
         backButton = new TextButton("Back", skin);
         addUser = new TextButton("addUser", skin);
-        addUser.setColor(0,0,1,1);
+        addUser.setColor(0, 0, 1, 1);
         UserName = new TextField("", skin);
         UserName.setMessageText("Enter Username of your friend");
         loadGame = new TextButton("Load last Game", skin);
-        loadGame.setColor(0,0,1,1);
-        User1 = new TextButton(App.getLoggedInUser().getUsername(), skin);
-        User1.setColor(0,1,0,1);
+        loadGame.setColor(0, 0, 1, 1);
+        User1 = new TextButton(GameClient.getPlayer().getUser().getUsername(), skin);
+        User1.setColor(0, 1, 0, 1);
         User2 = new TextButton("-", skin);
-        User2.setColor(0,1,0,1);
+        User2.setColor(0, 1, 0, 1);
         User3 = new TextButton("-", skin);
-        User3.setColor(0,1,0,1);
+        User3.setColor(0, 1, 0, 1);
         User4 = new TextButton("-", skin);
-        User4.setColor(0,1,0,1);
-        deleteUser1 = new TextButton("><", skin );
-        deleteUser1.setColor(1,0,0,1);
+        User4.setColor(0, 1, 0, 1);
+        deleteUser1 = new TextButton("><", skin);
+        deleteUser1.setColor(1, 0, 0, 1);
         deleteUser2 = new TextButton("><", skin);
-        deleteUser2.setColor(1,0,0,1);
+        deleteUser2.setColor(1, 0, 0, 1);
         deleteUser3 = new TextButton("><", skin);
-        deleteUser3.setColor(1,0,0,1);
+        deleteUser3.setColor(1, 0, 0, 1);
         deleteUser4 = new TextButton("><", skin);
-        deleteUser4.setColor(1,0,0,1);
+        deleteUser4.setColor(1, 0, 0, 1);
         controller.setView(this);
 
 
-
-
     }
+
     @Override
     public void show() {
         //stage = new Stage(new ScreenViewport());
@@ -270,6 +267,7 @@ public class GameMenu implements Screen {
     public Table getUsers() {
         return Users;
     }
+
     public void setError(String error) {
         this.error.setText(error);
     }

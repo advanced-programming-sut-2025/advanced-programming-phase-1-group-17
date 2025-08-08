@@ -3,7 +3,6 @@ package io.github.StardewValley.controllers;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.App;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.map.Tile;
@@ -243,11 +242,11 @@ public class GameMenuController {
             return new Result(false, e.getMessage());
         }
     }
-
-    public Result getTime() {
-        return new Result(true, App.getCurrentGame().getDate().getHour() + " : " +
-            App.getCurrentGame().getDate().getMinute());
-    }
+    //TODO App...
+//    public Result getTime() {
+//        return new Result(true, App.getCurrentGame().getDate().getHour() + " : " +
+//            App.getCurrentGame().getDate().getMinute());
+//    }
 
 
     private int normalize(int delta) {

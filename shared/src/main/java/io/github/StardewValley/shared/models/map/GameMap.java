@@ -12,14 +12,13 @@ public class GameMap {
     private ArrayList<PlayerMap> playerMaps = new ArrayList<>();
 
     public GameMap(ArrayList<Player> players, Game game) {
-        System.out.println("Gamemap creation started");
         UserDTO user = new UserDTO("NPC",  "NPC", Gender.Male);
         NPC.setFatherUser(user);
         Player player = new Player(user, true);
         NPC.setFatherPlayer(player);
         players.add(player);
         for (int i = 0; i < 5; i++) {
-            playerMaps.add(new PlayerMap(i, players.get(i), game));
+            playerMaps.add(new PlayerMap(i, players.get(i),game));
         }
     }
 

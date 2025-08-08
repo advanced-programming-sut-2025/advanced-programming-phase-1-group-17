@@ -5,11 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.App;
-import io.github.StardewValley.shared.models.NPCS.NPC;
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.views.MapView;
 
@@ -26,6 +24,7 @@ public class MapViewController {
         uiCam.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
         uiCam.update();
     }
+
     public void showMap(float delta) {
         uiCam.update();
         handleCameraInput(delta);
@@ -46,23 +45,21 @@ public class MapViewController {
         float offsetY = screenCenterY - totalMapHeight / 2f;
 
         for (Tile tile : Tile.getTiles()) {
-                float drawX = offsetX + tile.getX() * tileSize;
-                float drawY = offsetY + tile.getY() * tileSize;
-                if (tile.getPlaceable() == null || tile.getPlaceable().getTexture() == null)
-                    continue;
-                Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(tile.getPlaceable().getTexture()), drawX, drawY, tileSize, tileSize);
+            float drawX = offsetX + tile.getX() * tileSize;
+            float drawY = offsetY + tile.getY() * tileSize;
+            if (tile.getPlaceable() == null || tile.getPlaceable().getTexture() == null)
+                continue;
+            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(tile.getPlaceable().getTexture()), drawX, drawY, tileSize, tileSize);
         }
 
-        for (NPC npc : App.getCurrentGame().getNPCs()) {
-            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(npc.getTexture()), offsetX + npc.getX() * tileSize - 10, offsetY + npc.getY() * tileSize, tileSize * 10, tileSize * 10);
+        for (int x : GameClient.getPlayersHutLocations().keySet()) {
+            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture("hut.png")
+                , offsetX + GameClient.getPlayersHutLocations().get(x).get(0) * tileSize,
+                offsetY + GameClient.getPlayersHutLocations().get(x).get(1) * tileSize, tileSize * 10, tileSize * 10);
         }
-        for (Player player : App.getCurrentGame().getPlayers()) {
-            if (player.getUser().getUsername().equals("NPC"))
-                continue;
-//            if (!player.isMoved())
-//                Main.getBatch().draw(player.getTexture(), offsetX + player.getX() * tileSize, offsetY + player.getY() * tileSize, tileSize * 10, tileSize * 10);
-//            else
-            Main.getBatch().draw(player.getTexture(), offsetX + player.getTileX() * tileSize, offsetY + player.getTileY() * tileSize, tileSize * 10, tileSize * 10);
+        for (int x : GameClient.getNPCsHutsLocations().keySet()) {
+            Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture("hut2.png"),
+                offsetX + GameClient.getNPCsHutsLocations().get(x).get(0) * tileSize, offsetY + GameClient.getNPCsHutsLocations().get(x).get(1) * tileSize, tileSize * 10, tileSize * 10);
         }
 
     }

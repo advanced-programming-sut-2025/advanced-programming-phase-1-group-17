@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
@@ -98,7 +99,7 @@ public class GameStateApiClient {
                 return mapper.readValue(is, UserDTO.class);
             }
         } else {
-            System.out.println("Error: " + responseCode);
+            System.out.println("Error: " + responseCode + "2");
         }
         return null;
     }
@@ -177,7 +178,7 @@ public class GameStateApiClient {
                 return mapper.readValue(is, boolean.class);
             }
         } else {
-            System.out.println("Error: " + responseCode);
+            System.out.println("Error: " + responseCode + "3");
             return false;
         }
     }
@@ -214,6 +215,7 @@ public class GameStateApiClient {
                 String token = new String(is.readAllBytes(), StandardCharsets.UTF_8);
                 setToken(token);
                 Main.setJwt(token);
+                this.token = token;
             }
         } else {
             throw new RuntimeException("Failed to update user: code " + responseCode);
@@ -241,7 +243,7 @@ public class GameStateApiClient {
                 return mapper2.readValue(is, boolean.class);
             }
         } else {
-            System.out.println("Error: " + responseCode);
+            System.out.println("Error: " + responseCode + "4");
             return false;
         }
     }
@@ -272,6 +274,7 @@ public class GameStateApiClient {
                 String token = new String(is.readAllBytes(), StandardCharsets.UTF_8);
                 setToken(token);
                 Main.setJwt(token);
+                this.token = token;
             }
             System.out.println("Password changed successfully");
         } else {
@@ -1483,4 +1486,9 @@ public class GameStateApiClient {
         }
         return null;
     }
+
+
+
+
+
 }

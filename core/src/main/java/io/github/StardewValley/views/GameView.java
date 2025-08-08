@@ -296,8 +296,37 @@ public class GameView implements Screen, InputProcessor {
     }
 
     public void updateNearPlayerAndNpc() {
-        targetPlayer = GameClient.getGameStateApiClient().getNearbyPlayer();
-        nearbyNPC = getNearbyNPC();
+        targetPlayer = null;
+        for (String username : GameClient.getUserNameOfPlayers()) {
+            if (username.equals(GameClient.getPlayer().getUser().getUsername())) continue;
+            PlayerDto pd = GameClient.getGameStateApiClient().getPlayerDTOByUserName(username);
+            if (sideBySide(pd, GameClient.getPlayer())) {
+                targetPlayer = username;
+                break;
+            }
+        }
+//        nearbyNPC = getNearbyNPC();
+    }
+
+    public boolean sideBySide(PlayerDto currentPlayer, PlayerClient player) {
+        int playerWidth = 120;
+        float centerX = currentPlayer.getX() + playerWidth / 2f;
+        int x = (int) (centerX / 120);
+        float centerY = currentPlayer.getX() + playerWidth / 2f;
+        int y = (int) (centerY / 120);
+        int x1 = player.getTileX();
+        int y1 = player.getTileY();
+        if ((x == x1 && y == y1)
+            || (x == x1 + 1 && y == y1)
+            || (x == x1 - 1 && y == y1)
+            || (x == x1 && y == y1 + 1)
+            || (x == x1 - 1 && y == y1 + 1)
+            || (x == x1 + 1 && y == y1 + 1)
+            || (x == x1 && y == y1 - 1)
+            || (x == x1 + 1 && y == y1 - 1)
+            || (x == x1 - 1 && y == y1 - 1)) {
+            return true;
+        } else return false;
     }
 
     public void updateInteractions() {
@@ -313,8 +342,13 @@ public class GameView implements Screen, InputProcessor {
     }
 
     private void showInteractionWindow(String targetPlayer) {
-        if (targetPlayer.isEmpty()) return;
-        PlayerDto playerDto = GameClient.getGameStateApiClient().getPlayerDTOByUserName(targetPlayer);
+        if (targetPlayer == null) return;
+        PlayerDto playerDto = null;
+        for (String username : GameClient.getUserNameOfPlayers()) {
+            if (username.equals(targetPlayer)) {
+                playerDto = GameClient.getGameStateApiClient().getPlayerDTOByUserName(username);
+            }
+        }
         Vector3 screenPos = controller.getCamera().project(new Vector3(playerDto.getX(), playerDto.getY(), 0));
         window.setSize(250, 350);
         window.setPosition(screenPos.x - window.getWidth() / 2f, screenPos.y);
