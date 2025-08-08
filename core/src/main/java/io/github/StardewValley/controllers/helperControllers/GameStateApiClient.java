@@ -2,11 +2,9 @@ package io.github.StardewValley.controllers.helperControllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
@@ -22,7 +20,6 @@ import okhttp3.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -1480,6 +1477,29 @@ public class GameStateApiClient {
                 try (InputStream inputStream = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
                     return mapper.readValue(inputStream, NPCdto.class);
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public List<TileDTO> getAllTiles(){
+        try {
+            String baseUrl = BASE_URL + "/getAllTiles";
+            URL url = new URL(baseUrl );
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, new TypeReference<List<TileDTO>>() {});
                 }
             } else {
                 throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
