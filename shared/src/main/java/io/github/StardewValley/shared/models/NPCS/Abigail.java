@@ -15,12 +15,8 @@ public class Abigail extends NPC implements Placeable {
     private int y;
     private String name = "Abigail";
     private String job = "Miner";
-    private final HashMap<String, String> dialogue = new HashMap<>();
-    private final HashMap<String, String> dialogue2 = new HashMap<>();
     private String texture1 = "Abigail.png";
     private String texture2 = "hut2.png";
-
-    //TODO
 
     public Abigail(boolean isAbigail) {
         this.dialogueText.add("hello i am abigail");
@@ -36,25 +32,6 @@ public class Abigail extends NPC implements Placeable {
         y_start = y;
         isNPC = isAbigail;
     }
-
-
-    {
-        dialogue.put("what's your name?", "Abigail");
-        dialogue.put("hello", "hi how are you?what do you do on vacation");
-        dialogue.put("i'm fine how are you", "i'm fine,");
-        dialogue.put("where is this?", "this is a village in iran.");
-        dialogue.put("goodbye", "bye , be careful,the weather is very hot.go home quickly.");
-        dialogue.put("how is the weather?", "the weather is very hot!");
-        dialogue.put("what is your job?", "I am a miner");
-        dialogue2.put("what's your name?", "Abigail");
-        dialogue2.put("hello", "hi how are you?");
-        dialogue2.put("i'm fine how are you", "i'm fine");
-        dialogue2.put("where is this?", "this is a village in iran.");
-        dialogue2.put("goodbye", "bye , take care of yourself.");
-        dialogue2.put("how is the weather?", "the weather is very cold!");
-        dialogue2.put("what is your job?", "I am a miner");
-    }
-
 
     private ArrayList<String> favorites = new ArrayList<>();
 
@@ -125,14 +102,6 @@ public class Abigail extends NPC implements Placeable {
         this.y = y;
     }
 
-    public HashMap<String, String> getDialogue() {
-        return dialogue;
-    }
-
-    @Override
-    public HashMap<String, String> getDialogue2() {
-        return dialogue2;
-    }
 
     @Override
     public String getTexture() {

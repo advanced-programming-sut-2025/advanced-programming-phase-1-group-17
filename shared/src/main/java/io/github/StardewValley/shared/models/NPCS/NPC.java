@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.NPCS;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.UserDTO;
 
@@ -15,7 +14,6 @@ abstract public class NPC {
     private static Player fatherPlayer;
     private String name;
     private String job;
-    private ArrayList<Quest> quests =new ArrayList<>();
     private ArrayList<String> favorites;
     public boolean isNPC;
     public int x_start;
@@ -27,8 +25,9 @@ abstract public class NPC {
     private HashMap<String, String> dialogue = new HashMap<>();
     private HashMap<String, String> dialogue2 = new HashMap<>();
 
-    private ArrayList<Quest> requests= new ArrayList<>();
-    public ArrayList<Quest> getRequests(){
+    private ArrayList<Quest> requests = new ArrayList<>();
+
+    public ArrayList<Quest> getRequests() {
         return requests;
     }
 
@@ -51,10 +50,15 @@ abstract public class NPC {
     public ArrayList<String> getFavorites() {
         return favorites;
     }
+
     public void setFavorites(ArrayList<String> favorites) {
         this.favorites = favorites;
     }
-    public void giveReward(Player player, int index){};
+
+    public void giveReward(Player player, int index) {
+    }
+
+    ;
 
     public void sendGift() {
     }
@@ -90,6 +94,7 @@ abstract public class NPC {
     public void setY(int y) {
         this.y = y;
     }
+
     public HashMap<String, String> getDialogue() {
         return dialogue;
     }
@@ -97,7 +102,8 @@ abstract public class NPC {
     public HashMap<String, String> getDialogue2() {
         return dialogue2;
     }
-    public boolean isNPC(){
+
+    public boolean isNPC() {
         return isNPC;
     }
 
@@ -108,16 +114,19 @@ abstract public class NPC {
     public int getY_start() {
         return y_start;
     }
-    public String getTexture(){
+
+    public String getTexture() {
         return null;
     }
-    public String getDialogueText(){
+
+    public String getDialogueText() {
         Random rand = new Random();
         int min = 0;
         int max = dialogueText.size() - 1;
         int randomInt = rand.nextInt(max - min + 1) + min;
         return dialogueText.get(randomInt);
     }
+
     public int getTile_x() {
         return Tile_x;
     }

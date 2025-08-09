@@ -1,7 +1,5 @@
 package io.github.StardewValley.shared.models.NPCS;
 
-import com.badlogic.gdx.graphics.Texture;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
@@ -11,18 +9,14 @@ import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Lia extends NPC implements Placeable {
     private int x;
     private int y;
     private String name = "Lia";
     private String job = "waiter";
-    private final HashMap<String, String> dialogue = new HashMap<>();
-    private final HashMap<String, String> dialogue2 = new HashMap<>();
     private String texture1 = "Leo.png";
     private String  texture2 =  "hut2.png";
-    //TODO
 
 
     public Lia(boolean isLia){
@@ -40,15 +34,6 @@ public class Lia extends NPC implements Placeable {
         y_start = y;
     }
 
-    {
-        dialogue.put("what's your name?", "Lia");
-        dialogue.put("hello", "hi how are you?");
-        dialogue.put("i'm fine how are you", "i'm fine");
-        dialogue.put("where is this?", "this is a village in iran.");
-        dialogue.put("goodbye", "bye , take care of yourself.");
-        dialogue.put("how is the weather?", "excellent!");
-        dialogue.put("what is your job?", "I am a waiter");
-    }
     private ArrayList<String> favorites = new ArrayList<>();
 
     @Override
@@ -113,14 +98,6 @@ public class Lia extends NPC implements Placeable {
 
     public void setY(int y) {
         this.y = y;
-    }
-    public HashMap<String, String> getDialogue() {
-        return dialogue;
-    }
-
-    @Override
-    public HashMap<String, String> getDialogue2() {
-        return dialogue2;
     }
 
     @Override
