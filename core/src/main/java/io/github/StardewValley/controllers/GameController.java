@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.UIControllers.*;
+import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
@@ -18,6 +20,9 @@ import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MapView;
 import io.github.StardewValley.models.plant.CrowAttackEffect;
+
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class GameController {
     public GameView view;
@@ -91,7 +96,7 @@ public class GameController {
         camera.update();
     }
 
-    public void updateGame(float delta) {
+    public void updateGame(float delta) throws Exception {
         if (view != null) {
             try {
                 PlayerDto pd = GameClient.getGameStateApiClient().updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
@@ -104,7 +109,7 @@ public class GameController {
 
             GameClient.getPlayer().draw(Main.getBatch());
             printOtherPlayers();
-            handlePlayerInput();
+            //handlePlayerInput();
 
             //TODO handle connection to server
 //            toolController.update(delta, player);
@@ -183,8 +188,60 @@ public class GameController {
     public OrthographicCamera getCamera() {
         return camera;
     }
+    public boolean handleAnimalClick(Vector3 worldCoordinates) throws Exception {
+        ArrayList<AnimalDTO> animalsFromServer = GameClient.getGameStateApiClient().getAllAnimals();
+        System.out.println("vector : " + worldCoordinates.x + ", " + worldCoordinates.y );
+        // از لیست محلی حیوانات که از سرور آپدیت می‌شود، استفاده کن
+        if (animalsFromServer != null) {
+            for (AnimalDTO animal : animalsFromServer) {
+                System.out.println(animal.getAnimalType().name() +" "+animal.getHitBox());
 
-    public void handlePlayerInput() {
+                // hitbox را در لحظه و با داده‌های DTO بساز
+
+                if (animal.getHitBox().contains(worldCoordinates.x, worldCoordinates.y)) {
+                    System.out.println("SUCCESS: Clicked on animal " + animal.getName());
+                    try {
+                        // فرمان را به سرور بفرست
+                        GameClient.gameStateApiClient.petAnimal(animal.getId());
+                        return true;
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true; // <<-- مهم: یعنی کلیک مدیریت شد
+                }
+            }
+        }
+        return false; // <<-- مهم: یعنی روی هیچ حیوانی کلیک نشده
+    }
+    public boolean handleAnimalFeed(Vector3 worldCoordinates) throws Exception {
+        ArrayList<AnimalDTO> animalsFromServer = GameClient.getGameStateApiClient().getAllAnimals();
+        System.out.println("vector : " + worldCoordinates.x + ", " + worldCoordinates.y );
+        // از لیست محلی حیوانات که از سرور آپدیت می‌شود، استفاده کن
+        if (animalsFromServer != null) {
+            for (AnimalDTO animal : animalsFromServer) {
+                System.out.println(animal.getAnimalType().name() +" "+animal.getHitBox());
+
+                // hitbox را در لحظه و با داده‌های DTO بساز
+
+                if (animal.getHitBox().contains(worldCoordinates.x, worldCoordinates.y)) {
+                    System.out.println("SUCCESS: Clicked on animal " + animal.getName());
+                    try {
+                        // فرمان را به سرور بفرست
+                        GameClient.gameStateApiClient.feedAnimal(animal.getId());
+                        return true;
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true; // <<-- مهم: یعنی کلیک مدیریت شد
+                }
+            }
+        }
+        return false; // <<-- مهم: یعنی روی هیچ حیوانی کلیک نشده
+    }
+
+    public void handlePlayerInput() throws Exception {
         //player = App.getCurrentGame().getCurrentPlayingPlayer();
         int dx = 0, dy = 0;
         switch (player.getLastDirection()) {
@@ -201,6 +258,17 @@ public class GameController {
                 dx = -1;
                 break;
         }
+//        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+//            for(AnimalDTO animalDTO:GameClient.gameStateApiClient.getAllAnimals()){
+//                System.out.println(animalDTO.getAnimalType() + " " + animalDTO.getHitBox());
+//                Vector3 vec = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+//                System.out.println("vec: " + vec);
+//                if(animalDTO.getHitBox().contains(vec.x, vec.y)){
+//                    GameClient.gameStateApiClient.petAnimal(animalDTO.getId());
+//                    return;
+//                }
+//            }
+//        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             Main.getMain().getScreen().dispose();

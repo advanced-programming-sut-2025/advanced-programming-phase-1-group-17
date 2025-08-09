@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class AnimalDataService {
     // برای سادگی، داده‌ها را در حافظه نگه می‌داریم
-    private final Map<String, AnimalDTO> animalDatabase = new ConcurrentHashMap<>();
+    private static final ArrayList<AnimalDTO> animalDatabase = new ArrayList<>();
 
     public AnimalDataService() {
         // اضافه کردن داده تستی
@@ -20,20 +20,28 @@ public class AnimalDataService {
         testCow.setId("1");
         testCow.setName("Bessie");
         testCow.setAnimalType(AnimalType.Cow);
-        testCow.setX(100);
-        testCow.setY(100);
-        animalDatabase.put("1", testCow);
+        testCow.setX(20);
+        testCow.setY(20);
+        animalDatabase.add( testCow);
+        AnimalDTO testPig = new AnimalDTO("pigg",AnimalType.Pig,200,200);
+        testPig.setId("2");
+        animalDatabase.add( testPig);
     }
 
-    public List<AnimalDTO> findAll() {
-        return new ArrayList<>(animalDatabase.values());
+    public static List<AnimalDTO> findAll() {
+        return animalDatabase;
     }
 
-    public AnimalDTO findById(String id) {
-        return animalDatabase.get(id);
+    public static AnimalDTO findById(String id) {
+        for(AnimalDTO animalDTO:animalDatabase) {
+            if(animalDTO.getId().equals(id)) {
+                return animalDTO;
+            }
+        }
+        return null;
     }
 
-    public void save(AnimalDTO animal) {
-        animalDatabase.put(animal.getId(), animal);
+    public static void save(AnimalDTO animal) {
+        animalDatabase.add(animal);
     }
 }
