@@ -8,9 +8,12 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.dto.GameState;
 import io.github.StardewValley.shared.models.NPCdto;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.TileDTO;
+import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.MapView;
 
 public class MapViewController {
@@ -77,6 +80,15 @@ public class MapViewController {
         for (int i = 0; i < 5; i++) {
             NPCdto npc = GameClient.getGameStateApiClient().getNPCDtoByIndex(i);
             Main.getBatch().draw(GameAssetManagerClient.getGameAssetManager().getTexture(npc.getTexture()), offsetX + npc.getX() * tileSize, offsetY + npc.getY() * tileSize, (float) GameClient.getPlayer().getBackgroundTexture().getWidth() / 4f, (float) GameClient.getPlayer().getBackgroundTexture().getHeight() / 4f);
+        }
+        GameState gameState = GameClient.getGameStateApiClient().getGameState(1, 2, 1, 2);
+        GameAssetManagerClient assets = GameAssetManagerClient.getGameAssetManager();
+        Season season = gameState.getTimeAndDateDTO().getSeason();
+
+        for (StoreType storeType : StoreType.values()) {
+            Main.getBatch().draw(assets.getStoreTexture(season, storeType),
+                offsetX + storeType.getStart_x() * tileSize, offsetY + storeType.getStart_y() * tileSize,
+                tileSize * 15, tileSize * 15);
         }
 
 
