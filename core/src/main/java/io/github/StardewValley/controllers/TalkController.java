@@ -118,7 +118,7 @@ public class TalkController {
                 }
                 //TODO
                 Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new TradeMenu(new TradeMenuController(), GameAssetManagerClient.getGameAssetManager().getSkin(),gameView));
+                Main.getMain().setScreen(new TradeMenu(new TradeMenuController(), GameAssetManagerClient.getGameAssetManager().getSkin(), gameView, targetPlayer));
             }
         });
 
