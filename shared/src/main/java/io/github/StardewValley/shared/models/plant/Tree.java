@@ -1,11 +1,12 @@
 package io.github.StardewValley.shared.models.plant;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
-import io.github.StardewValley.shared.models.savedClasses.TreeSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.TreeSave;
+
+import java.util.List;
 
 public class Tree extends Plant implements Placeable {
     private TreeType type;
@@ -33,7 +34,7 @@ public class Tree extends Plant implements Placeable {
         TreeSave save = dto.getTreeSave();
         this.type = save.getType();
         //TODO
-        this.tile = new Tile(save.getTileX(), save.getTileY());
+        //this.tile = new Tile(save.getTileX(), save.getTileY());
     }
 
 
@@ -115,7 +116,7 @@ public class Tree extends Plant implements Placeable {
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        Tree tree = new Tree(dto);
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return new Tree(dto);
     }
 }

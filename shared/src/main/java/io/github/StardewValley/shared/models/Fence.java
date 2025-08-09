@@ -2,8 +2,9 @@ package io.github.StardewValley.shared.models;
 
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.map.Placeable;
-import io.github.StardewValley.shared.models.savedClasses.FenceSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class Fence implements Placeable {
     private String fenceTexture = GameAssetManager.getGameAssetManager().getFenceTexture();
@@ -23,12 +24,12 @@ public class Fence implements Placeable {
     @Override
     public PlaceableSave toDTO() {
         PlaceableSave placeableSave = new PlaceableSave(Fence.class.getSimpleName());
-        placeableSave.setFenceSave(new FenceSave(isHorizontal));
+        placeableSave.setFence(this);
         return placeableSave;
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        Fence fence = new Fence(dto.getFenceSave().isHorizontal());
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return this;
     }
 }

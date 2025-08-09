@@ -1,4 +1,4 @@
-package io.github.StardewValley.shared.models.savedClasses;
+package io.github.StardewValley.shared.models.saveClasses;
 
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;

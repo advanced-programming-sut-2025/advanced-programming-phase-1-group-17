@@ -4,16 +4,17 @@ import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.foraging.Mineral;
 import io.github.StardewValley.shared.models.foraging.MineralType;
+import io.github.StardewValley.shared.models.saveClasses.NPCSave;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Sebastian extends NPC implements Placeable {
-    private int x;
-    private int y;
-    private String name = "Sebastian";
-    private String job = "cook";
-    private String texture1 = "Sebastian.png";
-    private String texture2 = "hut2.png";
+    {
+        name = "Sebastian";
+        job = "cook";
+    }
+    private final String texture1 = "Sebastian.png";
+    private final String texture2 = "hut2.png";
 
     public Sebastian(boolean isSebastian) {
         isNPC = isSebastian;
@@ -31,21 +32,31 @@ public class Sebastian extends NPC implements Placeable {
         y_start = y;
     }
 
-    private ArrayList<String> favorites = new ArrayList<>();
-    public ArrayList<String> getFavorites() {
-        return favorites;
+    public Sebastian(NPCSave save, List<Player> playerList) {
+        this.x = save.getX();
+        this.y = save.getY();
+        if (NPC.getFatherUser() != null)
+            NPC.setFatherUser(save.getFatherUser());
+        if (NPC.getFatherPlayer() != null) {
+            for (Player player : playerList) {
+                if (player.getUser().getUsername().equals(save.getFatherPlayerUsername()))
+                    NPC.setFatherPlayer(player);
+            }
+        }
+        this.favorites =  save.getFavorites();
+        this.isNPC = save.isNPC();
+        this.x_start = save.getX_start();
+        this.y_start = save.getY_start();
+        this.Tile_x = save.getTile_x();
+        this.Tile_y = save.getTile_y();
+        this.dialogueText = save.getDialogueText();
+        this.requests = save.getRequests();
     }
 
     {
         favorites.add("Wool");
         favorites.add("PumpkinPie");
         favorites.add("Pizza");
-    }
-
-    private ArrayList<Quest> requests = new ArrayList<>();
-
-    public ArrayList<Quest> getRequests() {
-        return requests;
     }
 
     {
@@ -61,21 +72,13 @@ public class Sebastian extends NPC implements Placeable {
                 player.getBackPack().addItemToInventory(m);
             }
         } else if (index == 1) {
-            player.getBackPack().addcoin(5000);
+            player.addcoin(5000);
         } else {
             for (int i = 0; i < 50; i++) {
                 Mineral m = new Mineral(MineralType.Quartz, false);
                 player.getBackPack().addItemToInventory(m);
             }
         }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getJob() {
@@ -86,24 +89,6 @@ public class Sebastian extends NPC implements Placeable {
         this.job = job;
     }
 
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-
     @Override
     public String getTexture() {
         if (isNPC)
@@ -111,5 +96,4 @@ public class Sebastian extends NPC implements Placeable {
         else
             return texture2;
     }
-
 }

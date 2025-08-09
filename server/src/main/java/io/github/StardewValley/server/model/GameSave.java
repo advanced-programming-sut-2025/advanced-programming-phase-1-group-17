@@ -1,15 +1,10 @@
 package io.github.StardewValley.server.model;
 
-import io.github.StardewValley.shared.TimeAndDateDTO;
-import io.github.StardewValley.shared.dto.LightningStateDTO;
-import io.github.StardewValley.shared.models.savedClasses.TileSave;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,17 +14,49 @@ public class GameSave {
 
     private String creatorUsername;
     private LocalDateTime lastSaved;
-
-    private List<TileSave> tiles;
+    private String playerUsernamesCSV;
 
     @Lob
     private String serializedState; // JSON or binary
 
-    @Embedded
-    private TimeAndDateDTO timeAndDate;
-    @Embedded
-    private LightningStateDTO lightningStateDTO;
+    public UUID getId() {
+        return id;
+    }
 
-    // getters/setters
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getCreatorUsername() {
+        return creatorUsername;
+    }
+
+    public void setCreatorUsername(String creatorUsername) {
+        this.creatorUsername = creatorUsername;
+    }
+
+    public LocalDateTime getLastSaved() {
+        return lastSaved;
+    }
+
+    public void setLastSaved(LocalDateTime lastSaved) {
+        this.lastSaved = lastSaved;
+    }
+
+    public String getSerializedState() {
+        return serializedState;
+    }
+
+    public void setSerializedState(String serializedState) {
+        this.serializedState = serializedState;
+    }
+
+    public String getPlayerUsernamesCSV() {
+        return playerUsernamesCSV;
+    }
+
+    public void setPlayerUsernamesCSV(String playerUsernamesCSV) {
+        this.playerUsernamesCSV = playerUsernamesCSV;
+    }
 }
 

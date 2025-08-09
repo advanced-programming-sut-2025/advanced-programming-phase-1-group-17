@@ -1,9 +1,11 @@
 package io.github.StardewValley.shared.models.backpack;
 
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
-import io.github.StardewValley.shared.models.savedClasses.NormalItemSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 
+import java.util.List;
 import java.util.Random;
 
 public class NormalItem implements BackPackable, Placeable {
@@ -16,14 +18,6 @@ public class NormalItem implements BackPackable, Placeable {
             Random random = new Random();
             int randInt = random.nextInt(33);
         }
-    }
-
-
-    public NormalItem(PlaceableSave dto) {
-        NormalItemSave save = dto.getNormalItemSave();
-
-        this.type = save.getType();
-        this.grassTextureID = save.getGrassTextureID();
     }
 
     @Override
@@ -42,6 +36,13 @@ public class NormalItem implements BackPackable, Placeable {
     }
 
     @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(NormalItem.class.getSimpleName());
+        backPackableSave.setNormalItem(this);
+        return backPackableSave;
+    }
+
+    @Override
     public String getTexture() {
         return type.getInventoryTexturePath();
     }
@@ -49,13 +50,13 @@ public class NormalItem implements BackPackable, Placeable {
     @Override
     public PlaceableSave toDTO() {
         PlaceableSave placeableSave = new PlaceableSave(NormalItem.class.getSimpleName());
-        placeableSave.setNormalItemSave(new NormalItemSave(this));
+        placeableSave.setNormalItem(this);
         return placeableSave;
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        NormalItem normalItem = new NormalItem(dto);
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return this;
     }
 
     public int getGrassTextureID() {

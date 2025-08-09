@@ -1,8 +1,10 @@
 package io.github.StardewValley.shared.models.map;
 
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.savedClasses.LakeSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class Lake implements Placeable {
     @Override
@@ -13,12 +15,12 @@ public class Lake implements Placeable {
     @Override
     public PlaceableSave toDTO() {
         PlaceableSave placeableSave = new PlaceableSave(Lake.class.getSimpleName());
-        placeableSave.setLakeSave(new LakeSave());
+        placeableSave.setLake(this);
         return placeableSave;
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        Lake lake = new Lake();
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return this;
     }
 }

@@ -8,14 +8,17 @@ import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
-import io.github.StardewValley.shared.models.savedClasses.CraftingItemSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.CraftingItemSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class CraftingItem implements BackPackable, Placeable {
     private final CraftingItemType type;
     private ArtisanProduct artisanProductInProgress = null;
 
-    private final Player owner;
+    private Player owner;
     private int start_x = 0;
     private int start_y = 0;
     private final int width;
@@ -42,7 +45,8 @@ public class CraftingItem implements BackPackable, Placeable {
         this.width = save.getWidth();
         this.height = save.getHeight();
 
-        this.owner
+        //TODO
+        //this.owner
     }
 
     public static CraftingItemDTO getCraftingItemDTO(CraftingItem craftingItem) {
@@ -75,6 +79,13 @@ public class CraftingItem implements BackPackable, Placeable {
     @Override
     public BackPackableType getType() {
         return type;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(CraftingItem.class.getSimpleName());
+        backPackableSave.setCraftingItemSave(new CraftingItemSave(this));
+        return backPackableSave;
     }
 
     public CraftingItemType getCraftingItemType() {
@@ -130,7 +141,7 @@ public class CraftingItem implements BackPackable, Placeable {
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        CraftingItem craftingItem = new CraftingItem(dto);
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return new CraftingItem(dto);
     }
 }

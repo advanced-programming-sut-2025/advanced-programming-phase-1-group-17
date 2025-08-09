@@ -5,8 +5,10 @@ import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.ItemQuality;
-import io.github.StardewValley.shared.models.savedClasses.CropSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.CropSave;
+import io.github.StardewValley.shared.models.saveClasses.Pair;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,18 +40,18 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.quality = save.getQuality();
 
         // restore tile position
-        //TODO
-        this.tile = new Tile(save.getTileX(), save.getTileY());
+        //TODO Save
+        //this.tile = new Tile(save.getTileX(), save.getTileY());
 
         // restore neighbor giant tiles (will need to look them up from the world)
         this.neighborGiantTiles = new ArrayList<>();
-        //TODO
-        for (Pair<Integer> coords : save.getNeighbourGiantTilesCoordinates()) {
-            Tile neighborTile = new Tile(coords.getFirst(), coords.getSecond());
-            Crop neighborCrop = new Crop(); // blank crop placeholder
-            neighborCrop.setTile(neighborTile);
-            this.neighborGiantTiles.add(neighborCrop);
-        }
+        //TODO Save
+//        for (Pair<Integer, Integer> coords : save.getNeighbourGiantTilesCoordinates()) {
+//            Tile neighborTile = new Tile(coords.getFirst(), coords.getSecond());
+//            Crop neighborCrop = new Crop(); // blank crop placeholder
+//            neighborCrop.setTile(neighborTile);
+//            this.neighborGiantTiles.add(neighborCrop);
+//        }
     }
 
 
@@ -239,6 +241,11 @@ public class Crop extends Plant implements BackPackable, Placeable {
         return type;
     }
 
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        return null;
+    }
+
     public void setType(CropType type) {
         this.type = type;
     }
@@ -351,8 +358,8 @@ public class Crop extends Plant implements BackPackable, Placeable {
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        Crop crop = new Crop(dto);
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return new Crop(dto);
     }
 
     public boolean isLeftBottomTileOfGiant() {

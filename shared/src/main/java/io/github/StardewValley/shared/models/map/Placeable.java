@@ -1,9 +1,12 @@
 package io.github.StardewValley.shared.models.map;
 
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public interface Placeable {
     String getTexture();
     PlaceableSave toDTO();
-    void loadFromDTO(PlaceableSave dto);
+    Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList);
 }

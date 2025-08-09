@@ -1,23 +1,21 @@
 package io.github.StardewValley.shared.models.NPCS;
 
 import io.github.StardewValley.shared.models.game.Game;
-import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.cooking.Food;
-import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.saveClasses.NPCSave;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Lia extends NPC implements Placeable {
-    private int x;
-    private int y;
-    private String name = "Lia";
-    private String job = "waiter";
-    private String texture1 = "Leo.png";
-    private String  texture2 =  "hut2.png";
+    {
+        name = "Lia";
+        job = "waiter";
+    }
+    private final String texture1 = "Leo.png";
+    private final String texture2 =  "hut2.png";
 
 
     public Lia(boolean isLia){
@@ -35,21 +33,33 @@ public class Lia extends NPC implements Placeable {
         y_start = y;
     }
 
-    private ArrayList<String> favorites = new ArrayList<>();
-
-
-    public ArrayList<String> getFavorites() {
-        return favorites;
+    public Lia(NPCSave save, List<Player> playerList) {
+        this.x = save.getX();
+        this.y = save.getY();
+        if (NPC.getFatherUser() != null)
+            NPC.setFatherUser(save.getFatherUser());
+        if (NPC.getFatherPlayer() != null) {
+            for (Player player : playerList) {
+                if (player.getUser().getUsername().equals(save.getFatherPlayerUsername()))
+                    NPC.setFatherPlayer(player);
+            }
+        }
+        this.favorites =  save.getFavorites();
+        this.isNPC = save.isNPC();
+        this.x_start = save.getX_start();
+        this.y_start = save.getY_start();
+        this.Tile_x = save.getTile_x();
+        this.Tile_y = save.getTile_y();
+        this.dialogueText = save.getDialogueText();
+        this.requests = save.getRequests();
     }
+
     {
         favorites.add("Grape");
         favorites.add("Salad");
         favorites.add("Wine");
     }
-    private ArrayList<Quest> requests= new ArrayList<>();
-    public ArrayList<Quest> getRequests(){
-        return requests;
-    }
+
     {
         requests.add(new Quest("Delivery of 10 woods",0,false,"Wood",10));
         requests.add(new Quest("Delivery of a salmon fish",1,false,"salmon",1));
@@ -57,7 +67,7 @@ public class Lia extends NPC implements Placeable {
     }
     public void giveReward(Player player, int index, Game game) {
         if (index == 0) {
-            player.getBackPack().addcoin(500);
+            player.addcoin(500);
         } else if (index == 1) {
             Food f = new Food(FoodType.BakedFish);
             f.setFoodtype(FoodType.SalmonDinner);
@@ -69,36 +79,12 @@ public class Lia extends NPC implements Placeable {
             }
         }
     }
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getJob() {
         return job;
     }
 
     public void setJob(String job) {
         this.job = job;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     @Override
@@ -108,5 +94,4 @@ public class Lia extends NPC implements Placeable {
         else
             return texture2;
     }
-
 }

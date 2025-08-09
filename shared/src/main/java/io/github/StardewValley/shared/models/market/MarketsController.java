@@ -461,13 +461,11 @@ public class MarketsController {
             BackPack backPack = new BackPack(BackPackType.LargeBackPack,
                 player.getBackPack().getPlayer());
             backPack.setBackPackItems(player.getBackPack().getBackPackItems());
-            backPack.setCoin(player.getBackPack().getCoin());
             player.setBackPack(backPack);
         } else {
             BackPack backPack = new BackPack(BackPackType.DeluxeBackPack,
                 player.getBackPack().getPlayer());
             backPack.setBackPackItems(player.getBackPack().getBackPackItems());
-            backPack.setCoin(player.getBackPack().getCoin());
             player.setBackPack(backPack);
         }
     }
@@ -656,14 +654,14 @@ public class MarketsController {
         useIngredients(shopItem, player);
 
         double price = calculatePrice(shopItem, count, storeType, season);
-        if (player.getBackPack().getCoin() < price) {
+        if (player.getCoin() < price) {
             return new Result(false, "you have only %.2f dollars left(not enough money)".formatted(
-                player.getBackPack().getCoin()));
+                player.getCoin()));
         }
 
         //purchasing
         shopItem.setSoldToday(shopItem.getSoldToday() + count);
-        player.getBackPack().addcoin(-price);
+        player.addcoin(-price);
         if (shopItem.getType().equals(BackPackType.LargeBackPack) || shopItem.getType().equals(BackPackType.DeluxeBackPack))
             purchaseBackpack(shopItem, player);
 
@@ -687,7 +685,7 @@ public class MarketsController {
                 player.getBackPack().addItemToInventory((BackPackable) addItem(shopItem.getName(), player, game).get(1));
             }
         }
-        return new Result(true, "Purchased successfully. New Balance: %.0f".formatted(player.getBackPack().getCoin()));
+        return new Result(true, "Purchased successfully. New Balance: %.0f".formatted(player.getCoin()));
     }
 
     private double calculatePrice(ShopItem shopItem, int count, StoreType storeType, Season season) {
@@ -704,5 +702,13 @@ public class MarketsController {
 
     public HashMap<StoreType, Rectangle> getStoreBounds() {
         return storeBounds;
+    }
+
+    public Map<StoreType, StoreInventory> getShopInventories() {
+        return shopInventories;
+    }
+
+    public HashMap<StoreType, Store> getStores() {
+        return stores;
     }
 }

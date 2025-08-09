@@ -65,7 +65,6 @@ public class Tile {
             this.placeable = placeable;
             if (placeable instanceof Tree) {
                 this.setWalkAble(false);
-                owner.getUser().getActiveGame().getTreeTile().add(this);
             }
         }
     }

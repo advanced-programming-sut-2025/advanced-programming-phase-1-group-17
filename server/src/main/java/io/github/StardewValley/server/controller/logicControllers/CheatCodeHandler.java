@@ -123,9 +123,9 @@ public class CheatCodeHandler {
             return "Amount must be number.";
         }
 
-        player.getBackPack().addCoin(amount);
+        player.addCoin(amount);
         return "Your new Balance: %.1f".formatted(
-            player.getBackPack().getCoin()
+            player.getCoin()
         );
     }
 }

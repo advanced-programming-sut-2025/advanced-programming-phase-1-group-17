@@ -3,6 +3,7 @@ package io.github.StardewValley.shared.models.market;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.FishType;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 public class Fish implements BackPackable {
     private FishType fishType;
@@ -51,5 +52,12 @@ public class Fish implements BackPackable {
     @Override
     public BackPackableType getType() {
         return this.fishType;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(Fish.class.getSimpleName());
+        backPackableSave.setFish(this);
+        return backPackableSave;
     }
 }

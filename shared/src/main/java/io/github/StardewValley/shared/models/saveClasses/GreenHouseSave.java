@@ -1,11 +1,13 @@
-package io.github.StardewValley.shared.models.savedClasses;
+package io.github.StardewValley.shared.models.saveClasses;
 
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouseFence;
+import io.github.StardewValley.shared.models.greenhouse.GreenHouseLake;
 
 public class GreenHouseSave {
     private boolean isActive;
-    private GreenHouseFenceSave fence;
-    private GreenHouseLakeSave lake;
+    private GreenHouseFence fence;
+    private GreenHouseLake lake;
     private int width;
     private int height;
     private int starting_x;
@@ -16,8 +18,8 @@ public class GreenHouseSave {
 
     public GreenHouseSave(GreenHouse greenHouse) {
         this.isActive = greenHouse.isActive();
-        this.fence = new GreenHouseFenceSave();
-        this.lake = new GreenHouseLakeSave();
+        this.fence = greenHouse.getFence();
+        this.lake = greenHouse.getLake();
         this.width = greenHouse.getWidth();
         this.height = greenHouse.getHeight();
         this.starting_x = greenHouse.getStarting_x();
@@ -27,14 +29,6 @@ public class GreenHouseSave {
 
     public boolean isActive() {
         return isActive;
-    }
-
-    public GreenHouseFenceSave getFence() {
-        return fence;
-    }
-
-    public GreenHouseLakeSave getLake() {
-        return lake;
     }
 
     public int getWidth() {

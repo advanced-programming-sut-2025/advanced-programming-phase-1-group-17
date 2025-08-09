@@ -4,19 +4,17 @@ import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
+import io.github.StardewValley.shared.models.saveClasses.NPCSave;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Harvey extends NPC implements Placeable {
-    private int x;
-    private int y;
-    private String name = "Harvey";
-    private String job = "teacher";
-    private String  texture1 = "Harvey.png";
-    private String  texture2 = "hut2.png";
-
+    private final String  texture1 = "Harvey.png";
+    private final String  texture2 = "hut2.png";
 
     public Harvey(boolean isHarvey) {
+        this.name = "Harvey";
+        this.job = "teacher";
         isNPC = isHarvey;
         this.dialogueText.add("hello i am harvey");
         this.dialogueText.add("hi how are you?");
@@ -31,25 +29,31 @@ public class Harvey extends NPC implements Placeable {
         y_start = y;
     }
 
-
-
-    private ArrayList<String> favorites = new ArrayList<>();
-
-
-    public ArrayList<String> getFavorites() {
-        return favorites;
+    public Harvey(NPCSave save, List<Player> playerList) {
+        this.x = save.getX();
+        this.y = save.getY();
+        if (NPC.getFatherUser() != null)
+            NPC.setFatherUser(save.getFatherUser());
+        if (NPC.getFatherPlayer() != null) {
+            for (Player player : playerList) {
+                if (player.getUser().getUsername().equals(save.getFatherPlayerUsername()))
+                    NPC.setFatherPlayer(player);
+            }
+        }
+        this.favorites =  save.getFavorites();
+        this.isNPC = save.isNPC();
+        this.x_start = save.getX_start();
+        this.y_start = save.getY_start();
+        this.Tile_x = save.getTile_x();
+        this.Tile_y = save.getTile_y();
+        this.dialogueText = save.getDialogueText();
+        this.requests = save.getRequests();
     }
 
     {
         favorites.add("Wine");
         favorites.add("Pickles");
         favorites.add("Coffee");
-    }
-
-    private ArrayList<Quest> requests = new ArrayList<>();
-
-    public ArrayList<Quest> getRequests() {
-        return requests;
     }
 
     {
@@ -60,7 +64,7 @@ public class Harvey extends NPC implements Placeable {
 
     public void giveReward(Player player, int index) {
         if (index == 0) {
-            player.getBackPack().addcoin(750);
+            player.addcoin(750);
         } else if (index == 1) {
             player.getFriendShipsWithNPCs().put(this, Math.min(799, player.getFriendShipsWithNPCs().get(this) + 200));
         } else {
@@ -72,36 +76,12 @@ public class Harvey extends NPC implements Placeable {
         }
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getJob() {
         return job;
     }
 
     public void setJob(String job) {
         this.job = job;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     @Override
@@ -111,5 +91,4 @@ public class Harvey extends NPC implements Placeable {
         else
             return texture2;
     }
-
 }

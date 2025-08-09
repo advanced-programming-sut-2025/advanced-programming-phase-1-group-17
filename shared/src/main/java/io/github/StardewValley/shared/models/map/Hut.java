@@ -1,8 +1,10 @@
 package io.github.StardewValley.shared.models.map;
 
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.cooking.Refrigerator;
-import io.github.StardewValley.shared.models.savedClasses.HutSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class Hut implements Placeable {
     private Refrigerator refrigerator = new Refrigerator();
@@ -14,15 +16,6 @@ public class Hut implements Placeable {
         this.texture = texture;
         this.x = x;
         this.y = y;
-    }
-
-    public Hut(PlaceableSave dto) {
-        HutSave save = dto.getHutSave();
-
-        this.refrigerator = new Refrigerator(save.getRefrigerator());
-        this.texture = save.getTexture();
-        this.x = save.getX();
-        this.y = save.getY();
     }
 
     public Refrigerator getRefrigerator() {
@@ -41,13 +34,13 @@ public class Hut implements Placeable {
     @Override
     public PlaceableSave toDTO() {
         PlaceableSave placeableSave = new PlaceableSave(Hut.class.getSimpleName());
-        placeableSave.setHutSave(new HutSave(this));
+        placeableSave.setHut(this);
         return  placeableSave;
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        Hut hut = new Hut(dto);
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return this;
     }
 
     public int getX() {

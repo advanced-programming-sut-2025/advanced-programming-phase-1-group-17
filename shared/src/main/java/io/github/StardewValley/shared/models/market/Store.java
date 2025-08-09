@@ -1,8 +1,10 @@
 package io.github.StardewValley.shared.models.market;
 
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
-import io.github.StardewValley.shared.models.savedClasses.StoreSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class Store implements Placeable {
     private StoreType type;
@@ -37,20 +39,13 @@ public class Store implements Placeable {
     @Override
     public PlaceableSave toDTO() {
         PlaceableSave placeableSave = new PlaceableSave(Store.class.getSimpleName());
-        placeableSave.setStoreSave(new StoreSave(this));
+        placeableSave.setStore(this);
         return placeableSave;
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        StoreSave save = dto.getStoreSave();
-        Store store = new Store(
-            save.getType(),
-            save.getStart_x(),
-            save.getStart_y(),
-            save.getWidth(),
-            save.getHeight()
-        );
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return this;
     }
 
     public int getStart_x() {

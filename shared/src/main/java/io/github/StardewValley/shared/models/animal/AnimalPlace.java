@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AnimalPlace implements Placeable {
     private ArrayList<Animal> animals = new ArrayList<>();
@@ -163,7 +165,7 @@ public class AnimalPlace implements Placeable {
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return null;
     }
 }
