@@ -13,7 +13,6 @@ abstract public class NPC {
     private static UserDTO fatherUser;
     private static Player fatherPlayer;
     private String name;
-    private String job;
     private ArrayList<String> favorites;
     public boolean isNPC;
     public int x_start;
@@ -21,10 +20,6 @@ abstract public class NPC {
     private int Tile_x;
     private int Tile_y;
     public ArrayList<String> dialogueText = new ArrayList<>();
-
-    private HashMap<String, String> dialogue = new HashMap<>();
-    private HashMap<String, String> dialogue2 = new HashMap<>();
-
     private ArrayList<Quest> requests = new ArrayList<>();
 
     public ArrayList<Quest> getRequests() {
@@ -39,34 +34,12 @@ abstract public class NPC {
         this.name = name;
     }
 
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
-
     public ArrayList<String> getFavorites() {
         return favorites;
     }
 
-    public void setFavorites(ArrayList<String> favorites) {
-        this.favorites = favorites;
-    }
-
     public void giveReward(Player player, int index) {
     }
-
-    ;
-
-    public void sendGift() {
-    }
-
-    public static UserDTO getFatherUser() {
-        return fatherUser;
-    }
-
     public static void setFatherUser(UserDTO fatherUser) {
         NPC.fatherUser = fatherUser;
     }
@@ -95,24 +68,8 @@ abstract public class NPC {
         this.y = y;
     }
 
-    public HashMap<String, String> getDialogue() {
-        return dialogue;
-    }
-
-    public HashMap<String, String> getDialogue2() {
-        return dialogue2;
-    }
-
     public boolean isNPC() {
         return isNPC;
-    }
-
-    public int getX_start() {
-        return x_start;
-    }
-
-    public int getY_start() {
-        return y_start;
     }
 
     public String getTexture() {

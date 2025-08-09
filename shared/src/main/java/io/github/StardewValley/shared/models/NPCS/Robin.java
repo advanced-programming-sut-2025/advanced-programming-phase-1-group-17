@@ -35,7 +35,7 @@ public class Robin extends NPC implements Placeable {
 
     private ArrayList<String> favorites = new ArrayList<>();
 
-    @Override
+
     public ArrayList<String> getFavorites() {
         return favorites;
     }
