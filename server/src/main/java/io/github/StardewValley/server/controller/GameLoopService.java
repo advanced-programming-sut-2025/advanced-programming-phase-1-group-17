@@ -4,7 +4,7 @@ import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.controller.logicControllers.AnimalLogicService;
 import io.github.StardewValley.server.repository.AnimalDataService;
 import io.github.StardewValley.shared.dto.AnimalDTO;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

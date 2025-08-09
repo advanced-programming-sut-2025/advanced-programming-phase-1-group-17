@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.tools.*;
-import models.PlayerClient;
 
 import java.util.HashMap;
 
@@ -19,7 +18,7 @@ public class ToolRenderController {
 
     private Sprite toolSprite;
     private final HashMap<ToolType, HashMap<ToolMaterial, Sprite>> toolSprites = new HashMap<>();
-    private final HashMap<FishingPoleType, String> fishingPoleTexturePaths = new HashMap<>();
+    private final HashMap<FishingPoleType, Sprite> fishingPoleSprites = new HashMap<>();
 
     public ToolRenderController() {
         for (ToolType type : ToolType.values()) {
@@ -111,10 +110,10 @@ public class ToolRenderController {
     }
 
     private void loadFishingPoleTextures() {
-        fishingPoleTexturePaths.put(FishingPoleType.IridiumFishingPole, "Fishing_Pole/Iridium_Rod.png");
-        fishingPoleTexturePaths.put(FishingPoleType.BambooFishingPole,   "Fishing_Pole/Bamboo_Pole.png");
-        fishingPoleTexturePaths.put(FishingPoleType.TrainingFishingPole,   "Fishing_Pole/Training_Rod.png");
-        fishingPoleTexturePaths.put(FishingPoleType.FiberglassFishingPole,   "Fishing_Pole/Fiberglass_Rod.png");
+        fishingPoleSprites.put(FishingPoleType.IridiumFishingPole, new Sprite(new Texture("Fishing_Pole/Iridium_Rod.png")));
+        fishingPoleSprites.put(FishingPoleType.BambooFishingPole,  new Sprite(new Texture( "Fishing_Pole/Bamboo_Pole.png")));
+        fishingPoleSprites.put(FishingPoleType.TrainingFishingPole,   new Sprite(new Texture("Fishing_Pole/Training_Rod.png")));
+        fishingPoleSprites.put(FishingPoleType.FiberglassFishingPole,   new Sprite(new Texture("Fishing_Pole/Fiberglass_Rod.png")));
     }
 
     private void loadMilkPailTextures() {
@@ -156,10 +155,9 @@ public class ToolRenderController {
     }
 
     public Sprite getToolSprite(ToolType toolType, ToolMaterial toolMaterial, FishingPoleType fishingPoleType) {
-        //TODO make sprites texture
-        //        if (toolType.equals(ToolType.FishingPole)) {
-//            return fishingPoleTextures.get(fishingPoleType);
-//        }
+        if (toolType.equals(ToolType.FishingPole)) {
+            return fishingPoleSprites.get(fishingPoleType);
+        }
         return toolSprites.get(toolType).get(toolMaterial);
     }
 }

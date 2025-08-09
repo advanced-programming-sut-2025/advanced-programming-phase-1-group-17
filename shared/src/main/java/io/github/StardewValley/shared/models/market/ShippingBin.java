@@ -1,9 +1,8 @@
 package io.github.StardewValley.shared.models.market;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.map.Placeable;
@@ -11,9 +10,10 @@ import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.Fruit;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.savedClasses.ShippingBinSave;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ShippingBin implements Placeable, BackPackable {
     private ShippingBinType type = ShippingBinType.Basic;
@@ -30,6 +30,12 @@ public class ShippingBin implements Placeable, BackPackable {
                 GameAssetManager.getGameAssetManager().getTileWidth(),
                 GameAssetManager.getGameAssetManager().getTileHeight())
         );
+        this.tileX = x;
+        this.tileY = y;
+    }
+
+    //Just For Loading
+    private ShippingBin(int x, int y) {
         this.tileX = x;
         this.tileY = y;
     }
@@ -81,6 +87,20 @@ public class ShippingBin implements Placeable, BackPackable {
     @Override
     public String getTexture() {
         return GameAssetManager.getGameAssetManager().getShippingBinTexture();
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(ShippingBin.class.getSimpleName());
+        placeableSave.setShippingBinSave(new ShippingBinSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public void loadFromDTO(PlaceableSave dto) {
+        ShippingBinSave save = dto.getShippingBinSave();
+        ShippingBin shippingBin = new ShippingBin(save.getTileX(), save.getTileY());
+        //TODO shippingBinBounds
     }
 
     @Override

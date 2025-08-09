@@ -5,6 +5,8 @@ import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.ItemQuality;
+import io.github.StardewValley.shared.models.savedClasses.CropSave;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,32 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.type = type;
         this.daysTillNextHarvest = 0;
     }
+
+    public Crop(PlaceableSave dto) {
+        super(dto); // if Plant has any fields to restore from PlaceableSave
+
+        CropSave save = dto.getCropSave();
+
+        this.type = save.getType();
+        this.isGiant = save.isGiant();
+        this.isLeftBottomTileOfGiant = save.isLeftBottomTileOfGiant();
+        this.quality = save.getQuality();
+
+        // restore tile position
+        //TODO
+        this.tile = new Tile(save.getTileX(), save.getTileY());
+
+        // restore neighbor giant tiles (will need to look them up from the world)
+        this.neighborGiantTiles = new ArrayList<>();
+        //TODO
+        for (Pair<Integer> coords : save.getNeighbourGiantTilesCoordinates()) {
+            Tile neighborTile = new Tile(coords.getFirst(), coords.getSecond());
+            Crop neighborCrop = new Crop(); // blank crop placeholder
+            neighborCrop.setTile(neighborTile);
+            this.neighborGiantTiles.add(neighborCrop);
+        }
+    }
+
 
     public void checkCouldBeGiant() {
         if (isForaging || type == null || !type.isCanBecomeGiant() || isInsideGreenhouse)
@@ -313,6 +341,18 @@ public class Crop extends Plant implements BackPackable, Placeable {
         if (isForaging)
             return type.getInventoryTexturePath();
         return CropAssetManager.getCropAssetManager().getStageTexture(this.currentStageIndex, type);
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(Crop.class.getSimpleName());
+        placeableSave.setCropSave(new CropSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public void loadFromDTO(PlaceableSave dto) {
+        Crop crop = new Crop(dto);
     }
 
     public boolean isLeftBottomTileOfGiant() {

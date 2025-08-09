@@ -14,6 +14,7 @@ import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
+import io.github.StardewValley.shared.models.game.GameState;
 import io.github.StardewValley.shared.models.market.ShopItemDTO;
 import io.github.StardewValley.shared.models.market.StoreType;
 import okhttp3.*;

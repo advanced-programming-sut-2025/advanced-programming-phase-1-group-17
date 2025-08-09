@@ -6,7 +6,10 @@ import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
+import io.github.StardewValley.shared.models.savedClasses.CraftingItemSave;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
 
 public class CraftingItem implements BackPackable, Placeable {
     private final CraftingItemType type;
@@ -27,6 +30,19 @@ public class CraftingItem implements BackPackable, Placeable {
         this.height = GameAssetManager.getGameAssetManager().getTileHeight();
 
         game.addCraftingItem(this);
+    }
+
+    public CraftingItem(PlaceableSave dto) {
+        CraftingItemSave save = dto.getCraftingItemSave();
+
+        this.type = save.getType();
+        this.artisanProductInProgress = new ArtisanProduct(save.getArtisanProductInProgress());
+        this.start_x = save.getStart_x();
+        this.start_y = save.getStart_y();
+        this.width = save.getWidth();
+        this.height = save.getHeight();
+
+        this.owner
     }
 
     public static CraftingItemDTO getCraftingItemDTO(CraftingItem craftingItem) {
@@ -104,5 +120,17 @@ public class CraftingItem implements BackPackable, Placeable {
     @Override
     public String getTexture() {
         return type.getInventoryTexturePath();
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(CraftingItem.class.getSimpleName());
+        placeableSave.setCraftingItemSave(new CraftingItemSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public void loadFromDTO(PlaceableSave dto) {
+        CraftingItem craftingItem = new CraftingItem(dto);
     }
 }

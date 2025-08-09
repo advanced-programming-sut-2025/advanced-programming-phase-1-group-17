@@ -5,6 +5,8 @@ import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.plant.CropType;
 import io.github.StardewValley.shared.models.plant.FruitType;
+import io.github.StardewValley.shared.models.savedClasses.ArtisanProductSave;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,15 @@ public class ArtisanProduct implements BackPackable {
         //setPrice(ingredientUsed);
         //setEnergy(ingredientUsed);
         //setProgressTime(ingredientUsed);
+    }
+
+    public ArtisanProduct(ArtisanProductSave save) {
+        this.type = save.getType();
+        this.isReady = save.isReady();
+        this.hoursInProgress = save.getHoursInProgress();
+        this.daysInProgress = save.getDaysInProgress();
+        this.price = save.getPrice();
+        this.energy = save.getEnergy();
     }
 
     private void setProgressTime(BackPackableType ingredientUsed) {

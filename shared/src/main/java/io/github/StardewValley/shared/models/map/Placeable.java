@@ -1,8 +1,9 @@
 package io.github.StardewValley.shared.models.map;
 
-import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
 
 public interface Placeable {
-
     String getTexture();
+    PlaceableSave toDTO();
+    void loadFromDTO(PlaceableSave dto);
 }

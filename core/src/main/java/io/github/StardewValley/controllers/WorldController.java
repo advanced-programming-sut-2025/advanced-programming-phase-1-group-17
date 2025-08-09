@@ -12,15 +12,13 @@ import io.github.StardewValley.controllers.UIControllers.LightningRenderControll
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
-import io.github.StardewValley.shared.dto.GameState;
+import io.github.StardewValley.shared.models.game.GameState;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.plant.Crop;
-import io.github.StardewValley.shared.models.plant.CropAssetManager;
 import io.github.StardewValley.shared.models.plant.Tree;
-import io.github.StardewValley.shared.models.plant.TreeAssetManager;
 import kotlin.Pair;
 
 import java.util.ArrayList;

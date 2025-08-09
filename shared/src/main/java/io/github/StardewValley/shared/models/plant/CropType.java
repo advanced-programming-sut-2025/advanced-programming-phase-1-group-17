@@ -1,6 +1,6 @@
 package io.github.StardewValley.shared.models.plant;
 
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.Season;
 

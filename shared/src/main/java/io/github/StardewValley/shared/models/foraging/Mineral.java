@@ -1,8 +1,9 @@
 package io.github.StardewValley.shared.models.foraging;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.map.Placeable;
+import io.github.StardewValley.shared.models.savedClasses.MineralSave;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
 
 public class Mineral implements BackPackable, Placeable {
     MineralType type;
@@ -11,6 +12,13 @@ public class Mineral implements BackPackable, Placeable {
     public Mineral(MineralType type, boolean isForaging) {
         this.type = type;
         this.isForaging = isForaging;
+    }
+
+    public Mineral(PlaceableSave dto) {
+        MineralSave save = dto.getMineralSave();
+
+        this.type = save.getType();
+        this.isForaging = save.isForaging();
     }
 
     @Override
@@ -35,5 +43,17 @@ public class Mineral implements BackPackable, Placeable {
     @Override
     public String getTexture() {
         return MineralAssetManager.getMineralAssetManager().getTexture(type);
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(Mineral.class.getSimpleName());
+        placeableSave.setMineralSave(new MineralSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public void loadFromDTO(PlaceableSave dto) {
+        Mineral mineral = new Mineral(dto);
     }
 }

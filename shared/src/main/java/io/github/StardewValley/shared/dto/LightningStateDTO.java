@@ -1,5 +1,8 @@
 package io.github.StardewValley.shared.dto;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class LightningStateDTO {
     private boolean flashing;
     private float lightningAlpha;
