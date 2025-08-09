@@ -102,6 +102,21 @@ public class TalkController {
                 view.setError(gameMenuController.friendship(targetPlayer));
             }
         });
+        view.getButton19().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
+                view.getSend().setVisible(false);
+                view.getTextField().setVisible(false);
+                if (targetPlayer == null) {
+                    view.setError("You have to select a player first");
+                    return;
+                }
+                //TODO open tradeMenu
+            }
+        });
 
         view.getButton10().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {

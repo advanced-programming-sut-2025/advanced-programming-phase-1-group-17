@@ -37,6 +37,7 @@ public class TalkView implements Screen {
     private TextField giftNumber;
     private TextButton button17;
     private TextButton button18;
+    private TextButton button19;
     private Texture backgroundTexture = new Texture(Gdx.files.internal("background.png"));
     private Window window;
     private Label label1;
@@ -101,6 +102,7 @@ public class TalkView implements Screen {
         this.button2 = new TextButton(players[1], skin);
         this.button3 = new TextButton(players[2], skin);
         this.button9 = new TextButton("messages", skin);
+        this.button19 = new TextButton("Trade", skin);
         this.button11 = new TextButton("Trade List", skin);
         this.button10 = new TextButton("Trade History", skin);
         this.button12 = new TextButton("Gift History", skin);
@@ -154,6 +156,8 @@ public class TalkView implements Screen {
         table2.add(button9).width(300).height(80);
         table2.row().pad(10,0,10,0);
         table2.add(button14).width(300).height(80);
+        table2.row().pad(10,0,10,0);
+        table2.add(button19).width(300).height(80);
         table2.row().pad(10,0,10,0);
         table2.add(button10).width(300).height(80);
         table2.row().pad(10,0,10,0);
@@ -342,5 +346,13 @@ public class TalkView implements Screen {
 
     public TextButton getButton17() {
         return button17;
+    }
+
+    public TextButton getButton19() {
+        return button19;
+    }
+
+    public void setButton19(TextButton button19) {
+        this.button19 = button19;
     }
 }
