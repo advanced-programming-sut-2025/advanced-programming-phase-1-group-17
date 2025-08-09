@@ -58,7 +58,7 @@ public class Lia extends NPC implements Placeable {
         if (index == 0) {
             player.getBackPack().addcoin(500);
         } else if (index == 1) {
-            Food f = new Food(null);
+            Food f = new Food(FoodType.BakedFish);
             f.setFoodtype(FoodType.SalmonDinner);
             player.getBackPack().addItemToInventory(f);
         } else {
