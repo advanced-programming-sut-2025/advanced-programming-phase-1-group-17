@@ -2,7 +2,7 @@ package io.github.StardewValley.shared.models.market;
 
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.NPCS.Ring;

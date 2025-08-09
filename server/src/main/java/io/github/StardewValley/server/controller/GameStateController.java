@@ -28,6 +28,8 @@ import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.game.Game;
+import io.github.StardewValley.shared.models.game.GameState;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;

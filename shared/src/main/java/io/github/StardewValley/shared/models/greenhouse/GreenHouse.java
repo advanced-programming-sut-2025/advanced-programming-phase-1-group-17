@@ -1,12 +1,11 @@
 package io.github.StardewValley.shared.models.greenhouse;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
-
-import java.util.HashMap;
+import io.github.StardewValley.shared.models.savedClasses.GreenHouseLakeSave;
+import io.github.StardewValley.shared.models.savedClasses.GreenHouseSave;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
 
 public class GreenHouse implements Placeable {
     //TODO: handle sprinkler
@@ -32,6 +31,21 @@ public class GreenHouse implements Placeable {
         game.addGreenHouses(this);
     }
 
+    public GreenHouse(PlaceableSave dto) {
+        GreenHouseSave save = dto.getGreenHouseSave();
+
+        this.isActive = save.isActive();
+        this.fence = new GreenHouseFence();
+        //TODO see the logic in PlayerMap
+        this.lake = new GreenHouseLake();
+        this.width = save.getWidth();
+        this.height = save.getHeight();
+        this.starting_x = save.getStarting_x();
+        this.starting_y = save.getStarting_y();
+
+        this.owner
+    }
+
     public GreenHouseFence getFence() {
         return fence;
     }
@@ -51,6 +65,18 @@ public class GreenHouse implements Placeable {
     @Override
     public String getTexture() {
         return GameAssetManager.getGameAssetManager().getGreenHouseTexture();
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(GreenHouse.class.getSimpleName());
+        placeableSave.setGreenHouseSave(new GreenHouseSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public void loadFromDTO(PlaceableSave dto) {
+        GreenHouse greenHouse = new GreenHouse(dto);
     }
 
     public int getWidth() {

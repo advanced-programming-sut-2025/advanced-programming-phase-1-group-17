@@ -3,7 +3,6 @@ package io.github.StardewValley.shared.models.animal;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
-import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.TimeAndDate;
 import io.github.StardewValley.shared.models.enums.FishType;

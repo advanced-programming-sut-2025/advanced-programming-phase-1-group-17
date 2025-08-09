@@ -11,6 +11,7 @@ import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.enums.DaysOfTheWeek;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.enums.WeatherType;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.ShippingBin;
@@ -199,19 +200,17 @@ public class TimeAndDate {
     }
 
     private void handleIncompatiblePlants(Game game) {
-        for (PlayerMap playerMap : game.getGameMap().getPlayerMaps()) {
-            for (Tile tile : playerMap.getTiles()) {
-                if (tile.getPlaceable() instanceof Tree tree) {
-                    if (tree.isInsideGreenhouse())
-                        continue;
-                    if (!tree.getType().getSeasons().contains(season))
-                        tree.getTile().setPlaceable(null);
-                } else if (tile.getPlaceable() instanceof Crop crop) {
-                    if (crop.isInsideGreenhouse())
-                        continue;
-                    if (!crop.getType().getSeasons().contains(season))
-                        crop.getTile().setPlaceable(null);
-                }
+        for (Tile tile : game.getTiles()) {
+            if (tile.getPlaceable() instanceof Tree tree) {
+                if (tree.isInsideGreenhouse())
+                    continue;
+                if (!tree.getType().getSeasons().contains(season))
+                    tree.getTile().setPlaceable(null);
+            } else if (tile.getPlaceable() instanceof Crop crop) {
+                if (crop.isInsideGreenhouse())
+                    continue;
+                if (!crop.getType().getSeasons().contains(season))
+                    crop.getTile().setPlaceable(null);
             }
         }
     }

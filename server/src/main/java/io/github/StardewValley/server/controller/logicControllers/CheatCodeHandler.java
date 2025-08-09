@@ -1,6 +1,6 @@
 package io.github.StardewValley.server.controller.logicControllers;
 
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.animal.Animal;

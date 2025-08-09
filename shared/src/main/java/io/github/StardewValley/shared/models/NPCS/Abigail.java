@@ -110,5 +110,13 @@ public class Abigail extends NPC implements Placeable {
             return texture2;
     }
 
+    @Override
+    public PlaceableSave toDTO() {
+        return null;
+    }
 
+    @Override
+    public void loadFromDTO(PlaceableSave dto) {
+
+    }
 }

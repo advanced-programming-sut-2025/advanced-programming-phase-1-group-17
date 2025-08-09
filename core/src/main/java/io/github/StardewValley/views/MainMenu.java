@@ -19,6 +19,7 @@ public class MainMenu implements Screen {
     private TextButton profileMenuButton;
     private TextButton gameMenuButton;
     private TextButton logoutAndGotoLoginMenuButton;
+    private TextButton loadSavedGamesButton;
     private TextButton menuTitle;
     public Table table;
     public Table buttons;
@@ -45,7 +46,10 @@ public class MainMenu implements Screen {
         avatar.setPosition(1700, 850);
         this.gameMenuButton = new TextButton("Lobby", skin);
         this.profileMenuButton = new TextButton("Profile menu", skin);
+        this.loadSavedGamesButton = new TextButton("Load Saved Games", skin);
         this.menuTitle = new TextButton("Main menu", skin);
+
+
         menuTitle.setColor(0, 0, 1, 1);
         this.logoutAndGotoLoginMenuButton = new TextButton("log out", skin);
         this.table = new Table().top().left();
@@ -67,6 +71,8 @@ public class MainMenu implements Screen {
         buttons.row().pad(10, 0, 10, 0);
         buttons.setFillParent(true);
         buttons.add(gameMenuButton).width(500);
+        buttons.row().pad(10, 0, 10, 0);
+        buttons.add(loadSavedGamesButton).width(500);
         buttons.row().pad(10, 0, 10, 0);
         buttons.add(profileMenuButton).width(500);
         buttons.row().pad(10, 0, 10, 0);
@@ -147,5 +153,7 @@ public class MainMenu implements Screen {
         this.logoutAndGotoLoginMenuButton = logoutAndGotoLoginMenuButton;
     }
 
-
+    public TextButton getLoadSavedGamesButton() {
+        return loadSavedGamesButton;
+    }
 }

@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.foraging;
 
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;

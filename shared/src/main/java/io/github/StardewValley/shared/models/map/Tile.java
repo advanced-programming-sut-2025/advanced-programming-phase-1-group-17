@@ -22,7 +22,6 @@ public class Tile {
     private NPC npcIsHere;
     private boolean crowImmunity = false;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>();
-    private static ArrayList<Tile> treeTile = new ArrayList<Tile>();
 
     public Tile(int x, int y, Player owner) {
         this.x = x;
@@ -57,19 +56,12 @@ public class Tile {
 
     public void setPlaceable(Placeable placeable) {
         if (owner.getUser().getActiveGame() == null) {
-            if (!(placeable instanceof Tree) && treeTile.contains(this)) {
-                treeTile.remove(this);
-            }
             this.placeable = placeable;
             if (placeable instanceof Tree) {
                 this.setWalkAble(false);
-                treeTile.add(this);
             }
         }
         else {
-            if (!(placeable instanceof Tree) && owner.getUser().getActiveGame().getTreeTile().contains(this)) {
-                treeTile.remove(this);
-            }
             this.placeable = placeable;
             if (placeable instanceof Tree) {
                 this.setWalkAble(false);
@@ -187,10 +179,4 @@ public class Tile {
         int ty = py / 120;
         return getTile(tx, ty);
     }
-
-
-    public static ArrayList<Tile> getTreeTile() {
-        return treeTile;
-    }
-
 }

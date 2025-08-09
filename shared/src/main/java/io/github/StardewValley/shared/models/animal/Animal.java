@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.shared.models.enums.Direction;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
 
 import java.util.*;
 
@@ -461,6 +462,17 @@ public class Animal implements Placeable {
         //TODO
         return null;
     }
+
+    @Override
+    public PlaceableSave toDTO() {
+        return null;
+    }
+
+    @Override
+    public void loadFromDTO(PlaceableSave dto) {
+
+    }
+
     private float timeSinceLastDirectionChange = 0f;
     private float directionChangeInterval = MathUtils.random(1f,5f);
     public void update(float delta) {

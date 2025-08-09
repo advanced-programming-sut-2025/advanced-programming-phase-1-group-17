@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -17,6 +16,7 @@ import io.github.StardewValley.shared.models.cooking.*;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.backpack.BackPackType;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.enums.Gender;
@@ -35,8 +35,6 @@ public class Player {
     private int y;
     private Buff buff;
     private float speed = 1000f;
-    private transient Texture texture;
-    private transient String backgroundTexture;
     private int coin = 550;
     private transient Animation<TextureRegion> walkUpAnimation;
     private transient Animation<TextureRegion> walkDownAnimation;
@@ -603,10 +601,6 @@ public class Player {
         this.equippedItem = equippedItem;
     }
 
-    public Texture getTexture() {
-        return texture;
-    }
-
     public int getTileX() {
         int playerWidth = (int) GameAssetManager.getGameAssetManager().getTileWidth();
         ;
@@ -634,10 +628,6 @@ public class Player {
 
     public void setCoin(int coin) {
         this.coin = coin;
-    }
-
-    public String getBackgroundTexture() {
-        return backgroundTexture;
     }
 
     public Direction getLastDirection() {

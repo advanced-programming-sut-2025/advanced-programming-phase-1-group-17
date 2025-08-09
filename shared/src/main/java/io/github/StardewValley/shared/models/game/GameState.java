@@ -1,6 +1,8 @@
-package io.github.StardewValley.shared.dto;
+package io.github.StardewValley.shared.models.game;
 
 import io.github.StardewValley.shared.TimeAndDateDTO;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
+import io.github.StardewValley.shared.dto.LightningStateDTO;
 import io.github.StardewValley.shared.models.TileDTO;
 
 import java.util.List;

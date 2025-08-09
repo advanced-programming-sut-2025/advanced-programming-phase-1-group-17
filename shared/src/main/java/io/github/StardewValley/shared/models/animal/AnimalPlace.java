@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
 
 import java.util.ArrayList;
 
@@ -154,5 +155,15 @@ public class AnimalPlace implements Placeable {
     @Override
     public String getTexture() {
         return "";
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        return null;
+    }
+
+    @Override
+    public void loadFromDTO(PlaceableSave dto) {
+
     }
 }
