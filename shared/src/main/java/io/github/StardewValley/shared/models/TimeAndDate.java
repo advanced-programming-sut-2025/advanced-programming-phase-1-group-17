@@ -4,6 +4,7 @@ import io.github.StardewValley.shared.TimeAndDateDTO;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.animal.Animal;
+import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
 import io.github.StardewValley.shared.models.NPCS.NPC;
@@ -53,7 +54,7 @@ public class TimeAndDate {
 
     public void increaseHour(Game game) {
         hour++;
-        for (CraftingItem craftingItem :  CraftingItem.getAllCraftingItems()) {
+        for (CraftingItem craftingItem :  game.getAllCraftingItems()) {
             if (craftingItem.getArtisanProductInProgress() == null)
                 continue;
             craftingItem.getArtisanProductInProgress().goToNextHour();
@@ -65,8 +66,10 @@ public class TimeAndDate {
 
 
         if (hour > 22) {
-            for (CraftingItem craftingItem :  CraftingItem.getAllCraftingItems()) {
-                craftingItem.getArtisanProductInProgress().goToNextDay(11);
+            for (CraftingItem craftingItem :  game.getAllCraftingItems()) {
+                ArtisanProduct artisanProduct = craftingItem.getArtisanProductInProgress();
+                if (artisanProduct != null)
+                    artisanProduct.goToNextDay(11);
             }
 
             hour = 9;
@@ -127,7 +130,7 @@ public class TimeAndDate {
             weatherEffect();
             PlantGrowthController.growOneDay(game);
             ForagingController.setForagingForNextDay(game);
-            ShippingBin.goToNextDay();
+            ShippingBin.goToNextDay(game);
             game.getMarketsController().resetDailyLimits();
         }
 

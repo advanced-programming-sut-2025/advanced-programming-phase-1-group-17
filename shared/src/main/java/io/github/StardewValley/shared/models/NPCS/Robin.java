@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.NPCS;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
@@ -78,12 +79,12 @@ public class Robin extends NPC implements Placeable {
         requests.add(new Quest("Delivery of 1000 sticks", 2, false, "Wood", 1000));
     }
 
-    public void giveReward(Player player, int index) {
+    public void giveReward(Player player, int index, Game game) {
         if (index == 0) {
             player.getBackPack().addcoin(1000);
         } else if (index == 1) {
             for (int i = 0; i < 3; i++) {
-                CraftingItem c = new CraftingItem(CraftingItemType.BeeHouse, player);
+                CraftingItem c = new CraftingItem(CraftingItemType.BeeHouse, player, game);
                 player.getBackPack().addItemToInventory(c);
             }
         } else {

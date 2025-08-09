@@ -6,9 +6,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import io.github.StardewValley.controllers.PlayerClient;
+import models.PlayerClient;
 import io.github.StardewValley.shared.dto.LightningStateDTO;
-import io.github.StardewValley.shared.models.PlayerDto;
 
 public class LightningRenderController {
     private static LightningRenderController lightningRenderController = null;

@@ -1,4 +1,4 @@
-package io.github.StardewValley.controllers;
+package models;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -47,7 +47,7 @@ public class PlayerClient {
     private FishingPoleType fishingPoleType;
 
 
-    PlayerClient(UserDTO user) {
+    public PlayerClient(UserDTO user) {
         this.user = user;
         //TODO Handle textures
         walkDownAnimation = new Animation<>(0.1f, new TextureRegion[]{

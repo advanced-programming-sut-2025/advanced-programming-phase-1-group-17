@@ -6,6 +6,7 @@ import io.github.StardewValley.shared.LightningLogicController;
 import io.github.StardewValley.shared.models.NPCS.*;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.cooking.Recipe;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
@@ -13,6 +14,7 @@ import io.github.StardewValley.shared.models.map.GameMap;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
+import io.github.StardewValley.shared.models.market.ShippingBin;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,12 +31,16 @@ public class Game implements Serializable {
     private final ArrayList<NPC> NPCHuts = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private ArrayList<Tile> treeTile = new ArrayList<Tile>();
+
     private final ArrayList<GreenHouse> greenHouses = new ArrayList<>();
     private final HashMap<GreenHouse, Rectangle> greenHouseBounds = new HashMap<>();
 
+    private final HashMap<CraftingItem, Rectangle>  craftingItemBounds = new HashMap<>();
+    private final ArrayList<CraftingItem> allCraftingItems = new ArrayList<>();
+    private final HashMap<ShippingBin, Rectangle> shippingBinBounds = new HashMap<>();
+
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3, UserDTO user4) {
-        System.out.println("Game creation started");
         user1.setActiveGame(this);
         user2.setActiveGame(this);
         user3.setActiveGame(this);
@@ -98,9 +104,8 @@ public class Game implements Serializable {
                 player.getPlayerMap().setMapType(1, this);
             }
         }
-//        this.marketsController.initializeStores();
+        this.marketsController.initializeStores(this);
         giveInitialItems();
-        System.out.println("Game creation finished");
     }
 
     private void giveInitialItems() {
@@ -220,5 +225,25 @@ public class Game implements Serializable {
 
     public HashMap<GreenHouse, Rectangle> getGreenHouseBounds() {
         return greenHouseBounds;
+    }
+
+    public HashMap<CraftingItem, Rectangle> getCraftingItemBounds() {
+        return craftingItemBounds;
+    }
+
+    public ArrayList<CraftingItem> getAllCraftingItems() {
+        return allCraftingItems;
+    }
+
+    public void addCraftingItem(CraftingItem craftingItem) {
+        allCraftingItems.add(craftingItem);
+        craftingItemBounds.put(craftingItem, new Rectangle(
+            craftingItem.getStart_x() * GameAssetManager.getGameAssetManager().getTileWidth(),
+            craftingItem.getStart_y() * GameAssetManager.getGameAssetManager().getTileHeight(),
+            craftingItem.getWidth(), craftingItem.getHeight()));
+    }
+
+    public HashMap<ShippingBin, Rectangle> getShippingBinBounds() {
+        return shippingBinBounds;
     }
 }

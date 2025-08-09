@@ -42,7 +42,7 @@ public class CheatCodeHandler {
         int amount = Integer.parseInt(day);
         for (int i = 0; i < amount; i++) {
             game.getDate().goToNextDay(game);
-            for (CraftingItem craftingItem : CraftingItem.getAllCraftingItems()) {
+            for (CraftingItem craftingItem : game.getAllCraftingItems()) {
                 if (craftingItem.getArtisanProductInProgress() == null)
                     continue;
                 craftingItem.getArtisanProductInProgress().goToNextDay(24);
@@ -77,7 +77,7 @@ public class CheatCodeHandler {
         return "Energy successfully set to infinity";
     }
 
-    public static String addItem(String itemName, String countStr, Player player) {
+    public static String addItem(String itemName, String countStr, Player player, Game game) {
         int count;
         try {
             count = Integer.parseInt(countStr);
@@ -85,7 +85,7 @@ public class CheatCodeHandler {
             return "Invalid number format for count.";
         }
 
-        ArrayList<Object> result = MarketsController.addItem(itemName, player);
+        ArrayList<Object> result = MarketsController.addItem(itemName, player, game);
 
         BackPackableType type = (BackPackableType) result.get(0);
         BackPackable sampleItem = (BackPackable) result.get(1);

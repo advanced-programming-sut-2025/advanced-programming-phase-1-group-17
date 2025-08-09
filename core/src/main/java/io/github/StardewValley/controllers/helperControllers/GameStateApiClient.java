@@ -1223,6 +1223,7 @@ public class GameStateApiClient {
             Request request = new Request.Builder()
                 .url(BASE_URL + "/game/greenhouse/buildGreenhouse")
                 .addHeader("Authorization", token)
+                .post(RequestBody.create(new byte[0], null)) // Empty body
                 .build();
 
             // 4. Execute
@@ -1332,10 +1333,11 @@ public class GameStateApiClient {
         return false;
     }
 
-    public Result craftArtisan(HashMap<BackpackableTypeDTO, Integer> selectedItems) {
+    public Result craftArtisan(ArrayList<BackpackableTypeDTO> selectedItems, CraftingItemDTO craftingItemDTO) {
         try {
+            CraftArtisanRequest craftArtisanRequest = new CraftArtisanRequest(selectedItems, craftingItemDTO);
             // 2. Serialize to JSON
-            String json = objectMapper.writeValueAsString(selectedItems);
+            String json = objectMapper.writeValueAsString(craftArtisanRequest);
 
             // 3. Build HTTP request
             RequestBody body = RequestBody.create(json, MediaType.get("application/json"));

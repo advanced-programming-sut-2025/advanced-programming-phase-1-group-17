@@ -522,12 +522,12 @@ public class MarketsController {
         stores.put(storeType, store);
     }
 
-    public static ArrayList<Object> addItem(String itemName, Player player) {
+    public static ArrayList<Object> addItem(String itemName, Player player, Game game) {
         BackPackableType type = null;
         BackPackable sampleItem = null;
         try {
             type = CraftingItemType.valueOf(itemName);
-            sampleItem = new CraftingItem((CraftingItemType) type, player);
+            sampleItem = new CraftingItem((CraftingItemType) type, player, game);
         } catch (IllegalArgumentException e1) {
             try {
                 type = NormalItemType.valueOf(itemName);
@@ -684,7 +684,7 @@ public class MarketsController {
         } else {
             for (int i = 0; i < count; i++) {
                 //player.getBackPack().addItemToInventory(product);
-                player.getBackPack().addItemToInventory((BackPackable) addItem(shopItem.getName(), player).get(1));
+                player.getBackPack().addItemToInventory((BackPackable) addItem(shopItem.getName(), player, game).get(1));
             }
         }
         return new Result(true, "Purchased successfully. New Balance: %.0f".formatted(player.getBackPack().getCoin()));

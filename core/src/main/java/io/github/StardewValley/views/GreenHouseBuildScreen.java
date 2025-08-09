@@ -31,7 +31,7 @@ public class GreenHouseBuildScreen implements Screen {
         mainTable.setFillParent(true);
         stage.addActor(mainTable);
 
-        titleLabel = new Label("Build Greenhouse", skin, "title");
+        titleLabel = new Label("Build Greenhouse", skin);
         messageLabel = new Label("", skin);
 
         buildButton = new TextButton("Build (1000 coin + 500 wood)", skin);

@@ -1,7 +1,5 @@
 package io.github.StardewValley.shared.models.crafting;
 
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.models.*;
@@ -10,12 +8,7 @@ import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.map.Placeable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class CraftingItem implements BackPackable, Placeable {
-    private static HashMap<CraftingItem, Rectangle>  craftingItemBounds = new HashMap<>();
-    private static ArrayList<CraftingItem> allCraftingItems = new ArrayList<>();
     private final CraftingItemType type;
     private ArtisanProduct artisanProductInProgress = null;
 
@@ -25,7 +18,7 @@ public class CraftingItem implements BackPackable, Placeable {
     private final int width;
     private final int height;
 
-    public CraftingItem(CraftingItemType type, Player owner) {
+    public CraftingItem(CraftingItemType type, Player owner, Game game) {
         this.owner = owner;
         this.type = type;
 //        this.width = targetItem.getInventoryTexture().getWidth();
@@ -33,7 +26,7 @@ public class CraftingItem implements BackPackable, Placeable {
         this.width = GameAssetManager.getGameAssetManager().getTileWidth();
         this.height = GameAssetManager.getGameAssetManager().getTileHeight();
 
-        allCraftingItems.add(this);
+        game.addCraftingItem(this);
     }
 
     public static CraftingItemDTO getCraftingItemDTO(CraftingItem craftingItem) {
@@ -68,20 +61,16 @@ public class CraftingItem implements BackPackable, Placeable {
         return type;
     }
 
+    public CraftingItemType getCraftingItemType() {
+        return type;
+    }
+
     public ArtisanProduct getArtisanProductInProgress() {
         return artisanProductInProgress;
     }
 
     public void setArtisanProductInProgress(ArtisanProduct artisanProductInProgress) {
         this.artisanProductInProgress = artisanProductInProgress;
-    }
-
-    public static HashMap<CraftingItem, Rectangle> getCraftingItemBounds() {
-        return craftingItemBounds;
-    }
-
-    public static ArrayList<CraftingItem> getAllCraftingItems() {
-        return allCraftingItems;
     }
 
     public Player getOwner() {
@@ -110,13 +99,6 @@ public class CraftingItem implements BackPackable, Placeable {
 
     public void setStart_y(int start_y) {
         this.start_y = start_y;
-    }
-
-    public void addCraftingItemBound() {
-        craftingItemBounds.put(this, new Rectangle(
-            start_x * GameAssetManager.getGameAssetManager().getTileWidth(),
-            start_y * GameAssetManager.getGameAssetManager().getTileHeight(),
-            width, height));
     }
 
     @Override
