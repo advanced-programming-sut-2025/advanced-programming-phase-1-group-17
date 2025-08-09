@@ -1,5 +1,6 @@
 package io.github.StardewValley.server.controller;
 
+import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
@@ -343,7 +344,7 @@ public class GameStateController {
         Player player = getPlayerFromToken(token); // Authenticate and get the correct Player
         Game game = AppServer.getCurrentGame();
         float x = request.getX();
-        float y = request.getY();
+        float y = request.getY();;
         int button = request.getButton();
         System.out.println("%f %f %d".formatted(x, y, button));
 

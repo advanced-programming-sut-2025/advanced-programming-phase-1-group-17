@@ -70,7 +70,6 @@ public class GameView implements Screen, InputProcessor {
         this.apiClient = GameClient.getGameStateApiClient();
         this.animalView = new AnimalView(); // هنرمند را استخدام کن
         this.animalsFromServer = new ArrayList<AnimalDTO>(); // لیست را خالی مقداردهی اولیه کن
-        animalsFromServer.add(new AnimalDTO("number1", AnimalType.Pig,200,200));
         this.hud = new HUD();
         this.font = new BitmapFont();
         int i = 0;
@@ -237,7 +236,6 @@ public class GameView implements Screen, InputProcessor {
             }
 
             try {
-                // TODO: شما باید ابتدا Endpoint و متد getAnimals را در سرور و ApiClient بسازید
                 System.out.println("Fetching animal data from server...");
                 this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
             } catch (Exception e) {
@@ -254,12 +252,13 @@ public class GameView implements Screen, InputProcessor {
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
 
-        controller.updateGame(delta);
+        try {
+            controller.updateGame(delta);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 
-
-        //TODO handle playe
-//        controller.handlePlayerInput();
         if (animalsFromServer != null) {
             for (AnimalDTO animalDto : animalsFromServer) {
                 animalView.render(Main.getBatch(), animalDto,delta);
@@ -388,8 +387,31 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
+
+        // اولویت ۱: آیا روی یک حیوان کلیک شده؟
+        if (button == Input.Buttons.LEFT) {
+            try {
+                if (controller.handleAnimalClick(worldCoordinates)) {
+                    return true; // بله، کلیک مدیریت شد. دیگر ادامه نده.
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else if(button == Input.Buttons.RIGHT) {
+            try {
+                if(controller.handleAnimalFeed(worldCoordinates)){
+                    return true;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        System.out.println("you didnt click on any animal");
         return handleClick(worldCoordinates, button);
     }
+
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
@@ -427,6 +449,8 @@ public class GameView implements Screen, InputProcessor {
         controller.setKey(keycode, false);
         return true;
     }
+
+
 
     private boolean handleClick(Vector3 worldCoordinates, int button) {
         HandleWorldClickResponse result = null;

@@ -83,6 +83,42 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
         }
     }
+    public void petAnimal(String animalId) throws Exception {
+        // آدرس Endpoint را با ID حیوان می‌سازیم
+        URL url = new URL(AnimalURL + "/" + animalId + "/pet");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // متد را POST قرار می‌دهیم چون در حال تغییر داده هستیم
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true); // برای POST لازم است
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) { // اگر پاسخ موفقیت‌آمیز نبود
+            throw new RuntimeException("Failed to pet animal. Server responded with: " + responseCode);
+        }
+        // چون پاسخی انتظار نداریم، کار تمام است
+        conn.disconnect();
+    }
+    public void feedAnimal(String animalId) throws Exception {
+        // آدرس Endpoint را با ID حیوان می‌سازیم
+        URL url = new URL(AnimalURL + "/" + animalId + "/feed");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // متد را POST قرار می‌دهیم چون در حال تغییر داده هستیم
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true); // برای POST لازم است
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) { // اگر پاسخ موفقیت‌آمیز نبود
+            throw new RuntimeException("Failed to pet animal. Server responded with: " + responseCode);
+        }
+        // چون پاسخی انتظار نداریم، کار تمام است
+        conn.disconnect();
+    }
 
     public UserDTO getUserWithUserDTO() throws Exception {
         String urlString = "http://%s:%d/api/auth/getUserByUsername".formatted(Main.getServerIP(), Main.getServerPort());

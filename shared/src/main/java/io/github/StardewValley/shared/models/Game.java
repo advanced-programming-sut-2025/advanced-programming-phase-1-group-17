@@ -201,6 +201,11 @@ public class Game implements Serializable {
         }
         return null;
     }
+    public Tile getTileFromPixel(int px, int py) {
+        int tx = px/120;
+        int ty = py/120;
+        return getTile(tx,ty);
+    }
 
     public void addGreenHouses(GreenHouse greenHouse) {
         greenHouses.add(greenHouse);

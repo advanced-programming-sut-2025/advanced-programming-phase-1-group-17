@@ -12,23 +12,19 @@ import java.util.List;
 @RequestMapping("/api/animals")
 public class AnimalApiController {
 
-    private final AnimalDataService animalDataService;
 
-    @Autowired
-    public AnimalApiController(AnimalDataService animalDataService) {
-        this.animalDataService = animalDataService;
-    }
+
 
     @GetMapping("/allAnimals")
     public ResponseEntity<List<AnimalDTO>> getAllAnimals() {
 
-        return ResponseEntity.ok(animalDataService.findAll());
+        return ResponseEntity.ok(AnimalDataService.findAll());
     }
 
     @PostMapping("/{id}/pet")
     public ResponseEntity<Void> petAnimal(@PathVariable String id) {
         // ۱. DTO (ظرف داده) را از انبار بگیر
-        AnimalDTO animal = animalDataService.findById(id);
+        AnimalDTO animal = AnimalDataService.findById(id);
         if (animal == null) {
             return ResponseEntity.notFound().build();
         }
@@ -37,10 +33,33 @@ public class AnimalApiController {
         if (!animal.isPettedToday()) {
             animal.setPettedToday(true);
             animal.setFriendship(animal.getFriendship() + 15);
+            animal.setShowPetHeart(true);
+            animal.setPettingTimer(0);
         }
 
         // ۳. DTO تغییر کرده را دوباره در انبار ذخیره کن
-        animalDataService.save(animal);
+        AnimalDataService.save(animal);
+
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/{id}/feed")
+    public ResponseEntity<Void> feedAnimal(@PathVariable String id) {
+        // ۱. DTO (ظرف داده) را از انبار بگیر
+        AnimalDTO animal = AnimalDataService.findById(id);
+        if (animal == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // ۲. تمام منطق بازی را مستقیماً در کنترلر اجرا کن
+        if (!animal.isFedToday()) {
+            animal.setFedToday(true);
+            animal.setFriendship(animal.getFriendship() + 10);
+            animal.setEating(true);
+            animal.setEatingTimer(0);
+        }
+
+        // ۳. DTO تغییر کرده را دوباره در انبار ذخیره کن
+        AnimalDataService.save(animal);
 
         return ResponseEntity.ok().build();
     }
