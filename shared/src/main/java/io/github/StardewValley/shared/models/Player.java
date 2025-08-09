@@ -459,7 +459,6 @@ public class Player {
             newY += speed * delta;
             this.currentDirection = Direction.UP;
             lastDirection = currentDirection;
-            energy -= 20;
             energy -= energy * 0.0005;
             if (energy < 0) {
                 energy = 0;
