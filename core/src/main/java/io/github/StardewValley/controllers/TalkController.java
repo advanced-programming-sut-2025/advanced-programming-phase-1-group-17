@@ -2,10 +2,12 @@ package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.TalkView;
+import io.github.StardewValley.views.TradeMenu;
 
 import java.util.Objects;
 
@@ -114,7 +116,9 @@ public class TalkController {
                     view.setError("You have to select a player first");
                     return;
                 }
-                //TODO open tradeMenu
+                //TODO
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new TradeMenu(new TradeMenuController(), GameAssetManagerClient.getGameAssetManager().getSkin(),gameView));
             }
         });
 
