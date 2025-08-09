@@ -46,13 +46,23 @@ public class TradeMenu implements Screen {
     private java.util.List<BackpackableTypeDTO> backPackItems;
     private final Label coin;
     private HashMap<String, Integer> items = new HashMap<>();
+    private HashMap<String, Integer> required = new HashMap<>();
     private final ScrollPane scrollPane;
     private final Label label;
+    private final Label requiredLabel;
+    private final TextButton addItem2;
+    private final TextButton removeItem2;
+    private final TextField nameItem;
+    private final TextField amountItem;
+    private final Table requiredTable;
     private final Table lableBar;
+    private final TextButton RegistertheOffer;
+    private String targetPlayer;
 
 
-    public TradeMenu(TradeMenuController controller, Skin skin,GameView gameView) {
+    public TradeMenu(TradeMenuController controller, Skin skin, GameView gameView, String targetPlayer) {
         this.controller = controller;
+        this.targetPlayer = targetPlayer;
         this.skin = skin;
         this.itemsTable = new Table();
         this.mainTable = new Table();
@@ -68,6 +78,19 @@ public class TradeMenu implements Screen {
         label.setColor(Color.WHITE);
         scrollPane = new ScrollPane(label);
         scrollPane.setFadeScrollBars(false);
+        requiredLabel = new Label("required : \n", skin);
+        requiredLabel.setWidth(300);
+        addItem2 = new TextButton("addItem", skin);
+        amountItem = new TextField("", skin);
+        amountItem.setWidth(100);
+        amountItem.setMessageText("amount");
+        nameItem = new TextField("", skin);
+        nameItem.setWidth(200);
+        nameItem.setMessageText("nameItem");
+        removeItem2 = new TextButton("removeItem", skin);
+        requiredTable = new Table(skin);
+        RegistertheOffer = new TextButton("Register The Offer", skin);
+
 
         this.lableBar = new Table(skin);
 
@@ -88,7 +111,7 @@ public class TradeMenu implements Screen {
 
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
             Label countLabel = new Label("%d".formatted(backpackableTypeDTO.getCountInBackPack()),
-                labelStyle);
+                    labelStyle);
             countLabel.setTouchable(Touchable.disabled);
             countLabel.setFontScale(1.3f);
             countLabel.setAlignment(Align.bottomRight);
@@ -112,7 +135,7 @@ public class TradeMenu implements Screen {
 
 
         this.itemsPane = new ScrollPane(itemsTable, skin);
-        controller.setView(this,gameView);
+        controller.setView(this, gameView);
 
     }
 
@@ -122,7 +145,19 @@ public class TradeMenu implements Screen {
         Gdx.input.setInputProcessor(this.stage);
         mainTable.setFillParent(true);
         lableBar.setFillParent(true);
-        lableBar.center();
+        requiredTable.setFillParent(true);
+        requiredTable.center();
+        lableBar.right();
+        requiredTable.add(nameItem).row();
+        requiredTable.add(amountItem).row();
+        requiredTable.row().pad(10, 0, 10, 0);
+        requiredTable.add(addItem2).row();
+        requiredTable.row().pad(10, 0, 10, 0);
+        requiredTable.add(requiredLabel).row();
+        requiredTable.row().pad(10, 0, 10, 0);
+        requiredTable.add(removeItem2).row();
+        requiredTable.row().pad(10, 0, 10, 0);
+        requiredTable.add(RegistertheOffer).row();
         mainTable.left().pad(10);
         mainTable.add(itemsPane).height(300).width(500).row();
         mainTable.row().pad(10, 0, 10, 0);
@@ -137,6 +172,7 @@ public class TradeMenu implements Screen {
         mainTable.row().pad(10, 0, 10, 0);
         mainTable.add(back).row();
         lableBar.add(label).row();
+        stage.addActor(requiredTable);
         stage.addActor(lableBar);
         stage.addActor(mainTable);
     }
@@ -288,5 +324,62 @@ public class TradeMenu implements Screen {
         }
         text.append("coin : ").append(this.coin.getText()).append("\n");
         this.label.setText(text.toString());
+    }
+
+    public HashMap<String, Integer> getRequired() {
+        return required;
+    }
+
+    public void setRequired(HashMap<String, Integer> required) {
+        this.required = required;
+    }
+
+    public ScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
+
+    public Label getRequiredLabel() {
+        return requiredLabel;
+    }
+
+    public TextButton getAddItem2() {
+        return addItem2;
+    }
+
+    public TextField getNameItem() {
+        return nameItem;
+    }
+
+    public TextField getAmountItem() {
+        return amountItem;
+    }
+
+    public Table getRequiredTable() {
+        return requiredTable;
+    }
+
+    public Table getLableBar() {
+        return lableBar;
+    }
+
+    public TextButton getRegistertheOffer() {
+        return RegistertheOffer;
+    }
+
+    public void refreshRequired() {
+        StringBuilder text = new StringBuilder();
+        text.append("required : \n");
+        for (String item : this.required.keySet()) {
+            text.append(item).append(" : ").append(this.required.get(item)).append("\n");
+        }
+        requiredLabel.setText(text.toString());
+    }
+
+    public TextButton getRemoveItem2() {
+        return removeItem2;
     }
 }
