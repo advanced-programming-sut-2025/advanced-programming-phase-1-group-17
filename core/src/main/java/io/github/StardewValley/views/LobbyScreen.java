@@ -94,6 +94,7 @@ public class LobbyScreen implements Screen {
         try {
             List<LobbyDto> lobbies = apiClient.listLobbies();
             for (LobbyDto lobby : lobbies) {
+                refreshPlayerList(lobby);
                 if (!lobby.isVisible()) continue;
                 Label nameLabel = new Label("Lobby: " + lobby.getName(), skin);
                 Label codeLabel = new Label(lobby.getPlayerUsernames().size() + "player", skin);
@@ -147,6 +148,17 @@ public class LobbyScreen implements Screen {
 
         } catch (Exception e) {
             lobbyTable.add(new Label("Failed to load lobbies", skin)).row();
+            e.printStackTrace();
+        }
+    }
+    private void refreshPlayerList(LobbyDto lobby) {
+        try {
+            LobbyDto updatedLobby = apiClient.getLobbyByInviteCode(lobby.getId());
+            lobby.setPlayerUsernames(updatedLobby.getPlayerUsernames());
+            lobby.setAdminUsername(updatedLobby.getAdminUsername());
+            lobby.setStatus(updatedLobby.getStatus());
+        } catch (Exception e) {
+            System.err.println("Error refreshing player list:");
             e.printStackTrace();
         }
     }

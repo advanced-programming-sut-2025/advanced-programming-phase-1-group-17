@@ -9,11 +9,14 @@ import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.map.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,11 +24,15 @@ public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
     private final UserRepository userRepository;
+    private final Map<Long, ScheduledFuture<?>> lobbyDeleteTasks = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduler;
+
 
     @Autowired
-    public LobbyService(LobbyRepository lobbyRepository, UserRepository userRepository) {
+    public LobbyService(LobbyRepository lobbyRepository, UserRepository userRepository, ScheduledExecutorService scheduler) {
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
+        this.scheduler = scheduler;
     }
 
     public Lobby getById(Long Id) {
@@ -33,9 +40,9 @@ public class LobbyService {
         return lobby.orElse(null);
     }
 
-    public LobbyDto createLobby(String name, boolean isPrivate, boolean isVisible, String adminUsername,String password) {
+    public LobbyDto createLobby(String name, boolean isPrivate, boolean isVisible, String adminUsername, String password) {
         String inviteCode = UUID.randomUUID().toString().substring(0, 6);
-        Lobby lobby = new Lobby(name, inviteCode, isPrivate, isVisible, adminUsername,password);
+        Lobby lobby = new Lobby(name, inviteCode, isPrivate, isVisible, adminUsername, password);
         lobby.getPlayerUsernames().add(adminUsername);
         lobbyRepository.save(lobby);
         return toDto(lobby);
@@ -50,24 +57,57 @@ public class LobbyService {
         if (optionalLobby.isEmpty()) return Optional.empty();
         Lobby lobby = optionalLobby.get();
         if (!lobby.getPlayerUsernames().contains(username)) {
+            if (lobby.getPlayerUsernames().isEmpty()) {
+                lobby.setAdminUsername(username);
+            }
             lobby.getPlayerUsernames().add(username);
             lobbyRepository.save(lobby);
         }
+        cancelLobbyDeleteTask(lobby.getId());
         return Optional.of(toDto(lobby));
     }
 
     public boolean leaveLobby(Long lobbyId, String username) {
         Optional<Lobby> optionalLobby = lobbyRepository.findById(lobbyId);
         if (optionalLobby.isEmpty()) return false;
+
         Lobby lobby = optionalLobby.get();
         lobby.getPlayerUsernames().remove(username);
         if (lobby.getPlayerUsernames().isEmpty()) {
-            lobbyRepository.delete(lobby);
+            lobby.setAdminUsername(null);
+        }
+
+        if (lobby.getPlayerUsernames().isEmpty()) {
+
+            if (!lobbyDeleteTasks.containsKey(lobbyId)) {
+                ScheduledFuture<?> task = scheduler.schedule(() -> {
+                    try {
+                        lobbyRepository.deleteById(lobbyId);
+                        lobbyRepository.flush();
+                        lobbyDeleteTasks.remove(lobbyId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }, 5, TimeUnit.MINUTES);
+
+                lobbyDeleteTasks.put(lobbyId, task);
+            }
+            lobbyRepository.save(lobby);
         } else {
             lobbyRepository.save(lobby);
+            cancelLobbyDeleteTask(lobbyId);
         }
         return true;
     }
+
+    private void cancelLobbyDeleteTask(Long lobbyId) {
+        ScheduledFuture<?> task = lobbyDeleteTasks.remove(lobbyId);
+        if (task != null && !task.isCancelled()) {
+            task.cancel(false);
+            System.out.println("Lobby " + lobbyId + " delete timer canceled.");
+        }
+    }
+
     public boolean changeAdminUserName(Long lobbyId) {
         Optional<Lobby> optionalLobby = lobbyRepository.findById(lobbyId);
         if (optionalLobby.isEmpty()) return false;
@@ -89,17 +129,17 @@ public class LobbyService {
         lobby.setStatus(LobbyStatus.STARTED);
         lobbyRepository.save(lobby);
         List<String> playerUsernames = lobby.getPlayerUsernames();
-        int i = 1 ;
+        int i = 1;
         while (playerUsernames.size() < 4) {
             playerUsernames.add("guest" + i);
             i++;
         }
-        User user1 = null,user2 = null,user3 = null,user4 = null;
+        User user1 = null, user2 = null, user3 = null, user4 = null;
         user1 = userRepository.findByUsername(playerUsernames.get(0)).get();
         user2 = userRepository.findByUsername(playerUsernames.get(1)).get();
-        for (int j =2 ; j < 4 ; j ++) {
+        for (int j = 2; j < 4; j++) {
             if (userRepository.existsByUsername(playerUsernames.get(j))) {
-                if (j == 2 ) user3 = userRepository.findByUsername(playerUsernames.get(j)).get();
+                if (j == 2) user3 = userRepository.findByUsername(playerUsernames.get(j)).get();
                 else user4 = userRepository.findByUsername(playerUsernames.get(j)).get();
             }
         }
@@ -126,7 +166,7 @@ public class LobbyService {
         NPC.setFatherPlayer(null);
         NPC.setFatherUser(null);
 
-        Game game = new Game(userDTO(user1),userDTO(user2), userDTO(user3), userDTO(user4));
+        Game game = new Game(userDTO(user1), userDTO(user2), userDTO(user3), userDTO(user4));
         AppServer.setCurrentGame(game);
         user1.setActiveGame(game);
         user2.setActiveGame(game);
@@ -148,6 +188,7 @@ public class LobbyService {
             lobby.getPassword()
         );
     }
+
     public UserDTO userDTO(User user) {
         return new UserDTO(
             user.getUsername(),
@@ -178,6 +219,7 @@ public class LobbyService {
     public void deleteAllRepo() {
         lobbyRepository.deleteAll();
     }
+
     public static GameDTO toDto(Game game) {
         //TODO
         List<String> playerUsernames = game.getPlayers().stream()
@@ -190,5 +232,4 @@ public class LobbyService {
             game.getDate().toString()
         );
     }
-
 }
