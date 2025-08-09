@@ -8,15 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.UIControllers.ArtisanInfoMenuController;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
-import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 import io.github.StardewValley.shared.models.artisan.IngredientGroup;
-import io.github.StardewValley.shared.models.crafting.CraftingItem;
 
 public class ArtisanInfoMenu implements Screen {
     private Stage stage;
@@ -113,7 +111,7 @@ public class ArtisanInfoMenu implements Screen {
                 GameAssetManagerClient.getGameAssetManager().getSkin()
             );
 
-            float progress = craftingItem.getProgress(); // should be 0.0 - 1.0
+            float progress = GameClient.getArtisanProductionProgress(craftingItem); // should be 0.0 - 1.0
 
             ProgressBar craftingProgress = new ProgressBar(0f, 1f, 0.01f, false,
                 GameAssetManagerClient.getGameAssetManager().getSkin());

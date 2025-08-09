@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
 
@@ -24,7 +23,8 @@ public class AnimalPlace implements Placeable {
     public AnimalPlace(AnimalPlaceType animalPlaceType){
         this.animalPlaceType = animalPlaceType;
         this.capacity = animalPlaceType.getCapacity();
-        this.skin = GameAssetManager.getGameAssetManager().getSkin();
+        //TODO
+        //this.skin = GameAssetManager.getGameAssetManager().getSkin();
         this.animals=new ArrayList<>();
     }
     private float x=1500f;

@@ -9,15 +9,14 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.UIControllers.*;
-import io.github.StardewValley.shared.dto.CraftingItemDTO;
+import io.github.StardewValley.controllers.helperControllers.ToolRenderController;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.crafting.CraftingItem;
+import io.github.StardewValley.controllers.helperControllers.CrowAttackEffect;
 import io.github.StardewValley.views.*;
-import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MapView;
-import io.github.StardewValley.models.plant.CrowAttackEffect;
+import models.PlayerClient;
 
 public class GameController {
     public GameView view;
@@ -47,14 +46,11 @@ public class GameController {
 
             this.worldController = new WorldController(this.camera);
             this.worldController.initTransients();
-            this.toolRenderController = new ToolRenderController(playerClient);
+            this.toolRenderController = new ToolRenderController();
 
             this.mapWidthInPixels = worldController.getTileWidth();
             this.mapHeightInPixels = worldController.getTileHeight();
             this.crowAttackEffect = new CrowAttackEffect();
-            //TODO
-//            initializeStoreRectangles();
-
             GameClient.setCamera(this.camera);
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,11 +89,12 @@ public class GameController {
 
     public void updateGame(float delta) {
         if (view != null) {
+            PlayerDto pd = null;
             try {
-                PlayerDto pd = GameClient.getGameStateApiClient().updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
+                pd = GameClient.getGameStateApiClient().updateStateOfPlayer(delta, upPressed, downPressed, leftPressed, rightPressed);
                 playerUpdate(pd);
                 updateCamera(GameClient.getPlayer());
-                worldController.update(delta);
+                worldController.update();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -106,8 +103,7 @@ public class GameController {
             printOtherPlayers();
             handlePlayerInput();
 
-            //TODO handle connection to server
-//            toolController.update(delta, player);
+            toolRenderController.update(delta, pd);
 
             crowAttackEffect.update(delta);
             crowAttackEffect.render(Main.getBatch());
@@ -172,6 +168,7 @@ public class GameController {
                 Main.getMain().setScreen(new CraftingShow(GameAssetManagerClient.getGameAssetManager().getSkin(), view, new CraftingController()));
                 break;
             case Input.Keys.P:
+                //TODO
 //                for(AnimalPlace animalPlace : App.getCurrentGame().getCurrentPlayingPlayer().getPlayerMap().getAnimalPlaces()) {
 //                    for(Animal animal:animalPlace.getAnimals()){
 //                        if(!animal.isFollowingPath())animal.startPathTo();
@@ -185,7 +182,6 @@ public class GameController {
     }
 
     public void handlePlayerInput() {
-        //player = App.getCurrentGame().getCurrentPlayingPlayer();
         int dx = 0, dy = 0;
         switch (player.getLastDirection()) {
             case UP:
@@ -210,29 +206,20 @@ public class GameController {
             Main.getMain().getScreen().dispose();
             ScreenUtils.clear(0, 0, 0, 1);
             Main.getMain().setScreen(new TalkView(new TalkController(), GameAssetManagerClient.getGameAssetManager().getSkin(), view));
-        }
-//        else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-//            try {
-//                App.getCurrentGame().getDate().goToNextDay();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            System.out.println("C pressed.");
             HandleWorldClickResponse result = null;
             try {
-                result = GameClient.getGameStateApiClient().handleWorldClick(dx, dy, Input.Buttons.LEFT);
+                result = GameClient.getGameStateApiClient().handleWorldClick(dx, dy, 0); //Input.Buttons.LEFT
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (result != null)
-                handleClickAction(result);
+            handleClickAction(result);
 
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
-        //TODO handle player
         else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new InventoryView(new InventoryController(),
@@ -278,6 +265,8 @@ public class GameController {
         if (result.getActionType().equals(HandleWorldClickResponse.ActionType.NONE))
             return false;
 
+        if (result.isStartToolAnimation())
+            toolRenderController.startToolAnimation();
         switch (result.getActionType()) {
             case SHOW_NOTIFICATION -> view.showNotification(result.getMessage());
             case OPEN_STORE -> {
@@ -285,7 +274,7 @@ public class GameController {
                 Main.getMain().setScreen(new StoreMenu(
                     new StoreMenuController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin(),
-                    (StoreType) result.getPayload()
+                    result.getStoreType()
                 ));
             }
             case OPEN_ARTISAN_CRAFT_MENU -> {
@@ -293,7 +282,7 @@ public class GameController {
                 Main.getMain().setScreen(new ArtisanCraftMenu(
                     new ArtisanCraftMenuController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin(),
-                    (CraftingItem) result.getPayload()
+                    result.getCraftingItemDTO()
                 ));
             }
             case OPEN_GREENHOUSE_BUILD -> {
@@ -306,7 +295,7 @@ public class GameController {
             case OPEN_SHIPPING_BIN_MENU -> {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new ShippingBinScreen(
-                    (TileDTO) result.getPayload(),
+                    result.getTileDTO(),
                     new ShippingBinScreenController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin()
                 ));
@@ -316,7 +305,7 @@ public class GameController {
                 Main.getMain().setScreen(new ArtisanInfoMenu(
                     new ArtisanInfoMenuController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin(),
-                    (CraftingItemDTO) result.getPayload()
+                    result.getCraftingItemDTO()
                 ));
             }
             default -> {

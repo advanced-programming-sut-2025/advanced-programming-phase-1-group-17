@@ -1,7 +1,7 @@
 package io.github.StardewValley;
 
 import com.badlogic.gdx.graphics.Camera;
-import io.github.StardewValley.controllers.PlayerClient;
+import models.PlayerClient;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.models.UserDTO;
@@ -80,6 +80,12 @@ public class GameClient {
             greenHouseLocations = new HashMap<>(getGameStateApiClient().getGreenHouseLocationsFromServer());
         }
         return greenHouseLocations;
+    }
+
+    public static float getArtisanProductionProgress(CraftingItemDTO craftingItemDTO) {
+        float progressed = craftingItemDTO.getDaysInProgress() * 24 + craftingItemDTO.getHoursInProgress();
+        float all = craftingItemDTO.getArtisanProductionDays() * 24 + craftingItemDTO.getArtisanProductionHours();
+        return progressed / all;
     }
 
     public static UserDTO getLoggedInUser() {

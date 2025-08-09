@@ -1,9 +1,7 @@
 package io.github.StardewValley.shared;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.market.StoreType;
@@ -32,7 +30,6 @@ public class GameAssetManager {
     //For backpack and Tools
     private final String backPackTexture = "Tools/36_Backpack.png";
 
-    private final HashMap<Season, String > seasonalMapTextures = new HashMap<>();
     private final HashMap<StoreType, HashMap<Season, TextureRegion>> storeTextures = new HashMap<>();
     private final String  shippingBinTexture =("Chest/ChestOrange.png");
 
@@ -40,28 +37,8 @@ public class GameAssetManager {
     private final ArrayList<TextureRegion> grassTextures = new ArrayList<>();
 
     private GameAssetManager() {
-        loadStoreTextures();
         loadNormalItemTextures();
-//        loadGrassTextures();
     }
-
-//    private void loadGrassTextures() {
-//        Texture texture = new Texture("sprites/Grass.png");
-//        int grassHeight = texture.getHeight() / 12;
-//        for (int row = 0; row < 12; row++) {
-//            if (row == 7)
-//                continue;
-//            for (int column = 0; column < 3; column++) {
-//                grassTextures.add(new TextureRegion(
-//                    texture,
-//                    12 * column,
-//                    grassHeight * row,
-//                    12,
-//                    grassHeight
-//                ));
-//            }
-//        }
-//    }
 
     public static GameAssetManager getGameAssetManager() {
         if (gameAssetManager == null) {
@@ -131,41 +108,10 @@ public class GameAssetManager {
         }
     }
 
-
-    private void loadStoreTextures() {
-        // 1. Load each season’s map texture only once:
-        //TODO -- createFilteredTexture() --
-        seasonalMapTextures.put(Season.Spring,"sprites/Pelican Town Spring.png");
-        seasonalMapTextures.put(Season.Summer, "sprites/Pelican Town Summer.png");
-        seasonalMapTextures.put(Season.Fall, "sprites/Pelican Town Fall.png");
-        seasonalMapTextures.put(Season.Winter, "sprites/Pelican Town Winter.png");
-
-        for (StoreType storeType : StoreType.values()) {
-            storeTextures.put(storeType, new HashMap<>());
-        }
-        //TODO
-        // 2. Build regions based on those persistent textures
-//        seasonalMapTextures.forEach((season, texture) -> {
-//            //storeTextures.get(StoreType.PierresGeneralStore).put(season, new TextureRegion(texture, 240, 175, 106, 145));
-//            storeTextures.get(StoreType.PierresGeneralStore).put(season, new TextureRegion(texture, 83, 177, 157, 145));
-//            storeTextures.get(StoreType.StardropSaloon).put(season, new TextureRegion(texture, 240, 177, 106, 145));
-//
-//            storeTextures.get(StoreType.JojaMart).put(season, new TextureRegion(texture, 0, 800, 320, 187));
-//            storeTextures.get(StoreType.Blacksmith).put(season, new TextureRegion(texture, 400, 0, 112, 135));
-//            storeTextures.get(StoreType.FishShop).put(season, new TextureRegion(texture, 256, 0, 144, 175));
-//            storeTextures.get(StoreType.CarpentersShop).put(season, new TextureRegion(texture, 0, 0, 125, 175));
-//            storeTextures.get(StoreType.Ranch).put(season, new TextureRegion(texture, 125, 0, 131, 175));
-//        });
-    }
-
     private Texture createFilteredTexture(String path) {
         Texture texture = new Texture(path);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         return texture;
-    }
-
-    public TextureRegion getStoreTexture(Season season, StoreType type) {
-        return storeTextures.get(type).get(season);
     }
 
     public String getNormalItemTexture(NormalItemType normalItemType) {

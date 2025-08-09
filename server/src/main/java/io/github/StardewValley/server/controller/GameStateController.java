@@ -40,7 +40,6 @@ import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -247,6 +246,7 @@ public class GameStateController {
         if (player == null) {
             return ResponseEntity.status(401).body(new CraftResponseDTO(false, "Player not found."));
         }
+        Game game = AppServer.getCurrentGame();
 
         CraftingItemType typeToCraft;
         try {
@@ -276,7 +276,7 @@ public class GameStateController {
         }
 
         // 3. اضافه کردن آیتم جدید (در سرور!)
-        CraftingItem craftedItem = new CraftingItem(typeToCraft, player);
+        CraftingItem craftedItem = new CraftingItem(typeToCraft, player, game);
         backPack.addItemToInventory(craftedItem);
 
         // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
@@ -335,9 +335,6 @@ public class GameStateController {
         return ResponseEntity.ok(new CookResponseDTO(true, "Cooked successfully!"));
     }
 
-
-
-
     @PostMapping("/game/handleClick")
     public ResponseEntity<HandleWorldClickResponse> handleClick(@RequestBody HandleWorldClickRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token); // Authenticate and get the correct Player
@@ -345,7 +342,6 @@ public class GameStateController {
         float x = request.getX();
         float y = request.getY();
         int button = request.getButton();
-        System.out.println("%f %f %d".formatted(x, y, button));
 
         HandleWorldClickResponse response = gameWorldController.checkBounds(x, y, button, player, game);
         if (response.isSuccessful())
@@ -358,20 +354,18 @@ public class GameStateController {
         int dy = clickedTileY - player.getTileY();
 
         HandleWorldClickResponse result = new HandleWorldClickResponse(false, "", HandleWorldClickResponse.ActionType.NONE);
-        System.out.println(player.getEquippedItem().getName());
         if (Math.abs(dx) + Math.abs(dy) == 1) {
             if (player.getEquippedItem() instanceof Tool)
                 result = toolController.toolUse(dx, dy, player, game);
             else if (player.getEquippedItem() instanceof CraftingItem)
-                result = toolController.placeCraftingItem(dx, dy, player);
+                result = toolController.placeCraftingItem(dx, dy, player, game);
             else if (player.getEquippedItem() instanceof Seed seed)
                 result = farmingController.plantSeed(seed, dx, dy, player, game);
             else if (player.getEquippedItem() instanceof Sapling sapling)
                 result = farmingController.plantSapling(sapling, dx, dy, player, game);
             else if (player.getEquippedItem() instanceof Fertilizer fertilizer)
-                result = farmingController.fertilize(fertilizer, dx, dy, player);
+                result = farmingController.fertilize(fertilizer, dx, dy, player, game);
         }
-        System.out.println(result.getMessage());
         return ResponseEntity.ok(result);
     }
 
@@ -419,7 +413,7 @@ public class GameStateController {
         } else if ((matcher = CheatCodeCommands.EnergyUnlimited.getMatcher(command)) != null) {
             result = CheatCodeHandler.energyUnlimited(player);
         } else if ((matcher = CheatCodeCommands.CheatAddItem.getMatcher(command)) != null) {
-            result = CheatCodeHandler.addItem(matcher.group("itemName"), matcher.group("count"), player);
+            result = CheatCodeHandler.addItem(matcher.group("itemName"), matcher.group("count"), player, game);
         } else if ((matcher = CheatCodeCommands.CheatSetFriendshipWithAnimal.getMatcher(command)) != null) {
             result = CheatCodeHandler.setFriendship(matcher.group("animalName"),
                 matcher.group("amount"));
@@ -435,7 +429,8 @@ public class GameStateController {
     @PostMapping("/game/Foraging/pickForaging")
     public void pickForaging(@RequestBody PickForaingRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
-        ForagingController.pickForaging(request.getDx(), request.getDy(), player);
+        Game game = AppServer.getCurrentGame();
+        ForagingController.pickForaging(request.getDx(), request.getDy(), player, game);
     }
 
 
@@ -502,6 +497,7 @@ public class GameStateController {
 
     @PostMapping("/game/greenhouse/buildGreenhouse")
     public ResponseEntity<Result> buildGreenhouse(@RequestHeader("Authorization") String token) {
+        System.out.println("bildGreenhouse request recieved");
         Player player = getPlayerFromToken(token);
         if (player.getBackPack().getCoin() < 1000) {
             return ResponseEntity.ok(new Result(false, "You only have %.2f coin. (not enough)".formatted(
@@ -580,14 +576,14 @@ public class GameStateController {
 
         // Try to match an ArtisanProductType with given artisan and ingredients
         for (ArtisanProductType product : ArtisanProductType.values()) {
-            if (!product.getArtisan().equals(artisan.getType())) continue;
+            if (!product.getArtisan().equals(artisan.getCraftingItemType())) continue;
 
             boolean matched = true;
-            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems().keySet()) {
+            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems()) {
                 if (!product.containsDTO(backPackableTypeDTO)) {
                     matched = false;
                     break;
-                } else if (request.getSelectedItems().get(backPackableTypeDTO) < product.getIngredients().get(backPackableTypeDTO)) {
+                } else if (backPackableTypeDTO.getCountInBackPack() < product.getIngredients().get(backPackableTypeDTO)) {
                     matched = false;
                     break;
                 }
@@ -596,7 +592,7 @@ public class GameStateController {
                 continue;
 
             ArrayList<BackPackableType> provided = new ArrayList<>();
-            for (BackpackableTypeDTO backpackableTypeDTO : request.getSelectedItems().keySet()) {
+            for (BackpackableTypeDTO backpackableTypeDTO : request.getSelectedItems()) {
                 try {
                     BackPackableType item = AppServer.getEnumInstance(backpackableTypeDTO.getClassName(), backpackableTypeDTO.getName());
                     provided.add(item);
@@ -607,11 +603,11 @@ public class GameStateController {
             ArtisanProduct artisanProduct = new ArtisanProduct(product, ArtisanProduct.getIngredient(product, provided));
             artisan.setArtisanProductInProgress(artisanProduct);
 
-            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems().keySet()) {
+            for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems()) {
                 try {
                     BackPackableType backPackableType = AppServer.getEnumInstance(backPackableTypeDTO.getClassName(), backPackableTypeDTO.getName());
-                    if (request.getSelectedItems().get(backPackableTypeDTO) > 0) {
-                        player.getBackPack().getBackPackItems().get(backPackableType).subList(0, request.getSelectedItems().get(backPackableTypeDTO)).clear();
+                    if (backPackableTypeDTO.getCountInBackPack() > 0) {
+                        player.getBackPack().getBackPackItems().get(backPackableType).subList(0, backPackableTypeDTO.getCountInBackPack()).clear();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1158,6 +1154,7 @@ public class GameStateController {
     public ResponseEntity<PlayerDto> getPlayerDTOByUserName(@RequestHeader("Authorization") String token, @RequestParam String username) {
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (player.getUser().getUsername().equals(username)) {
+                Tool currentTool = player.getCurrentTool();
                 PlayerDto pd = new PlayerDto(player.isPassedOut()
                     , player.getEnergy()
                     , player.getMaxEnergy()
@@ -1168,9 +1165,9 @@ public class GameStateController {
                     , player.getCoin(), player.getAnimationTimer()
                     , player.getPassOutTimer()
                     , Ability.getDTO(player.getAbilities())
-                    , player.getCurrentTool().getToolType()
-                    , player.getCurrentTool().getMaterial()
-                    , player.getCurrentTool().getFishingPoleMaterial());
+                    , currentTool == null ? null : currentTool.getToolType()
+                    , currentTool == null ? null : currentTool.getMaterial()
+                    , currentTool == null ? null : currentTool.getFishingPoleMaterial());
                 pd.setNewMessage(player.isNewMessage());
                 pd.setGender(player.getUser().getGender().equals(Gender.Male) ? "Male" : "Female");
 

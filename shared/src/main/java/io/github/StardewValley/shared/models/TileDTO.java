@@ -1,17 +1,26 @@
 package io.github.StardewValley.shared.models;
 
+import io.github.StardewValley.shared.models.backpack.NormalItem;
+import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.plant.Crop;
+import io.github.StardewValley.shared.models.plant.Tree;
+import io.github.StardewValley.shared.models.plant.TreeType;
 
 public class TileDTO {
-    public static int i = 9;
     private int x;
     private int y;
     private boolean crowImmunity = false;
-    private String texture;
+    private String texturePath;
     private boolean isWalkAble = true;
     private String placeableType;
     private String ownerUsername;
     private boolean isPlowed = false;
+    private int grassTextureID;
+    private boolean cropGiant = false;
+    private boolean leftBottomCornerOfGiantCrop = false;
+    private TreeType treeType;
+
     public TileDTO(){}
 
     public TileDTO(Tile tile) {
@@ -19,11 +28,22 @@ public class TileDTO {
         this.y = tile.getY();
         this.isWalkAble = tile.isWalkAble();
         this.isPlowed = tile.isPlowed();
-        if (tile.getPlaceable() != null) texture = tile.getPlaceable().getTexture();
-        else texture = null;
+        if (tile.getPlaceable() != null) texturePath = tile.getPlaceable().getTexture();
+        else texturePath = null;
         this.placeableType = tile.getPlaceable() != null ? tile.getPlaceable().getClass().getSimpleName() : null;
         this.ownerUsername = tile.getOwner() != null ? tile.getOwner().getUser().getUsername() : null;
         this.crowImmunity = tile.isCrowImmunity();
+        if (tile.getPlaceable() instanceof NormalItem normalItem) {
+            if (normalItem.getType().equals(NormalItemType.Grass))
+                grassTextureID = normalItem.getGrassTextureID();
+        }
+        if (tile.getPlaceable() instanceof Crop crop) {
+            cropGiant = crop.isGiant();
+            leftBottomCornerOfGiantCrop = crop.isLeftBottomTileOfGiant();
+        }
+        if (tile.getPlaceable() instanceof Tree tree) {
+            treeType = tree.getType();
+        }
     }
 
     public int getX() {
@@ -67,12 +87,12 @@ public class TileDTO {
         isPlowed = plowed;
     }
 
-    public String getTexture() {
-        return texture;
+    public String getTexturePath() {
+        return texturePath;
     }
 
-    public void setTexture(String texture) {
-        this.texture = texture;
+    public void setTexturePath(String texturePath) {
+        this.texturePath = texturePath;
     }
 
     public String getPlaceableType() {
@@ -89,5 +109,21 @@ public class TileDTO {
 
     public void setOwnerUsername(String ownerUsername) {
         this.ownerUsername = ownerUsername;
+    }
+
+    public int getGrassTextureID() {
+        return grassTextureID;
+    }
+
+    public boolean isCropGiant() {
+        return cropGiant;
+    }
+
+    public boolean isLeftBottomCornerOfGiantCrop() {
+        return leftBottomCornerOfGiantCrop;
+    }
+
+    public TreeType getTreeType() {
+        return treeType;
     }
 }

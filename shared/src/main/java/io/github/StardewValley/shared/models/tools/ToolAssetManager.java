@@ -56,7 +56,7 @@ public class ToolAssetManager {
     private void loadTrashCanTextures() {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "_Steel" : "_%s".formatted(material.name());
-            toolTexturePaths.get(ToolType.Axe).put(material, "Tools/Trash_Can%s.png".formatted(materialName));
+            toolTexturePaths.get(ToolType.TrashCan).put(material, "Tools/Trash_Can%s.png".formatted(materialName));
         }
     }
 
@@ -86,9 +86,11 @@ public class ToolAssetManager {
 
     public String getToolTexturePath(ToolType toolType, ToolMaterial toolMaterial, FishingPoleType fishingPoleType) {
         if (toolType.equals(ToolType.FishingPole)) {
+            System.out.println("Fishing Pole texture ...3");
             System.out.println(fishingPoleType);
             return fishingPoleTexturePaths.get(fishingPoleType);
         }
+        System.out.println(toolMaterial);
         return toolTexturePaths.get(toolType).get(toolMaterial);
     }
 }

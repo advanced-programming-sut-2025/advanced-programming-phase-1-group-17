@@ -190,7 +190,7 @@ public class Player {
     }
 
     public void setY(int y) {
-        this.y = y * (int)GameAssetManager.getGameAssetManager().getTileHeight();
+        this.y = y * (int) GameAssetManager.getGameAssetManager().getTileHeight();
     }
 
     public int getX() {

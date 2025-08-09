@@ -31,6 +31,7 @@ import java.util.Objects;
 
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Gender;
+import models.PlayerClient;
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -241,7 +242,7 @@ public class GameView implements Screen, InputProcessor {
 
             try {
                 // TODO: شما باید ابتدا Endpoint و متد getAnimals را در سرور و ApiClient بسازید
-                System.out.println("Fetching animal data from server...");
+                //System.out.println("Fetching animal data from server...");
                 this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
             } catch (Exception e) {
                 System.err.println("Failed to fetch animal data: " + e.getMessage());
@@ -256,13 +257,8 @@ public class GameView implements Screen, InputProcessor {
         updateAnimal(delta);
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
-
         controller.updateGame(delta);
 
-
-
-        //TODO handle playe
-//        controller.handlePlayerInput();
         if (animalsFromServer != null) {
             for (AnimalDTO animalDto : animalsFromServer) {
                 animalView.render(Main.getBatch(), animalDto,delta);
@@ -270,12 +266,6 @@ public class GameView implements Screen, InputProcessor {
         }
 
         Main.getBatch().end();
-        try {
-            hud.render(Main.getBatch(), delta);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
         if (GameClient.getPlayer().isNewMessage()) {
             error.setText("you have a new message");
         }
@@ -291,8 +281,12 @@ public class GameView implements Screen, InputProcessor {
         stage.addActor(dialogueTable);
         error.setPosition(10, 1000);
         stage.addActor(error);
-        //TODO handle player
-//        controller.handlePlayerInput();
+        try {
+            hud.render(Main.getBatch(), delta);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 

@@ -9,6 +9,7 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.GetMarketInventoryResponse;
+import io.github.StardewValley.shared.models.Game;
 import io.github.StardewValley.shared.models.market.*;
 import io.github.StardewValley.views.ItemMenu;
 import io.github.StardewValley.views.StoreMenu;
@@ -82,12 +83,10 @@ public class StoreMenuController {
             upgradeTable.add(new Label("Service",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(200);
             upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
-            //TODO App...
-//            MarketsController manager = App.getCurrentGame().getMarketsController();
             for (UpgradeServiceDTO upgradeServiceDTO : marketInventory.getUpgradeServices()) {
                 TextButton textButton = new TextButton(upgradeServiceDTO.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
                 textButton.addListener(new ClickListener() {
-                    // TODO
+                    // TODO Upgrade Tool
                 });
 
                 upgradeTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
@@ -140,14 +139,12 @@ public class StoreMenuController {
             upgradeTable.add(new Label("Service",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(200);
             upgradeTable.add(new Label("Cost",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(80).row();
             int rank = 1;
-            //TODO App...
-//            MarketsController manager = App.getCurrentGame().getMarketsController();
             for (UpgradeServiceDTO upgradeServiceDTO : marketInventory.getUpgradeServices()) {
                 if (upgradeServiceDTO.getSoldToday() >= upgradeServiceDTO.getDailyLimit())
                     continue;
                 TextButton textButton = new TextButton(upgradeServiceDTO.getName(),   GameAssetManagerClient.getGameAssetManager().getSkin());
                 textButton.addListener(new ClickListener() {
-                    // TODO
+                    // TODO Upgrade Tool
                 });
                 upgradeTable.add(new Label(rank + ".",   GameAssetManagerClient.getGameAssetManager().getSkin())).width(40).padRight(30);
                 upgradeTable.add(textButton).width(400).padRight(30);
