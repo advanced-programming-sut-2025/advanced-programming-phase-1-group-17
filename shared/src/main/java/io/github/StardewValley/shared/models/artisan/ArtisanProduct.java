@@ -5,8 +5,8 @@ import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.plant.CropType;
 import io.github.StardewValley.shared.models.plant.FruitType;
-import io.github.StardewValley.shared.models.savedClasses.ArtisanProductSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.ArtisanProductSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 import java.util.ArrayList;
 
@@ -103,6 +103,13 @@ public class ArtisanProduct implements BackPackable {
 
     public ArtisanProductType getType() {
         return type;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(ArtisanProduct.class.getSimpleName());
+        backPackableSave.setArtisanProductSave(new ArtisanProductSave(this));
+        return backPackableSave;
     }
 
     @Override

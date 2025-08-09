@@ -163,7 +163,6 @@ public class LobbyService {
             userRepository.save(user4);
         }
         Tile.getTiles().clear();
-        Tile.getTreeTile().clear();
 
         NPC.setFatherPlayer(null);
         NPC.setFatherUser(null);

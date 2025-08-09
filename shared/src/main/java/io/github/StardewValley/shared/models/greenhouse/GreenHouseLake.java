@@ -1,9 +1,10 @@
 package io.github.StardewValley.shared.models.greenhouse;
 
-import com.badlogic.gdx.graphics.Texture;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
-import io.github.StardewValley.shared.models.savedClasses.GreenHouseLakeSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class GreenHouseLake implements Placeable {
     @Override
@@ -15,12 +16,12 @@ public class GreenHouseLake implements Placeable {
     @Override
     public PlaceableSave toDTO() {
         PlaceableSave placeableSave = new PlaceableSave(GreenHouseLake.class.getSimpleName());
-        placeableSave.setGreenHouseLake(new GreenHouseLakeSave());
+        placeableSave.setGreenHouseLake(this);
         return placeableSave;
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        GreenHouseLake greenHouseLake = new GreenHouseLake();
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return this;
     }
 }

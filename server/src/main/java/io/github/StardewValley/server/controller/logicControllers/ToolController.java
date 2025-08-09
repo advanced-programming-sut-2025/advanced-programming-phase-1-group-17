@@ -591,7 +591,7 @@ public class ToolController {
     public void handleRefund(BackPackable backPackable, Player player) {
         double refundPercentage = player.getTrashCan().getTrashCanRefundPercentage() / 100.0;
         double refund = backPackable.getType().getPrice() * refundPercentage;
-        player.getBackPack().addCoin(refund);
+        player.addCoin(refund);
     }
 
 }

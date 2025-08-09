@@ -35,7 +35,7 @@ public class Player {
     private int y;
     private Buff buff;
     private float speed = 1000f;
-    private int coin = 550;
+    private double coin = 550;
     private transient Animation<TextureRegion> walkUpAnimation;
     private transient Animation<TextureRegion> walkDownAnimation;
     private transient Animation<TextureRegion> walkLeftAnimation;
@@ -58,7 +58,7 @@ public class Player {
     private boolean newMessage = false;
 
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
-    private ArrayList<message> messages = new ArrayList<>();
+    private ArrayList<Message> Messages = new ArrayList<>();
     private ArrayList<Trade> trades = new ArrayList<>();
     private Player partner = this;
     private boolean interactionWithPartner = false;
@@ -84,59 +84,14 @@ public class Player {
     private Tool currentTool;
     private BackPackable equippedItem;
 
-    private int vegetableFarmed = 0;
-    private ArrayList<Food> foods = new ArrayList<>();
     private HashSet<Recipe> recipes = new HashSet<>();
     private Ability abilities = new Ability(this);
     private HashSet<CraftingRecipe> craftingRecipes = new HashSet<>();
 
-    private double balance;
-    private int daysSinceBrakUp = 0;
-
-    public void toolEquip(ToolType toolType) {
-        BackPack backPack = this.backPack;
-        currentTool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
-    }
-
-    public void fishingPoleEquip(FishingPoleType fishingPoleType) {
-        BackPack backPack = this.backPack;
-        currentTool = (Tool) backPack.getBackPackItems().get(fishingPoleType).get(0);
-    }
+    private int daysSinceBrakeUp = 0;
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
-    }
-
-    public int getVegetableFarmed() {
-        return vegetableFarmed;
-    }
-
-    public void setVegetableFarmed(int vegetableFarmed) {
-        this.vegetableFarmed = vegetableFarmed;
-    }
-
-    public Ability getAbilities() {
-        return abilities;
-    }
-
-    public void setAbilities(Ability abilities) {
-        this.abilities = abilities;
-    }
-
-    public HashSet<CraftingRecipe> getCraftingRecipes() {
-        return craftingRecipes;
-    }
-
-    public void setCraftingRecipes(HashSet<CraftingRecipe> craftingRecipes) {
-        this.craftingRecipes = craftingRecipes;
-    }
-
-    public HashSet<Recipe> getRecipes() {
-        return recipes;
-    }
-
-    public void setRecipes(HashSet<Recipe> recipes) {
-        this.recipes = recipes;
     }
 
     public Player(UserDTO user, boolean isGuest) {
@@ -329,25 +284,25 @@ public class Player {
         this.gifts = gifts;
     }
 
-    public void addMessage(message message) {
-        this.messages.add(message);
+    public void addMessage(Message message) {
+        this.Messages.add(message);
         newMessage = true;
     }
 
-    public ArrayList<message> getMessage() {
-        return this.messages;
+    public ArrayList<Message> getMessage() {
+        return this.Messages;
     }
 
 
     public String getStringMessage() {
         String message = "";
-        for (int i = 0; i < messages.size(); i++) {
-            if (messages.get(i).getSender() != null) {
-                message += (i + "- " + "SENDER" + " : " + messages.get(i).getSender().getUser().getUsername()
-                    + "\n" + "message : " + messages.get(i).getMessage() + "\n");
+        for (int i = 0; i < Messages.size(); i++) {
+            if (Messages.get(i).getSender() != null) {
+                message += (i + "- " + "SENDER" + " : " + Messages.get(i).getSender().getUser().getUsername()
+                    + "\n" + "message : " + Messages.get(i).getMessage() + "\n");
             } else {
-                message += (i + "- " + "SENDER(NPC)" + " : " + messages.get(i).getSenderNPC().getName()
-                    + "\n" + "message : " + messages.get(i).getMessage() + "\n");
+                message += (i + "- " + "SENDER(NPC)" + " : " + Messages.get(i).getSenderNPC().getName()
+                    + "\n" + "message : " + Messages.get(i).getMessage() + "\n");
             }
         }
         return message;
@@ -622,11 +577,11 @@ public class Player {
         return moved;
     }
 
-    public int getCoin() {
+    public double getCoin() {
         return coin;
     }
 
-    public void setCoin(int coin) {
+    public void setCoin(double coin) {
         this.coin = coin;
     }
 
@@ -698,20 +653,12 @@ public class Player {
         return passOutTimer;
     }
 
-    public ArrayList<message> getMessages() {
-        return messages;
+    public ArrayList<Message> getMessages() {
+        return Messages;
     }
 
-    public ArrayList<Food> getFoods() {
-        return foods;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public int getDaysSinceBrakUp() {
-        return daysSinceBrakUp;
+    public int getDaysSinceBrakeUp() {
+        return daysSinceBrakeUp;
     }
 
     public int getTemporaryMaxEnergyBoost() {
@@ -720,6 +667,53 @@ public class Player {
 
     public int getTemporaryBoostRemainingHours() {
         return temporaryBoostRemainingHours;
+    }
+
+    public void toolEquip(ToolType toolType) {
+        BackPack backPack = this.backPack;
+        currentTool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
+    }
+
+    public void fishingPoleEquip(FishingPoleType fishingPoleType) {
+        BackPack backPack = this.backPack;
+        currentTool = (Tool) backPack.getBackPackItems().get(fishingPoleType).get(0);
+    }
+
+    public Ability getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(Ability abilities) {
+        this.abilities = abilities;
+    }
+
+    public HashSet<CraftingRecipe> getCraftingRecipes() {
+        return craftingRecipes;
+    }
+
+    public void setCraftingRecipes(HashSet<CraftingRecipe> craftingRecipes) {
+        this.craftingRecipes = craftingRecipes;
+    }
+
+    public HashSet<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(HashSet<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    public void addCoin(double coin) {
+        if (!this.getPartner().equals(this)) {
+            addcoin(coin);
+            this.getPartner().addcoin(coin);
+        } else {
+            this.addcoin(coin);
+        }
+    }
+
+    public void addcoin(double coin) {
+        this.coin += coin;
     }
 
     public String getTargetPlayerToTrade() {

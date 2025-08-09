@@ -3,9 +3,9 @@ package io.github.StardewValley.shared.models.plant;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.savedClasses.CropSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
-import io.github.StardewValley.shared.models.savedClasses.TreeSave;
+import io.github.StardewValley.shared.models.saveClasses.CropSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.TreeSave;
 
 import java.util.Random;
 

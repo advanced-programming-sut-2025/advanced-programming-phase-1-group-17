@@ -12,7 +12,7 @@ public class PlayerDto {
     private boolean hasPassedOutToday = false;
     private int x;
     private int y;
-    private int coin = 550;
+    private double coin = 550;
     private float speed = 1000f;
     private Player.Direction lastDirection;
     private Player.Direction currentDirection;
@@ -38,7 +38,7 @@ public class PlayerDto {
         , boolean hasPassedOutToday
         , int x, int y, Player.Direction currentDirection
         , float speed, Player.Direction lastDirection
-        , int coin, float animationTimer
+        , double coin, float animationTimer
         , float passOutTimer
         , AbilityDTO abilityDTO
         , ToolType toolType
@@ -123,11 +123,11 @@ public class PlayerDto {
         this.y = y;
     }
 
-    public int getCoin() {
+    public double getCoin() {
         return coin;
     }
 
-    public void setCoin(int coin) {
+    public void setCoin(double coin) {
         this.coin = coin;
     }
 

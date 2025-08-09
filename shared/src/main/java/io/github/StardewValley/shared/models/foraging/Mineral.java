@@ -1,9 +1,13 @@
 package io.github.StardewValley.shared.models.foraging;
 
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.map.Placeable;
-import io.github.StardewValley.shared.models.savedClasses.MineralSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class Mineral implements BackPackable, Placeable {
     MineralType type;
@@ -12,13 +16,6 @@ public class Mineral implements BackPackable, Placeable {
     public Mineral(MineralType type, boolean isForaging) {
         this.type = type;
         this.isForaging = isForaging;
-    }
-
-    public Mineral(PlaceableSave dto) {
-        MineralSave save = dto.getMineralSave();
-
-        this.type = save.getType();
-        this.isForaging = save.isForaging();
     }
 
     @Override
@@ -36,6 +33,13 @@ public class Mineral implements BackPackable, Placeable {
     }
 
     @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(Mineral.class.getSimpleName());
+        backPackableSave.setMineral(this);
+        return backPackableSave;
+    }
+
+    @Override
     public double getPrice() {
         return type.getPrice();
     }
@@ -48,12 +52,12 @@ public class Mineral implements BackPackable, Placeable {
     @Override
     public PlaceableSave toDTO() {
         PlaceableSave placeableSave = new PlaceableSave(Mineral.class.getSimpleName());
-        placeableSave.setMineralSave(new MineralSave(this));
+        placeableSave.setMineral(this);
         return placeableSave;
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        Mineral mineral = new Mineral(dto);
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return this;
     }
 }

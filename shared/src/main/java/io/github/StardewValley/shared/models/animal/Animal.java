@@ -10,10 +10,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.enums.Direction;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 
 import java.util.*;
 
@@ -469,8 +470,8 @@ public class Animal implements Placeable {
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return null;
     }
 
     private float timeSinceLastDirectionChange = 0f;

@@ -18,6 +18,7 @@ import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
 import io.github.StardewValley.shared.models.market.ShippingBin;
+import io.github.StardewValley.shared.models.plant.CrowAttackLogic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class Game implements Serializable {
     private final ArrayList<NPC> NPCs = new ArrayList<>();
     private final MarketsController marketsController = new MarketsController();
     private final LightningLogicController lightningLogicController = new LightningLogicController();
+    private final CrowAttackLogic crowAttackLogic = new CrowAttackLogic();
     private final ArrayList<NPC> NPCHuts = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
 
@@ -57,6 +59,23 @@ public class Game implements Serializable {
         addNPCs(new Lia(true));
         addNPCs(new Robin(true));
         addNPCs(new Sebastian(true));
+
+        initializeGame();
+        generateGameMap();
+        setTiles(new ArrayList<>(Tile.getTiles()));
+        Tile.getTiles().clear();
+
+        for (Player player : players) {
+            if (player.getUser().getUsername().equals("NPC")) continue;
+            if (player.isGuest()) {
+                player.getPlayerMap().setMapType(1, this);
+            }
+        }
+        this.marketsController.initializeStores(this);
+        giveInitialItems();
+    }
+
+    private void initializeGame() {
         for (Player player : players) {
             for (NPC npc : NPCs) {
                 player.setFriendShipsWithNPCs(npc);
@@ -95,18 +114,6 @@ public class Game implements Serializable {
                 players.get(3).addFriendShips(players.get(i), 0);
             }
         }
-        generateGameMap();
-        setTiles(new ArrayList<>(Tile.getTiles()));
-        Tile.getTiles().clear();
-
-        for (Player player : players) {
-            if (player.getUser().getUsername().equals("NPC")) continue;
-            if (player.isGuest()) {
-                player.getPlayerMap().setMapType(1, this);
-            }
-        }
-        this.marketsController.initializeStores(this);
-        giveInitialItems();
     }
 
     private void generateGameMap() {
@@ -196,14 +203,6 @@ public class Game implements Serializable {
 
     public void setTiles(ArrayList<Tile> tiles) {
         this.tiles = tiles;
-    }
-
-    public ArrayList<Tile> getTreeTile() {
-        return treeTile;
-    }
-
-    public void setTreeTile(ArrayList<Tile> treeTile) {
-        this.treeTile = treeTile;
     }
 
     public Tile getTile(int x, int y) {

@@ -171,7 +171,7 @@ public class GameStateController {
             p.getUser().setLastGame(AppServer.getCurrentGame());
             p.getUser().setActiveGame(null);
             if (p.isGuest()) continue;
-            p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
+            p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getCoin()));
             UserDTO userDTO = p.getUser();
             user.setEmail(userDTO.getEmail());
             user.setAvatar(userDTO.getAvatar());
@@ -225,7 +225,7 @@ public class GameStateController {
             dateString,
             game.getDate().getSeason().toString(), // فرض می‌کنیم Season یک enum است
             game.getDate().getTodayWeatherType().toString(), // فرض می‌کنیم Weather یک enum است
-            (int) player.getBackPack().getCoin(),
+            (int) player.getCoin(),
             player.getEnergy(),
             player.getMaxEnergy(),
             player.isEnergyUnlimited(),
@@ -504,9 +504,9 @@ public class GameStateController {
     public ResponseEntity<Result> buildGreenhouse(@RequestHeader("Authorization") String token) {
         System.out.println("bildGreenhouse request recieved");
         Player player = getPlayerFromToken(token);
-        if (player.getBackPack().getCoin() < 1000) {
+        if (player.getCoin() < 1000) {
             return ResponseEntity.ok(new Result(false, "You only have %.2f coin. (not enough)".formatted(
-                player.getBackPack().getCoin())));
+                player.getCoin())));
         }
 
         int woodCount = player.getBackPack().getInventorySize(NormalItemType.Wood.getName());
@@ -514,7 +514,7 @@ public class GameStateController {
             return ResponseEntity.ok(new Result(false, "You only have %d wood. (not enough wood)".formatted(woodCount)));
         }
 
-        player.getBackPack().addCoin(-1000);
+        player.addCoin(-1000);
         for (int i = 0; i < 500; i++)
             player.getBackPack().useItem(NormalItemType.Wood);
 
@@ -730,7 +730,7 @@ public class GameStateController {
                             + " : " + massage + "\n");
                         player.addFriendShips(currentPlayer, player.getFriendShips().get(currentPlayer) + 20);
                         currentPlayer.addFriendShips(player, currentPlayer.getFriendShips().get(player) + 20);
-                        message message = new message(currentPlayer, massage);
+                        Message message = new Message(currentPlayer, massage);
                         player.addMessage(message);
                         if (player.getPartner().equals(currentPlayer) && !player.isInteractionWithPartner()) {
                             player.setEnergy(player.getEnergy() + 50);
@@ -791,7 +791,7 @@ public class GameStateController {
                                     player.setEnergy(player.getEnergy() + 50);
                                     currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
                                 }
-                                message message = new message(currentPlayer, player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
+                                Message message = new Message(currentPlayer, player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
                                     + "\n" + "your gift : " + item + "\n" + "your gift amount : " + amount + "\n"
                                     + "please rate this gift between one and five Whenever you have time ");
                                 player.addMessage(message);
@@ -954,7 +954,7 @@ public class GameStateController {
                             } else if (currentPlayer.getBackPack().getInventorySize(ring) < 1) {
                                 return ResponseEntity.ok(new Result(false, "you haven't Ring for ask marriage"));
                             } else {
-                                message message = new message(currentPlayer, "ask for marriage with "
+                                Message message = new Message(currentPlayer, "ask for marriage with "
                                     + getPlayerFromToken(token).getUser().getUsername());
                                 player.getMessage().add(message);
                                 return ResponseEntity.ok(new Result(true, "your marriage request has been sent"));
@@ -974,7 +974,7 @@ public class GameStateController {
     @PostMapping("/respond")
     public ResponseEntity<Result> respond(@RequestHeader("Authorization") String token, @RequestParam String accept, @RequestParam String username) {
         Player currentPlayer = getPlayerFromToken(token);
-        for (message m : currentPlayer.getMessage()) {
+        for (Message m : currentPlayer.getMessage()) {
             if (m.getMessage().startsWith("ask for marriage")) {
                 for (Player player : AppServer.getCurrentGame().getPlayers()) {
                     if (player.getUser().getUsername().equals(username)) {
@@ -982,24 +982,24 @@ public class GameStateController {
                             if (accept.trim().equals("accept")) {
                                 BackPackable b = player.getBackPack().useItem("Ring");
                                 currentPlayer.getBackPack().addItemToInventory(b);
-                                ArrayList<message> temp = new ArrayList<message>();
-                                for (message message : player.getMessage()) {
+                                ArrayList<Message> temp = new ArrayList<Message>();
+                                for (Message message : player.getMessage()) {
                                     if (m.getMessage().startsWith("ask for marriage")) {
                                         temp.add(message);
                                     }
                                 }
-                                for (message message : temp) {
+                                for (Message message : temp) {
                                     player.getMessage().remove(message);
                                 }
                                 if (player.getFriendShips().get(currentPlayer) < 400) {
                                     player.getFriendShips().put(currentPlayer, 400);
                                     currentPlayer.getFriendShips().put(player, 400);
                                 }
-                                player.getBackPack().addCoin(currentPlayer.getBackPack().getCoin());
-                                currentPlayer.getBackPack().addCoin(player.getBackPack().getCoin());
+                                player.addCoin(currentPlayer.getCoin());
+                                currentPlayer.addCoin(player.getCoin());
                                 player.setPartner(currentPlayer);
                                 currentPlayer.setPartner(player);
-                                message m1 = new message(getPlayerFromToken(token)
+                                Message m1 = new Message(getPlayerFromToken(token)
                                     , "oh my God, I was taken by surprise. I thought about it. I accept");
                                 player.addMessage(m1);
                                 return ResponseEntity.ok(new Result(true, "Congratulations, you got married"));
@@ -1007,16 +1007,16 @@ public class GameStateController {
                                 player.setIsbrokenUp(7);
                                 player.getFriendShips().put(currentPlayer, 0);
                                 currentPlayer.getFriendShips().put(player, 0);
-                                ArrayList<message> temp = new ArrayList<message>();
-                                for (message message : player.getMessage()) {
+                                ArrayList<Message> temp = new ArrayList<Message>();
+                                for (Message message : player.getMessage()) {
                                     if (m.getMessage().startsWith("ask for marriage with ")) {
                                         temp.add(message);
                                     }
                                 }
-                                for (message message : temp) {
+                                for (Message message : temp) {
                                     player.getMessage().remove(message);
                                 }
-                                message m1 = new message(getPlayerFromToken(token), "i do not intend to marry");
+                                Message m1 = new Message(getPlayerFromToken(token), "i do not intend to marry");
                                 player.addMessage(m1);
                                 return ResponseEntity.ok(new Result(true, "request was rejected"));
                             }
@@ -1110,7 +1110,7 @@ public class GameStateController {
         if (index >= getPlayerFromToken(token).getMessage().size()) {
             return ResponseEntity.ok(new Result(false, "there are no messages with this index"));
         } else {
-            message message = getPlayerFromToken(token).getMessage().get(index);
+            Message message = getPlayerFromToken(token).getMessage().get(index);
             getPlayerFromToken(token).getMessage().remove(message);
             return ResponseEntity.ok(new Result(true, "message delete successfully"));
         }

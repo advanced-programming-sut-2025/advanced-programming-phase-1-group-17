@@ -10,10 +10,12 @@ import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.Fruit;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
-import io.github.StardewValley.shared.models.savedClasses.ShippingBinSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.ShippingBinSave;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShippingBin implements Placeable, BackPackable {
     private ShippingBinType type = ShippingBinType.Basic;
@@ -22,6 +24,8 @@ public class ShippingBin implements Placeable, BackPackable {
     private Player todayItemOwner = null;
     private int tileX;
     private int tileY;
+
+    public ShippingBin() {}
 
     public ShippingBin(int x, int y, Game game) {
         game.getShippingBinBounds().put(this, new Rectangle(
@@ -34,10 +38,17 @@ public class ShippingBin implements Placeable, BackPackable {
         this.tileY = y;
     }
 
-    //Just For Loading
-    private ShippingBin(int x, int y) {
-        this.tileX = x;
-        this.tileY = y;
+    private ShippingBin(ShippingBinSave shippingBinSave, List<Player> playerList) {
+        this.tileX = shippingBinSave.getTileX();
+        this.tileY = shippingBinSave.getTileY();
+        for (Player player : playerList) {
+            if (player.getUser().getUsername().equals(shippingBinSave.getTodayItemOwner())) {
+                this.todayItemOwner = player;
+                break;
+            }
+        }
+        //TODO
+        //shippingBinSave.getItems().forEach((backPackableSave -> backPackableSave.));
     }
 
     public void addItem(BackPackable backPackable) {
@@ -69,7 +80,7 @@ public class ShippingBin implements Placeable, BackPackable {
             //TODO
 //            Main.getGameView().showNotification("Player %s earned %.0f coins from selling the items from shipping bin."
 //                .formatted(shippingBin.todayItemOwner.getUser().getUsername(), total));
-            shippingBin.todayItemOwner.getBackPack().addCoin(
+            shippingBin.todayItemOwner.addCoin(
                 Math.floor(total));
             shippingBin.items = new ArrayList<>();
             shippingBin.todayItemOwner = null;
@@ -97,9 +108,9 @@ public class ShippingBin implements Placeable, BackPackable {
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
         ShippingBinSave save = dto.getShippingBinSave();
-        ShippingBin shippingBin = new ShippingBin(save.getTileX(), save.getTileY());
+        return new ShippingBin(dto.getShippingBinSave(), playerList);
         //TODO shippingBinBounds
     }
 
@@ -116,6 +127,13 @@ public class ShippingBin implements Placeable, BackPackable {
     @Override
     public BackPackableType getType() {
         return type;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(ShippingBin.class.getSimpleName());
+        backPackableSave.setShippingBinSave(new ShippingBinSave(this));
+        return backPackableSave;
     }
 
     public ArrayList<BackPackable> getItems() {

@@ -3,6 +3,7 @@ package io.github.StardewValley.shared.models.market;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,13 @@ public class ShopItem implements BackPackable {
     @Override
     public BackPackableType getType() {
         return type;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(ShopItem.class.getSimpleName());
+        backPackableSave.setShopItem(this);
+        return backPackableSave;
     }
 
     @Override

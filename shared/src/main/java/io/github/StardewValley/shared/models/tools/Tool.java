@@ -4,6 +4,8 @@ import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.saveClasses.BackPackSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 public class Tool implements BackPackable {
     private ToolType type;
@@ -112,6 +114,13 @@ public class Tool implements BackPackable {
             return fishingPoleMaterial;
         }
         return type;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(Tool.class.getSimpleName());
+        backPackableSave.setTool(this);
+        return backPackableSave;
     }
 
     public int getWateringCanStorage() {

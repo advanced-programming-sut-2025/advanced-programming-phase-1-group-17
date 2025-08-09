@@ -1,10 +1,9 @@
-package io.github.StardewValley.shared.models.savedClasses;
+package io.github.StardewValley.shared.models.saveClasses;
 
 import io.github.StardewValley.shared.models.market.ItemQuality;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CropType;
 import io.github.StardewValley.shared.models.plant.FertilizerType;
-import kotlin.Pair;
 
 import java.util.ArrayList;
 
@@ -26,7 +25,7 @@ public class CropSave {
 
     private int TileX;
     private int TileY;
-    private ArrayList<Pair<Integer>> neighbourGiantTilesCoordinates;
+    private ArrayList<Pair<Integer, Integer>> neighbourGiantTilesCoordinates;
 
     public CropSave() {}
 
@@ -125,7 +124,7 @@ public class CropSave {
         return TileY;
     }
 
-    public ArrayList<Pair<Integer>> getNeighbourGiantTilesCoordinates() {
+    public ArrayList<Pair<Integer, Integer>> getNeighbourGiantTilesCoordinates() {
         return neighbourGiantTilesCoordinates;
     }
 }

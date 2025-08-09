@@ -3,9 +3,10 @@ import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.savedClasses.GreenHouseLakeSave;
-import io.github.StardewValley.shared.models.savedClasses.GreenHouseSave;
-import io.github.StardewValley.shared.models.savedClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.GreenHouseSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class GreenHouse implements Placeable {
     //TODO: handle sprinkler
@@ -43,7 +44,8 @@ public class GreenHouse implements Placeable {
         this.starting_x = save.getStarting_x();
         this.starting_y = save.getStarting_y();
 
-        this.owner
+        //TODO
+        //this.owner
     }
 
     public GreenHouseFence getFence() {
@@ -75,8 +77,8 @@ public class GreenHouse implements Placeable {
     }
 
     @Override
-    public void loadFromDTO(PlaceableSave dto) {
-        GreenHouse greenHouse = new GreenHouse(dto);
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return new GreenHouse(dto);
     }
 
     public int getWidth() {

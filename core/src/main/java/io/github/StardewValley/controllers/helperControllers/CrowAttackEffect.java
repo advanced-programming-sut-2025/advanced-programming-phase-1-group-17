@@ -3,9 +3,10 @@ package io.github.StardewValley.controllers.helperControllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import io.github.StardewValley.shared.models.Result;
 
 public class CrowAttackEffect {
-    private transient Texture crowTexture;
+    private Texture crowTexture;
     private float x, y;
     private float scale;
     private float time;
@@ -16,7 +17,7 @@ public class CrowAttackEffect {
         active = false;
     }
 
-    public void trigger(float targetX, float targetY) {
+    public void trigger(float targetX, float targetY, Result result) {
         this.x = targetX;
         this.y = targetY + 200; // Start higher
         this.scale = 0.3f;
