@@ -165,19 +165,6 @@ public class Player {
         }
     }
 
-    //    public void passOut() {
-//        isPassedOut = true;
-//        hasPassedOutToday = true;
-//        Main.getBatch().draw(new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex.png" : "Emily.png")), getX() == 0 ? 1 : getX(), getY() == 0 ? 1 : getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-//        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-//            @Override
-//            public void run() {
-//                App.getCurrentGame().switchPlayer();
-//                hasPassedOutToday = false;
-//                isPassedOut = false;
-//            }
-//        }, 3);
-//  }
     public void passOut() {
         if (isPassedOut) return;
         hasPassedOutToday = true;
@@ -198,7 +185,7 @@ public class Player {
     }
 
     public void setX(int x) {
-        this.x = x *(int)GameAssetManager.getGameAssetManager().getTileWidth();
+        this.x = x * (int) GameAssetManager.getGameAssetManager().getTileWidth();
     }
 
     public PlayerMap getPlayerMap() {
@@ -458,6 +445,9 @@ public class Player {
             if (passOutTimer <= 0) {
                 isPassedOut = false;
                 hasPassedOutToday = false;
+                this.energy = getMaxEnergy();
+                this.x = (this.playerMap.getRow() + 1) * 120;
+                this.y = (this.playerMap.getCol() + 1) * 120;
             }
             return;
         }
@@ -469,6 +459,7 @@ public class Player {
             newY += speed * delta;
             this.currentDirection = Direction.UP;
             lastDirection = currentDirection;
+            energy -= 20;
             energy -= energy * 0.0005;
             if (energy < 0) {
                 energy = 0;
@@ -518,14 +509,16 @@ public class Player {
 
         //TODO  Create movement restrictions
         boolean isOky = true;
-        int playerWidth = (int)GameAssetManager.getGameAssetManager().getTileWidth();;
-        int playerHeight = (int)GameAssetManager.getGameAssetManager().getTileHeight();;
+        int playerWidth = (int) GameAssetManager.getGameAssetManager().getTileWidth();
+        ;
+        int playerHeight = (int) GameAssetManager.getGameAssetManager().getTileHeight();
+        ;
         try {
             float centerX = newX + playerWidth / 2f;
             float centerY = newY + playerHeight / 2f;
 
-            int tileX = (int) (centerX / (int)GameAssetManager.getGameAssetManager().getTileWidth());
-            int tileY = (int) (centerY / (int)GameAssetManager.getGameAssetManager().getTileHeight());
+            int tileX = (int) (centerX / (int) GameAssetManager.getGameAssetManager().getTileWidth());
+            int tileY = (int) (centerY / (int) GameAssetManager.getGameAssetManager().getTileHeight());
 
             if (tileX == 0) tileX = 1;
             if (tileY == 0) tileY = 1;
@@ -541,8 +534,8 @@ public class Player {
                 }
                 if (isOky) {
                     moved = true;
-                    int mapWidth = (int)GameAssetManager.getGameAssetManager().getTileWidth() * 300;
-                    int mapHeight = (int)GameAssetManager.getGameAssetManager().getTileHeight() * 300;
+                    int mapWidth = (int) GameAssetManager.getGameAssetManager().getTileWidth() * 300;
+                    int mapHeight = (int) GameAssetManager.getGameAssetManager().getTileHeight() * 300;
 
 //                    x = tileX;
 //                    y = tileY;
@@ -567,8 +560,8 @@ public class Player {
                 new Texture(user.getGender().equals(Gender.Male) ? "Alex.png" : "Emily.png"),
                 getX() == 0 ? 1 : getX(),
                 getY() == 0 ? 1 : getY(),
-                (int)GameAssetManager.getGameAssetManager().getTileWidth() / 1.5f,
-                (int)GameAssetManager.getGameAssetManager().getTileHeight() / 1.5f
+                (int) GameAssetManager.getGameAssetManager().getTileWidth() / 1.5f,
+                (int) GameAssetManager.getGameAssetManager().getTileHeight() / 1.5f
             );
             return;
         }
@@ -628,17 +621,19 @@ public class Player {
     }
 
     public int getTileX() {
-        int playerWidth = (int)GameAssetManager.getGameAssetManager().getTileWidth();;
+        int playerWidth = (int) GameAssetManager.getGameAssetManager().getTileWidth();
+        ;
         float centerX = x + playerWidth / 2f;
-        return (int) (centerX / (int)GameAssetManager.getGameAssetManager().getTileHeight());
+        return (int) (centerX / (int) GameAssetManager.getGameAssetManager().getTileHeight());
 
 
     }
 
     public int getTileY() {
-        int playerHeight = (int)GameAssetManager.getGameAssetManager().getTileHeight();;
+        int playerHeight = (int) GameAssetManager.getGameAssetManager().getTileHeight();
+        ;
         float centerY = y + playerHeight / 2f;
-        return (int) (centerY / (int)GameAssetManager.getGameAssetManager().getTileHeight());
+        return (int) (centerY / (int) GameAssetManager.getGameAssetManager().getTileHeight());
 
     }
 
