@@ -81,7 +81,7 @@ public class WorldController {
                     new ForceTerminateController(),
                     GameAssetManagerClient.getGameAssetManager().getSkin()
                 ));
-            } else {
+            } else if(gameState.getType().equals(VotingSession.VotingType.KICK_PLAYER)) {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new VotingMenu(
                     new VotingMenuController(),

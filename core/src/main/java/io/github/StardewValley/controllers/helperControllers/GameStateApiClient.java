@@ -43,26 +43,6 @@ public class GameStateApiClient {
         this.token = jwtToken;
     }
 
-    public List<TileDTO> getMapTilesAroundPlayer(int minX, int maxX, int minY, int maxY) throws Exception {
-        String path = String.format("/game/map?minX=%d&maxX=%d&minY=%d&maxY=%d", minX, maxX, minY, maxY);
-        URL url = new URL(BASE_URL + path);
-
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Authorization", "Bearer " + token);
-        conn.connect();
-
-        if (conn.getResponseCode() == 200) {
-            try (InputStream inputStream = conn.getInputStream()) {
-                ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(inputStream, new TypeReference<List<TileDTO>>() {
-                });
-            }
-        } else {
-            throw new RuntimeException("Could not fetch tiles: code " + conn.getResponseCode());
-        }
-    }
-
     public ArrayList<AnimalDTO> getAllAnimals() throws Exception {
         URL url = new URL(AnimalURL + "/allAnimals"); // آدرس Endpoint در سرور
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -1745,5 +1725,78 @@ public class GameStateApiClient {
             e.printStackTrace();
         }
         return new Result(false, "Connection to server failed. Vote again.");
+    }
+
+    public GetVoteCandidatesResponse getVoteCandidates() {
+        try {
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/vote/getVoteCandidates")
+                .addHeader("Authorization", token)
+                .post(RequestBody.create(new byte[0], null)) // Empty body
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, GetVoteCandidatesResponse.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void sendCandidate(String playerUsername) {
+        try {
+            RequestBody body = RequestBody.create(playerUsername, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/vote/candidate")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Result kickVote(boolean vote) {
+        try {
+            String json = objectMapper.writeValueAsString(vote);
+
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/vote/vote")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Result.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

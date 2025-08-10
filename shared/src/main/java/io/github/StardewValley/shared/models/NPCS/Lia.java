@@ -1,5 +1,7 @@
 package io.github.StardewValley.shared.models.NPCS;
 
+import io.github.StardewValley.shared.models.cooking.Food;
+import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;

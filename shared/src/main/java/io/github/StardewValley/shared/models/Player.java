@@ -144,26 +144,7 @@ public class Player {
         }
 
         // Trades
-        this.trades.clear();
-        if (playerSave.getTrades() != null) {
-            for (TradeSave tradeSave : playerSave.getTrades()) {
-                for (Player player : players) {
-                    if (player.getUser().getUsername().equals(tradeSave.getSenderName()))
-                        this.trades.add(tradeSave.toTrade(player));
-                }
-            }
-        }
-
-        // Trade history
-        this.tradeHistory.clear();
-        if (playerSave.getTradeHistory() != null) {
-            for (TradeSave tradeSave : playerSave.getTradeHistory()) {
-                for (Player player : players) {
-                    if (player.getUser().getUsername().equals(tradeSave.getSenderName()))
-                        this.tradeHistory.add(tradeSave.toTrade(player));
-                }
-            }
-        }
+        this.trades = playerSave.getTrades();
 
         for (Player player : players) {
             if (player.getUser().getUsername().equals(playerSave.getPartnerUsername()))

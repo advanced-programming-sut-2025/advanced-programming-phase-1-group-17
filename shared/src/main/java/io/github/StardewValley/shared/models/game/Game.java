@@ -47,7 +47,7 @@ public class Game implements Serializable {
     private final ArrayList<CraftingItem> allCraftingItems = new ArrayList<>();
     private final HashMap<ShippingBin, Rectangle> shippingBinBounds = new HashMap<>();
 
-    private VotingSession votingSession;
+    private VotingSession votingSession = null;
 
     public Game() {}
 

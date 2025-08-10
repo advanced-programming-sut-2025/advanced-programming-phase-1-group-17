@@ -112,7 +112,7 @@ public class TimeAndDate {
                 for (NPC npc : game.getNPCs()) {
                     if (player.getFriendShipsWithNPCs().get(npc) >= 600) {
                         Flower flower = new Flower(FlowerType.FLOWER);
-                        message message = new message(npc, "you received a flower");
+                        Message message = new Message(npc, "you received a flower");
                         player.getBackPack().addItemToInventory(flower);
                     }
                 }
