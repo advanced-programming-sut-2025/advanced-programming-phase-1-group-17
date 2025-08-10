@@ -71,7 +71,6 @@ public class GameStateController {
         @RequestParam int minY,
         @RequestParam int maxY
     ) {
-        //TODO
 //        Game game = getGameFromToken(token);
         Game game = AppServer.getCurrentGame();
         List<TileDTO> tileDTOs = new ArrayList<>();

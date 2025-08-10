@@ -151,10 +151,6 @@ public class LobbyApiClient {
     }
     private GameDTO parseGameDto(JsonValue json) {
         GameDTO dto = new GameDTO();
-
-
-        //TODO
-
         return dto;
     }
     public LobbyDto getLobbyByInviteCode(Long Id) throws Exception {

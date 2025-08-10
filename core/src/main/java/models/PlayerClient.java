@@ -50,7 +50,6 @@ public class PlayerClient {
 
     public PlayerClient(UserDTO user) {
         this.user = user;
-        //TODO Handle textures
         walkDownAnimation = new Animation<>(0.1f, new TextureRegion[]{
             new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex11.png" : "Emily/Emily11.png")),
             new TextureRegion(new Texture(user.getGender().equals(Gender.Male) ? "Alex/Alex12.png" : "Emily/Emily12.png")),
