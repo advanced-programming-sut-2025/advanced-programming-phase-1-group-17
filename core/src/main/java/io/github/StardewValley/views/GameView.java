@@ -72,7 +72,7 @@ public class GameView implements Screen, InputProcessor {
         this.apiClient = GameClient.getGameStateApiClient();
         this.animalView = new AnimalView(); // هنرمند را استخدام کن
         this.animalsFromServer = new ArrayList<AnimalDTO>(); // لیست را خالی مقداردهی اولیه کن
-        animalsFromServer.add(new AnimalDTO("number1", AnimalType.Pig,200,200));
+        animalsFromServer.add(new AnimalDTO("number1", AnimalType.Pig, 200, 200));
         this.hud = new HUD();
         this.font = new BitmapFont();
         int i = 0;
@@ -228,22 +228,22 @@ public class GameView implements Screen, InputProcessor {
         InputMultiplexer multiplexer = new InputMultiplexer(stage, this);
         Gdx.input.setInputProcessor(multiplexer);
     }
-    public void updateAnimal(float delta){
+
+    public void updateAnimal(float delta) {
         animalView.updateAnimationTime(delta);
 
-        // آپدیت کردن داده‌ها از سرور
         timeSinceLastApiCall += delta;
         if (timeSinceLastApiCall >= API_CALL_INTERVAL) {
-            timeSinceLastApiCall = 0f; // ریست کردن تایمر
+            timeSinceLastApiCall = 0f;
             if (apiClient == null) {
                 System.err.println("FATAL ERROR in updateAnimal: apiClient is NULL!");
-                return; // از ادامه متد جلوگیری کن تا اسپم نشود
+                return;
             }
 
             try {
                 // TODO: شما باید ابتدا Endpoint و متد getAnimals را در سرور و ApiClient بسازید
                 //System.out.println("Fetching animal data from server...");
-                this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
+                this.animalsFromServer = apiClient.getAllAnimals();
             } catch (Exception e) {
                 System.err.println("Failed to fetch animal data: " + e.getMessage());
             }
@@ -261,7 +261,7 @@ public class GameView implements Screen, InputProcessor {
 
         if (animalsFromServer != null) {
             for (AnimalDTO animalDto : animalsFromServer) {
-                animalView.render(Main.getBatch(), animalDto,delta);
+                animalView.render(Main.getBatch(), animalDto, delta);
             }
         }
 
@@ -286,6 +286,12 @@ public class GameView implements Screen, InputProcessor {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
+        }
+        if (GameClient.getPlayer().getTargetPlayerToTrade() != null) {
+            String target = GameClient.getPlayer().getTargetPlayerToTrade();
+            GameClient.getGameStateApiClient().setTargetPlayerToTrade(GameClient.getPlayer().getUser().getUsername(), 0);
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new TradeMenu(new TradeMenuController(), GameAssetManagerClient.getGameAssetManager().getSkin(), this, target));
         }
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

@@ -106,7 +106,6 @@ public class BackPack {
         for (BackPackableType backPackableType : backPackItems.keySet()) {
             if (backPackItems.get(backPackableType).isEmpty())
                 b.add(backPackableType);
-
         }
         for (BackPackableType backPackableType : b) {
             backPackItems.remove(backPackableType);

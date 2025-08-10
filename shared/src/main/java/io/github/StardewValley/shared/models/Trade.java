@@ -1,96 +1,51 @@
 package io.github.StardewValley.shared.models;
 
-import java.util.regex.Matcher;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Trade {
-    // ByMoney Or ByItem
-    private String tradeType;
-    private String type;
-    private Player sender;
-    private String item;
-    private int amount;
-    private String targetItem;
-    private int targetAmount;
-    private double price;
-    private int id;
-    private static int nextTradeId = 1;
-    private Matcher matcher;
+    private String player1;
+    private String player2;
+    private HashMap<String, Integer> suggestions = new HashMap();
+    private HashMap<String, Integer> requests = new HashMap();
 
-    public Trade(Player sender, String type
-        , String item
-        , int amount
-        , double price
-        , String targetItem
-        , int targetAmount
-        , String tradeType
-        , Matcher matcher) {
-        if (tradeType.equals("byMoney")) {
-            this.item = item;
-            this.type = type;
-            this.tradeType = tradeType;
-            this.sender = sender;
-            this.amount = amount;
-            this.price = price;
-
-        } else {
-            this.item = item;
-            this.type = type;
-            this.tradeType = tradeType;
-            this.amount = amount;
-            this.sender = sender;
-            this.targetItem = targetItem;
-            this.targetAmount = targetAmount;
-        }
-        this.matcher = matcher;
-        id = nextTradeId++;
+    public Trade(String player1, Map<String, Integer> suggestions, String player2, Map<String, Integer> requests) {
+        this.suggestions = new HashMap<>(suggestions);
+        this.requests = new HashMap<>(requests);
+        this.player1 = player1;
+        this.player2 = player2;
     }
 
-    public Player getSender() {
-        return sender;
+    public String getPlayer1() {
+        return player1;
     }
 
-
-    public String getItem() {
-        return item;
+    public void setPlayer1(String player1) {
+        this.player1 = player1;
     }
 
-    public int getAmount() {
-        return amount;
+    public String getPlayer2() {
+        return player2;
     }
 
-    public double getPrice() {
-        return price;
+    public void setPlayer2(String player2) {
+        this.player2 = player2;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public HashMap<String, Integer> getSuggestions() {
+        return suggestions;
     }
 
-    public int getId() {
-        return id;
+    public void setSuggestions(HashMap<String, Integer> suggestions) {
+        this.suggestions = suggestions;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public HashMap<String, Integer> getRequests() {
+        return requests;
     }
 
-    public String getTargetItem() {
-        return targetItem;
-    }
-
-    public int getTargetAmount() {
-        return targetAmount;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getTradeType() {
-        return tradeType;
-    }
-
-    public Matcher getMatcher() {
-        return matcher;
+    public void setRequests(HashMap<String, Integer> requests) {
+        this.requests = requests;
     }
 }

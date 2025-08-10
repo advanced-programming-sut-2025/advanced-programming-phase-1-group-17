@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.Map;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.dto.TradeRequestDto;
 import io.github.StardewValley.shared.models.NPCS.Gift;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.NPCS.Talk;
@@ -47,6 +49,10 @@ public class Player {
     private boolean moved;
     private Direction lastDirection = Direction.DOWN;
     private Direction currentDirection = Direction.IDLE;
+    private String targetPlayerToTrade = null;
+    private HashMap<String, Integer> suggestions = new HashMap<>();
+    private HashMap<String, Integer> requierd = new HashMap<>();
+
 
     //For friendShip
     private final HashMap<Player, Integer> friendShips = new HashMap<Player, Integer>();
@@ -56,7 +62,6 @@ public class Player {
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
     private ArrayList<message> messages = new ArrayList<>();
     private ArrayList<Trade> trades = new ArrayList<>();
-    private ArrayList<Trade> tradeHistory = new ArrayList<>();
     private Player partner = this;
     private boolean interactionWithPartner = false;
     private int isbrokenUp = 0;
@@ -374,13 +379,6 @@ public class Player {
         this.trades.add(trade);
     }
 
-    public ArrayList<Trade> getTradeHistory() {
-        return tradeHistory;
-    }
-
-    public void addTradeHistory(Trade trade) {
-        this.tradeHistory.add(trade);
-    }
 
     public HashMap<NPC, Integer> getFriendShipsWithNPCs() {
         return friendShipsWithNPCs;
@@ -742,5 +740,29 @@ public class Player {
 
     public int getTemporaryBoostRemainingHours() {
         return temporaryBoostRemainingHours;
+    }
+
+    public String getTargetPlayerToTrade() {
+        return targetPlayerToTrade;
+    }
+
+    public void setTargetPlayerToTrade(String targetPlayerToTrade) {
+        this.targetPlayerToTrade = targetPlayerToTrade;
+    }
+
+    public HashMap<String, Integer> getSuggestions() {
+        return suggestions;
+    }
+
+    public void setSuggestions(HashMap<String, Integer> suggestions) {
+        this.suggestions = suggestions;
+    }
+
+    public HashMap<String, Integer> getRequierd() {
+        return requierd;
+    }
+
+    public void setRequierd(HashMap<String, Integer> requierd) {
+        this.requierd = requierd;
     }
 }

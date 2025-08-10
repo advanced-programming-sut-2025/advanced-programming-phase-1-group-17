@@ -27,7 +27,6 @@ public class TalkView implements Screen {
     private TextButton button3;
     private TextButton button9;
     private TextButton button10;
-    private TextButton button11;
     private TextButton button12;
     private TextButton button13;
     private TextButton button14;
@@ -47,10 +46,12 @@ public class TalkView implements Screen {
     private TextField textField;
     private TextButton send;
     private String[] players = new String[3];
+    private TextButton initAcceptTrade;
 
 
     public TalkView(TalkController controller, Skin skin3, GameView gameView) {
-        this.skin = new Skin(Gdx.files.internal("Skin/skin2/star-soldier-ui.json"));;
+        this.skin = new Skin(Gdx.files.internal("Skin/skin2/star-soldier-ui.json"));
+        ;
         label1 = new Label("", skin);
         label1.setWrap(true);
         label1.setColor(Color.GREEN);
@@ -83,8 +84,8 @@ public class TalkView implements Screen {
         send.setWidth(200);
         textField.setVisible(false);
         send.setVisible(false);
-        textField.setPosition(700,600);
-        send.setPosition(1100,600);
+        textField.setPosition(700, 600);
+        send.setPosition(1100, 600);
 
         this.table2 = new Table(skin);
         this.backButton = new TextButton("Back", skin);
@@ -102,8 +103,8 @@ public class TalkView implements Screen {
         this.button2 = new TextButton(players[1], skin);
         this.button3 = new TextButton(players[2], skin);
         this.button9 = new TextButton("messages", skin);
-        this.button19 = new TextButton("Trade", skin);
-        this.button11 = new TextButton("Trade List", skin);
+        this.button19 = new TextButton("Trade Request", skin);
+        this.initAcceptTrade = new TextButton("Init Accept Trade Offer", skin);
         this.button10 = new TextButton("Trade History", skin);
         this.button12 = new TextButton("Gift History", skin);
         this.button13 = new TextButton("Talk History", skin);
@@ -116,17 +117,17 @@ public class TalkView implements Screen {
         this.button16 = new TextButton("Send Rate", skin);
         this.button17 = new TextButton("accept the marriage proposal", skin);
         this.button18 = new TextButton("reject the marriage proposal", skin);
-        button17.setPosition(700,60);
-        button18.setPosition(700,10);
+        button17.setPosition(700, 60);
+        button18.setPosition(700, 10);
         button17.setWidth(600);
         button18.setWidth(600);
 
         giftRate.setWidth(200);
         giftNumber.setWidth(200);
         button16.setWidth(200);
-        giftNumber.setPosition(700,600);
-        giftRate.setPosition(900,600);
-        button16.setPosition(700,550);
+        giftNumber.setPosition(700, 600);
+        giftRate.setPosition(900, 600);
+        button16.setPosition(700, 550);
         button16.setVisible(false);
         giftNumber.setVisible(false);
         giftRate.setVisible(false);
@@ -147,26 +148,26 @@ public class TalkView implements Screen {
         table.left();
         table2.right();
         table.add(button1).width(200).height(80);
-        table.row().pad(10,0,10,0);
+        table.row().pad(10, 0, 10, 0);
         table.add(button2).width(200).height(80);
-        table.row().pad(10,0,10,0);
+        table.row().pad(10, 0, 10, 0);
         table.add(button3).width(200).height(80);
-        table.row().pad(10,0,10,0);
+        table.row().pad(10, 0, 10, 0);
         table.add(backButton).width(200).height(80);
         table2.add(button9).width(300).height(80);
-        table2.row().pad(10,0,10,0);
+        table2.row().pad(10, 0, 10, 0);
         table2.add(button14).width(300).height(80);
-        table2.row().pad(10,0,10,0);
+        table2.row().pad(10, 0, 10, 0);
         table2.add(button19).width(300).height(80);
-        table2.row().pad(10,0,10,0);
+        table2.row().pad(10, 0, 10, 0);
+        table2.add(initAcceptTrade).width(500).height(80);
+        table2.row().pad(10, 0, 10, 0);
         table2.add(button10).width(300).height(80);
-        table2.row().pad(10,0,10,0);
-        table2.add(button11).width(300).height(80);
-        table2.row().pad(10,0,10,0);
+        table2.row().pad(10, 0, 10, 0);
         table2.add(button12).width(300).height(80);
-        table2.row().pad(10,0,10,0);
+        table2.row().pad(10, 0, 10, 0);
         table2.add(button13).width(300).height(80);
-        table2.row().pad(10,0,10,0);
+        table2.row().pad(10, 0, 10, 0);
         table2.add(button15).width(300).height(80);
         stage.addActor(button17);
         stage.addActor(button18);
@@ -260,9 +261,11 @@ public class TalkView implements Screen {
     public void setError(String error) {
         this.label.setText(error);
     }
+
     public void setText(String text) {
         this.label1.setText(text);
     }
+
     public Window getWindow() {
         return window;
     }
@@ -291,9 +294,6 @@ public class TalkView implements Screen {
         return button10;
     }
 
-    public TextButton getButton11() {
-        return button11;
-    }
 
     public TextButton getButton12() {
         return button12;
@@ -354,5 +354,13 @@ public class TalkView implements Screen {
 
     public void setButton19(TextButton button19) {
         this.button19 = button19;
+    }
+
+    public TextButton getInitAcceptTrade() {
+        return initAcceptTrade;
+    }
+
+    public void setInitAcceptTrade(TextButton initAcceptTrade) {
+        this.initAcceptTrade = initAcceptTrade;
     }
 }

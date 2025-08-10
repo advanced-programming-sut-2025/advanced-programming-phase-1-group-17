@@ -108,8 +108,8 @@ public class TradeMenuController {
         });
         tradeMenu.getRegistertheOffer().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                register = true;
-                //TODO
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(gameView);
             }
         });
 
