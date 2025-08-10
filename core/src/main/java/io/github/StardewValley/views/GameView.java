@@ -20,6 +20,7 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.Result;
@@ -64,12 +65,20 @@ public class GameView implements Screen, InputProcessor {
     private ArrayList<AnimalDTO> animalsFromServer; // لیستی برای نگهداری آخرین وضعیت حیوانات
     private float timeSinceLastApiCall = 0f;
     private static final float API_CALL_INTERVAL = 0.1f; //
+    private ArrayList<AnimalPlaceDTO> animalPlacesFromServer;
+    private AnimalPlaceView animalPlaceView;
+    private ChatView chatView;
+    private ChatService chatService;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
+        this.chatService = new ChatService();
+        this.chatView = new ChatView(GameAssetManagerClient.getGameAssetManager().getSkin(), chatService);
         this.apiClient = GameClient.getGameStateApiClient();
         this.animalView = new AnimalView(); // هنرمند را استخدام کن
+        this.animalPlaceView = new AnimalPlaceView();
         this.animalsFromServer = new ArrayList<AnimalDTO>(); // لیست را خالی مقداردهی اولیه کن
+        this.animalPlacesFromServer = new ArrayList<>();
         this.hud = new HUD();
         this.font = new BitmapFont();
         int i = 0;
@@ -238,6 +247,7 @@ public class GameView implements Screen, InputProcessor {
             try {
                 System.out.println("Fetching animal data from server...");
                 this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
+                this.animalPlacesFromServer = apiClient.getAllAnimalPlaces();
             } catch (Exception e) {
                 System.err.println("Failed to fetch animal data: " + e.getMessage());
             }
@@ -257,11 +267,15 @@ public class GameView implements Screen, InputProcessor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        checkOpenChat();
 
 
         if (animalsFromServer != null) {
             for (AnimalDTO animalDto : animalsFromServer) {
                 animalView.render(Main.getBatch(), animalDto,delta);
+            }
+            for(AnimalPlaceDTO animalPlaceDTO:animalPlacesFromServer){
+                animalPlaceView.render(Main.getBatch(),animalPlaceDTO);
             }
         }
 
@@ -394,6 +408,9 @@ public class GameView implements Screen, InputProcessor {
                 if (controller.handleAnimalClick(worldCoordinates)) {
                     return true; // بله، کلیک مدیریت شد. دیگر ادامه نده.
                 }
+                else if(controller.handleAnimalPlaceClick(worldCoordinates)){
+                    return true;
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -411,8 +428,12 @@ public class GameView implements Screen, InputProcessor {
         System.out.println("you didnt click on any animal");
         return handleClick(worldCoordinates, button);
     }
-
-
+    public void checkOpenChat(){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C)){
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(chatView);
+        }
+    }
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;

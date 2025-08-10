@@ -2,6 +2,7 @@ package io.github.StardewValley.server.controller;
 
 import io.github.StardewValley.server.repository.AnimalDataService;
 import io.github.StardewValley.shared.dto.AnimalDTO; // فقط از DTO استفاده می‌کند
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +63,10 @@ public class AnimalApiController {
         AnimalDataService.save(animal);
 
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/allAnimalPlaces")
+    public ResponseEntity<List<AnimalPlaceDTO>>getAllAnimalPlaces(){
+        return ResponseEntity.ok(AnimalDataService.findAllPlaces());
     }
 
     // TODO: متد update حیوانات هم باید در یک سرویس مثل GameLoopService

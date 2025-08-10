@@ -83,6 +83,25 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
         }
     }
+    public ArrayList<AnimalPlaceDTO> getAllAnimalPlaces() throws Exception {
+        URL url = new URL(AnimalURL + "/allAnimalPlaces"); // آدرس Endpoint در سرور
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
+                // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalPlaceDTO>>() {});
+            }
+        } else {
+            // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
+            throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
+        }
+    }
     public void petAnimal(String animalId) throws Exception {
         // آدرس Endpoint را با ID حیوان می‌سازیم
         URL url = new URL(AnimalURL + "/" + animalId + "/pet");

@@ -10,7 +10,9 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.UIControllers.*;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
@@ -239,6 +241,16 @@ public class GameController {
             }
         }
         return false; // <<-- مهم: یعنی روی هیچ حیوانی کلیک نشده
+    }
+    public boolean handleAnimalPlaceClick(Vector3 worldCoordinates) throws Exception {
+        for(AnimalPlaceDTO animalPlaceDTO : GameClient.gameStateApiClient.getAllAnimalPlaces()){
+            if(animalPlaceDTO.getHitBox().contains(worldCoordinates.x, worldCoordinates.y)){
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new AnimalPlaceShow(GameAssetManagerClient.getGameAssetManager().getSkin(), view,animalPlaceDTO));
+                return true;
+            }
+        }
+        return false;
     }
 
     public void handlePlayerInput() throws Exception {
