@@ -1,6 +1,8 @@
 package io.github.StardewValley.server.repository;
 
 import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
+import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AnimalDataService {
     // برای سادگی، داده‌ها را در حافظه نگه می‌داریم
     private static final ArrayList<AnimalDTO> animalDatabase = new ArrayList<>();
+    private static final ArrayList<AnimalPlaceDTO> animalPlaceDatabase = new ArrayList<>();
 
     public AnimalDataService() {
         // اضافه کردن داده تستی
@@ -26,6 +29,7 @@ public class AnimalDataService {
         AnimalDTO testPig = new AnimalDTO("pigg",AnimalType.Pig,200,200);
         testPig.setId("2");
         animalDatabase.add( testPig);
+        animalPlaceDatabase.add(new AnimalPlaceDTO("1", AnimalPlaceType.Barn,1000,1000,true));
     }
 
     public static List<AnimalDTO> findAll() {
@@ -43,5 +47,19 @@ public class AnimalDataService {
 
     public static void save(AnimalDTO animal) {
         animalDatabase.add(animal);
+    }
+    public static List<AnimalPlaceDTO> findAllPlaces() {
+        return animalPlaceDatabase;
+    }
+    public static AnimalPlaceDTO findPlaceById(String id) {
+        for(AnimalPlaceDTO animalPlaceDTO:animalPlaceDatabase) {
+            if(animalPlaceDTO.getId().equals(id)) {
+                return animalPlaceDTO;
+            }
+        }
+        return null;
+    }
+    public static void savePlace(AnimalPlaceDTO place) {
+        animalPlaceDatabase.add(place);
     }
 }
