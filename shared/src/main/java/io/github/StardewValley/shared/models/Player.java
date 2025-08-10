@@ -503,8 +503,6 @@ public class Player {
             this.animationTimer = 0f;
         }
 
-
-        //TODO  Create movement restrictions
         boolean isOky = true;
         int playerWidth = (int) GameAssetManager.getGameAssetManager().getTileWidth();
         ;
@@ -595,14 +593,6 @@ public class Player {
                 }
                 break;
         }
-        //TODO
-        //        for (Player player : App.getCurrentGame().getPlayers()) {
-//            if (player.getUser().getUsername().equals("NPC")) continue;
-//            if (player.equals(App.getCurrentGame().getCurrentPlayingPlayer()))
-//                Main.getBatch().draw(this.currentFrame, player.getX() == 0 ? 1 : player.getX(), player.getY() == 0 ? 1 : player.getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-//            else
-//                Main.getBatch().draw(player.getTexture(), player.getX() == 0 ? 1 : player.getX(), player.getY() == 0 ? 1 : player.getY(), (float) backgroundTexture.getWidth() / 1.5f, (float) backgroundTexture.getHeight() / 1.5f);
-//        }
     }
 
     public BackPackable getEquippedItem() {

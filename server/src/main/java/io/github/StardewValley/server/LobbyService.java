@@ -221,7 +221,6 @@ public class LobbyService {
     }
 
     public static GameDTO toDto(Game game) {
-        //TODO
         List<String> playerUsernames = game.getPlayers().stream()
             .map(p -> p.getUser().getUsername())
             .collect(Collectors.toList());
