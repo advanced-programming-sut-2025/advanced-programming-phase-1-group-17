@@ -38,10 +38,10 @@ public class ShippingBin implements Placeable, BackPackable {
         this.tileY = y;
     }
 
-    private ShippingBin(ShippingBinSave shippingBinSave, List<Player> playerList) {
+    public ShippingBin(ShippingBinSave shippingBinSave, Game game) {
         this.tileX = shippingBinSave.getTileX();
         this.tileY = shippingBinSave.getTileY();
-        for (Player player : playerList) {
+        for (Player player : game.getPlayers()) {
             if (player.getUser().getUsername().equals(shippingBinSave.getTodayItemOwner())) {
                 this.todayItemOwner = player;
                 break;
@@ -49,6 +49,12 @@ public class ShippingBin implements Placeable, BackPackable {
         }
         //TODO
         //shippingBinSave.getItems().forEach((backPackableSave -> backPackableSave.));
+        game.getShippingBinBounds().put(this, new Rectangle(
+            this.tileX * GameAssetManager.getGameAssetManager().getTileWidth(),
+            this.tileY * GameAssetManager.getGameAssetManager().getTileHeight(),
+            GameAssetManager.getGameAssetManager().getTileWidth(),
+            GameAssetManager.getGameAssetManager().getTileHeight())
+        );
     }
 
     public void addItem(BackPackable backPackable) {
@@ -110,8 +116,7 @@ public class ShippingBin implements Placeable, BackPackable {
     @Override
     public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
         ShippingBinSave save = dto.getShippingBinSave();
-        return new ShippingBin(dto.getShippingBinSave(), playerList);
-        //TODO shippingBinBounds
+        return new ShippingBin(dto.getShippingBinSave(), new Game());
     }
 
     @Override

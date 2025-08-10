@@ -22,6 +22,8 @@ public abstract class Plant implements Placeable {
     protected int daysWithoutWater = 0;
     protected int daysTillNextHarvest;
 
+    public Plant() {}
+
     Plant(boolean isForaging, Tile tile, boolean isInsideGreenhouse) {
         this.isInsideGreenhouse = isInsideGreenhouse;
         this.tile = tile;
@@ -30,21 +32,7 @@ public abstract class Plant implements Placeable {
     }
 
     Plant(PlaceableSave dto) {
-        if (dto.getType().equals(Crop.class.getSimpleName())) {
-            CropSave save = dto.getCropSave();
-
-            this.isInsideGreenhouse = save.isInsideGreenhouse();
-            this.isWateredToday = save.isWateredToday();
-            this.hasFruit = save.hasFruit();
-            this.isFullyGrown = save.isFullyGrown();
-            this.isForaging = save.isForaging();
-            this.currentStageIndex = save.getCurrentStageIndex();
-            this.whichDayOfStage = save.getWhichDayOfStage();
-            this.fertilizerType = save.getFertilizerType();
-            this.daysWithoutWater = save.getDaysWithoutWater();
-            this.daysTillNextHarvest = save.getDaysTillNextHarvest();
-        }
-        else if (dto.getType().equals(Tree.class.getSimpleName())) {
+        if (dto.getType().equals(Tree.class.getSimpleName())) {
             TreeSave save = dto.getTreeSave();
 
             this.isInsideGreenhouse = save.isInsideGreenhouse();

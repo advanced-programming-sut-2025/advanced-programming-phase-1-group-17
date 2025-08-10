@@ -7,6 +7,8 @@ public class Message {
     private String message;
     private NPC senderNPC;
 
+    public Message() {}
+
     public Message(Player sender, String message) {
         this.sender = sender;
         this.message = message;
@@ -34,5 +36,9 @@ public class Message {
 
     public NPC getSenderNPC() {
         return senderNPC;
+    }
+
+    public void setSenderNPC(NPC senderNPC) {
+        this.senderNPC = senderNPC;
     }
 }

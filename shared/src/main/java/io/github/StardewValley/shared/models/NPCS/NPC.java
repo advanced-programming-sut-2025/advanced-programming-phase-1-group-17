@@ -17,7 +17,7 @@ abstract public class NPC implements Placeable {
     private static Player fatherPlayer;
     protected String name;
     protected String job;
-    protected ArrayList<String> favorites;
+    protected ArrayList<String> favorites = new ArrayList<>();
     public boolean isNPC;
     public int x_start;
     public int y_start;

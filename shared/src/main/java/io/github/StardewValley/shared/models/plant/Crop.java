@@ -29,10 +29,17 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.daysTillNextHarvest = 0;
     }
 
-    public Crop(PlaceableSave dto) {
-        super(dto); // if Plant has any fields to restore from PlaceableSave
-
-        CropSave save = dto.getCropSave();
+    public Crop(CropSave save) {
+        this.isInsideGreenhouse = save.isInsideGreenhouse();
+        this.isWateredToday = save.isWateredToday();
+        this.hasFruit = save.hasFruit();
+        this.isFullyGrown = save.isFullyGrown();
+        this.isForaging = save.isForaging();
+        this.currentStageIndex = save.getCurrentStageIndex();
+        this.whichDayOfStage = save.getWhichDayOfStage();
+        this.fertilizerType = save.getFertilizerType();
+        this.daysWithoutWater = save.getDaysWithoutWater();
+        this.daysTillNextHarvest = save.getDaysTillNextHarvest();
 
         this.type = save.getType();
         this.isGiant = save.isGiant();
@@ -359,7 +366,7 @@ public class Crop extends Plant implements BackPackable, Placeable {
 
     @Override
     public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
-        return new Crop(dto);
+        return new Crop(dto.getCropSave());
     }
 
     public boolean isLeftBottomTileOfGiant() {

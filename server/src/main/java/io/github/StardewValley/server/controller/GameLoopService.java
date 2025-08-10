@@ -44,7 +44,7 @@ public class GameLoopService {
         List<AnimalDTO> allAnimals = animalDataService.findAll();
         for (AnimalDTO animal : allAnimals) {
             //TODO nullPointer
-            animalLogicService.updateAnimalState(animal, delta);
+            //animalLogicService.updateAnimalState(animal, delta);
         }
 
         // ۳. (در آینده) آپدیت گیاهان، NPC ها و ... هم به همینجا اضافه می‌شود

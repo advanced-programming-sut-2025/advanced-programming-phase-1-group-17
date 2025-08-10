@@ -1,12 +1,16 @@
 package io.github.StardewValley.server.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
 import io.github.StardewValley.server.controller.logicControllers.FarmingController;
 import io.github.StardewValley.server.controller.logicControllers.GameWorldController;
 import io.github.StardewValley.server.controller.logicControllers.ToolController;
+import io.github.StardewValley.server.model.GameSaveService;
 import io.github.StardewValley.server.model.User;
+import io.github.StardewValley.shared.models.game.VotingSession;
+import io.github.StardewValley.server.repository.GameSaveRepository;
 import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.dto.*;
@@ -38,6 +42,7 @@ import io.github.StardewValley.shared.models.market.StoreInventory;
 import io.github.StardewValley.shared.models.plant.Fertilizer;
 import io.github.StardewValley.shared.models.plant.Sapling;
 import io.github.StardewValley.shared.models.plant.Seed;
+import io.github.StardewValley.shared.models.saveClasses.FullGameDTO;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
@@ -58,9 +63,11 @@ public class GameStateController {
     private final GameWorldController gameWorldController = new GameWorldController();
 
     private final UserRepository userRepository;
+    private final GameSaveRepository gameSaveRepository;
     private final JwtService jwtService;
 
-    public GameStateController(UserRepository userRepository, JwtService jwtService) {
+    public GameStateController(UserRepository userRepository, JwtService jwtService, GameSaveRepository gameSaveRepository) {
+        this.gameSaveRepository = gameSaveRepository;
         this.userRepository = userRepository;
         this.jwtService = jwtService;
     }
@@ -86,11 +93,25 @@ public class GameStateController {
                 }
             }
         }
+        VotingSession voting = game.getVotingSession();
+        String targetUsername = null;
+        VotingSession.VotingType type = null;
+        if (voting != null) {
+            type = voting.getType();
+            targetUsername = voting.getTargetPlayer() != null
+                ? voting.getTargetPlayer().getUser().getUsername()
+                : null;
+        }
+
+        System.out.println("Game state sent.");
         return ResponseEntity.ok(new GameState(
             craftingItemDTOs,
             tileDTOs,
             game.getLightningLogicController().getLightningStateDTO(),
-            TimeAndDate.getDTO(game.getDate())
+            TimeAndDate.getDTO(game.getDate()),
+            voting == null,
+            targetUsername,
+            type
         ));
     }
 
@@ -184,7 +205,16 @@ public class GameStateController {
             user.setPasswordHash(userDTO.getPasswordHash());
             userRepository.save(user);
         }
+        Game game = AppServer.getCurrentGame();
         AppServer.setCurrentGame(null);
+
+        GameSaveService gameSaveService = new GameSaveService(gameSaveRepository, new ObjectMapper());
+        try {
+            gameSaveService.saveGame(game.getId(), new FullGameDTO(game), game.getCreator().getUser().getUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        }
         return ResponseEntity.ok(true);
     }
 
@@ -1327,6 +1357,41 @@ public class GameStateController {
         return ResponseEntity.ok(list);
     }
 
+
+    @PostMapping("/game/forceTerminate")
+    public void forceTerminate(@RequestHeader("Authorization")String token) {
+        Game game = AppServer.getCurrentGame();
+
+        game.setVotingSession(new VotingSession());
+        Set<Player> players = new HashSet<>();
+        game.getPlayers().forEach((player1 -> {
+            if (!player1.isGuest())
+                players.add(player1);
+        }));
+        game.getVotingSession().start(players, VotingSession.VotingType.FORCE_TERMINATE, null, game);
+        //AppServer.getPausedGames().put(AppServer.getCurrentGame().getId(), AppServer.getCurrentGame());
+        //AppServer.setCurrentGame(null);
+    }
+
+
+    @PostMapping("/game/forceTerminateVote")
+    public ResponseEntity<Result> forceTerminateVote(@RequestBody boolean vote,
+                                                     @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+
+        Result result;
+        do {
+            result = game.getVotingSession().submitVote(player, vote);
+        } while(result.successful());
+        game.setVotingSession(null);
+        if (result.message().equals("Game Terminated successfully"))
+            AppServer.setCurrentGame(null);
+        else if (result.message().equals("Player %s kicked out of the game successfully.")) {
+            game.getPlayers().remove(game.getVotingSession().getTargetPlayer());
+        }
+        return ResponseEntity.ok(result);
+    }
     @PostMapping("/tradeRequest")
     public ResponseEntity<Void> tradeRequest(@RequestHeader("Authorization") String token, @RequestParam String username) {
         message message = new message(getPlayerFromToken(token), "you have a trade request from "

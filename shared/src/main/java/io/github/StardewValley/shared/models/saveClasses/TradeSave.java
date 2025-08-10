@@ -48,4 +48,92 @@ public class TradeSave {
 
         return new Trade(sender, type, item, amount, price, targetItem, targetAmount, tradeType, matcher);
     }
+
+    public String getTradeType() {
+        return tradeType;
+    }
+
+    public void setTradeType(String tradeType) {
+        this.tradeType = tradeType;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getItem() {
+        return item;
+    }
+
+    public void setItem(String item) {
+        this.item = item;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public String getTargetItem() {
+        return targetItem;
+    }
+
+    public void setTargetItem(String targetItem) {
+        this.targetItem = targetItem;
+    }
+
+    public int getTargetAmount() {
+        return targetAmount;
+    }
+
+    public void setTargetAmount(int targetAmount) {
+        this.targetAmount = targetAmount;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getRegexPattern() {
+        return regexPattern;
+    }
+
+    public void setRegexPattern(String regexPattern) {
+        this.regexPattern = regexPattern;
+    }
+
+    public String getMatchedText() {
+        return matchedText;
+    }
+
+    public void setMatchedText(String matchedText) {
+        this.matchedText = matchedText;
+    }
 }

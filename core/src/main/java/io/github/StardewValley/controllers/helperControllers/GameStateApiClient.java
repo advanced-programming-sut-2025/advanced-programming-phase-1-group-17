@@ -1696,4 +1696,54 @@ public class GameStateApiClient {
         }
     }
 
+
+    public void forceTerminate() {
+        try {
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/forceTerminate")
+                .addHeader("Authorization", token)
+                .post(RequestBody.create(new byte[0], null)) // Empty body
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public Result forceTerminateVote(boolean vote) {
+        try {
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(vote);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/forceTerminateVote")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Result.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Result(false, "Connection to server failed. Vote again.");
+    }
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface GameSaveRepository extends JpaRepository<GameSave, UUID> {
-    GameSave findByID(UUID uuid);
     List<GameSave> findByCreatorUsername(String username);
 }
 

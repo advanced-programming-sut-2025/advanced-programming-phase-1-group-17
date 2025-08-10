@@ -62,7 +62,7 @@ public class GiftSaved {
         this.amount = amount;
     }
 
-    public boolean isRateGiven() {
+    public boolean getRateGiven() {
         return rateGiven;
     }
 

@@ -8,11 +8,11 @@ import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
-import io.github.StardewValley.shared.dto.GameState;
 import io.github.StardewValley.shared.models.NPCdto;
 import io.github.StardewValley.shared.models.PlayerDto;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.game.GameState;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.views.MapView;
 
