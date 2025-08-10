@@ -5,9 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.TalkView;
 import io.github.StardewValley.views.TradeMenu;
+import io.github.StardewValley.views.TradeResponseView;
 
 import java.util.Objects;
 
@@ -116,9 +118,8 @@ public class TalkController {
                     view.setError("You have to select a player first");
                     return;
                 }
-                //TODO
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(new TradeMenu(new TradeMenuController(), GameAssetManagerClient.getGameAssetManager().getSkin(), gameView, targetPlayer));
+                GameClient.gameStateApiClient.tradeRequest(targetPlayer);
+                view.setError("your request was recorded successfully");
             }
         });
 
@@ -133,20 +134,6 @@ public class TalkController {
                 view.getStage().addActor(view.getWindow());
                 view.getWindow().getTitleLabel().setText("                     Trade History");
                 view.setText(gameMenuController.tradeHistory());
-            }
-        });
-        view.getButton11().addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                view.getWindow().remove();
-                view.getButton16().setVisible(false);
-                view.getGiftNumber().setVisible(false);
-                view.getGiftRate().setVisible(false);
-                view.getSend().setVisible(false);
-                view.getTextField().setVisible(false);
-                view.getStage().addActor(view.getWindow());
-                view.getWindow().getTitleLabel().setText("                     Trade List");
-                view.setText(gameMenuController.tradeList());
-
             }
         });
         view.getButton12().addListener(new ClickListener() {
@@ -266,6 +253,31 @@ public class TalkController {
         view.getCloseX().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 view.getWindow().remove();
+            }
+        });
+        view.getInitAcceptTrade().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                view.getWindow().remove();
+                view.getButton16().setVisible(false);
+                view.getGiftNumber().setVisible(false);
+                view.getGiftRate().setVisible(false);
+                view.getSend().setVisible(false);
+                view.getTextField().setVisible(false);
+                if (targetPlayer == null) {
+                    view.setError("please choose a player");
+                    return;
+                }
+                Result result = GameClient.getGameStateApiClient().initAcceptTradeRequest(targetPlayer);
+                if (result != null) {
+                    if (result.successful()) {
+                        GameClient.getGameStateApiClient().setTargetPlayerToTrade(targetPlayer, 1);
+                        Main.getMain().getScreen().dispose();
+                        Main.getMain().setScreen(new TradeResponseView(new TradeResponseController(), GameAssetManagerClient.getGameAssetManager().getSkin(),
+                            targetPlayer, gameView));
+                    } else {
+                        view.setError(result.toString());
+                    }
+                }
             }
         });
     }

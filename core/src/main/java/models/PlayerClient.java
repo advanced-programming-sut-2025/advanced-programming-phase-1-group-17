@@ -39,6 +39,7 @@ public class PlayerClient {
     private float animationTimer = 0f;
     private float passOutTimer = 0f;
     private boolean isNewMessage = false;
+    private String targetPlayerToTrade = null;
 
     private ToolType toolType;
     private String toolTexturePath;
@@ -372,6 +373,14 @@ public class PlayerClient {
 
     public void setFishingPoleType(FishingPoleType fishingPoleType) {
         this.fishingPoleType = fishingPoleType;
+    }
+
+    public String getTargetPlayerToTrade() {
+        return targetPlayerToTrade;
+    }
+
+    public void setTargetPlayerToTrade(String targetPlayerToTrade) {
+        this.targetPlayerToTrade = targetPlayerToTrade;
     }
 }
 

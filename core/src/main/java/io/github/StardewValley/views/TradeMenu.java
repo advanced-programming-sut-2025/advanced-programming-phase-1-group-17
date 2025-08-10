@@ -111,7 +111,7 @@ public class TradeMenu implements Screen {
 
             Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
             Label countLabel = new Label("%d".formatted(backpackableTypeDTO.getCountInBackPack()),
-                    labelStyle);
+                labelStyle);
             countLabel.setTouchable(Touchable.disabled);
             countLabel.setFontScale(1.3f);
             countLabel.setAlignment(Align.bottomRight);
@@ -318,12 +318,13 @@ public class TradeMenu implements Screen {
 
     public void refreshLabel() {
         StringBuilder text = new StringBuilder();
+        this.items.put("coin", this.getCoin());
         text.append("your suggestion : \n");
         for (String item : this.items.keySet()) {
             text.append(item).append(" : ").append(this.items.get(item)).append("\n");
         }
-        text.append("coin : ").append(this.coin.getText()).append("\n");
         this.label.setText(text.toString());
+        GameClient.gameStateApiClient.updateRequestAndSuggestions(items, required);
     }
 
     public HashMap<String, Integer> getRequired() {
@@ -377,6 +378,7 @@ public class TradeMenu implements Screen {
             text.append(item).append(" : ").append(this.required.get(item)).append("\n");
         }
         requiredLabel.setText(text.toString());
+        GameClient.gameStateApiClient.updateRequestAndSuggestions(items, required);
     }
 
     public TextButton getRemoveItem2() {

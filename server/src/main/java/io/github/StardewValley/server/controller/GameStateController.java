@@ -39,8 +39,10 @@ import io.github.StardewValley.shared.models.plant.Seed;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
+import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -127,7 +129,8 @@ public class GameStateController {
             , Ability.getDTO(player.getAbilities())
             , currentTool == null ? null : currentTool.getToolType()
             , currentTool == null ? null : currentTool.getMaterial()
-            , currentTool == null ? null : currentTool.getFishingPoleMaterial());
+            , currentTool == null ? null : currentTool.getFishingPoleMaterial(),
+            player.getTargetPlayerToTrade());
         pd.setNewMessage(player.isNewMessage());
 
         return ResponseEntity.ok(pd);
@@ -210,7 +213,7 @@ public class GameStateController {
         time.append(String.format("%02d", date.getMinute())); // همیشه دو رقمی
         time.append(hour < 12 ? " am" : " pm");
 
-        String dateString = date.getDayOfTheWeek().toString().substring(0,3) + ". " + date.getDay(); // مثال
+        String dateString = date.getDayOfTheWeek().toString().substring(0, 3) + ". " + date.getDay(); // مثال
 
         float timeAngle = ((float) ((date.getHour() - 9) * 180) / 13 + date.getMinute()) * 3 / 13;
 
@@ -1168,7 +1171,8 @@ public class GameStateController {
                     , Ability.getDTO(player.getAbilities())
                     , currentTool == null ? null : currentTool.getToolType()
                     , currentTool == null ? null : currentTool.getMaterial()
-                    , currentTool == null ? null : currentTool.getFishingPoleMaterial());
+                    , currentTool == null ? null : currentTool.getFishingPoleMaterial(),
+                    player.getTargetPlayerToTrade());
                 pd.setNewMessage(player.isNewMessage());
                 pd.setGender(player.getUser().getGender().equals(Gender.Male) ? "Male" : "Female");
 
@@ -1189,92 +1193,20 @@ public class GameStateController {
     @PostMapping("/tradeHistory")
     public ResponseEntity<Result> tradeHistory(@RequestHeader("Authorization") String token) {
         Player currentPlayer = getPlayerFromToken(token);
-        String result = "on going trades : \n";
+        String result = "";
+        result += "trades (complete): \n";
         for (Trade trade : currentPlayer.getTrades()) {
-            if (trade.getTradeType().equals("byMoney")) {
-                result += (trade.getType() + " : " + "\n"
-                    + "tradeId : " + trade.getId() + "\n"
-                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                    + "tradeType : " + "byMoney" + "\n"
-                    + "tradeItem : " + trade.getItem() + "\n"
-                    + "amount : " + trade.getAmount() + "\n"
-                    + "price : " + trade.getPrice() + "\n"
-                    + "--------------------------------------------------\n");
-            } else {
-                result += (trade.getType() + " : " + "\n"
-                    + "tradeId : " + trade.getId() + "\n"
-                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                    + "tradeType : " + "byItem" + "\n"
-                    + "item : " + trade.getItem() + "\n"
-                    + "amount : " + trade.getAmount() + "\n"
-                    + "targetItem : " + trade.getTargetItem() + "\n"
-                    + "targetAmount : " + trade.getTargetAmount() + "\n"
-                    + "--------------------------------------------------\n");
+            result += trade.getPlayer1() + ": \n";
+            for (String item : trade.getSuggestions().keySet()) {
+                result += item + ": " + trade.getSuggestions().get(item) + "\n";
             }
-        }
-        result += "\nprevious trades (accepted): \n";
-        for (Trade trade : currentPlayer.getTradeHistory()) {
-            if (trade.getTradeType().equals("byMoney")) {
-                result += (trade.getType() + " : " + "\n"
-                    + "tradeId : " + trade.getId() + "\n"
-                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                    + "tradeType : " + "byMoney" + "\n"
-                    + "tradeItem : " + trade.getItem() + "\n"
-                    + "amount : " + trade.getAmount() + "\n"
-                    + "price : " + trade.getPrice() + "\n"
-                    + "--------------------------------------------------\n");
-            } else {
-                result += (trade.getType() + " : " + "\n"
-                    + "tradeId : " + trade.getId() + "\n"
-                    + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                    + "tradeType : " + "byItem" + "\n"
-                    + "item : " + trade.getItem() + "\n"
-                    + "amount : " + trade.getAmount() + "\n"
-                    + "targetItem : " + trade.getTargetItem() + "\n"
-                    + "targetAmount : " + trade.getTargetAmount() + "\n"
-                    + "--------------------------------------------------\n");
+            result += trade.getPlayer2() + ": \n";
+            for (String item : trade.getRequests().keySet()) {
+                result += item + ": " + trade.getRequests().get(item) + "\n";
             }
+            result += "----------------------------------\n";
         }
         return ResponseEntity.ok(new Result(true, result));
-    }
-
-    @PostMapping("/tradeList")
-    public ResponseEntity<Result> tradeList(@RequestHeader("Authorization") String token) {
-        Player currentPlayer = getPlayerFromToken(token);
-        if (currentPlayer.getTrades() == null) {
-            return ResponseEntity.ok(new Result(false, "there are nothing trade for you"));
-        } else {
-            String result = "";
-            for (Trade trade : currentPlayer.getTrades()) {
-                if (!trade.getSender().equals(currentPlayer)) {
-                    if (trade.getTradeType().equals("byMoney")) {
-                        result += (trade.getType() + " : " + "\n"
-                            + "tradeId : " + trade.getId() + "\n"
-                            + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                            + "tradeType : " + "byMoney" + "\n"
-                            + "tradeItem : " + trade.getItem() + "\n"
-                            + "amount : " + trade.getAmount() + "\n"
-                            + "price : " + trade.getPrice() + "\n"
-                            + "--------------------------------------------------\n");
-                    } else {
-                        result += (trade.getType() + " : " + "\n"
-                            + "tradeId : " + trade.getId() + "\n"
-                            + "Sender : " + trade.getSender().getUser().getUsername() + "\n"
-                            + "tradeType : " + "byItem" + "\n"
-                            + "item : " + trade.getItem() + "\n"
-                            + "amount : " + trade.getAmount() + "\n"
-                            + "targetItem : " + trade.getTargetItem() + "\n"
-                            + "targetAmount : " + trade.getTargetAmount() + "\n"
-                            + "--------------------------------------------------\n");
-                    }
-                }
-            }
-            if (result.isEmpty()) {
-                return ResponseEntity.ok(new Result(false, "there are nothing trade for you"));
-            } else {
-                return ResponseEntity.ok(new Result(true, result));
-            }
-        }
     }
 
     @PostMapping("/getQuestWithIndex")
@@ -1378,11 +1310,13 @@ public class GameStateController {
         }
         return ResponseEntity.ok(response);
     }
+
     @PostMapping("/getNPCDtoByIndex")
     public ResponseEntity<NPCdto> getNPCDtoByIndex(@RequestHeader("Authorization") String token, @RequestParam int index) {
         NPC npc = AppServer.getCurrentGame().getNPCs().get(index);
-        return ResponseEntity.ok(new NPCdto(npc.getX(), npc.getY(), npc.getName(),npc.getTexture()));
+        return ResponseEntity.ok(new NPCdto(npc.getX(), npc.getY(), npc.getName(), npc.getTexture()));
     }
+
     @GetMapping("/getAllTiles")
     public ResponseEntity<List<TileDTO>> getAllTiles(@RequestHeader("Authorization") String token) {
         List<TileDTO> list = new ArrayList<>();
@@ -1390,6 +1324,138 @@ public class GameStateController {
             list.add(new TileDTO(tile));
         }
         return ResponseEntity.ok(list);
+    }
+
+    @PostMapping("/tradeRequest")
+    public ResponseEntity<Void> tradeRequest(@RequestHeader("Authorization") String token, @RequestParam String username) {
+        message message = new message(getPlayerFromToken(token), "you have a trade request from "
+            + getPlayerFromToken(token).getUser().getUsername());
+        boolean temp = false;
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                for (message m : p.getMessages()) {
+                    if (m.getMessage().equals(message.getMessage())) {
+                        temp = true;
+                        break;
+                    }
+                }
+                if (!temp) {
+                    p.addMessage(message);
+                    break;
+                } else {
+                    break;
+                }
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/initAcceptTradeRequest")
+    public ResponseEntity<Result> initAcceptTradeRequest(@RequestHeader("Authorization") String token, @RequestParam String username) {
+        Player player = getPlayerFromToken(token);
+        message m1 = null;
+        for (message m : player.getMessages()) {
+            if (m.getMessage().equals("you have a trade request from " + username)) {
+                m1 = m;
+                break;
+            }
+        }
+        if (m1 != null) {
+            player.getMessage().remove(m1);
+            return ResponseEntity.ok(new Result(true, "go to trade menu"));
+        }
+        return ResponseEntity.ok(new Result(false, "you don't have a trade request from " + username));
+    }
+
+    @PostMapping("/setTargetPlayerToTrade")
+    public ResponseEntity<Void> setTargetPlayerToTrade(@RequestHeader("Authorization") String token, @RequestParam String username, @RequestParam int i) {
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                if (i == 1)
+                    p.setTargetPlayerToTrade(getPlayerFromToken(token).getUser().getUsername());
+                else
+                    p.setTargetPlayerToTrade(null);
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/updateRequestAndSuggestions")
+    public ResponseEntity<Void> updateRequestAndSuggestions(@RequestHeader("Authorization") String token, @RequestBody Map<String, Map<String, Integer>> tradeData) {
+        Map<String, Integer> suggestions = tradeData.get("suggestions");
+        Map<String, Integer> requests = tradeData.get("requests");
+        getPlayerFromToken(token).setSuggestions(new HashMap<>(suggestions));
+        getPlayerFromToken(token).setRequierd(new HashMap<>(requests));
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getRequests")
+    public ResponseEntity<HashMap<String, Integer>> getRequests(@RequestHeader("Authorization") String token, @RequestParam String username) {
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                return ResponseEntity.ok(p.getRequierd());
+            }
+        }
+        return ResponseEntity.ok(new HashMap<>());
+    }
+
+    @GetMapping("/getSuggestions")
+    public ResponseEntity<HashMap<String, Integer>> getSuggestions(@RequestHeader("Authorization") String token, @RequestParam String username) {
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                return ResponseEntity.ok(p.getSuggestions());
+            }
+        }
+        return ResponseEntity.ok(new HashMap<>());
+    }
+
+    @PostMapping("/acceptTrade")
+    public ResponseEntity<Void> acceptTrade(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> tradeData) {
+        boolean temp = true;
+        String username = (String) tradeData.get("username");
+        Map<String, Integer> suggestions = (Map<String, Integer>) tradeData.get("suggestions");
+        Map<String, Integer> requests = (Map<String, Integer>) tradeData.get("requests");
+        Player p = getPlayerFromToken(token);
+        Player p2 = null;
+        for (Player p1 : AppServer.getCurrentGame().getPlayers()) {
+            if (p1.getUser().getUsername().equals(username)) {
+                p2 = p1;
+                break;
+            }
+        }
+        for (String item : requests.keySet()) {
+            if (p.getBackPack().getInventorySize(item) < requests.get(item)) {
+                temp = false;
+                break;
+            }
+        }
+        if (temp) {
+            for (String item : requests.keySet()) {
+                for (int i = 0; i < requests.get(item); i++) {
+                    p2.getBackPack().addItemToInventory(p.getBackPack().useItem(item));
+                }
+            }
+            for (String item : suggestions.keySet()) {
+                if (item.equals("coin")) continue;
+                for (int i = 0; i < suggestions.get(item); i++) {
+                    p.getBackPack().addItemToInventory(p2.getBackPack().useItem(item));
+                }
+            }
+            if (suggestions.containsKey("coin")) {
+                int amount = suggestions.get("coin");
+                p2.setCoin(p2.getCoin() - amount);
+                p.setCoin(amount + p.getCoin());
+            }
+            p2.addTrades(new Trade(p2.getUser().getUsername(), suggestions, p.getUser().getUsername(), requests));
+            p.addTrades(new Trade(p2.getUser().getUsername(), suggestions, p.getUser().getUsername(), requests));
+        }
+
+        p2.setRequierd(new HashMap<String, Integer>());
+        p.setRequierd(new HashMap<String, Integer>());
+        p.setSuggestions(new HashMap<String, Integer>());
+        p2.setSuggestions(new HashMap<String, Integer>());
+        return ResponseEntity.ok().build();
+
     }
 
 }

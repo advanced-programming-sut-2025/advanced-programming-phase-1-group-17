@@ -61,6 +61,7 @@ public class GameStateApiClient {
             throw new RuntimeException("Could not fetch tiles: code " + conn.getResponseCode());
         }
     }
+
     public ArrayList<AnimalDTO> getAllAnimals() throws Exception {
         URL url = new URL(AnimalURL + "/allAnimals"); // آدرس Endpoint در سرور
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -73,7 +74,8 @@ public class GameStateApiClient {
                 ObjectMapper mapper = new ObjectMapper();
                 // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
                 // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
-                return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalDTO>>() {});
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalDTO>>() {
+                });
             }
         } else {
             // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
@@ -648,7 +650,7 @@ public class GameStateApiClient {
                     return mapper.readValue(is, Result.class);
                 }
             } else {
-                throw new RuntimeException("Error: HTTP " + responseCode  );
+                throw new RuntimeException("Error: HTTP " + responseCode);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1166,29 +1168,7 @@ public class GameStateApiClient {
         }
     }
 
-    public String tradeList() {
-        try {
-            String baseUrl = BASE_URL + "/tradeList";
-            URL url = new URL(baseUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Authorization", "Bearer " + token);
-            conn.setDoOutput(true);
 
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                try (InputStream is = conn.getInputStream()) {
-                    ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(is, Result.class).message();
-                }
-            } else {
-                throw new RuntimeException("Error: HTTP " + responseCode);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
-        }
-    }
 
     public String getQuestWithIndex(String NpcName, int index) {
         try {
@@ -1485,6 +1465,7 @@ public class GameStateApiClient {
         }
         return null;
     }
+
     public NPCdto getNPCDtoByIndex(int index) {
         try {
             String baseUrl = BASE_URL + "/getNPCDtoByIndex";
@@ -1509,10 +1490,11 @@ public class GameStateApiClient {
             return null;
         }
     }
-    public List<TileDTO> getAllTiles(){
+
+    public List<TileDTO> getAllTiles() {
         try {
             String baseUrl = BASE_URL + "/getAllTiles";
-            URL url = new URL(baseUrl );
+            URL url = new URL(baseUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Authorization", "Bearer " + token);
@@ -1522,7 +1504,8 @@ public class GameStateApiClient {
             if (responseCode == 200) {
                 try (InputStream inputStream = conn.getInputStream()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    return mapper.readValue(inputStream, new TypeReference<List<TileDTO>>() {});
+                    return mapper.readValue(inputStream, new TypeReference<List<TileDTO>>() {
+                    });
                 }
             } else {
                 throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
@@ -1533,9 +1516,183 @@ public class GameStateApiClient {
         }
     }
 
+    public void tradeRequest(String username) {
+        try {
+            String baseUrl = BASE_URL + "/tradeRequest";
+            String params = "?username=" + username;
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
 
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public Result initAcceptTradeRequest(String username) {
+        try {
+            String baseUrl = BASE_URL + "/initAcceptTradeRequest";
+            String params = "?username=" + username;
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
 
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, Result.class);
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "-");
+        }
+    }
 
+    public void setTargetPlayerToTrade(String username, int i) {
+        try {
+            String baseUrl = BASE_URL + "/setTargetPlayerToTrade";
+            String params = "?username=" + username + "&i=" + i;
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void acceptTrade(HashMap<String, Integer> suggestions,
+                            HashMap<String, Integer> requests,
+                            String username) {
+        try {
+            String baseUrl = BASE_URL + "/acceptTrade";
+            Map<String, Object> tradeData = new HashMap<>();
+            tradeData.put("suggestions", suggestions);
+            tradeData.put("requests", requests);
+            tradeData.put("username", username);
+            String json = new com.google.gson.Gson().toJson(tradeData);
+            URL url = new URL(baseUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = json.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                throw new RuntimeException("Failed to send trade data: " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void updateRequestAndSuggestions(HashMap<String, Integer> suggestions,
+                                            HashMap<String, Integer> requests) {
+        try {
+            String baseUrl = BASE_URL + "/updateRequestAndSuggestions";
+            Map<String, Object> tradeData = new HashMap<>();
+            tradeData.put("suggestions", suggestions);
+            tradeData.put("requests", requests);
+            String json = new com.google.gson.Gson().toJson(tradeData);
+            URL url = new URL(baseUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = json.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                throw new RuntimeException("Failed to send trade data: " + responseCode);
+            } else {
+                System.out.println("Trade data sent successfully!");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public HashMap<String, Integer> getSuggestions(String username) {
+        try {
+            String baseUrl = BASE_URL + "/getSuggestions";
+            String params = "?username=" + username;
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, new TypeReference<HashMap<String, Integer>>() {
+                    });
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public HashMap<String, Integer> getRequests(String username) {
+        try {
+            String baseUrl = BASE_URL + "/getRequests";
+            String params = "?username=" + username;
+            URL url = new URL(baseUrl + params);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (InputStream inputStream = conn.getInputStream()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(inputStream, new TypeReference<HashMap<String, Integer>>() {
+                    });
+                }
+            } else {
+                throw new RuntimeException("Failed to update player state: " + conn.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

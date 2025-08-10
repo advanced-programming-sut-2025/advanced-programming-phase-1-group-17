@@ -19,6 +19,7 @@ public class PlayerDto {
     private float animationTimer = 0f;
     private float passOutTimer = 0f;
     private boolean isNewMessage;
+    private String targetPlayerToTrade;
 
     private ToolType toolType;
     //private String toolTexturePath;
@@ -42,7 +43,8 @@ public class PlayerDto {
         , AbilityDTO abilityDTO
         , ToolType toolType
         , ToolMaterial toolMaterial
-        , FishingPoleType fishingPoleType) {
+        , FishingPoleType fishingPoleType,
+                     String targetPlayerToTrade) {
         this.isPassedOut = isPassedOut;
         this.energy = energy;
         this.maxEnergy = maxEnergy;
@@ -60,6 +62,7 @@ public class PlayerDto {
         this.toolType = toolType;
         this.toolMaterial = toolMaterial;
         this.fishingPoleType = fishingPoleType;
+        this.targetPlayerToTrade = targetPlayerToTrade;
         //this.toolTexturePath = toolTexturePath;
     }
 
@@ -216,5 +219,11 @@ public class PlayerDto {
         this.gender = gender;
     }
 
+    public String getTargetPlayerToTrade() {
+        return targetPlayerToTrade;
+    }
 
+    public void setTargetPlayerToTrade(String targetPlayerToTrade) {
+        this.targetPlayerToTrade = targetPlayerToTrade;
+    }
 }

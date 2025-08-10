@@ -140,6 +140,7 @@ public class GameController {
         playerClient.setAbility(player.getAbility());
         playerClient.setFishingPoleType(player.getFishingPoleType());
         playerClient.setToolMaterial(player.getToolMaterial());
+        playerClient.setTargetPlayerToTrade(player.getTargetPlayerToTrade());
     }
 
 
@@ -219,8 +220,7 @@ public class GameController {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new CheatCodeTerminal(new CheatCodeTerminalController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
-        }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new InventoryView(new InventoryController(),
                 GameAssetManagerClient.getGameAssetManager().getSkin()));
