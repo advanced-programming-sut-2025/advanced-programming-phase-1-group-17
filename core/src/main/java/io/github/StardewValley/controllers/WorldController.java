@@ -15,10 +15,13 @@ import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.shared.models.game.GameState;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.enums.Season;
+import io.github.StardewValley.shared.models.game.VotingSession;
 import io.github.StardewValley.shared.models.market.Store;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.Tree;
+import io.github.StardewValley.views.ForceTerminateMenu;
+import io.github.StardewValley.views.VotingMenu;
 import kotlin.Pair;
 
 import java.util.ArrayList;
@@ -71,6 +74,24 @@ public class WorldController {
         treeTextureRegions.clear();
 
         gameState = GameClient.getGameStateApiClient().getGameState(minTileX, maxTileX, minTileY, maxTileY);
+        if (gameState.isPaused()) {
+            if (gameState.getType().equals(VotingSession.VotingType.FORCE_TERMINATE)) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new ForceTerminateMenu(
+                    new ForceTerminateController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin()
+                ));
+            } else {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new VotingMenu(
+                    new VotingMenuController(),
+                    GameAssetManagerClient.getGameAssetManager().getSkin(),
+                    gameState.getTargetUsername()
+                    ));
+            }
+            return;
+        }
+
         List<TileDTO> tiles = gameState.getTiles();
         craftingItems = gameState.getCraftingItems();
 

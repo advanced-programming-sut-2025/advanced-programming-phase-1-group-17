@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.NPCS;
 
 import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.saveClasses.GiftSaved;
 
 public class Gift {
     private Player playerWhoGiveGift;
@@ -20,6 +21,18 @@ public class Gift {
         rateGiven = false;
         counter++;
     }
+
+    public Gift(GiftSaved giftSaved, Player whoGave, Player whoGot) {
+        this.playerWhoGiveGift = whoGave;
+        this.playerWhoGetGift = whoGot;
+        this.giftNumber = giftSaved.getGiftNumber();
+        if (counter < giftSaved.getGiftNumber())
+            counter = giftSaved.getGiftNumber() + 1;
+        this.item = giftSaved.getItem();
+        this.amount = giftSaved.getAmount();
+        this.rateGiven = giftSaved.getRateGiven();
+    }
+
     public Player getPlayerWhoGiveGift() {
         return playerWhoGiveGift;
     }
@@ -68,5 +81,9 @@ public class Gift {
     }
     public boolean getRateGiven() {
         return rateGiven;
+    }
+
+    public static void setCounter(int counter) {
+        Gift.counter = counter;
     }
 }

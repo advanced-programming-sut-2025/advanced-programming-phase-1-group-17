@@ -35,18 +35,20 @@ public class CraftingItem implements BackPackable, Placeable {
         game.addCraftingItem(this);
     }
 
-    public CraftingItem(PlaceableSave dto) {
-        CraftingItemSave save = dto.getCraftingItemSave();
-
+    public CraftingItem(CraftingItemSave save, List<Player> playerList) {
         this.type = save.getType();
-        this.artisanProductInProgress = new ArtisanProduct(save.getArtisanProductInProgress());
+        this.artisanProductInProgress = save.getArtisanProductInProgress();
         this.start_x = save.getStart_x();
         this.start_y = save.getStart_y();
         this.width = save.getWidth();
         this.height = save.getHeight();
 
-        //TODO
-        //this.owner
+        for (Player player : playerList) {
+            if (player.getUser().getUsername().equals(save.getOwnerUsername())) {
+                this.owner = player;
+                break;
+            }
+        }
     }
 
     public static CraftingItemDTO getCraftingItemDTO(CraftingItem craftingItem) {
@@ -142,6 +144,6 @@ public class CraftingItem implements BackPackable, Placeable {
 
     @Override
     public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
-        return new CraftingItem(dto);
+        return new CraftingItem(dto.getCraftingItemSave(), playerList);
     }
 }

@@ -7,8 +7,10 @@ import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.foraging.Mineral;
 import io.github.StardewValley.shared.models.foraging.MineralType;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.Tree;
+import io.github.StardewValley.shared.models.saveClasses.TileSave;
 
 import java.util.ArrayList;
 
@@ -23,10 +25,35 @@ public class Tile {
     private boolean crowImmunity = false;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>();
 
+    public Tile() {}
+
     public Tile(int x, int y, Player owner) {
         this.x = x;
         this.y = y;
         this.owner = owner;
+        tiles.add(this);
+    }
+
+    public Tile(TileSave tileSave, Game game) {
+        this.x = tileSave.getX();
+        this.y = tileSave.getY();
+        this.isWalkAble = tileSave.isWalkAble();
+        this.isPlowed = tileSave.isPlowed();
+
+        game.getPlaceableFromSave(this, tileSave);
+        for (Player player : game.getPlayers()) {
+            if (player.getUser().getUsername().equals(tileSave.getOwner())) {
+                this.owner = player;
+                break;
+            }
+        }
+        for (NPC npc : game.getNPCs()) {
+            if (npc.getName().equals(tileSave.getOwner())) {
+                this.npcIsHere = npc;
+                break;
+            }
+        }
+        this.crowImmunity = tileSave.isCrowImmunity();
         tiles.add(this);
     }
 
@@ -177,5 +204,9 @@ public class Tile {
         int tx = px / 120;
         int ty = py / 120;
         return getTile(tx, ty);
+    }
+
+    public static void setTiles(ArrayList<Tile> tiles) {
+        Tile.tiles = tiles;
     }
 }

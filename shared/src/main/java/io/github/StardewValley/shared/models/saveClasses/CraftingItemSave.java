@@ -1,11 +1,12 @@
 package io.github.StardewValley.shared.models.saveClasses;
 
+import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 
 public class CraftingItemSave {
     private CraftingItemType type;
-    private ArtisanProductSave artisanProductInProgress;
+    private ArtisanProduct artisanProductInProgress;
     private int start_x;
     private int start_y;
     private int width;
@@ -18,7 +19,7 @@ public class CraftingItemSave {
     public CraftingItemSave(CraftingItem craftingItem) {
         this.type = craftingItem.getCraftingItemType();
         this.artisanProductInProgress = craftingItem.getArtisanProductInProgress() == null ? null :
-            new ArtisanProductSave(craftingItem.getArtisanProductInProgress());
+            craftingItem.getArtisanProductInProgress();
         this.start_x = craftingItem.getStart_x();
         this.start_y = craftingItem.getStart_y();
         this.width = craftingItem.getWidth();
@@ -31,7 +32,7 @@ public class CraftingItemSave {
         return type;
     }
 
-    public ArtisanProductSave getArtisanProductInProgress() {
+    public ArtisanProduct getArtisanProductInProgress() {
         return artisanProductInProgress;
     }
 

@@ -14,6 +14,7 @@ public class FullGameDTO {
     private MarketsControllerSave marketsControllerSave;
     private TimeAndDate timeAndDate;
     private List<PlayerSave> playerSaves = new ArrayList<>();
+    private String creatorUsername;
     private LightningStateDTO lightningStateDTO;
 
     public FullGameDTO() {}
@@ -25,6 +26,7 @@ public class FullGameDTO {
         this.marketsControllerSave = new MarketsControllerSave(game.getMarketsController());
         this.timeAndDate = game.getDate();
         game.getPlayers().forEach((player -> this.playerSaves.add(new PlayerSave(player))));
+        this.creatorUsername = game.getCreator().getUser().getUsername();
         this.lightningStateDTO = game.getLightningLogicController().getLightningStateDTO();
     }
 
@@ -82,5 +84,13 @@ public class FullGameDTO {
 
     public void setLightningStateDTO(LightningStateDTO lightningStateDTO) {
         this.lightningStateDTO = lightningStateDTO;
+    }
+
+    public String getCreatorUsername() {
+        return creatorUsername;
+    }
+
+    public void setCreatorUsername(String creatorUsername) {
+        this.creatorUsername = creatorUsername;
     }
 }

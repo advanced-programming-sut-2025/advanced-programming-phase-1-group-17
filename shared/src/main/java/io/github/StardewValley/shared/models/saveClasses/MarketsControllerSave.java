@@ -19,4 +19,20 @@ public class MarketsControllerSave {
         marketsController.getStores().forEach(((storeType, store) ->
             this.stores.add(store)));
     }
+
+    public List<StoreInventory> getShopInventories() {
+        return shopInventories;
+    }
+
+    public void setShopInventories(List<StoreInventory> shopInventories) {
+        this.shopInventories = shopInventories;
+    }
+
+    public List<Store> getStores() {
+        return stores;
+    }
+
+    public void setStores(List<Store> stores) {
+        this.stores = stores;
+    }
 }

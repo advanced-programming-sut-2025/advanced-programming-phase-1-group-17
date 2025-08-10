@@ -2,6 +2,7 @@ package io.github.StardewValley.shared.models.saveClasses;
 
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.Ring;
+import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.foraging.Mineral;
@@ -16,7 +17,7 @@ import io.github.StardewValley.shared.models.tools.Tool;
 public class BackPackableSave {
     private String type;
 
-    private ArtisanProductSave artisanProductSave;
+    private ArtisanProduct artisanProduct;
     private CraftingItemSave craftingItemSave;
     private CropSave cropSave;
     private Fertilizer fertilizer;
@@ -45,12 +46,12 @@ public class BackPackableSave {
         this.type = type;
     }
 
-    public ArtisanProductSave getArtisanProductSave() {
-        return artisanProductSave;
+    public ArtisanProduct getArtisanProduct() {
+        return artisanProduct;
     }
 
-    public void setArtisanProductSave(ArtisanProductSave artisanProductSave) {
-        this.artisanProductSave = artisanProductSave;
+    public void setArtisanProduct(ArtisanProduct artisanProductSave) {
+        this.artisanProduct = artisanProductSave;
     }
 
     public CraftingItemSave getCraftingItemSave() {

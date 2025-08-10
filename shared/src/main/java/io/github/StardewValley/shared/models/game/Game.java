@@ -18,20 +18,23 @@ import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
 import io.github.StardewValley.shared.models.market.ShippingBin;
+import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CrowAttackLogic;
+import io.github.StardewValley.shared.models.plant.Tree;
+import io.github.StardewValley.shared.models.saveClasses.FullGameDTO;
+import io.github.StardewValley.shared.models.saveClasses.NPCSave;
+import io.github.StardewValley.shared.models.saveClasses.TileSave;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class Game implements Serializable {
     private final UUID id = UUID.randomUUID();
-    private final Player creator;
-    private final TimeAndDate date = new TimeAndDate();
+    private Player creator;
+    private TimeAndDate date;
     private final ArrayList<Player> players = new ArrayList<Player>();
     private final ArrayList<NPC> NPCs = new ArrayList<>();
-    private final MarketsController marketsController = new MarketsController();
+    private MarketsController marketsController;
     private final LightningLogicController lightningLogicController = new LightningLogicController();
     private final CrowAttackLogic crowAttackLogic = new CrowAttackLogic();
     private final ArrayList<NPC> NPCHuts = new ArrayList<>();
@@ -44,6 +47,9 @@ public class Game implements Serializable {
     private final ArrayList<CraftingItem> allCraftingItems = new ArrayList<>();
     private final HashMap<ShippingBin, Rectangle> shippingBinBounds = new HashMap<>();
 
+    private VotingSession votingSession;
+
+    public Game() {}
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3, UserDTO user4) {
         user1.setActiveGame(this);
@@ -60,6 +66,8 @@ public class Game implements Serializable {
         addNPCs(new Robin(true));
         addNPCs(new Sebastian(true));
 
+        this.date = new TimeAndDate();
+        this.marketsController = new MarketsController();
         initializeGame();
         generateGameMap();
         setTiles(new ArrayList<>(Tile.getTiles()));
@@ -73,6 +81,55 @@ public class Game implements Serializable {
         }
         this.marketsController.initializeStores(this);
         giveInitialItems();
+    }
+
+    public Game(FullGameDTO fullGameDTO) {
+        fullGameDTO.getPlayerSaves().forEach((playerSave -> this.players.add(new Player(playerSave, this))));
+        fullGameDTO.getNPCs().forEach(npcSave -> this.getNPCs().add(getNPCFromSave(npcSave)));
+        for (int i = 0; i < this.getPlayers().size(); i++) {
+            this.getPlayers().get(i).initializeFromSave(fullGameDTO.getPlayerSaves().get(i), this.getPlayers(), this.getNPCs());
+        }
+        for (Player player : this.getPlayers()) {
+            if (player.getUser().getUsername().equals(fullGameDTO.getCreatorUsername())) {
+                this.creator = player;
+                break;
+            }
+        }
+        for (NPCSave npcHut : fullGameDTO.getNPCHuts()) {
+            for (NPC npc : this.getNPCs()) {
+                if (npc.getName().equals(npcHut.getName())) {
+                    this.NPCHuts.add(npc);
+                    break;
+                }
+                this.NPCHuts.add(getNPCFromSave(npcHut));
+            }
+        }
+        this.date = fullGameDTO.getTimeAndDate();
+        this.marketsController = new MarketsController(fullGameDTO.getMarketsControllerSave());
+        for (TileSave tileSave : fullGameDTO.getTiles()) {
+            this.tiles.add(new Tile(tileSave, this));
+        }
+    }
+
+    private NPC getNPCFromSave(NPCSave npcSave) {
+        switch (npcSave.getName()) {
+            case "Abigail" -> {
+                return new Abigail(npcSave, this.getPlayers());
+            }
+            case "Robin" -> {
+                return new Robin(npcSave, this.getPlayers());
+            }
+            case "Sebastian" -> {
+                return new Sebastian(npcSave, this.getPlayers());
+            }
+            case "Harvey" -> {
+                return new Harvey(npcSave, this.getPlayers());
+            }
+            case "Lia" -> {
+                return new Lia(npcSave, this.getPlayers());
+            }
+        }
+        return null;
     }
 
     private void initializeGame() {
@@ -252,5 +309,78 @@ public class Game implements Serializable {
 
     public HashMap<ShippingBin, Rectangle> getShippingBinBounds() {
         return shippingBinBounds;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public CrowAttackLogic getCrowAttackLogic() {
+        return crowAttackLogic;
+    }
+
+    public void getPlaceableFromSave(Tile tile, TileSave tileSave) {
+        switch (tileSave.getPlaceableSave().getType()) {
+            case "Crop":
+                tile.setPlaceable(new Crop(tileSave.getPlaceableSave().getCropSave()));
+                break;
+            case "Tree":
+                tile.setPlaceable(new Tree(tileSave.getPlaceableSave()));
+                break;
+            case "Hut":
+                tile.setPlaceable(tileSave.getPlaceableSave().getHut());
+                break;
+            case "Fence":
+                tile.setPlaceable(tileSave.getPlaceableSave().getFence());
+                break;
+            case "GreenHouse":
+                GreenHouse greenHouse = new GreenHouse(tileSave.getPlaceableSave());
+                tile.setPlaceable(greenHouse);
+                this.addGreenHouses(greenHouse);
+                break;
+            case "GreenHouseLake":
+                tile.setPlaceable(tileSave.getPlaceableSave().getGreenHouseLake());
+                break;
+            case "GreenHouseFence":
+                tile.setPlaceable(tileSave.getPlaceableSave().getGreenHouseFence());
+                break;
+            case "NormalItem":
+                tile.setPlaceable(tileSave.getPlaceableSave().getNormalItem());
+                break;
+            case "Store":
+                tile.setPlaceable(tileSave.getPlaceableSave().getStore());
+                break;
+            case "Seed":
+                tile.setPlaceable(tileSave.getPlaceableSave().getSeed());
+                break;
+            case "Mineral":
+                tile.setPlaceable(tileSave.getPlaceableSave().getMineral());
+                break;
+            case "CraftingItem":
+                CraftingItem craftingItem = new CraftingItem(tileSave.getPlaceableSave().getCraftingItemSave(), this.getPlayers());
+                tile.setPlaceable(craftingItem);
+                this.addCraftingItem(craftingItem);
+                break;
+            case "AnimalDTO":
+            case "AnimalPlaceSave":
+                break;
+            case "Lake":
+                tile.setPlaceable(tileSave.getPlaceableSave().getLake());
+                break;
+            case "Quarry":
+                tile.setPlaceable(tileSave.getPlaceableSave().getQuarry());
+                break;
+            case "ShippingSave":
+                tile.setPlaceable(new ShippingBin(tileSave.getPlaceableSave().getShippingBinSave(), this));
+                break;
+        }
+    }
+
+    public VotingSession getVotingSession() {
+        return votingSession;
+    }
+
+    public void setVotingSession(VotingSession votingSession) {
+        this.votingSession = votingSession;
     }
 }

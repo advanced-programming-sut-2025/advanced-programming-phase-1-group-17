@@ -28,6 +28,7 @@ import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.foraging.Mineral;
 import io.github.StardewValley.shared.models.plant.*;
+import io.github.StardewValley.shared.models.saveClasses.MarketsControllerSave;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolMaterial;
 import io.github.StardewValley.shared.models.tools.ToolType;
@@ -43,6 +44,19 @@ public class MarketsController {
     private final Map<StoreType, StoreInventory> shopInventories = new HashMap<>();
     private final HashMap<StoreType, Store> stores = new HashMap<>();
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
+
+    public MarketsController() {}
+
+    public MarketsController(MarketsControllerSave save) {
+        int tileWidth = GameAssetManager.getGameAssetManager().getTileWidth();
+        int tileHeight = GameAssetManager.getGameAssetManager().getTileHeight();
+        save.getShopInventories().forEach((inventory) -> this.shopInventories.put(inventory.getStoreType(), inventory));
+        save.getStores().forEach((store -> {
+            this.stores.put(store.getType(), store);
+            this.storeBounds.put(store.getType(), new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+                store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+        }));
+    }
 
     public void registerShop(StoreInventory inventory) {
         shopInventories.put(inventory.getStoreType(), inventory);

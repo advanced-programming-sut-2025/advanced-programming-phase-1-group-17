@@ -7,8 +7,13 @@ import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
+
 public class AppServer {
     private static Game currentGame;
+    private static HashMap<UUID, Game> activeGames = new HashMap<>();
 
     public static Game getCurrentGame() {
         return currentGame;
@@ -16,6 +21,14 @@ public class AppServer {
 
     public static void setCurrentGame(Game currentGame1) {
         currentGame = currentGame1;
+    }
+
+    public static HashMap<UUID, Game> getActiveGames() {
+        return activeGames;
+    }
+
+    public static void setActiveGames(HashMap<UUID, Game> activeGames) {
+        AppServer.activeGames = activeGames;
     }
 
     public static BackPackableType getEnumInstance(String className, String enumName)

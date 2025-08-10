@@ -21,6 +21,7 @@ import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.InventoryController;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.tools.ToolType;
+import kotlin.reflect.KClassesImplKt;
 
 public class InventoryView implements Screen {
     private Stage stage;
@@ -35,9 +36,11 @@ public class InventoryView implements Screen {
     private final TextButton trashButton;
     private final TextButton skillMenuButton;
     private final TextButton socialMenuButton;
+    private final TextButton startVotingButton;
     private final TextButton mapButton;
     private final TextButton exitButton;
     private final TextButton saveAndExitButton;
+    private final TextButton forceTerminateButton;
 
     private java.util.List<BackpackableTypeDTO> backPackItems;
 
@@ -78,6 +81,14 @@ public class InventoryView implements Screen {
             }
         });
 
+        this.startVotingButton = new TextButton("Start Voting", skin);
+        this.startVotingButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.startVoting();
+            }
+        });
+
         this.mapButton = new TextButton("Map", skin);
         this.mapButton.addListener(new ClickListener(){
             @Override
@@ -86,7 +97,7 @@ public class InventoryView implements Screen {
             }
         });
 
-        this.exitButton = new TextButton("Exit", skin);
+        this.exitButton = new TextButton("Exit Menu", skin);
         this.exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -100,6 +111,13 @@ public class InventoryView implements Screen {
                 }
         });
 
+        this.forceTerminateButton = new TextButton("Force Terminate", skin);
+        this.forceTerminateButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.forceTerminate();
+            }
+        });
     }
 
     @Override

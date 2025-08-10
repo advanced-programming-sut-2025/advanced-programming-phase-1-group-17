@@ -7,6 +7,7 @@ import io.github.StardewValley.shared.models.UserDTO;
 import java.util.ArrayList;
 
 public class NPCSave {
+    private String name;
     private int x;
     private int y;
     private UserDTO fatherUser;
@@ -23,6 +24,7 @@ public class NPCSave {
     public NPCSave() {}
 
     public NPCSave(NPC npc) {
+        this.name = npc.getName();
         this.x = npc.getX();
         this.y = npc.getY();
         this.fatherUser = NPC.getFatherUser();
@@ -35,6 +37,62 @@ public class NPCSave {
         this.Tile_y = npc.getTile_y();
         this.dialogueText = npc.getDialogueTexts();
         this.requests = npc.getRequests();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setFatherUser(UserDTO fatherUser) {
+        this.fatherUser = fatherUser;
+    }
+
+    public void setFatherPlayerUsername(String fatherPlayerUsername) {
+        this.fatherPlayerUsername = fatherPlayerUsername;
+    }
+
+    public void setFavorites(ArrayList<String> favorites) {
+        this.favorites = favorites;
+    }
+
+    public void setNPC(boolean NPC) {
+        isNPC = NPC;
+    }
+
+    public void setX_start(int x_start) {
+        this.x_start = x_start;
+    }
+
+    public void setY_start(int y_start) {
+        this.y_start = y_start;
+    }
+
+    public void setTile_x(int tile_x) {
+        Tile_x = tile_x;
+    }
+
+    public void setTile_y(int tile_y) {
+        Tile_y = tile_y;
+    }
+
+    public void setDialogueText(ArrayList<String> dialogueText) {
+        this.dialogueText = dialogueText;
+    }
+
+    public void setRequests(ArrayList<Quest> requests) {
+        this.requests = requests;
     }
 
     public int getX() {
