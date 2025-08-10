@@ -84,7 +84,13 @@ public class GameAssetManagerClient {
         if (textures.containsKey(key)) return textures.get(key);
         else {
             try {
+                if (key == null)
+                    System.out.println("key is null");
                 Texture texture = new Texture(key);
+                if (texture == null) {
+                    System.out.println("Texture is null");
+                    System.out.println(key);
+                }
                 textures.put(key, texture);
                 return texture;
             } catch (Exception e){
@@ -257,6 +263,10 @@ public class GameAssetManagerClient {
                 fullyGrownTextures.put(treeType, seasonalTextures);
             }
             else {
+                stageTextures.put(treeType, new ArrayList<>());
+                for (String stageTexturePath : treeType.getStageTexturePaths()) {
+                    stageTextures.get(treeType).add(stageTexturePath);
+                }
 
                 HashMap<Season, TextureRegion> seasonalTextures = new HashMap<>();
                 Texture texture = new Texture(stageTextures.get(treeType).getLast());

@@ -134,11 +134,13 @@ public class InventoryView implements Screen {
         leftButtonTable.add(trashButton).pad(5).row();
         leftButtonTable.add(skillMenuButton).pad(5).row();
         leftButtonTable.add(socialMenuButton).pad(5).row();
+        leftButtonTable.add(forceTerminateButton).pad(5).row();
 
         Table rightButtonTable = new Table();
         rightButtonTable.add(mapButton).pad(5).row();
         rightButtonTable.add(exitButton).pad(5).row();
         rightButtonTable.add(saveAndExitButton).pad(5).row();
+        rightButtonTable.add(startVotingButton).pad(5).row();
 
         Table inventoryTable = new Table();
         inventoryTable.add(titleLabel).padBottom(10).row();

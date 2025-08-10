@@ -46,10 +46,7 @@ import io.github.StardewValley.shared.models.saveClasses.FullGameDTO;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
-import org.apache.logging.log4j.message.Message;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -103,13 +100,12 @@ public class GameStateController {
                 : null;
         }
 
-        System.out.println("Game state sent.");
         return ResponseEntity.ok(new GameState(
             craftingItemDTOs,
             tileDTOs,
             game.getLightningLogicController().getLightningStateDTO(),
             TimeAndDate.getDTO(game.getDate()),
-            voting == null,
+            voting != null && voting.isActive(),
             targetUsername,
             type
         ));
@@ -1358,48 +1354,14 @@ public class GameStateController {
     }
 
 
-    @PostMapping("/game/forceTerminate")
-    public void forceTerminate(@RequestHeader("Authorization")String token) {
-        Game game = AppServer.getCurrentGame();
-
-        game.setVotingSession(new VotingSession());
-        Set<Player> players = new HashSet<>();
-        game.getPlayers().forEach((player1 -> {
-            if (!player1.isGuest())
-                players.add(player1);
-        }));
-        game.getVotingSession().start(players, VotingSession.VotingType.FORCE_TERMINATE, null, game);
-        //AppServer.getPausedGames().put(AppServer.getCurrentGame().getId(), AppServer.getCurrentGame());
-        //AppServer.setCurrentGame(null);
-    }
-
-
-    @PostMapping("/game/forceTerminateVote")
-    public ResponseEntity<Result> forceTerminateVote(@RequestBody boolean vote,
-                                                     @RequestHeader("Authorization") String token) {
-        Player player = getPlayerFromToken(token);
-        Game game = AppServer.getCurrentGame();
-
-        Result result;
-        do {
-            result = game.getVotingSession().submitVote(player, vote);
-        } while(result.successful());
-        game.setVotingSession(null);
-        if (result.message().equals("Game Terminated successfully"))
-            AppServer.setCurrentGame(null);
-        else if (result.message().equals("Player %s kicked out of the game successfully.")) {
-            game.getPlayers().remove(game.getVotingSession().getTargetPlayer());
-        }
-        return ResponseEntity.ok(result);
-    }
     @PostMapping("/tradeRequest")
     public ResponseEntity<Void> tradeRequest(@RequestHeader("Authorization") String token, @RequestParam String username) {
-        message message = new message(getPlayerFromToken(token), "you have a trade request from "
+        Message message = new Message(getPlayerFromToken(token), "you have a trade request from "
             + getPlayerFromToken(token).getUser().getUsername());
         boolean temp = false;
         for (Player p : AppServer.getCurrentGame().getPlayers()) {
             if (p.getUser().getUsername().equals(username)) {
-                for (message m : p.getMessages()) {
+                for (Message m : p.getMessages()) {
                     if (m.getMessage().equals(message.getMessage())) {
                         temp = true;
                         break;
@@ -1419,8 +1381,8 @@ public class GameStateController {
     @GetMapping("/initAcceptTradeRequest")
     public ResponseEntity<Result> initAcceptTradeRequest(@RequestHeader("Authorization") String token, @RequestParam String username) {
         Player player = getPlayerFromToken(token);
-        message m1 = null;
-        for (message m : player.getMessages()) {
+        Message m1 = null;
+        for (Message m : player.getMessages()) {
             if (m.getMessage().equals("you have a trade request from " + username)) {
                 m1 = m;
                 break;
@@ -1522,6 +1484,109 @@ public class GameStateController {
         p2.setSuggestions(new HashMap<String, Integer>());
         return ResponseEntity.ok().build();
 
+    }
+
+
+    @PostMapping("/game/vote/getVoteCandidates")
+    public ResponseEntity<GetVoteCandidatesResponse> getVoteCandidates(@RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+        ArrayList<String> response = new ArrayList<>();
+        for (Player candidate : game.getPlayers()) {
+            if (candidate.isGuest() || player.equals(candidate))
+                continue;
+            response.add(candidate.getUser().getUsername());
+        }
+        return ResponseEntity.ok(new GetVoteCandidatesResponse(response));
+    }
+
+    @PostMapping("/game/forceTerminate")
+    public void forceTerminate(@RequestHeader("Authorization")String token) {
+        Game game = AppServer.getCurrentGame();
+
+        game.setVotingSession(new VotingSession());
+        Set<Player> players = new HashSet<>();
+        game.getPlayers().forEach((player1 -> {
+            if (!player1.isGuest())
+                players.add(player1);
+        }));
+        game.getVotingSession().start(players, VotingSession.VotingType.FORCE_TERMINATE, null, game);
+    }
+
+
+    @PostMapping("/game/forceTerminateVote")
+    public ResponseEntity<Result> forceTerminateVote(@RequestBody boolean vote,
+                                                     @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+
+        Result result = game.getVotingSession().submitVote(player, vote);
+        if (!result.successful())
+            return ResponseEntity.ok(result);
+
+        game.getVotingSession().getPlayersReceivedResult().add(player);
+
+        boolean canDelete = true;
+        for (Player gamePlayer : game.getPlayers()) {
+            if (!game.getVotingSession().getPlayersReceivedResult().contains(gamePlayer)) {
+                canDelete = false;
+                break;
+            }
+        }
+        if (canDelete)
+            game.getVotingSession().setActive(false);
+
+        if (result.message().equals("Game Terminated successfully") && canDelete)
+            AppServer.setCurrentGame(null);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/game/vote/candidate")
+    public void startVoting(@RequestBody String candidate,
+                            @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+
+        VotingSession votingSession = new VotingSession();
+        Set<Player> players = new HashSet<>();
+        Player targetPlayer = null;
+        for (Player gamePlayer : game.getVotingSession().getPlayers()) {
+            if (gamePlayer.getUser().getUsername().equals(candidate))
+                targetPlayer = gamePlayer;
+            if (gamePlayer.isGuest())
+                continue;
+            players.add(gamePlayer);
+        }
+        votingSession.start(players, VotingSession.VotingType.KICK_PLAYER, player, game);
+        System.out.println("Voting started.");
+        game.setVotingSession(votingSession);
+    }
+
+    @PostMapping("/game/vote/vote")
+    public ResponseEntity<Result> vote(@RequestBody boolean vote,
+                                       @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+
+        Result result = game.getVotingSession().submitVote(player, vote);
+        if (!result.successful())
+            return ResponseEntity.ok(result);
+
+        game.getVotingSession().getPlayersReceivedResult().add(player);
+
+        boolean canDelete = true;
+        for (Player gamePlayer : game.getVotingSession().getPlayers()) {
+            if (!game.getVotingSession().getPlayersReceivedResult().contains(gamePlayer)) {
+                canDelete = false;
+                break;
+            }
+        }
+        if (canDelete)
+            game.getVotingSession().setActive(false);
+
+        if (!result.message().equals("Game resuming...") && canDelete)
+            game.getPlayers().remove(game.getVotingSession().getTargetPlayer());
+        return ResponseEntity.ok(result);
     }
 
 }

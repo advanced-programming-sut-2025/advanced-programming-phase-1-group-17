@@ -40,7 +40,7 @@ public class ToolRenderController {
 
     public void startToolAnimation() {
         isToolAnimating = true;
-        toolRotation = 0;
+        toolRotation = 90f;
         toolAnimationTimer = 0;
     }
 
@@ -58,6 +58,7 @@ public class ToolRenderController {
         }
 
         if (toolSprite != null) {
+            toolSprite.setOrigin(toolSprite.getWidth() / 2f, toolSprite.getHeight() / 2f);
             toolSprite.setRotation(toolRotation);
         }
     }

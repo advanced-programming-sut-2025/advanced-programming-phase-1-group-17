@@ -35,8 +35,7 @@ public class PlayerSave {
 
     private HashMap<String, ArrayList<GiftSaved>> gifts;
     private ArrayList<MessageSave> Messages;
-    private ArrayList<TradeSave> trades;
-    private ArrayList<TradeSave> tradeHistory;
+    private ArrayList<Trade> trades;
     private String partnerUsername;
     private boolean interactionWithPartner;
     private int isbrokenUp;
@@ -113,14 +112,7 @@ public class PlayerSave {
         }
 
         // Trades
-        this.trades = new ArrayList<>();
-        for (var t : player.getTrades()) {
-            this.trades.add(new TradeSave(t));
-        }
-        this.tradeHistory = new ArrayList<>();
-        for (var th : player.getTradeHistory()) {
-            this.tradeHistory.add(new TradeSave(th));
-        }
+        this.trades = player.getTrades();
 
         this.partnerUsername = player.getPartner().getUser().getUsername();
         this.interactionWithPartner = player.isInteractionWithPartner();
@@ -315,20 +307,12 @@ public class PlayerSave {
         Messages = messages;
     }
 
-    public ArrayList<TradeSave> getTrades() {
+    public ArrayList<Trade> getTrades() {
         return trades;
     }
 
-    public void setTrades(ArrayList<TradeSave> trades) {
+    public void setTrades(ArrayList<Trade> trades) {
         this.trades = trades;
-    }
-
-    public ArrayList<TradeSave> getTradeHistory() {
-        return tradeHistory;
-    }
-
-    public void setTradeHistory(ArrayList<TradeSave> tradeHistory) {
-        this.tradeHistory = tradeHistory;
     }
 
     public String getPartnerUsername() {

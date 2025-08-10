@@ -3,6 +3,7 @@ package io.github.StardewValley.shared.models.game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,8 @@ public class VotingSession {
     Set<Player> players;
     boolean active;
     Game game;
+    Result result = null;
+    ArrayList<Player> playersReceivedResult = new ArrayList<>();
 
     public void start(Set<Player> players, VotingType type, Player target, Game game) {
         this.players = players;
@@ -24,6 +27,7 @@ public class VotingSession {
     }
 
     public Result submitVote(Player player, boolean vote) {
+        if (result != null) return result;
         if (!active || votes.containsKey(player)) return new Result(false, "You have already voted.");
         votes.put(player, vote);
         if (votes.size() == players.size()) {
@@ -37,14 +41,17 @@ public class VotingSession {
         long yesCount = votes.values().stream().filter(v -> v).count();
         if (yesCount > players.size() / 2) {
             if (type == VotingType.FORCE_TERMINATE) {
-                return new Result(true, "Game Terminated successfully");
+                result = new Result(true, "Game Terminated successfully");
+                return result;
             }
             else if (type == VotingType.KICK_PLAYER) {
-                return new Result(true, "Player %s kicked out of the game successfully."
+                result = new Result(true, "Player %s kicked out of the game successfully."
                     .formatted(targetPlayer));
+                return result;
             }
         }
-        return new Result(true, "Game resuming...");
+        result = new Result(true, "Game resuming...");
+        return result;
     }
 
 
@@ -99,6 +106,16 @@ public class VotingSession {
     public void setGame(Game game) {
         this.game = game;
     }
+
+    public Result getResult() {
+        return result;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
+    public ArrayList<Player> getPlayersReceivedResult() {
+        return playersReceivedResult;
+    }
 }
-
-
