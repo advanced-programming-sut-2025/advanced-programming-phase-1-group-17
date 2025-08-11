@@ -31,6 +31,21 @@ public class AnimalView {
     private EnumMap<Direction, Animation<TextureRegion>> dinosaurMap;
     private EnumMap<Direction, Animation<TextureRegion>> sheepMap;
     private EnumMap<Direction, Animation<TextureRegion>> duckMap;
+    private float eatingTimer = 0;
+
+    private static class TimedEffect {
+        public float timer = 0f;
+        public boolean isAfterPet = false; // برای تشخیص نوع قلب
+    }
+
+    private final Map<String, TimedEffect> activeEffects = new HashMap<>();
+
+    public void triggerPetEffect(String animalId, boolean wasAlreadyPetted) {
+        TimedEffect effect = new TimedEffect();
+        effect.isAfterPet = wasAlreadyPetted;
+        activeEffects.put(animalId, effect);
+    }
+
 
 
     private float heartTimer = 0f;
@@ -65,6 +80,20 @@ public class AnimalView {
         loadRabbitAnimations();
         // ...
     }
+    public void renderEffect(AnimalDTO dto,float delta){
+        TimedEffect effect = activeEffects.get(dto.getId());
+        effect.timer += delta;
+
+        float heartMovement = effect.timer * 25f;
+        Texture heartTex = effect.isAfterPet ? afterPetTexture : loveTexture;
+
+        Main.getBatch().draw(heartTex, dto.getX() + 4, dto.getY() + 32 + heartMovement);
+
+        // اگر زمان افکت تمام شد، آن را از لیست حذف کن
+        if (effect.timer > 1.5f) {
+            activeEffects.remove(dto.getId());
+        }
+    }
 
     public void render(SpriteBatch batch, AnimalDTO dto, float delta) {
         stateTime += delta;
@@ -86,6 +115,7 @@ public class AnimalView {
         // رسم علوفه اگر در حال خوردن است
         if (dto.isEating()) {
             batch.draw(hayTexture, dto.getX(), dto.getY() - 16, 24, 24);
+
         }
 
         // رسم افکت قلب (این یک منطق نمایشی خالص است)
@@ -101,7 +131,6 @@ public class AnimalView {
             if (heartTimer > 1.5f) {
                 heartTimer = 0f;
                 heartMovement = 0f;
-                // ما نمی‌توانیم DTO را اینجا تغییر دهیم. GameView باید این را مدیریت کند.
             }
         }
     }

@@ -2,9 +2,11 @@ package io.github.StardewValley.controllers.helperControllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
@@ -15,12 +17,15 @@ import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.game.GameState;
+import io.github.StardewValley.shared.models.market.Fish;
 import io.github.StardewValley.shared.models.market.ShopItemDTO;
 import io.github.StardewValley.shared.models.market.StoreType;
+import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import okhttp3.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -62,6 +67,61 @@ public class GameStateApiClient {
             // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
             throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
         }
+    }
+    public ArrayList<AnimalPlaceDTO> getAllAnimalPlaces() throws Exception {
+        URL url = new URL(AnimalURL + "/allAnimalPlaces"); // آدرس Endpoint در سرور
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
+                // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalPlaceDTO>>() {});
+            }
+        } else {
+            // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
+            throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
+        }
+    }
+    public void petAnimal(String animalId) throws Exception {
+        // آدرس Endpoint را با ID حیوان می‌سازیم
+        URL url = new URL(AnimalURL + "/" + animalId + "/pet");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // متد را POST قرار می‌دهیم چون در حال تغییر داده هستیم
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true); // برای POST لازم است
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) { // اگر پاسخ موفقیت‌آمیز نبود
+            throw new RuntimeException("Failed to pet animal. Server responded with: " + responseCode);
+        }
+        // چون پاسخی انتظار نداریم، کار تمام است
+        conn.disconnect();
+    }
+    public void feedAnimal(String animalId) throws Exception {
+        // آدرس Endpoint را با ID حیوان می‌سازیم
+        URL url = new URL(AnimalURL + "/" + animalId + "/feed");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // متد را POST قرار می‌دهیم چون در حال تغییر داده هستیم
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true); // برای POST لازم است
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) { // اگر پاسخ موفقیت‌آمیز نبود
+            throw new RuntimeException("Failed to pet animal. Server responded with: " + responseCode);
+        }
+        // چون پاسخی انتظار نداریم، کار تمام است
+        conn.disconnect();
     }
 
     public UserDTO getUserWithUserDTO() throws Exception {
