@@ -1141,7 +1141,7 @@ public class GameStateController {
         for (Player player : AppServer.getCurrentGame().getPlayers()) {
             if (!player.getUser().getUsername().equals("NPC") && !player.equals(player1)) {
                 if (sideBySide(player, player1)) {
-                    return ResponseEntity.ok(player.getUser().getUsername());
+                    return ResponseEntity.ok("\"" + player.getUser().getUsername() + "\"");
                 }
             }
         }

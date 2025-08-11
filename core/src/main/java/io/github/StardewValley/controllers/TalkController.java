@@ -185,6 +185,7 @@ public class TalkController {
                     view.setError("please choose a player");
                     return;
                 }
+                System.out.println(GameClient.getGameStateApiClient().getNearbyPlayer() + "   " + targetPlayer  +" **************");
                 view.setError(Objects.equals(GameClient.getGameStateApiClient().getNearbyPlayer(), targetPlayer) ?
                     "please enter your message" : "you can't talk from this distance");
                 if (Objects.equals(GameClient.getGameStateApiClient().getNearbyPlayer(), targetPlayer)) {
