@@ -383,4 +383,12 @@ public class Game implements Serializable {
     public void setVotingSession(VotingSession votingSession) {
         this.votingSession = votingSession;
     }
-}
+    public Tile getTileFromPixel(int px, int py) {
+        int tx = px/120;
+        int ty = py/120;
+        return getTile(tx,ty);
+    }
+
+    }
+
+

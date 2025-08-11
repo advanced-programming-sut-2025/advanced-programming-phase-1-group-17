@@ -47,6 +47,43 @@ public class GameStateApiClient {
     public GameStateApiClient(String jwtToken) {
         this.token = jwtToken;
     }
+    public void sendFishingResult(FishingResultDTO result) throws Exception {
+        URL url = new URL(BASE_URL + "/catch");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInput = mapper.writeValueAsString(result);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInput.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed to send fishing result: " + String.valueOf(result.getFish() == null));
+        }
+    }
+    public FishingResultDTO calculateFishCatch() throws Exception {
+        URL url = new URL(BASE_URL +"/creatFish" );
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect(); // برای POST خالی هم connect لازم است
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // چون Fish یک آبجکت ساده است، از Fish.class استفاده می‌کنیم
+                return mapper.readValue(inputStream, FishingResultDTO.class);
+            }
+        } else {
+            throw new RuntimeException("Failed to calculate fish catch: " + conn.getResponseCode());
+        }
+    }
 
     public ArrayList<AnimalDTO> getAllAnimals() throws Exception {
         URL url = new URL(AnimalURL + "/allAnimals"); // آدرس Endpoint در سرور

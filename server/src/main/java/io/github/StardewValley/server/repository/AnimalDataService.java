@@ -4,6 +4,7 @@ import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
 import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
 import io.github.StardewValley.shared.models.animal.AnimalType;
+import io.github.StardewValley.shared.models.enums.Direction;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,10 +24,12 @@ public class AnimalDataService {
         testCow.setId("1");
         testCow.setName("Bessie");
         testCow.setAnimalType(AnimalType.Cow);
-        testCow.setX(20);
-        testCow.setY(20);
+        testCow.setX(100);
+        testCow.setY(100);
+        testCow.setDirection(Direction.Up);
         animalDatabase.add( testCow);
         AnimalDTO testPig = new AnimalDTO("pigg",AnimalType.Pig,200,200);
+        testPig.setDirection(Direction.Up);
         testPig.setId("2");
         animalDatabase.add( testPig);
         animalPlaceDatabase.add(new AnimalPlaceDTO("1", AnimalPlaceType.Barn,1000,1000,true));
@@ -46,8 +49,15 @@ public class AnimalDataService {
     }
 
     public static void save(AnimalDTO animal) {
+        for (int i = 0; i < animalDatabase.size(); i++) {
+            if (animalDatabase.get(i).getId().equals(animal.getId())) {
+                animalDatabase.set(i, animal);
+                return;
+            }
+        }
         animalDatabase.add(animal);
     }
+
     public static List<AnimalPlaceDTO> findAllPlaces() {
         return animalPlaceDatabase;
     }
