@@ -1,5 +1,11 @@
 package io.github.StardewValley.shared.dto;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.particles.values.MeshSpawnShapeValue;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Direction;
 
@@ -18,6 +24,22 @@ public class AnimalDTO {
     private boolean isPettedToday = false;
     private boolean isFedToday = false;
     private boolean isOutside = true;
+    private int width;
+    private int height;
+    private float pettingTimer=0;
+    private float eatingTimer=0;
+    private float timeSinceLastDirectionChange = 0f;
+    private float directionChangeInterval = 3f; // مقدار اولیه
+
+    // ... گتر و ستر برای دو فیلد جدید ...
+
+    public float getPettingTimer() {
+        return pettingTimer;
+    }
+
+    public void setPettingTimer(float pettingTimer) {
+        this.pettingTimer = pettingTimer;
+    }
 
     // کانستراکتور خالی برای Jackson
     public AnimalDTO() {}
@@ -26,6 +48,9 @@ public class AnimalDTO {
         this.animalType = animalType;
         this.x = x;
         this.y = y;
+        this.width = animalType.getTexttureSize();
+        this.height = animalType.getTexttureSize();
+        this.directionChangeInterval = MathUtils.random(2,4);
     }
 
     // Getters and Setters for all fields...
@@ -85,4 +110,22 @@ public class AnimalDTO {
     public void setOutside(boolean outside) {
         isOutside = outside;
     }
+    @JsonIgnore
+    public Rectangle getHitBox(){
+        return new Rectangle(x,y, animalType.getTexttureSize(),animalType.getTexttureSize());
+    }
+
+    public float getEatingTimer() {
+        return eatingTimer;
+    }
+
+    public void setEatingTimer(float eatingTimer) {
+        this.eatingTimer = eatingTimer;
+    }
+    public float getTimeSinceLastDirectionChange() { return timeSinceLastDirectionChange; }
+    public void setTimeSinceLastDirectionChange(float time) { this.timeSinceLastDirectionChange = time; }
+    public float getDirectionChangeInterval() { return directionChangeInterval; }
+    public void setDirectionChangeInterval(float interval) { this.directionChangeInterval = interval; }
+
+
 }

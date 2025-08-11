@@ -2,9 +2,11 @@ package io.github.StardewValley.controllers.helperControllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
+import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
@@ -14,12 +16,16 @@ import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
+import io.github.StardewValley.shared.models.game.GameState;
+import io.github.StardewValley.shared.models.market.Fish;
 import io.github.StardewValley.shared.models.market.ShopItemDTO;
 import io.github.StardewValley.shared.models.market.StoreType;
+import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import okhttp3.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -41,24 +47,41 @@ public class GameStateApiClient {
     public GameStateApiClient(String jwtToken) {
         this.token = jwtToken;
     }
-
-    public List<TileDTO> getMapTilesAroundPlayer(int minX, int maxX, int minY, int maxY) throws Exception {
-        String path = String.format("/game/map?minX=%d&maxX=%d&minY=%d&maxY=%d", minX, maxX, minY, maxY);
-        URL url = new URL(BASE_URL + path);
-
+    public void sendFishingResult(FishingResultDTO result) throws Exception {
+        URL url = new URL(BASE_URL + "/catch");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Authorization", "Bearer " + token);
-        conn.connect();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInput = mapper.writeValueAsString(result);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInput.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed to send fishing result: " + String.valueOf(result.getFish() == null));
+        }
+    }
+    public FishingResultDTO calculateFishCatch() throws Exception {
+        URL url = new URL(BASE_URL +"/creatFish" );
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect(); // برای POST خالی هم connect لازم است
 
         if (conn.getResponseCode() == 200) {
             try (InputStream inputStream = conn.getInputStream()) {
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(inputStream, new TypeReference<List<TileDTO>>() {
-                });
+                // چون Fish یک آبجکت ساده است، از Fish.class استفاده می‌کنیم
+                return mapper.readValue(inputStream, FishingResultDTO.class);
             }
         } else {
-            throw new RuntimeException("Could not fetch tiles: code " + conn.getResponseCode());
+            throw new RuntimeException("Failed to calculate fish catch: " + conn.getResponseCode());
         }
     }
 
@@ -78,6 +101,61 @@ public class GameStateApiClient {
         } else {
             throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
         }
+    }
+    public ArrayList<AnimalPlaceDTO> getAllAnimalPlaces() throws Exception {
+        URL url = new URL(AnimalURL + "/allAnimalPlaces"); // آدرس Endpoint در سرور
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
+                // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalPlaceDTO>>() {});
+            }
+        } else {
+            // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
+            throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
+        }
+    }
+    public void petAnimal(String animalId) throws Exception {
+        // آدرس Endpoint را با ID حیوان می‌سازیم
+        URL url = new URL(AnimalURL + "/" + animalId + "/pet");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // متد را POST قرار می‌دهیم چون در حال تغییر داده هستیم
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true); // برای POST لازم است
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) { // اگر پاسخ موفقیت‌آمیز نبود
+            throw new RuntimeException("Failed to pet animal. Server responded with: " + responseCode);
+        }
+        // چون پاسخی انتظار نداریم، کار تمام است
+        conn.disconnect();
+    }
+    public void feedAnimal(String animalId) throws Exception {
+        // آدرس Endpoint را با ID حیوان می‌سازیم
+        URL url = new URL(AnimalURL + "/" + animalId + "/feed");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // متد را POST قرار می‌دهیم چون در حال تغییر داده هستیم
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true); // برای POST لازم است
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) { // اگر پاسخ موفقیت‌آمیز نبود
+            throw new RuntimeException("Failed to pet animal. Server responded with: " + responseCode);
+        }
+        // چون پاسخی انتظار نداریم، کار تمام است
+        conn.disconnect();
     }
 
     public UserDTO getUserWithUserDTO() throws Exception {
@@ -1692,4 +1770,127 @@ public class GameStateApiClient {
         }
     }
 
+
+    public void forceTerminate() {
+        try {
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/forceTerminate")
+                .addHeader("Authorization", token)
+                .post(RequestBody.create(new byte[0], null)) // Empty body
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public Result forceTerminateVote(boolean vote) {
+        try {
+            // 2. Serialize to JSON
+            String json = objectMapper.writeValueAsString(vote);
+
+            // 3. Build HTTP request
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/forceTerminateVote")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Result.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Result(false, "Connection to server failed. Vote again.");
+    }
+
+    public GetVoteCandidatesResponse getVoteCandidates() {
+        try {
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/vote/getVoteCandidates")
+                .addHeader("Authorization", token)
+                .post(RequestBody.create(new byte[0], null)) // Empty body
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, GetVoteCandidatesResponse.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void sendCandidate(String playerUsername) {
+        try {
+            RequestBody body = RequestBody.create(playerUsername, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/vote/candidate")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Result kickVote(boolean vote) {
+        try {
+            String json = objectMapper.writeValueAsString(vote);
+
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request request = new Request.Builder()
+                .url(BASE_URL + "/game/vote/vote")
+                .addHeader("Authorization", token)
+                .post(body)
+                .build();
+
+            // 4. Execute
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                // 5. Parse response
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Result.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

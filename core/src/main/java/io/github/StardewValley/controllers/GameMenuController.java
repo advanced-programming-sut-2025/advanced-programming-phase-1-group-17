@@ -231,7 +231,7 @@ public class GameMenuController {
         try {
             if (!GameClient.gameStateApiClient.exitGame())
                 return new Result(false, "Only the game creator can exit the game.");
-            else{
+            else {
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
                 return new Result(true, "Exit the game.");

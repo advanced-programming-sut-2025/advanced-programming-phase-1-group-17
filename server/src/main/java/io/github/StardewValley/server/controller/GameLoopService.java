@@ -1,10 +1,12 @@
 package io.github.StardewValley.server.controller;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.controller.logicControllers.AnimalLogicService;
 import io.github.StardewValley.server.repository.AnimalDataService;
 import io.github.StardewValley.shared.dto.AnimalDTO;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -43,11 +45,9 @@ public class GameLoopService {
         // ۲. آپدیت تمام حیوانات (منطق جدید، دقیقا کنار قبلی)
         List<AnimalDTO> allAnimals = animalDataService.findAll();
         for (AnimalDTO animal : allAnimals) {
-            //TODO nullPointer
             animalLogicService.updateAnimalState(animal, delta);
         }
 
-        // ۳. (در آینده) آپدیت گیاهان، NPC ها و ... هم به همینجا اضافه می‌شود
-        // plantLogicService.updateAllPlants(delta);
     }
+
 }

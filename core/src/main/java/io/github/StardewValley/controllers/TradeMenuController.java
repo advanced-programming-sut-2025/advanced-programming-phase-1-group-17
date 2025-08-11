@@ -13,7 +13,7 @@ public class TradeMenuController {
     private BackpackableTypeDTO backPackableType;
     private TradeMenu tradeMenu;
     private GameView gameView;
-    private final int coin = GameClient.getPlayer().getCoin();
+    private final double coin = GameClient.getPlayer().getCoin();
     private boolean register = false;
 
     public void setView(TradeMenu tradeMenu, GameView gameView) {

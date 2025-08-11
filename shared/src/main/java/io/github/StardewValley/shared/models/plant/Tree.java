@@ -1,29 +1,42 @@
 package io.github.StardewValley.shared.models.plant;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.TreeSave;
+
+import java.util.List;
 
 public class Tree extends Plant implements Placeable {
     private TreeType type;
-    private final String[] textures;
-    private final String hasFruitTexture;
+    //private final String[] textures;
+    //private final String hasFruitTexture;
 
     public Tree(boolean isForaging, TreeType treeType, Tile tile, boolean isInsideGreenHouse) {
         super(isForaging, tile, isInsideGreenHouse);
         this.type = treeType;
         this.daysTillNextHarvest = type.getFruitHarvestCycle();
 
-        String[] paths = type.getStageTexturePaths();
-        this.textures = new String[paths.length];
-        for (int i = 0; i < paths.length; i++) {
-            this.textures[i] =(paths[i]);
-        }
-        this.hasFruitTexture = type.getHasFruitTexturePath();
+        //String[] paths = type.getStageTexturePaths();
+//        this.textures = new String[paths.length];
+//        for (int i = 0; i < paths.length; i++) {
+//            this.textures[i] =(paths[i]);
+//        }
+        //this.hasFruitTexture = type.getHasFruitTexturePath();
         if (isForaging)
             this.currentStageIndex = type.getStages().size() - 1;
     }
+
+    public Tree(PlaceableSave dto) {
+        super(dto); // calls Plant(PlaceableSave dto) for common fields
+
+        TreeSave save = dto.getTreeSave();
+        this.type = save.getType();
+        //TODO
+        //this.tile = new Tile(save.getTileX(), save.getTileY());
+    }
+
 
     public int getDaysTillFullGrowth() {
         if (isFullyGrown)
@@ -93,5 +106,17 @@ public class Tree extends Plant implements Placeable {
             return null; //for fully Grown
         }
         return TreeAssetManager.getTreeAssetManager().getStageTexture(type, currentStageIndex);
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(Tree.class.getSimpleName());
+        placeableSave.setTreeSave(new TreeSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return new Tree(dto);
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.market.ItemQuality;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 public class AnimalProduct implements BackPackable {
     private Animal animal;
@@ -60,6 +61,15 @@ public class AnimalProduct implements BackPackable {
     public BackPackableType getType() {
         return animalProductType;
     }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+//TODO Save
+        //        BackPackableSave backPackableSave = new BackPackableSave(AnimalProduct.class.getSimpleName());
+//        backPackableSave.setA
+        return null;
+    }
+
     public Rectangle getHitBox(){
         return null;
         //TODO

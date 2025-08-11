@@ -20,6 +20,7 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.NPCdto;
 import io.github.StardewValley.shared.models.PlayerDto;
@@ -66,13 +67,20 @@ public class GameView implements Screen, InputProcessor {
     private ArrayList<AnimalDTO> animalsFromServer; // لیستی برای نگهداری آخرین وضعیت حیوانات
     private float timeSinceLastApiCall = 0f;
     private static final float API_CALL_INTERVAL = 0.1f; //
+    private ArrayList<AnimalPlaceDTO> animalPlacesFromServer;
+    private AnimalPlaceView animalPlaceView;
+    private ChatView chatView;
+    private ChatService chatService;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
+        this.chatService = new ChatService();
+        this.chatView = new ChatView(GameAssetManagerClient.getGameAssetManager().getSkin(), chatService);
         this.apiClient = GameClient.getGameStateApiClient();
         this.animalView = new AnimalView(); // هنرمند را استخدام کن
+        this.animalPlaceView = new AnimalPlaceView();
         this.animalsFromServer = new ArrayList<AnimalDTO>(); // لیست را خالی مقداردهی اولیه کن
-        animalsFromServer.add(new AnimalDTO("number1", AnimalType.Pig, 200, 200));
+        this.animalPlacesFromServer = new ArrayList<>();
         this.hud = new HUD();
         this.font = new BitmapFont();
         int i = 0;
@@ -241,9 +249,9 @@ public class GameView implements Screen, InputProcessor {
             }
 
             try {
-                // TODO: شما باید ابتدا Endpoint و متد getAnimals را در سرور و ApiClient بسازید
-                //System.out.println("Fetching animal data from server...");
-                this.animalsFromServer = apiClient.getAllAnimals();
+                System.out.println("Fetching animal data from server...");
+                this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
+                this.animalPlacesFromServer = apiClient.getAllAnimalPlaces();
             } catch (Exception e) {
                 System.err.println("Failed to fetch animal data: " + e.getMessage());
             }
@@ -257,11 +265,24 @@ public class GameView implements Screen, InputProcessor {
         updateAnimal(delta);
         Main.getBatch().setProjectionMatrix(controller.getCamera().combined);
         Main.getBatch().begin();
-        controller.updateGame(delta);
+
+        try {
+            controller.updateGame(delta);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            checkOpenChat();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         if (animalsFromServer != null) {
             for (AnimalDTO animalDto : animalsFromServer) {
                 animalView.render(Main.getBatch(), animalDto, delta);
+            }
+            for(AnimalPlaceDTO animalPlaceDTO:animalPlacesFromServer){
+                animalPlaceView.render(Main.getBatch(),animalPlaceDTO);
             }
         }
 
@@ -416,9 +437,43 @@ public class GameView implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 worldCoordinates = controller.getCamera().unproject(new Vector3(screenX, screenY, 0));
+
+        // اولویت ۱: آیا روی یک حیوان کلیک شده؟
+        if (button == Input.Buttons.LEFT) {
+            try {
+                if (controller.handleAnimalClick(worldCoordinates)) {
+                    return true; // بله، کلیک مدیریت شد. دیگر ادامه نده.
+                }
+                else if(controller.handleAnimalPlaceClick(worldCoordinates)){
+                    return true;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else if(button == Input.Buttons.RIGHT) {
+            try {
+                if(controller.handleAnimalFeed(worldCoordinates)){
+                    return true;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        System.out.println("you didnt click on any animal");
         return handleClick(worldCoordinates, button);
     }
-
+    public void checkOpenChat() throws Exception {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C)){
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(chatView);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.F)){
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
+        }
+    }
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
@@ -455,6 +510,8 @@ public class GameView implements Screen, InputProcessor {
         controller.setKey(keycode, false);
         return true;
     }
+
+
 
     private boolean handleClick(Vector3 worldCoordinates, int button) {
         HandleWorldClickResponse result = null;

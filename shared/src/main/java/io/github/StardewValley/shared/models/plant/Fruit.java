@@ -2,6 +2,7 @@ package io.github.StardewValley.shared.models.plant;
 
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.market.ItemQuality;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 import java.util.Random;
 
@@ -28,6 +29,13 @@ public class Fruit implements BackPackable {
     @Override
     public FruitType getType() {
         return type;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(Fruit.class.getSimpleName());
+        backPackableSave.setFruit(this);
+        return backPackableSave;
     }
 
     public void setType(FruitType type) {

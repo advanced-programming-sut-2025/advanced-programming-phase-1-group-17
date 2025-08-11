@@ -1,21 +1,22 @@
 package io.github.StardewValley.shared.models.NPCS;
 
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.saveClasses.NPCSave;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Robin extends NPC implements Placeable {
-    private int x;
-    private int y;
-    private String name = "Robin";
-    private String job = "architect";
+    {
+        name = "Robin";
+        job = "architect";
+    }
 
-    private String texture1 = "Robin.png";
-    private String texture2 =  "hut2.png";
+    private final String texture1 = "Robin.png";
+    private final String texture2 =  "hut2.png";
 
     public Robin(boolean isRobin) {
         isNPC = isRobin;
@@ -32,24 +33,31 @@ public class Robin extends NPC implements Placeable {
         y_start = y;
     }
 
-
-    private ArrayList<String> favorites = new ArrayList<>();
-
-
-    public ArrayList<String> getFavorites() {
-        return favorites;
+    public Robin(NPCSave save, List<Player> playerList) {
+        this.x = save.getX();
+        this.y = save.getY();
+        if (NPC.getFatherUser() != null)
+            NPC.setFatherUser(save.getFatherUser());
+        if (NPC.getFatherPlayer() != null) {
+            for (Player player : playerList) {
+                if (player.getUser().getUsername().equals(save.getFatherPlayerUsername()))
+                    NPC.setFatherPlayer(player);
+            }
+        }
+        this.favorites =  save.getFavorites();
+        this.isNPC = save.isNPC();
+        this.x_start = save.getX_start();
+        this.y_start = save.getY_start();
+        this.Tile_x = save.getTile_x();
+        this.Tile_y = save.getTile_y();
+        this.dialogueText = save.getDialogueText();
+        this.requests = save.getRequests();
     }
 
     {
         favorites.add("IronBar");
         favorites.add("Wood");
         favorites.add("Spaghetti");
-    }
-
-    private ArrayList<Quest> requests = new ArrayList<>();
-
-    public ArrayList<Quest> getRequests() {
-        return requests;
     }
 
     {
@@ -60,23 +68,15 @@ public class Robin extends NPC implements Placeable {
 
     public void giveReward(Player player, int index, Game game) {
         if (index == 0) {
-            player.getBackPack().addcoin(1000);
+            player.addcoin(1000);
         } else if (index == 1) {
             for (int i = 0; i < 3; i++) {
                 CraftingItem c = new CraftingItem(CraftingItemType.BeeHouse, player, game);
                 player.getBackPack().addItemToInventory(c);
             }
         } else {
-            player.getBackPack().addcoin(25000);
+            player.addcoin(25000);
         }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getJob() {
@@ -87,22 +87,6 @@ public class Robin extends NPC implements Placeable {
         this.job = job;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     @Override
     public String  getTexture() {
         if (isNPC)
@@ -110,5 +94,4 @@ public class Robin extends NPC implements Placeable {
         else
             return texture2;
     }
-
 }

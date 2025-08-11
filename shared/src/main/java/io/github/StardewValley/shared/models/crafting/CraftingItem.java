@@ -6,13 +6,19 @@ import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.CraftingItemSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+
+import java.util.List;
 
 public class CraftingItem implements BackPackable, Placeable {
     private final CraftingItemType type;
     private ArtisanProduct artisanProductInProgress = null;
 
-    private final Player owner;
+    private Player owner;
     private int start_x = 0;
     private int start_y = 0;
     private final int width;
@@ -27,6 +33,22 @@ public class CraftingItem implements BackPackable, Placeable {
         this.height = GameAssetManager.getGameAssetManager().getTileHeight();
 
         game.addCraftingItem(this);
+    }
+
+    public CraftingItem(CraftingItemSave save, List<Player> playerList) {
+        this.type = save.getType();
+        this.artisanProductInProgress = save.getArtisanProductInProgress();
+        this.start_x = save.getStart_x();
+        this.start_y = save.getStart_y();
+        this.width = save.getWidth();
+        this.height = save.getHeight();
+
+        for (Player player : playerList) {
+            if (player.getUser().getUsername().equals(save.getOwnerUsername())) {
+                this.owner = player;
+                break;
+            }
+        }
     }
 
     public static CraftingItemDTO getCraftingItemDTO(CraftingItem craftingItem) {
@@ -59,6 +81,13 @@ public class CraftingItem implements BackPackable, Placeable {
     @Override
     public BackPackableType getType() {
         return type;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(CraftingItem.class.getSimpleName());
+        backPackableSave.setCraftingItemSave(new CraftingItemSave(this));
+        return backPackableSave;
     }
 
     public CraftingItemType getCraftingItemType() {
@@ -104,5 +133,17 @@ public class CraftingItem implements BackPackable, Placeable {
     @Override
     public String getTexture() {
         return type.getInventoryTexturePath();
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(CraftingItem.class.getSimpleName());
+        placeableSave.setCraftingItemSave(new CraftingItemSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return new CraftingItem(dto.getCraftingItemSave(), playerList);
     }
 }

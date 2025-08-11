@@ -1,13 +1,18 @@
 package io.github.StardewValley.shared.models.market;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.FishType;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 public class Fish implements BackPackable {
     private FishType fishType;
     private ItemQuality quality = ItemQuality.Regular;
     private int count=1;
+    public Fish(){
+
+    }
 
     public Fish(FishType fishType, ItemQuality shippingBinType) {
         this.fishType = fishType;
@@ -39,17 +44,27 @@ public class Fish implements BackPackable {
     }
 
     @Override
+    @JsonIgnore
     public String getName() {
         return fishType.getName();
     }
 
     @Override
+    @JsonIgnore
     public double getPrice() {
         return fishType.getPrice();
     }
 
     @Override
+    @JsonIgnore
     public BackPackableType getType() {
         return this.fishType;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(Fish.class.getSimpleName());
+        backPackableSave.setFish(this);
+        return backPackableSave;
     }
 }

@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.map;
 
 import io.github.StardewValley.shared.models.Fence;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouseLake;
 import io.github.StardewValley.shared.models.NPCS.*;

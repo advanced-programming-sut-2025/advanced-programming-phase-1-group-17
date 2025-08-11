@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public class Refrigerator {
     private ArrayList<Food> foods = new ArrayList<>();
 
+    public Refrigerator() {}
+
     public ArrayList<Food> getFoods() {
         return foods;
     }

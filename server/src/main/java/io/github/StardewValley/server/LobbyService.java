@@ -7,6 +7,8 @@ import io.github.StardewValley.server.repository.LobbyRepository;
 import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
+import io.github.StardewValley.shared.models.game.Game;
+import io.github.StardewValley.shared.models.game.GameDTO;
 import io.github.StardewValley.shared.models.map.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -161,7 +163,6 @@ public class LobbyService {
             userRepository.save(user4);
         }
         Tile.getTiles().clear();
-        Tile.getTreeTile().clear();
 
         NPC.setFatherPlayer(null);
         NPC.setFatherUser(null);

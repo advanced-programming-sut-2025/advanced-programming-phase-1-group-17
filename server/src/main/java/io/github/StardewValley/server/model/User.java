@@ -4,7 +4,7 @@ import io.github.StardewValley.shared.models.enums.Gender;
 
 import java.util.Objects;
 
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import jakarta.persistence.*;
 
 @Entity
