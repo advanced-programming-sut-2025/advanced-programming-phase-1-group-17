@@ -11,28 +11,10 @@ public class BackPack {
     private Player player;
     private HashMap<BackPackableType, ArrayList<BackPackable>> backPackItems = new HashMap<>();
     private final BackPackType type;
-    private double coin = 100000;
 
     public BackPack(BackPackType type, Player player) {
         this.type = type;
         this.player = player;
-    }
-
-    public double getCoin() {
-        return coin;
-    }
-
-    public void addCoin(double coin) {
-        if (!player.getPartner().equals(player)) {
-            player.getBackPack().addcoin(coin);
-            player.getPartner().getBackPack().addcoin(coin);
-        } else {
-            player.getBackPack().addcoin(coin);
-        }
-    }
-
-    public void addcoin(double coin) {
-        this.coin += coin;
     }
 
     public boolean isBackPackFull() {
@@ -122,10 +104,6 @@ public class BackPack {
 
     public Player getPlayer() {
         return player;
-    }
-
-    public void setCoin(double coin) {
-        this.coin = coin;
     }
 
 

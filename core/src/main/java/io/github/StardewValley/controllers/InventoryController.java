@@ -60,13 +60,28 @@ public class InventoryController {
     }
 
     public void saveAndExitButton() {
-
         GameMenuController gameMenuController = new GameMenuController();
         Result result =  gameMenuController.exitGame();
         this.view.getItemPickLabel().setText(result.toString());
         if (result.successful()) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new MainMenu(new MainMenuController(),   GameAssetManagerClient.getGameAssetManager().getSkin()));
+        } else {
+            view.getItemPickLabel().setText(result.message());
+            view.getItemPickLabel().setColor(255, 0, 0, 1);
         }
+    }
+
+    public void startVoting() {
+        Main.getMain().getScreen().dispose();
+        Main.getMain().setScreen(new SelectCandidateMenu(new SelectCandidateController(),
+            GameAssetManagerClient.getGameAssetManager().getSkin()));
+    }
+
+    public void forceTerminate() {
+        Main.getMain().getScreen().dispose();
+        GameClient.getGameStateApiClient().forceTerminate();
+        Main.getMain().setScreen(new ForceTerminateMenu(new ForceTerminateController(),
+            GameAssetManagerClient.getGameAssetManager().getSkin()));
     }
 }

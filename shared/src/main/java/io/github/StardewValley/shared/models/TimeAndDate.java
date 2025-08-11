@@ -11,7 +11,7 @@ import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.enums.DaysOfTheWeek;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.enums.WeatherType;
-import io.github.StardewValley.shared.models.map.PlayerMap;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.ShippingBin;
 import io.github.StardewValley.shared.models.plant.Crop;
@@ -112,7 +112,7 @@ public class TimeAndDate {
                 for (NPC npc : game.getNPCs()) {
                     if (player.getFriendShipsWithNPCs().get(npc) >= 600) {
                         Flower flower = new Flower(FlowerType.FLOWER);
-                        message message = new message(npc, "you received a flower");
+                        Message message = new Message(npc, "you received a flower");
                         player.getBackPack().addItemToInventory(flower);
                     }
                 }
@@ -199,19 +199,17 @@ public class TimeAndDate {
     }
 
     private void handleIncompatiblePlants(Game game) {
-        for (PlayerMap playerMap : game.getGameMap().getPlayerMaps()) {
-            for (Tile tile : playerMap.getTiles()) {
-                if (tile.getPlaceable() instanceof Tree tree) {
-                    if (tree.isInsideGreenhouse())
-                        continue;
-                    if (!tree.getType().getSeasons().contains(season))
-                        tree.getTile().setPlaceable(null);
-                } else if (tile.getPlaceable() instanceof Crop crop) {
-                    if (crop.isInsideGreenhouse())
-                        continue;
-                    if (!crop.getType().getSeasons().contains(season))
-                        crop.getTile().setPlaceable(null);
-                }
+        for (Tile tile : game.getTiles()) {
+            if (tile.getPlaceable() instanceof Tree tree) {
+                if (tree.isInsideGreenhouse())
+                    continue;
+                if (!tree.getType().getSeasons().contains(season))
+                    tree.getTile().setPlaceable(null);
+            } else if (tile.getPlaceable() instanceof Crop crop) {
+                if (crop.isInsideGreenhouse())
+                    continue;
+                if (!crop.getType().getSeasons().contains(season))
+                    crop.getTile().setPlaceable(null);
             }
         }
     }

@@ -1,58 +1,57 @@
 package io.github.StardewValley.shared.models.plant;
 
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.Player;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public abstract class PlantGrowthController {
     private static final Random random = new Random();
 
     public static void growOneDay(Game game) {
-        for (PlayerMap playerMap : game.getGameMap().getPlayerMaps()) {
-            ArrayList<Plant> plants = new ArrayList<>();
-
-            for (Tile tile : playerMap.getTiles()) {
-                if (tile.getPlaceable() instanceof Tree tree) {
-                    tree.goToNextDay();
-                    if (!tree.isForaging)
-                        plants.add(tree);
-                } else if (tile.getPlaceable() instanceof Crop crop) {
-                    crop.goToNextDay();
-                    handleCropAdding(plants, crop);
-                }
+        HashMap<Player, ArrayList<Plant>> plants = new HashMap<>();
+        for (Player player : game.getPlayers()) {
+            plants.put(player, new ArrayList<>());
+        }
+        for (Tile tile : game.getTiles()) {
+            if (tile.getPlaceable() instanceof Tree tree) {
+                tree.goToNextDay();
+                if (!tree.isForaging)
+                    plants.get(tree.getTile().getOwner()).add(tree);
+            } else if (tile.getPlaceable() instanceof Crop crop) {
+                crop.goToNextDay();
+                handleCropAdding(plants, crop);
             }
+        }
+        plants.forEach(((player, plants1) -> {
             double probability = Math.floor(plants.size() / 16.0) * 25;
 
             int randInt = random.nextInt(100);
             if (randInt < probability)
-                //TODO
-                //Main.getGameView().showNotification(crowAttack(plants).getMessage());
-                crowAttack(plants);
-            //TODO
-            //            else
-//                Main.getGameView().showNotification("No crow Attacks happened last night.");
-        }
+                crowAttack(plants1);
+        }));
     }
 
-    private static void handleCropAdding(ArrayList<Plant> plants, Crop crop) {
+    private static void handleCropAdding(HashMap<Player, ArrayList<Plant>> plants, Crop crop) {
         if (crop.isForaging)
             return;
         if (!crop.isGiant())
-            plants.add(crop);
+            plants.get(crop.getTile().getOwner()).add(crop);
         else {
             boolean isAddable = false;
             for (Crop neighborGiantTile : crop.neighborGiantTiles) {
-                if (plants.contains(neighborGiantTile)) {
+                if (plants.get(crop.getTile().getOwner()).contains(neighborGiantTile)) {
                     isAddable = true;
                     break;
                 }
             }
             if (isAddable)
-                plants.add(crop);
+                plants.get(crop.getTile().getOwner()).add(crop);
         }
     }
 
@@ -94,8 +93,8 @@ public abstract class PlantGrowthController {
                 }
             }
             plant.getTile().setPlaceable(null);
-//TODO
-            //            Main.getGameView().getController().getCrowAttackEffect().trigger(plant.tile.getX(), plant.tile.getY());
+            //TODo
+            //.trigger(plant.tile.getX(), plant.tile.getY());
 //            return new Result(true,
 //                "Crows attacked tile <%d, %d> (%s) last night."
 //                    .formatted(plant.tile.getX(), plant.tile.getY(), (plant instanceof Tree) ? treeType.name() : cropType.getName()));

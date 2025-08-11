@@ -1,6 +1,6 @@
 package io.github.StardewValley.server.controller.logicControllers;
 
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.shared.models.animal.Animal;
@@ -123,9 +123,9 @@ public class CheatCodeHandler {
             return "Amount must be number.";
         }
 
-        player.getBackPack().addCoin(amount);
+        player.addCoin(amount);
         return "Your new Balance: %.1f".formatted(
-            player.getBackPack().getCoin()
+            player.getCoin()
         );
     }
 }

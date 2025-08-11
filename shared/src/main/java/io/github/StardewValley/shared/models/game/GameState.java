@@ -1,6 +1,8 @@
-package io.github.StardewValley.shared.dto;
+package io.github.StardewValley.shared.models.game;
 
 import io.github.StardewValley.shared.TimeAndDateDTO;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
+import io.github.StardewValley.shared.dto.LightningStateDTO;
 import io.github.StardewValley.shared.models.TileDTO;
 
 import java.util.List;
@@ -11,15 +13,26 @@ public class GameState {
     private LightningStateDTO lightningStateDTO;
     TimeAndDateDTO timeAndDateDTO;
 
+    //For voting
+    private boolean paused;
+    private String targetUsername;
+    private VotingSession.VotingType type;
+
     public GameState() {
     }
 
     public GameState(List<CraftingItemDTO> craftingItems, List<TileDTO> tiles, LightningStateDTO lightningStateDTO,
-                     TimeAndDateDTO timeAndDateDTO) {
+                     TimeAndDateDTO timeAndDateDTO, boolean paused, String targetUsername, VotingSession.VotingType type) {
         this.craftingItems = craftingItems;
         this.tiles = tiles;
         this.lightningStateDTO = lightningStateDTO;
         this.timeAndDateDTO = timeAndDateDTO;
+
+        //For Voting
+        this.paused = paused;
+        this.targetUsername = targetUsername;
+        this.type = type;
+
     }
 
     public List<CraftingItemDTO> getCraftingItems() {
@@ -52,5 +65,29 @@ public class GameState {
 
     public void setTimeAndDateDTO(TimeAndDateDTO timeAndDateDTO) {
         this.timeAndDateDTO = timeAndDateDTO;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    public String getTargetUsername() {
+        return targetUsername;
+    }
+
+    public void setTargetUsername(String targetUsername) {
+        this.targetUsername = targetUsername;
+    }
+
+    public VotingSession.VotingType getType() {
+        return type;
+    }
+
+    public void setType(VotingSession.VotingType type) {
+        this.type = type;
     }
 }

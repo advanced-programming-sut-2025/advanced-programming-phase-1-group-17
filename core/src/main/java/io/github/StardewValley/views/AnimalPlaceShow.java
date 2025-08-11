@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.animal.AnimalPlace;
 import org.w3c.dom.Text;
@@ -25,7 +27,7 @@ public class AnimalPlaceShow implements Screen {
     private Label label;
     private Skin skin;
 
-    public AnimalPlaceShow(Skin skin, GameView gameView, AnimalPlace animalPlace) {
+    public AnimalPlaceShow(Skin skin, GameView gameView, AnimalPlaceDTO animalPlace) {
         this.skin = skin;
 
         //stage = new Stage(new ScreenViewport());
@@ -35,7 +37,7 @@ public class AnimalPlaceShow implements Screen {
         table.setFillParent(true);
         table.center();
 
-        for (Animal animal : animalPlace.getAnimals()) {
+        for (AnimalDTO animal : animalPlace.getAnimals()) {
             StringBuilder sb = new StringBuilder();
             Label label = new Label("", skin);
             sb.append(animal.getName())
@@ -59,14 +61,14 @@ public class AnimalPlaceShow implements Screen {
         }
 
         //label.setWrap(true);
-        TextButton isOpenButton = new TextButton(animalPlace.isOpen()?"Open":"close", skin);
-        isOpenButton.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                animalPlace.setOpen(!animalPlace.isOpen());
-                isOpenButton.setText(animalPlace.isOpen()?"Open":"close");
-            }
-        });
-        table.add(isOpenButton);
+//        TextButton isOpenButton = new TextButton(animalPlace.isOpen()?"Open":"close", skin);
+//        isOpenButton.addListener(new ClickListener() {
+//            public void clicked(InputEvent event, float x, float y) {
+//                animalPlace.setOpen(!animalPlace.isOpen());
+//                isOpenButton.setText(animalPlace.isOpen()?"Open":"close");
+//            }
+//        });
+//        table.add(isOpenButton);
         TextButton backButton = new TextButton("Back", skin);
         backButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {

@@ -2,6 +2,8 @@ package io.github.StardewValley.shared.models.NPCS;
 
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.saveClasses.BackPackSave;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 public class Flower implements BackPackable {
 
@@ -19,6 +21,13 @@ public class Flower implements BackPackable {
     }
     public BackPackableType getType(){
         return FlowerType.FLOWER;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(Flower.class.getSimpleName());
+        backPackableSave.setFlower(this);
+        return backPackableSave;
     }
 
     public FlowerType getFlowerType() {

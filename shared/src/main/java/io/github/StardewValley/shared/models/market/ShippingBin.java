@@ -1,9 +1,8 @@
 package io.github.StardewValley.shared.models.market;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.map.Placeable;
@@ -11,9 +10,12 @@ import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.Fruit;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
+import io.github.StardewValley.shared.models.saveClasses.ShippingBinSave;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public class ShippingBin implements Placeable, BackPackable {
     private ShippingBinType type = ShippingBinType.Basic;
@@ -22,6 +24,8 @@ public class ShippingBin implements Placeable, BackPackable {
     private Player todayItemOwner = null;
     private int tileX;
     private int tileY;
+
+    public ShippingBin() {}
 
     public ShippingBin(int x, int y, Game game) {
         game.getShippingBinBounds().put(this, new Rectangle(
@@ -32,6 +36,25 @@ public class ShippingBin implements Placeable, BackPackable {
         );
         this.tileX = x;
         this.tileY = y;
+    }
+
+    public ShippingBin(ShippingBinSave shippingBinSave, Game game) {
+        this.tileX = shippingBinSave.getTileX();
+        this.tileY = shippingBinSave.getTileY();
+        for (Player player : game.getPlayers()) {
+            if (player.getUser().getUsername().equals(shippingBinSave.getTodayItemOwner())) {
+                this.todayItemOwner = player;
+                break;
+            }
+        }
+        //TODO
+        //shippingBinSave.getItems().forEach((backPackableSave -> backPackableSave.));
+        game.getShippingBinBounds().put(this, new Rectangle(
+            this.tileX * GameAssetManager.getGameAssetManager().getTileWidth(),
+            this.tileY * GameAssetManager.getGameAssetManager().getTileHeight(),
+            GameAssetManager.getGameAssetManager().getTileWidth(),
+            GameAssetManager.getGameAssetManager().getTileHeight())
+        );
     }
 
     public void addItem(BackPackable backPackable) {
@@ -63,7 +86,7 @@ public class ShippingBin implements Placeable, BackPackable {
             //TODO
 //            Main.getGameView().showNotification("Player %s earned %.0f coins from selling the items from shipping bin."
 //                .formatted(shippingBin.todayItemOwner.getUser().getUsername(), total));
-            shippingBin.todayItemOwner.getBackPack().addCoin(
+            shippingBin.todayItemOwner.addCoin(
                 Math.floor(total));
             shippingBin.items = new ArrayList<>();
             shippingBin.todayItemOwner = null;
@@ -84,6 +107,19 @@ public class ShippingBin implements Placeable, BackPackable {
     }
 
     @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(ShippingBin.class.getSimpleName());
+        placeableSave.setShippingBinSave(new ShippingBinSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        ShippingBinSave save = dto.getShippingBinSave();
+        return new ShippingBin(dto.getShippingBinSave(), new Game());
+    }
+
+    @Override
     public String getName() {
         return type.getName();
     }
@@ -96,6 +132,13 @@ public class ShippingBin implements Placeable, BackPackable {
     @Override
     public BackPackableType getType() {
         return type;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(ShippingBin.class.getSimpleName());
+        backPackableSave.setShippingBinSave(new ShippingBinSave(this));
+        return backPackableSave;
     }
 
     public ArrayList<BackPackable> getItems() {

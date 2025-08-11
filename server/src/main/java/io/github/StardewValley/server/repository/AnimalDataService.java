@@ -1,7 +1,10 @@
 package io.github.StardewValley.server.repository;
 
 import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
+import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
 import io.github.StardewValley.shared.models.animal.AnimalType;
+import io.github.StardewValley.shared.models.enums.Direction;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,7 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class AnimalDataService {
     // برای سادگی، داده‌ها را در حافظه نگه می‌داریم
-    private final Map<String, AnimalDTO> animalDatabase = new ConcurrentHashMap<>();
+    private static final ArrayList<AnimalDTO> animalDatabase = new ArrayList<>();
+    private static final ArrayList<AnimalPlaceDTO> animalPlaceDatabase = new ArrayList<>();
 
     public AnimalDataService() {
         // اضافه کردن داده تستی
@@ -22,18 +26,50 @@ public class AnimalDataService {
         testCow.setAnimalType(AnimalType.Cow);
         testCow.setX(100);
         testCow.setY(100);
-        animalDatabase.put("1", testCow);
+        testCow.setDirection(Direction.Up);
+        animalDatabase.add( testCow);
+        AnimalDTO testPig = new AnimalDTO("pigg",AnimalType.Pig,200,200);
+        testPig.setDirection(Direction.Up);
+        testPig.setId("2");
+        animalDatabase.add( testPig);
+        animalPlaceDatabase.add(new AnimalPlaceDTO("1", AnimalPlaceType.Barn,1000,1000,true));
     }
 
-    public List<AnimalDTO> findAll() {
-        return new ArrayList<>(animalDatabase.values());
+    public static List<AnimalDTO> findAll() {
+        return animalDatabase;
     }
 
-    public AnimalDTO findById(String id) {
-        return animalDatabase.get(id);
+    public static AnimalDTO findById(String id) {
+        for(AnimalDTO animalDTO:animalDatabase) {
+            if(animalDTO.getId().equals(id)) {
+                return animalDTO;
+            }
+        }
+        return null;
     }
 
-    public void save(AnimalDTO animal) {
-        animalDatabase.put(animal.getId(), animal);
+    public static void save(AnimalDTO animal) {
+        for (int i = 0; i < animalDatabase.size(); i++) {
+            if (animalDatabase.get(i).getId().equals(animal.getId())) {
+                animalDatabase.set(i, animal);
+                return;
+            }
+        }
+        animalDatabase.add(animal);
+    }
+
+    public static List<AnimalPlaceDTO> findAllPlaces() {
+        return animalPlaceDatabase;
+    }
+    public static AnimalPlaceDTO findPlaceById(String id) {
+        for(AnimalPlaceDTO animalPlaceDTO:animalPlaceDatabase) {
+            if(animalPlaceDTO.getId().equals(id)) {
+                return animalPlaceDTO;
+            }
+        }
+        return null;
+    }
+    public static void savePlace(AnimalPlaceDTO place) {
+        animalPlaceDatabase.add(place);
     }
 }

@@ -1,14 +1,15 @@
 package io.github.StardewValley.shared.models.cooking;
 
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.backpack.BackPack;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
 public class Food implements BackPackable {
     private FoodType foodtype;
     private int count;
     private Recipe recipe;
+
     public Food(FoodType foodtype){
         this.foodtype = foodtype;
     }
@@ -25,6 +26,13 @@ public class Food implements BackPackable {
     @Override
     public BackPackableType getType() {
         return foodtype;
+    }
+
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(Food.class.getSimpleName());
+        backPackableSave.setFood(this);
+        return backPackableSave;
     }
 
 

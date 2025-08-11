@@ -26,7 +26,7 @@ public class PlayerClient {
     private boolean hasPassedOutToday = false;
     private int x;
     private int y;
-    private int coin = 550;
+    private double coin = 550;
     private float speed = 1000f;
     private transient Animation<TextureRegion> walkUpAnimation;
     private transient Animation<TextureRegion> walkDownAnimation;
@@ -140,11 +140,11 @@ public class PlayerClient {
 
     }
 
-    public int getCoin() {
+    public double getCoin() {
         return coin;
     }
 
-    public void setCoin(int coin) {
+    public void setCoin(double coin) {
         this.coin = coin;
     }
 

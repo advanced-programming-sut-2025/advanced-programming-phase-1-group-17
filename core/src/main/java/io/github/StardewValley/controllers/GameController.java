@@ -4,11 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.UIControllers.*;
+import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
+import io.github.StardewValley.shared.dto.CraftingItemDTO;
 import io.github.StardewValley.controllers.helperControllers.ToolRenderController;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
@@ -17,6 +22,9 @@ import io.github.StardewValley.views.*;
 import io.github.StardewValley.views.GameView;
 import io.github.StardewValley.views.MapView;
 import models.PlayerClient;
+
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class GameController {
     public GameView view;
@@ -87,7 +95,7 @@ public class GameController {
         camera.update();
     }
 
-    public void updateGame(float delta) {
+    public void updateGame(float delta) throws Exception {
         if (view != null) {
             PlayerDto pd = null;
             try {
@@ -180,6 +188,68 @@ public class GameController {
 
     public OrthographicCamera getCamera() {
         return camera;
+    }
+    public boolean handleAnimalClick(Vector3 worldCoordinates) throws Exception {
+        ArrayList<AnimalDTO> animalsFromServer = GameClient.getGameStateApiClient().getAllAnimals();
+        System.out.println("vector : " + worldCoordinates.x + ", " + worldCoordinates.y );
+        // از لیست محلی حیوانات که از سرور آپدیت می‌شود، استفاده کن
+        if (animalsFromServer != null) {
+            for (AnimalDTO animal : animalsFromServer) {
+                System.out.println(animal.getAnimalType().name() +" "+animal.getHitBox());
+
+                // hitbox را در لحظه و با داده‌های DTO بساز
+
+                if (animal.getHitBox().contains(worldCoordinates.x, worldCoordinates.y)) {
+                    System.out.println("SUCCESS: Clicked on animal " + animal.getName());
+                    try {
+                        // فرمان را به سرور بفرست
+                        GameClient.gameStateApiClient.petAnimal(animal.getId());
+                        return true;
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true; // <<-- مهم: یعنی کلیک مدیریت شد
+                }
+            }
+        }
+        return false; // <<-- مهم: یعنی روی هیچ حیوانی کلیک نشده
+    }
+    public boolean handleAnimalFeed(Vector3 worldCoordinates) throws Exception {
+        ArrayList<AnimalDTO> animalsFromServer = GameClient.getGameStateApiClient().getAllAnimals();
+        System.out.println("vector : " + worldCoordinates.x + ", " + worldCoordinates.y );
+        // از لیست محلی حیوانات که از سرور آپدیت می‌شود، استفاده کن
+        if (animalsFromServer != null) {
+            for (AnimalDTO animal : animalsFromServer) {
+                System.out.println(animal.getAnimalType().name() +" "+animal.getHitBox());
+
+                // hitbox را در لحظه و با داده‌های DTO بساز
+
+                if (animal.getHitBox().contains(worldCoordinates.x, worldCoordinates.y)) {
+                    System.out.println("SUCCESS: Clicked on animal " + animal.getName());
+                    try {
+                        // فرمان را به سرور بفرست
+                        GameClient.gameStateApiClient.feedAnimal(animal.getId());
+                        return true;
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true; // <<-- مهم: یعنی کلیک مدیریت شد
+                }
+            }
+        }
+        return false; // <<-- مهم: یعنی روی هیچ حیوانی کلیک نشده
+    }
+    public boolean handleAnimalPlaceClick(Vector3 worldCoordinates) throws Exception {
+        for(AnimalPlaceDTO animalPlaceDTO : GameClient.gameStateApiClient.getAllAnimalPlaces()){
+            if(animalPlaceDTO.getHitBox().contains(worldCoordinates.x, worldCoordinates.y)){
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new AnimalPlaceShow(GameAssetManagerClient.getGameAssetManager().getSkin(), view,animalPlaceDTO));
+                return true;
+            }
+        }
+        return false;
     }
 
     public void handlePlayerInput() {

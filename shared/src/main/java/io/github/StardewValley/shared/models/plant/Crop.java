@@ -5,6 +5,10 @@ import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.ItemQuality;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.CropSave;
+import io.github.StardewValley.shared.models.saveClasses.Pair;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,39 @@ public class Crop extends Plant implements BackPackable, Placeable {
         this.type = type;
         this.daysTillNextHarvest = 0;
     }
+
+    public Crop(CropSave save) {
+        this.isInsideGreenhouse = save.isInsideGreenhouse();
+        this.isWateredToday = save.isWateredToday();
+        this.hasFruit = save.hasFruit();
+        this.isFullyGrown = save.isFullyGrown();
+        this.isForaging = save.isForaging();
+        this.currentStageIndex = save.getCurrentStageIndex();
+        this.whichDayOfStage = save.getWhichDayOfStage();
+        this.fertilizerType = save.getFertilizerType();
+        this.daysWithoutWater = save.getDaysWithoutWater();
+        this.daysTillNextHarvest = save.getDaysTillNextHarvest();
+
+        this.type = save.getType();
+        this.isGiant = save.isGiant();
+        this.isLeftBottomTileOfGiant = save.isLeftBottomTileOfGiant();
+        this.quality = save.getQuality();
+
+        // restore tile position
+        //TODO Save
+        //this.tile = new Tile(save.getTileX(), save.getTileY());
+
+        // restore neighbor giant tiles (will need to look them up from the world)
+        this.neighborGiantTiles = new ArrayList<>();
+        //TODO Save
+//        for (Pair<Integer, Integer> coords : save.getNeighbourGiantTilesCoordinates()) {
+//            Tile neighborTile = new Tile(coords.getFirst(), coords.getSecond());
+//            Crop neighborCrop = new Crop(); // blank crop placeholder
+//            neighborCrop.setTile(neighborTile);
+//            this.neighborGiantTiles.add(neighborCrop);
+//        }
+    }
+
 
     public void checkCouldBeGiant() {
         if (isForaging || type == null || !type.isCanBecomeGiant() || isInsideGreenhouse)
@@ -211,6 +248,11 @@ public class Crop extends Plant implements BackPackable, Placeable {
         return type;
     }
 
+    @Override
+    public BackPackableSave toBackpackableSave() {
+        return null;
+    }
+
     public void setType(CropType type) {
         this.type = type;
     }
@@ -313,6 +355,18 @@ public class Crop extends Plant implements BackPackable, Placeable {
         if (isForaging)
             return type.getInventoryTexturePath();
         return CropAssetManager.getCropAssetManager().getStageTexture(this.currentStageIndex, type);
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(Crop.class.getSimpleName());
+        placeableSave.setCropSave(new CropSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return new Crop(dto.getCropSave());
     }
 
     public boolean isLeftBottomTileOfGiant() {

@@ -7,8 +7,10 @@ import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.foraging.Mineral;
 import io.github.StardewValley.shared.models.foraging.MineralType;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.Tree;
+import io.github.StardewValley.shared.models.saveClasses.TileSave;
 
 import java.util.ArrayList;
 
@@ -22,12 +24,36 @@ public class Tile {
     private NPC npcIsHere;
     private boolean crowImmunity = false;
     private static ArrayList<Tile> tiles = new ArrayList<Tile>();
-    private static ArrayList<Tile> treeTile = new ArrayList<Tile>();
+
+    public Tile() {}
 
     public Tile(int x, int y, Player owner) {
         this.x = x;
         this.y = y;
         this.owner = owner;
+        tiles.add(this);
+    }
+
+    public Tile(TileSave tileSave, Game game) {
+        this.x = tileSave.getX();
+        this.y = tileSave.getY();
+        this.isWalkAble = tileSave.isWalkAble();
+        this.isPlowed = tileSave.isPlowed();
+
+        game.getPlaceableFromSave(this, tileSave);
+        for (Player player : game.getPlayers()) {
+            if (player.getUser().getUsername().equals(tileSave.getOwner())) {
+                this.owner = player;
+                break;
+            }
+        }
+        for (NPC npc : game.getNPCs()) {
+            if (npc.getName().equals(tileSave.getOwner())) {
+                this.npcIsHere = npc;
+                break;
+            }
+        }
+        this.crowImmunity = tileSave.isCrowImmunity();
         tiles.add(this);
     }
 
@@ -57,23 +83,15 @@ public class Tile {
 
     public void setPlaceable(Placeable placeable) {
         if (owner.getUser().getActiveGame() == null) {
-            if (!(placeable instanceof Tree) && treeTile.contains(this)) {
-                treeTile.remove(this);
-            }
             this.placeable = placeable;
             if (placeable instanceof Tree) {
                 this.setWalkAble(false);
-                treeTile.add(this);
             }
         }
         else {
-            if (!(placeable instanceof Tree) && owner.getUser().getActiveGame().getTreeTile().contains(this)) {
-                treeTile.remove(this);
-            }
             this.placeable = placeable;
             if (placeable instanceof Tree) {
                 this.setWalkAble(false);
-                owner.getUser().getActiveGame().getTreeTile().add(this);
             }
         }
     }
@@ -188,9 +206,7 @@ public class Tile {
         return getTile(tx, ty);
     }
 
-
-    public static ArrayList<Tile> getTreeTile() {
-        return treeTile;
+    public static void setTiles(ArrayList<Tile> tiles) {
+        Tile.tiles = tiles;
     }
-
 }

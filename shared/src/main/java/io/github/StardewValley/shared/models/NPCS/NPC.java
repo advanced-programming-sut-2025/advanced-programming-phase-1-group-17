@@ -2,25 +2,29 @@ package io.github.StardewValley.shared.models.NPCS;
 
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.UserDTO;
+import io.github.StardewValley.shared.models.map.Placeable;
+import io.github.StardewValley.shared.models.saveClasses.NPCSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
-abstract public class NPC {
-    private int x;
-    private int y;
+abstract public class NPC implements Placeable {
+    protected int x;
+    protected int y;
     private static UserDTO fatherUser;
     private static Player fatherPlayer;
-    private String name;
-    private ArrayList<String> favorites;
+    protected String name;
+    protected String job;
+    protected ArrayList<String> favorites = new ArrayList<>();
     public boolean isNPC;
     public int x_start;
     public int y_start;
-    private int Tile_x;
-    private int Tile_y;
+    protected int Tile_x;
+    protected int Tile_y;
     public ArrayList<String> dialogueText = new ArrayList<>();
-    private ArrayList<Quest> requests = new ArrayList<>();
+    protected ArrayList<Quest> requests = new ArrayList<>();
 
     public ArrayList<Quest> getRequests() {
         return requests;
@@ -84,6 +88,10 @@ abstract public class NPC {
         return dialogueText.get(randomInt);
     }
 
+    public ArrayList<String> getDialogueTexts() {
+        return dialogueText;
+    }
+
     public int getTile_x() {
         return Tile_x;
     }
@@ -100,4 +108,39 @@ abstract public class NPC {
         Tile_y = tile_y;
     }
 
+    public static UserDTO getFatherUser() {
+        return fatherUser;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public int getX_start() {
+        return x_start;
+    }
+
+    public int getY_start() {
+        return y_start;
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(this.name);
+        placeableSave.setNPCSave(new NPCSave(this));
+        return placeableSave;
+    }
+
+    @Override
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        NPCSave save = dto.getNPCSave();
+        return switch (dto.getType()) {
+            case "Abigail" -> new Abigail(save, playerList);
+            case "Sebastian" -> new Sebastian(save, playerList);
+            case "Lia" -> new Lia(save, playerList);
+            case "Harvey" -> new Harvey(save, playerList);
+            case "Robin" -> new Robin(save, playerList);
+            default -> null;
+        };
+    }
 }

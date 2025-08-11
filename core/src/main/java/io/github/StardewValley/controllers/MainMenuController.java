@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.TokenStorage;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.UIControllers.LoadSavedGamesController;
 import io.github.StardewValley.views.*;
 
 public class MainMenuController {
@@ -37,6 +38,15 @@ public class MainMenuController {
                 }
             }
         );
+        view.getLoadSavedGamesButton().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(new LoadSavedGamesScreen(
+                    new LoadSavedGamesController(), GameAssetManagerClient.getGameAssetManager().getSkin()
+                ));
+            }
+        });
 
     }
 

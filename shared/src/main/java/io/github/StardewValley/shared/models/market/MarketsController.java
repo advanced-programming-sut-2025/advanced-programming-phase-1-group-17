@@ -2,7 +2,7 @@ package io.github.StardewValley.shared.models.market;
 
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
 import io.github.StardewValley.shared.models.NPCS.Ring;
@@ -28,6 +28,7 @@ import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.foraging.Mineral;
 import io.github.StardewValley.shared.models.plant.*;
+import io.github.StardewValley.shared.models.saveClasses.MarketsControllerSave;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolMaterial;
 import io.github.StardewValley.shared.models.tools.ToolType;
@@ -43,6 +44,19 @@ public class MarketsController {
     private final Map<StoreType, StoreInventory> shopInventories = new HashMap<>();
     private final HashMap<StoreType, Store> stores = new HashMap<>();
     private final HashMap<StoreType, Rectangle> storeBounds = new HashMap<>();
+
+    public MarketsController() {}
+
+    public MarketsController(MarketsControllerSave save) {
+        int tileWidth = GameAssetManager.getGameAssetManager().getTileWidth();
+        int tileHeight = GameAssetManager.getGameAssetManager().getTileHeight();
+        save.getShopInventories().forEach((inventory) -> this.shopInventories.put(inventory.getStoreType(), inventory));
+        save.getStores().forEach((store -> {
+            this.stores.put(store.getType(), store);
+            this.storeBounds.put(store.getType(), new Rectangle(store.getStart_x() * tileWidth, store.getStart_y() * tileHeight,
+                store.getWidth() * tileWidth, store.getHeight() * tileHeight));
+        }));
+    }
 
     public void registerShop(StoreInventory inventory) {
         shopInventories.put(inventory.getStoreType(), inventory);
@@ -461,13 +475,11 @@ public class MarketsController {
             BackPack backPack = new BackPack(BackPackType.LargeBackPack,
                 player.getBackPack().getPlayer());
             backPack.setBackPackItems(player.getBackPack().getBackPackItems());
-            backPack.setCoin(player.getBackPack().getCoin());
             player.setBackPack(backPack);
         } else {
             BackPack backPack = new BackPack(BackPackType.DeluxeBackPack,
                 player.getBackPack().getPlayer());
             backPack.setBackPackItems(player.getBackPack().getBackPackItems());
-            backPack.setCoin(player.getBackPack().getCoin());
             player.setBackPack(backPack);
         }
     }
@@ -656,14 +668,14 @@ public class MarketsController {
         useIngredients(shopItem, player);
 
         double price = calculatePrice(shopItem, count, storeType, season);
-        if (player.getBackPack().getCoin() < price) {
+        if (player.getCoin() < price) {
             return new Result(false, "you have only %.2f dollars left(not enough money)".formatted(
-                player.getBackPack().getCoin()));
+                player.getCoin()));
         }
 
         //purchasing
         shopItem.setSoldToday(shopItem.getSoldToday() + count);
-        player.getBackPack().addcoin(-price);
+        player.addcoin(-price);
         if (shopItem.getType().equals(BackPackType.LargeBackPack) || shopItem.getType().equals(BackPackType.DeluxeBackPack))
             purchaseBackpack(shopItem, player);
 
@@ -687,7 +699,7 @@ public class MarketsController {
                 player.getBackPack().addItemToInventory((BackPackable) addItem(shopItem.getName(), player, game).get(1));
             }
         }
-        return new Result(true, "Purchased successfully. New Balance: %.0f".formatted(player.getBackPack().getCoin()));
+        return new Result(true, "Purchased successfully. New Balance: %.0f".formatted(player.getCoin()));
     }
 
     private double calculatePrice(ShopItem shopItem, int count, StoreType storeType, Season season) {
@@ -704,5 +716,13 @@ public class MarketsController {
 
     public HashMap<StoreType, Rectangle> getStoreBounds() {
         return storeBounds;
+    }
+
+    public Map<StoreType, StoreInventory> getShopInventories() {
+        return shopInventories;
+    }
+
+    public HashMap<StoreType, Store> getStores() {
+        return stores;
     }
 }

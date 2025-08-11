@@ -1,12 +1,17 @@
 package io.github.StardewValley.server.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
 import io.github.StardewValley.server.controller.logicControllers.FarmingController;
 import io.github.StardewValley.server.controller.logicControllers.GameWorldController;
 import io.github.StardewValley.server.controller.logicControllers.ToolController;
+import io.github.StardewValley.server.model.GameSaveService;
 import io.github.StardewValley.server.model.User;
+import io.github.StardewValley.shared.models.game.VotingSession;
+import io.github.StardewValley.server.repository.GameSaveRepository;
 import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.dto.*;
@@ -21,6 +26,7 @@ import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 import io.github.StardewValley.shared.models.backpack.*;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
+import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.enums.Gender;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
@@ -28,21 +34,20 @@ import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
 import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
+import io.github.StardewValley.shared.models.game.Game;
+import io.github.StardewValley.shared.models.game.GameState;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.market.MarketsController;
-import io.github.StardewValley.shared.models.market.ShippingBin;
-import io.github.StardewValley.shared.models.market.StoreInventory;
+import io.github.StardewValley.shared.models.market.*;
 import io.github.StardewValley.shared.models.plant.Fertilizer;
 import io.github.StardewValley.shared.models.plant.Sapling;
 import io.github.StardewValley.shared.models.plant.Seed;
+import io.github.StardewValley.shared.models.saveClasses.FullGameDTO;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
-import org.apache.logging.log4j.message.Message;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -56,9 +61,11 @@ public class GameStateController {
     private final GameWorldController gameWorldController = new GameWorldController();
 
     private final UserRepository userRepository;
+    private final GameSaveRepository gameSaveRepository;
     private final JwtService jwtService;
 
-    public GameStateController(UserRepository userRepository, JwtService jwtService) {
+    public GameStateController(UserRepository userRepository, JwtService jwtService, GameSaveRepository gameSaveRepository) {
+        this.gameSaveRepository = gameSaveRepository;
         this.userRepository = userRepository;
         this.jwtService = jwtService;
     }
@@ -84,11 +91,24 @@ public class GameStateController {
                 }
             }
         }
+        VotingSession voting = game.getVotingSession();
+        String targetUsername = null;
+        VotingSession.VotingType type = null;
+        if (voting != null) {
+            type = voting.getType();
+            targetUsername = voting.getTargetPlayer() != null
+                ? voting.getTargetPlayer().getUser().getUsername()
+                : null;
+        }
+
         return ResponseEntity.ok(new GameState(
             craftingItemDTOs,
             tileDTOs,
             game.getLightningLogicController().getLightningStateDTO(),
-            TimeAndDate.getDTO(game.getDate())
+            TimeAndDate.getDTO(game.getDate()),
+            voting != null && voting.isActive(),
+            targetUsername,
+            type
         ));
     }
 
@@ -157,6 +177,110 @@ public class GameStateController {
         String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(username);
     }
+    @PostMapping("/catch")
+    public ResponseEntity<Void> submitFishingCatch(
+        @RequestHeader("Authorization") String token,
+        @RequestBody FishingResultDTO result) {
+
+        // TODO: بازیکن را از روی توکن پیدا کنید
+         Player player = getPlayerFromToken(token);
+         System.out.println(result);
+
+        int index = ItemQuality.valueOf(result.getQuality().name()).ordinal();
+        if(result.isPerfectCatch()){
+            ItemQuality[]qualities = ItemQuality.values();
+            if(index!=3){
+                index++;
+            }
+        }
+        if(result.getFish()==null){
+            System.out.println("fish in null");
+            result.setFish(new Fish(FishType.SunFish,ItemQuality.Silver));
+        }
+
+        result.getFish().setQuality(ItemQuality.values()[index]);
+        for(int i=0;i<result.getFishCount();i++){
+            player.getBackPack().addItemToInventory(result.getFish());
+        }
+        System.out.println("Player caught a " + result.getQuality() + " " + result.getFishType());
+
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/creatFish") // از POST استفاده می‌کنیم چون ممکن است بعدا وضعیت را تغییر دهد
+    public ResponseEntity<FishingResultDTO> calculateFishCatch(@RequestHeader("Authorization") String token) {
+
+        // ۱. بازیکن و بازی فعلی را از روی توکن پیدا کن
+        Player player = getPlayerFromToken(token); // فرض می‌کنیم این متد را دارید
+        Game game = AppServer.getCurrentGame();
+
+        if (player == null || game == null) {
+            return ResponseEntity.status(400).build(); // Bad Request
+        }
+
+        double R = Math.random();
+        double M = 1;
+        TimeAndDate date = game.getDate();
+        switch (date.getTodayWeatherType()) {
+            case Sunny -> M = 1.5;
+            case Rainy -> M = 1.2;
+            case Storm -> M = 0.5;
+            default -> M = 1;
+        }
+        FishingPoleType fishingPoleType = player.getCurrentTool().getFishingPoleMaterial();
+        if (player.getCurrentTool() != null && player.getCurrentTool().getFishingPoleMaterial() != null) {
+            fishingPoleType = player.getCurrentTool().getFishingPoleMaterial();
+        } else {
+            // یک حالت پیش‌فرض در نظر بگیرید
+            fishingPoleType = FishingPoleType.TrainingFishingPole;
+        }
+        int level = player.getAbilities().getFishingLevel();
+        int count = (int) Math.ceil(R * M * (level + 2));
+        count = Math.min(6, count);
+        double pole = fishingPoleType.getPole();
+        double qualityInt = ((R * (level + 2) * pole) / (7 - M));
+        ItemQuality quality;
+        if (qualityInt < 0.5) {
+            quality = ItemQuality.Regular;
+        } else if (qualityInt < 0.7) {
+            quality = ItemQuality.Silver;
+        } else if (qualityInt < 0.9) {
+            quality = ItemQuality.Gold;
+        } else {
+            quality = ItemQuality.Iridium;
+        }
+        Fish fish = new Fish(null, null);
+        ArrayList<FishType> fishes = new ArrayList<>();
+        if (fishingPoleType.equals(FishingPoleType.TrainingFishingPole)) {
+            fishes.addAll(new ArrayList<>(Arrays.asList
+                (FishType.Sardine, FishType.Perch, FishType.Herring, FishType.SunFish)));
+        } else {
+            for (FishType fishType : FishType.values()) {
+                if (fishType.getSeason().equals(date.getSeason())) {
+                    fishes.add(fishType);
+                }
+            }
+        }
+        if(fishes.isEmpty()){
+            System.out.println("fishes is empty");
+        }
+        if (player.getAbilities().getFishingLevel() != 4) {
+            ArrayList<FishType> fishesToRemove = new ArrayList<>();
+            for (FishType fishType : fishes) {
+                if (fishType.isLegendary()) {
+                    fishesToRemove.add(fishType);
+                }
+            }
+            fishes.removeAll(fishesToRemove);
+        }
+        Random rand = new Random();
+        FishType randomElement = fishes.get(rand.nextInt(fishes.size()));
+        fish.setFishType(randomElement);
+        fish.setQuality(quality);
+
+        player.getAbilities().increaseFishingAbility();
+        return ResponseEntity.ok(new FishingResultDTO(fish,count,quality));
+
+    }
 
     @PostMapping("/exitGame")
     public ResponseEntity<Boolean> exitGame(@RequestHeader("Authorization") String authHeader) {
@@ -169,7 +293,7 @@ public class GameStateController {
             p.getUser().setLastGame(AppServer.getCurrentGame());
             p.getUser().setActiveGame(null);
             if (p.isGuest()) continue;
-            p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getBackPack().getCoin()));
+            p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getCoin()));
             UserDTO userDTO = p.getUser();
             user.setEmail(userDTO.getEmail());
             user.setAvatar(userDTO.getAvatar());
@@ -182,7 +306,16 @@ public class GameStateController {
             user.setPasswordHash(userDTO.getPasswordHash());
             userRepository.save(user);
         }
+        Game game = AppServer.getCurrentGame();
         AppServer.setCurrentGame(null);
+
+        GameSaveService gameSaveService = new GameSaveService(gameSaveRepository, new ObjectMapper());
+        try {
+            gameSaveService.saveGame(game.getId(), new FullGameDTO(game), game.getCreator().getUser().getUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        }
         return ResponseEntity.ok(true);
     }
 
@@ -223,7 +356,7 @@ public class GameStateController {
             dateString,
             game.getDate().getSeason().toString(), // فرض می‌کنیم Season یک enum است
             game.getDate().getTodayWeatherType().toString(), // فرض می‌کنیم Weather یک enum است
-            (int) player.getBackPack().getCoin(),
+            (int) player.getCoin(),
             player.getEnergy(),
             player.getMaxEnergy(),
             player.isEnergyUnlimited(),
@@ -502,9 +635,9 @@ public class GameStateController {
     public ResponseEntity<Result> buildGreenhouse(@RequestHeader("Authorization") String token) {
         System.out.println("bildGreenhouse request recieved");
         Player player = getPlayerFromToken(token);
-        if (player.getBackPack().getCoin() < 1000) {
+        if (player.getCoin() < 1000) {
             return ResponseEntity.ok(new Result(false, "You only have %.2f coin. (not enough)".formatted(
-                player.getBackPack().getCoin())));
+                player.getCoin())));
         }
 
         int woodCount = player.getBackPack().getInventorySize(NormalItemType.Wood.getName());
@@ -512,7 +645,7 @@ public class GameStateController {
             return ResponseEntity.ok(new Result(false, "You only have %d wood. (not enough wood)".formatted(woodCount)));
         }
 
-        player.getBackPack().addCoin(-1000);
+        player.addCoin(-1000);
         for (int i = 0; i < 500; i++)
             player.getBackPack().useItem(NormalItemType.Wood);
 
@@ -728,7 +861,7 @@ public class GameStateController {
                             + " : " + massage + "\n");
                         player.addFriendShips(currentPlayer, player.getFriendShips().get(currentPlayer) + 20);
                         currentPlayer.addFriendShips(player, currentPlayer.getFriendShips().get(player) + 20);
-                        message message = new message(currentPlayer, massage);
+                        Message message = new Message(currentPlayer, massage);
                         player.addMessage(message);
                         if (player.getPartner().equals(currentPlayer) && !player.isInteractionWithPartner()) {
                             player.setEnergy(player.getEnergy() + 50);
@@ -789,7 +922,7 @@ public class GameStateController {
                                     player.setEnergy(player.getEnergy() + 50);
                                     currentPlayer.setEnergy(currentPlayer.getEnergy() + 50);
                                 }
-                                message message = new message(currentPlayer, player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
+                                Message message = new Message(currentPlayer, player.getUser().getUsername() + ", you have received a gift from " + currentPlayer.getUser().getUsername()
                                     + "\n" + "your gift : " + item + "\n" + "your gift amount : " + amount + "\n"
                                     + "please rate this gift between one and five Whenever you have time ");
                                 player.addMessage(message);
@@ -952,7 +1085,7 @@ public class GameStateController {
                             } else if (currentPlayer.getBackPack().getInventorySize(ring) < 1) {
                                 return ResponseEntity.ok(new Result(false, "you haven't Ring for ask marriage"));
                             } else {
-                                message message = new message(currentPlayer, "ask for marriage with "
+                                Message message = new Message(currentPlayer, "ask for marriage with "
                                     + getPlayerFromToken(token).getUser().getUsername());
                                 player.getMessage().add(message);
                                 return ResponseEntity.ok(new Result(true, "your marriage request has been sent"));
@@ -972,7 +1105,7 @@ public class GameStateController {
     @PostMapping("/respond")
     public ResponseEntity<Result> respond(@RequestHeader("Authorization") String token, @RequestParam String accept, @RequestParam String username) {
         Player currentPlayer = getPlayerFromToken(token);
-        for (message m : currentPlayer.getMessage()) {
+        for (Message m : currentPlayer.getMessage()) {
             if (m.getMessage().startsWith("ask for marriage")) {
                 for (Player player : AppServer.getCurrentGame().getPlayers()) {
                     if (player.getUser().getUsername().equals(username)) {
@@ -980,24 +1113,24 @@ public class GameStateController {
                             if (accept.trim().equals("accept")) {
                                 BackPackable b = player.getBackPack().useItem("Ring");
                                 currentPlayer.getBackPack().addItemToInventory(b);
-                                ArrayList<message> temp = new ArrayList<message>();
-                                for (message message : player.getMessage()) {
+                                ArrayList<Message> temp = new ArrayList<Message>();
+                                for (Message message : player.getMessage()) {
                                     if (m.getMessage().startsWith("ask for marriage")) {
                                         temp.add(message);
                                     }
                                 }
-                                for (message message : temp) {
+                                for (Message message : temp) {
                                     player.getMessage().remove(message);
                                 }
                                 if (player.getFriendShips().get(currentPlayer) < 400) {
                                     player.getFriendShips().put(currentPlayer, 400);
                                     currentPlayer.getFriendShips().put(player, 400);
                                 }
-                                player.getBackPack().addCoin(currentPlayer.getBackPack().getCoin());
-                                currentPlayer.getBackPack().addCoin(player.getBackPack().getCoin());
+                                player.addCoin(currentPlayer.getCoin());
+                                currentPlayer.addCoin(player.getCoin());
                                 player.setPartner(currentPlayer);
                                 currentPlayer.setPartner(player);
-                                message m1 = new message(getPlayerFromToken(token)
+                                Message m1 = new Message(getPlayerFromToken(token)
                                     , "oh my God, I was taken by surprise. I thought about it. I accept");
                                 player.addMessage(m1);
                                 return ResponseEntity.ok(new Result(true, "Congratulations, you got married"));
@@ -1005,16 +1138,16 @@ public class GameStateController {
                                 player.setIsbrokenUp(7);
                                 player.getFriendShips().put(currentPlayer, 0);
                                 currentPlayer.getFriendShips().put(player, 0);
-                                ArrayList<message> temp = new ArrayList<message>();
-                                for (message message : player.getMessage()) {
+                                ArrayList<Message> temp = new ArrayList<Message>();
+                                for (Message message : player.getMessage()) {
                                     if (m.getMessage().startsWith("ask for marriage with ")) {
                                         temp.add(message);
                                     }
                                 }
-                                for (message message : temp) {
+                                for (Message message : temp) {
                                     player.getMessage().remove(message);
                                 }
-                                message m1 = new message(getPlayerFromToken(token), "i do not intend to marry");
+                                Message m1 = new Message(getPlayerFromToken(token), "i do not intend to marry");
                                 player.addMessage(m1);
                                 return ResponseEntity.ok(new Result(true, "request was rejected"));
                             }
@@ -1108,7 +1241,7 @@ public class GameStateController {
         if (index >= getPlayerFromToken(token).getMessage().size()) {
             return ResponseEntity.ok(new Result(false, "there are no messages with this index"));
         } else {
-            message message = getPlayerFromToken(token).getMessage().get(index);
+            Message message = getPlayerFromToken(token).getMessage().get(index);
             getPlayerFromToken(token).getMessage().remove(message);
             return ResponseEntity.ok(new Result(true, "message delete successfully"));
         }
@@ -1325,14 +1458,15 @@ public class GameStateController {
         return ResponseEntity.ok(list);
     }
 
+
     @PostMapping("/tradeRequest")
     public ResponseEntity<Void> tradeRequest(@RequestHeader("Authorization") String token, @RequestParam String username) {
-        message message = new message(getPlayerFromToken(token), "you have a trade request from "
+        Message message = new Message(getPlayerFromToken(token), "you have a trade request from "
             + getPlayerFromToken(token).getUser().getUsername());
         boolean temp = false;
         for (Player p : AppServer.getCurrentGame().getPlayers()) {
             if (p.getUser().getUsername().equals(username)) {
-                for (message m : p.getMessages()) {
+                for (Message m : p.getMessages()) {
                     if (m.getMessage().equals(message.getMessage())) {
                         temp = true;
                         break;
@@ -1352,8 +1486,8 @@ public class GameStateController {
     @GetMapping("/initAcceptTradeRequest")
     public ResponseEntity<Result> initAcceptTradeRequest(@RequestHeader("Authorization") String token, @RequestParam String username) {
         Player player = getPlayerFromToken(token);
-        message m1 = null;
-        for (message m : player.getMessages()) {
+        Message m1 = null;
+        for (Message m : player.getMessages()) {
             if (m.getMessage().equals("you have a trade request from " + username)) {
                 m1 = m;
                 break;
@@ -1455,6 +1589,109 @@ public class GameStateController {
         p2.setSuggestions(new HashMap<String, Integer>());
         return ResponseEntity.ok().build();
 
+    }
+
+
+    @PostMapping("/game/vote/getVoteCandidates")
+    public ResponseEntity<GetVoteCandidatesResponse> getVoteCandidates(@RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+        ArrayList<String> response = new ArrayList<>();
+        for (Player candidate : game.getPlayers()) {
+            if (candidate.isGuest() || player.equals(candidate))
+                continue;
+            response.add(candidate.getUser().getUsername());
+        }
+        return ResponseEntity.ok(new GetVoteCandidatesResponse(response));
+    }
+
+    @PostMapping("/game/forceTerminate")
+    public void forceTerminate(@RequestHeader("Authorization")String token) {
+        Game game = AppServer.getCurrentGame();
+
+        game.setVotingSession(new VotingSession());
+        Set<Player> players = new HashSet<>();
+        game.getPlayers().forEach((player1 -> {
+            if (!player1.isGuest())
+                players.add(player1);
+        }));
+        game.getVotingSession().start(players, VotingSession.VotingType.FORCE_TERMINATE, null, game);
+    }
+
+
+    @PostMapping("/game/forceTerminateVote")
+    public ResponseEntity<Result> forceTerminateVote(@RequestBody boolean vote,
+                                                     @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+
+        Result result = game.getVotingSession().submitVote(player, vote);
+        if (!result.successful())
+            return ResponseEntity.ok(result);
+
+        game.getVotingSession().getPlayersReceivedResult().add(player);
+
+        boolean canDelete = true;
+        for (Player gamePlayer : game.getPlayers()) {
+            if (!game.getVotingSession().getPlayersReceivedResult().contains(gamePlayer)) {
+                canDelete = false;
+                break;
+            }
+        }
+        if (canDelete)
+            game.getVotingSession().setActive(false);
+
+        if (result.message().equals("Game Terminated successfully") && canDelete)
+            AppServer.setCurrentGame(null);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/game/vote/candidate")
+    public void startVoting(@RequestBody String candidate,
+                            @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+
+        VotingSession votingSession = new VotingSession();
+        Set<Player> players = new HashSet<>();
+        Player targetPlayer = null;
+        for (Player gamePlayer : game.getVotingSession().getPlayers()) {
+            if (gamePlayer.getUser().getUsername().equals(candidate))
+                targetPlayer = gamePlayer;
+            if (gamePlayer.isGuest())
+                continue;
+            players.add(gamePlayer);
+        }
+        votingSession.start(players, VotingSession.VotingType.KICK_PLAYER, player, game);
+        System.out.println("Voting started.");
+        game.setVotingSession(votingSession);
+    }
+
+    @PostMapping("/game/vote/vote")
+    public ResponseEntity<Result> vote(@RequestBody boolean vote,
+                                       @RequestHeader("Authorization") String token) {
+        Player player = getPlayerFromToken(token);
+        Game game = AppServer.getCurrentGame();
+
+        Result result = game.getVotingSession().submitVote(player, vote);
+        if (!result.successful())
+            return ResponseEntity.ok(result);
+
+        game.getVotingSession().getPlayersReceivedResult().add(player);
+
+        boolean canDelete = true;
+        for (Player gamePlayer : game.getVotingSession().getPlayers()) {
+            if (!game.getVotingSession().getPlayersReceivedResult().contains(gamePlayer)) {
+                canDelete = false;
+                break;
+            }
+        }
+        if (canDelete)
+            game.getVotingSession().setActive(false);
+
+        if (!result.message().equals("Game resuming...") && canDelete)
+            game.getPlayers().remove(game.getVotingSession().getTargetPlayer());
+        return ResponseEntity.ok(result);
     }
 
 }

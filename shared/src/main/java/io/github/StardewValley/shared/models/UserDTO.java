@@ -2,6 +2,7 @@ package io.github.StardewValley.shared.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.models.enums.Gender;
+import io.github.StardewValley.shared.models.game.Game;
 
 public class UserDTO {
     /*

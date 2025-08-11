@@ -3,7 +3,7 @@ package io.github.StardewValley.server.controller.logicControllers;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
-import io.github.StardewValley.shared.models.Game;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.TimeAndDate;
 import io.github.StardewValley.shared.models.animal.Animal;
@@ -591,7 +591,7 @@ public class ToolController {
     public void handleRefund(BackPackable backPackable, Player player) {
         double refundPercentage = player.getTrashCan().getTrashCanRefundPercentage() / 100.0;
         double refund = backPackable.getType().getPrice() * refundPercentage;
-        player.getBackPack().addCoin(refund);
+        player.addCoin(refund);
     }
 
 }

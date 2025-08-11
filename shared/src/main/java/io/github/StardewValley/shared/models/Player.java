@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,21 +12,26 @@ import io.github.StardewValley.shared.models.NPCS.Talk;
 import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.cooking.*;
+import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.backpack.BackPackType;
+import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.enums.Gender;
+import io.github.StardewValley.shared.models.market.ShippingBin;
+import io.github.StardewValley.shared.models.plant.Crop;
+import io.github.StardewValley.shared.models.saveClasses.*;
 import io.github.StardewValley.shared.models.tools.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class Player {
     private PlayerMap playerMap;
+    private UUID activeGameID;
     private UserDTO user;
     private boolean isGuest = false;
     private boolean isPassedOut = false;
@@ -35,9 +39,7 @@ public class Player {
     private int y;
     private Buff buff;
     private float speed = 1000f;
-    private transient Texture texture;
-    private transient String backgroundTexture;
-    private int coin = 550;
+    private double coin = 550;
     private transient Animation<TextureRegion> walkUpAnimation;
     private transient Animation<TextureRegion> walkDownAnimation;
     private transient Animation<TextureRegion> walkLeftAnimation;
@@ -60,7 +62,7 @@ public class Player {
     private boolean newMessage = false;
 
     private HashMap<Player, ArrayList<Gift>> gifts = new HashMap<Player, ArrayList<Gift>>();
-    private ArrayList<message> messages = new ArrayList<>();
+    private ArrayList<Message> Messages = new ArrayList<>();
     private ArrayList<Trade> trades = new ArrayList<>();
     private Player partner = this;
     private boolean interactionWithPartner = false;
@@ -86,59 +88,109 @@ public class Player {
     private Tool currentTool;
     private BackPackable equippedItem;
 
-    private int vegetableFarmed = 0;
-    private ArrayList<Food> foods = new ArrayList<>();
     private HashSet<Recipe> recipes = new HashSet<>();
     private Ability abilities = new Ability(this);
     private HashSet<CraftingRecipe> craftingRecipes = new HashSet<>();
 
-    private double balance;
-    private int daysSinceBrakUp = 0;
+    private int daysSinceBrakeUp = 0;
 
-    public void toolEquip(ToolType toolType) {
-        BackPack backPack = this.backPack;
-        currentTool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
-    }
+    public void initializeFromSave(PlayerSave playerSave, List<Player> players, List<NPC> npcs) {
+        this.friendShips.clear();
+        if (playerSave.getFriendShips() != null) {
+            for (String playerUsername : playerSave.getFriendShips().keySet()) {
+                for (Player player : players) {
+                    if (player.getUser().getUsername().equals(playerUsername))
+                        this.friendShips.put(player, playerSave.getFriendShips().get(playerUsername));
+                }
+            }
+        }
 
-    public void fishingPoleEquip(FishingPoleType fishingPoleType) {
-        BackPack backPack = this.backPack;
-        currentTool = (Tool) backPack.getBackPackItems().get(fishingPoleType).get(0);
+        // Talks
+        this.talk.clear();
+        if (playerSave.getTalk() != null) {
+            for (String playerUsername : playerSave.getTalk().keySet()) {
+                for (Player player : players) {
+                    if (player.getUser().getUsername().equals(playerUsername))
+                        this.talk.put(player, new Talk(player, playerSave.getTalk().get(playerUsername).getTalk()));
+                }
+            }
+        }
+        // Gifts
+        this.gifts.clear();
+        Gift.setCounter(0);
+        if (playerSave.getGifts() != null) {
+            for (String playerUsername : playerSave.getGifts().keySet()) {
+                for (Player player : players) {
+                    if (player.getUser().getUsername().equals(playerUsername)) {
+                        ArrayList<Gift> gifts = new ArrayList<>();
+                        playerSave.getGifts().forEach((playerUsername1, gifts2) -> {
+                            gifts2.forEach(gift -> gifts.add(new Gift(gift, this, player)));
+                        });
+                        this.gifts.put(player, gifts);
+                    }
+                }
+            }
+        }
+
+        // Messages
+        this.Messages.clear();
+        if (playerSave.getMessages() != null) {
+            for (MessageSave messageSave : playerSave.getMessages()) {
+                for (Player player : players) {
+                    if (player.getUser().getUsername().equals(messageSave.getSenderName()))
+                        this.Messages.add(new Message(player, messageSave.getMessage()));
+                }
+            }
+        }
+
+        // Trades
+        this.trades = playerSave.getTrades();
+
+        for (Player player : players) {
+            if (player.getUser().getUsername().equals(playerSave.getPartnerUsername()))
+                this.partner = player;
+        }
+
+        // NPC relationships
+        this.friendShipsWithNPCs.clear();
+        if (playerSave.getFriendShipsWithNPCs() != null) {
+            for (NPCSave npcSave : playerSave.getFriendShipsWithNPCs().keySet()) {
+                for (NPC npc : npcs) {
+                    if (npc.getName().equals(npcSave.getName())) {
+                        this.friendShipsWithNPCs.put(npc, playerSave.getFriendShipsWithNPCs().get(npcSave));
+                        break;
+                    }
+                }
+            }
+        }
+
+        this.talkedNPCToday.clear();
+        if (playerSave.getTalkedNPCToday() != null) {
+            for (NPCSave npcSave : playerSave.getTalkedNPCToday().keySet()) {
+                for (NPC npc : npcs) {
+                    if (npc.getName().equals(npcSave.getName())) {
+                        this.talkedNPCToday.put(npc, playerSave.getTalkedNPCToday().get(npcSave));
+                        break;
+                    }
+                }
+            }
+        }
+
+        this.giftNPCToday.clear();
+        if (playerSave.getGiftNPCToday() != null) {
+            for (NPCSave npcSave : playerSave.getGiftNPCToday().keySet()) {
+                for (NPC npc : npcs) {
+                    if (npc.getName().equals(npcSave.getName())) {
+                        this.giftNPCToday.put(npc, playerSave.getGiftNPCToday().get(npcSave));
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, IDLE
-    }
-
-    public int getVegetableFarmed() {
-        return vegetableFarmed;
-    }
-
-    public void setVegetableFarmed(int vegetableFarmed) {
-        this.vegetableFarmed = vegetableFarmed;
-    }
-
-    public Ability getAbilities() {
-        return abilities;
-    }
-
-    public void setAbilities(Ability abilities) {
-        this.abilities = abilities;
-    }
-
-    public HashSet<CraftingRecipe> getCraftingRecipes() {
-        return craftingRecipes;
-    }
-
-    public void setCraftingRecipes(HashSet<CraftingRecipe> craftingRecipes) {
-        this.craftingRecipes = craftingRecipes;
-    }
-
-    public HashSet<Recipe> getRecipes() {
-        return recipes;
-    }
-
-    public void setRecipes(HashSet<Recipe> recipes) {
-        this.recipes = recipes;
     }
 
     public Player(UserDTO user, boolean isGuest) {
@@ -152,12 +204,104 @@ public class Player {
         backPack.addItemToInventory(new Tool(ToolType.Pickaxe, ToolMaterial.Basic, null));
         backPack.addItemToInventory(new Tool(ToolType.Axe, ToolMaterial.Basic, null));
         this.currentTool = wateringCan;
+        this.equippedItem = wateringCan;
         this.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MegaBomb));
         backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));
         this.getRecipes().add(new Recipe(FoodType.MakiRoll));
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
         this.buff = new Buff(BuffType.None, 0);
     }
+
+    public Player(PlayerSave playerSave, Game game) {
+        this.user = playerSave.getUser();
+        this.isGuest = playerSave.isGuest();
+        this.isPassedOut = playerSave.isPassedOut();
+        this.x = playerSave.getX();
+        this.y = playerSave.getY();
+        this.buff = playerSave.getBuff();
+        this.speed = playerSave.getSpeed();
+        this.coin = playerSave.getCoin();
+        this.animationTimer = playerSave.getAnimationTimer();
+        this.passOutTimer = playerSave.getPassOutTimer();
+        this.animals = new ArrayList<>(playerSave.getAnimals() != null ? playerSave.getAnimals() : List.of());
+        this.moved = playerSave.isMoved();
+        this.lastDirection = playerSave.getLastDirection();
+        this.currentDirection = playerSave.getCurrentDirection();
+        this.newMessage = playerSave.isNewMessage();
+        this.interactionWithPartner = playerSave.isInteractionWithPartner();
+        this.isbrokenUp = playerSave.getIsbrokenUp();
+
+        // Energy
+        this.energy = playerSave.getEnergy();
+        this.maxEnergy = playerSave.getMaxEnergy();
+        this.isEnergyUnlimited = playerSave.isEnergyUnlimited();
+        this.hasPassedOutToday = playerSave.isHasPassedOutToday();
+
+        // BackPack
+        this.backPack = new BackPack(playerSave.getBackPack().getType(), this);
+        this.backPack.getBackPackItems().clear();
+        getBackPackItemsFromSave(playerSave, game);
+
+        // Tools
+        this.trashCan = playerSave.getTrashCan();
+        this.wateringCan = playerSave.getWateringCan();
+        this.currentTool = playerSave.getCurrentTool();
+        this.equippedItem = backPack.getBackPackItems().get(ToolType.WateringCan).get(0);
+
+        // Recipes & Abilities
+        this.recipes = new HashSet<>(playerSave.getRecipes() != null ? playerSave.getRecipes() : Set.of());
+        this.abilities = playerSave.getAbilities() != null ? playerSave.getAbilities() : new Ability(this);
+        this.craftingRecipes = new HashSet<>(playerSave.getCraftingRecipes() != null ? playerSave.getCraftingRecipes() : Set.of());
+
+        // Misc
+        this.daysSinceBrakeUp = playerSave.getDaysSinceBrakeUp();
+    }
+
+    private void getBackPackItemsFromSave(PlayerSave playerSave, Game game) {
+        playerSave.getBackPack().getBackPackItems().forEach((typePair, saves) -> {
+            String name = typePair.getFirst();
+            String className = typePair.getSecond();
+            BackPackableType type;
+            try {
+                Class<?> clazz = Class.forName(className);
+                type = (BackPackableType) clazz.getConstructor(String.class).newInstance(name);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to load backpack type: " + name + " / " + className, e);
+            }
+
+            ArrayList<BackPackable> backpackables = new ArrayList<>();
+            for (BackPackableSave save : saves) {
+                backpackables.add(fromBackPackableSave(save, game));
+            }
+
+            backPack.getBackPackItems().put(type, backpackables);
+        });
+    }
+
+    private BackPackable fromBackPackableSave(BackPackableSave save, Game game) {
+        return switch (save.getType()) {
+            case "Crop" -> new Crop(save.getCropSave());
+            case "Fruit" -> save.getFruit();
+            case "Tool" -> save.getTool();
+            case "Fish" -> save.getFish();
+            case "Seed" -> save.getSeed();
+            case "ArtisanProduct" -> save.getArtisanProduct();
+            case "ShopItem" -> save.getShopItem();
+            case "Fertilizer" -> save.getFertilizer();
+            case "Flower" -> save.getFlower();
+            case "Food" -> save.getFood();
+            case "CraftingItem" -> new CraftingItem(save.getCraftingItemSave(), game.getPlayers());
+            case "Mineral" -> save.getMineral();
+            case "Ring" -> save.getRing();
+            case "ShippingBinSave" -> new ShippingBin(save.getShippingBinSave(), game);
+            case "NormalItem" -> save.getNormalItem();
+            case "Sapling" -> save.getSapling();
+
+            default -> throw new IllegalArgumentException("Unknown backpackable type: " + save.getType());
+        };
+    }
+
+
 
     public void setInitialEnergyForTomorrow(boolean isPassedOut) {
         if (isEnergyUnlimited)
@@ -331,25 +475,25 @@ public class Player {
         this.gifts = gifts;
     }
 
-    public void addMessage(message message) {
-        this.messages.add(message);
+    public void addMessage(Message message) {
+        this.Messages.add(message);
         newMessage = true;
     }
 
-    public ArrayList<message> getMessage() {
-        return this.messages;
+    public ArrayList<Message> getMessage() {
+        return this.Messages;
     }
 
 
     public String getStringMessage() {
         String message = "";
-        for (int i = 0; i < messages.size(); i++) {
-            if (messages.get(i).getSender() != null) {
-                message += (i + "- " + "SENDER" + " : " + messages.get(i).getSender().getUser().getUsername()
-                    + "\n" + "message : " + messages.get(i).getMessage() + "\n");
+        for (int i = 0; i < Messages.size(); i++) {
+            if (Messages.get(i).getSender() != null) {
+                message += (i + "- " + "SENDER" + " : " + Messages.get(i).getSender().getUser().getUsername()
+                    + "\n" + "message : " + Messages.get(i).getMessage() + "\n");
             } else {
-                message += (i + "- " + "SENDER(NPC)" + " : " + messages.get(i).getSenderNPC().getName()
-                    + "\n" + "message : " + messages.get(i).getMessage() + "\n");
+                message += (i + "- " + "SENDER(NPC)" + " : " + Messages.get(i).getSenderNPC().getName()
+                    + "\n" + "message : " + Messages.get(i).getMessage() + "\n");
             }
         }
         return message;
@@ -603,10 +747,6 @@ public class Player {
         this.equippedItem = equippedItem;
     }
 
-    public Texture getTexture() {
-        return texture;
-    }
-
     public int getTileX() {
         int playerWidth = (int) GameAssetManager.getGameAssetManager().getTileWidth();
         ;
@@ -628,16 +768,12 @@ public class Player {
         return moved;
     }
 
-    public int getCoin() {
+    public double getCoin() {
         return coin;
     }
 
-    public void setCoin(int coin) {
+    public void setCoin(double coin) {
         this.coin = coin;
-    }
-
-    public String getBackgroundTexture() {
-        return backgroundTexture;
     }
 
     public Direction getLastDirection() {
@@ -708,20 +844,12 @@ public class Player {
         return passOutTimer;
     }
 
-    public ArrayList<message> getMessages() {
-        return messages;
+    public ArrayList<Message> getMessages() {
+        return Messages;
     }
 
-    public ArrayList<Food> getFoods() {
-        return foods;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public int getDaysSinceBrakUp() {
-        return daysSinceBrakUp;
+    public int getDaysSinceBrakeUp() {
+        return daysSinceBrakeUp;
     }
 
     public int getTemporaryMaxEnergyBoost() {
@@ -730,6 +858,61 @@ public class Player {
 
     public int getTemporaryBoostRemainingHours() {
         return temporaryBoostRemainingHours;
+    }
+
+    public void toolEquip(ToolType toolType) {
+        BackPack backPack = this.backPack;
+        currentTool = (Tool) backPack.getBackPackItems().get(toolType).get(0);
+    }
+
+    public void fishingPoleEquip(FishingPoleType fishingPoleType) {
+        BackPack backPack = this.backPack;
+        currentTool = (Tool) backPack.getBackPackItems().get(fishingPoleType).get(0);
+    }
+
+    public Ability getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(Ability abilities) {
+        this.abilities = abilities;
+    }
+
+    public HashSet<CraftingRecipe> getCraftingRecipes() {
+        return craftingRecipes;
+    }
+
+    public void setCraftingRecipes(HashSet<CraftingRecipe> craftingRecipes) {
+        this.craftingRecipes = craftingRecipes;
+    }
+
+    public HashSet<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(HashSet<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    public void addCoin(double coin) {
+        if (!this.getPartner().equals(this)) {
+            addcoin(coin);
+            this.getPartner().addcoin(coin);
+        } else {
+            this.addcoin(coin);
+        }
+    }
+
+    public void addcoin(double coin) {
+        this.coin += coin;
+    }
+
+    public UUID getActiveGameID() {
+        return activeGameID;
+    }
+
+    public void setActiveGameID(UUID activeGameID) {
+        this.activeGameID = activeGameID;
     }
 
     public String getTargetPlayerToTrade() {

@@ -2,15 +2,18 @@ package io.github.StardewValley.shared.models;
 
 import io.github.StardewValley.shared.models.NPCS.NPC;
 
-public class message {
+public class Message {
     private Player sender;
     private String message;
     private NPC senderNPC;
-    public message(Player sender, String message) {
+
+    public Message() {}
+
+    public Message(Player sender, String message) {
         this.sender = sender;
         this.message = message;
     }
-    public message(NPC sender, String message) {
+    public Message(NPC sender, String message) {
         this.senderNPC = sender;
         this.message = message;
     }
@@ -33,5 +36,9 @@ public class message {
 
     public NPC getSenderNPC() {
         return senderNPC;
+    }
+
+    public void setSenderNPC(NPC senderNPC) {
+        this.senderNPC = senderNPC;
     }
 }

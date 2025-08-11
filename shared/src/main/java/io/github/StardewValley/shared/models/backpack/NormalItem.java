@@ -1,9 +1,11 @@
 package io.github.StardewValley.shared.models.backpack;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
+import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
+import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 
+import java.util.List;
 import java.util.Random;
 
 public class NormalItem implements BackPackable, Placeable {
@@ -34,8 +36,27 @@ public class NormalItem implements BackPackable, Placeable {
     }
 
     @Override
+    public BackPackableSave toBackpackableSave() {
+        BackPackableSave backPackableSave = new BackPackableSave(NormalItem.class.getSimpleName());
+        backPackableSave.setNormalItem(this);
+        return backPackableSave;
+    }
+
+    @Override
     public String getTexture() {
         return type.getInventoryTexturePath();
+    }
+
+    @Override
+    public PlaceableSave toDTO() {
+        PlaceableSave placeableSave = new PlaceableSave(NormalItem.class.getSimpleName());
+        placeableSave.setNormalItem(this);
+        return placeableSave;
+    }
+
+    @Override
+    public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
+        return this;
     }
 
     public int getGrassTextureID() {

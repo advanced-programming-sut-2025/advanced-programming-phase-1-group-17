@@ -3,13 +3,21 @@ package io.github.StardewValley.shared;
 import io.github.StardewValley.shared.models.enums.DaysOfTheWeek;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.enums.WeatherType;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
+@Embeddable
 public class TimeAndDateDTO {
+    @Enumerated(EnumType.STRING)
     private WeatherType todayWeather;
+    @Enumerated(EnumType.STRING)
     private WeatherType tomorrowWeather;
     private int hour, minute;
     private int day, month, year;
+    @Enumerated(EnumType.STRING)
     private Season season;
+    @Enumerated(EnumType.STRING)
     private DaysOfTheWeek dayOfTheWeek;
 
     public TimeAndDateDTO() {
