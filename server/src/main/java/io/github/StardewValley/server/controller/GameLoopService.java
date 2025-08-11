@@ -1,5 +1,7 @@
 package io.github.StardewValley.server.controller;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.controller.logicControllers.AnimalLogicService;
 import io.github.StardewValley.server.repository.AnimalDataService;
@@ -47,7 +49,6 @@ public class GameLoopService {
             //animalLogicService.updateAnimalState(animal, delta);
         }
 
-        // ۳. (در آینده) آپدیت گیاهان، NPC ها و ... هم به همینجا اضافه می‌شود
-        // plantLogicService.updateAllPlants(delta);
     }
+
 }

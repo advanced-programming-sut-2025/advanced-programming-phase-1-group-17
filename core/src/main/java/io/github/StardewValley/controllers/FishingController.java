@@ -1,21 +1,12 @@
-package io.github.StardewValley.shared.models.animal;
+package io.github.StardewValley.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
-import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.TimeAndDate;
-import io.github.StardewValley.shared.models.enums.FishType;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.shared.models.market.Fish;
 import io.github.StardewValley.shared.models.market.ItemQuality;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
-import io.github.StardewValley.shared.models.tools.Tool;
-import io.github.StardewValley.shared.models.tools.ToolMaterial;
-import io.github.StardewValley.shared.models.tools.ToolType;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
 
 public class FishingController {
     private float barY = 0; // موقعیت مستطیل
@@ -31,13 +22,13 @@ public class FishingController {
     private int whichMovement;
     private Fish fish;
     private int fishCount=0;
-    public Tool savedTool;
+    private ItemQuality fishQuality;
 
-    public FishingController(Player player) {
+    public FishingController() throws Exception {
         this.whichMovement = MathUtils.random(1,5);
-        savedTool = player.getCurrentTool();
-        player.setCurrentTool(new Tool(ToolType.FishingPole, ToolMaterial.Basic,FishingPoleType.BambooFishingPole));
-        fishing((FishingPoleType) player.getCurrentTool().getType(), player);
+        this.fish = GameClient.getGameStateApiClient().calculateFishCatch().getFish();
+        this.fishCount = GameClient.getGameStateApiClient().calculateFishCatch().getFishCount();
+        this.fishQuality = GameClient.getGameStateApiClient().calculateFishCatch().getQuality();
     }
 
 
@@ -227,7 +218,7 @@ public class FishingController {
 
         targetY = MathUtils.clamp(targetY, 0, 300);
     }
-    public void fishing(FishingPoleType fishingPoleType, Player player) {
+    public void fishing(FishingPoleType fishingPoleType) {
 //        if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
 //            //TODO: maybe graphical error
 //            return;
@@ -246,63 +237,7 @@ public class FishingController {
 //        }
 
 
-        double R = Math.random();
-        double M = 1;
-        //TODO
-        //TimeAndDate date = App.getCurrentGame().getDate();
-        TimeAndDate date = null;
-        switch (date.getTodayWeatherType()) {
-            case Sunny -> M = 1.5;
-            case Rainy -> M = 1.2;
-            case Storm -> M = 0.5;
-            default -> M = 1;
-        }
-        int level = player.getAbilities().getFishingLevel();
-        int count = (int) Math.ceil(R * M * (level + 2));
-        count = Math.min(6, count);
-        double pole = fishingPoleType.getPole();
-        double qualityInt = ((R * (level + 2) * pole) / (7 - M));
-        ItemQuality quality;
-        if (qualityInt < 0.5) {
-            quality = ItemQuality.Regular;
-        } else if (qualityInt < 0.7) {
-            quality = ItemQuality.Silver;
-        } else if (qualityInt < 0.9) {
-            quality = ItemQuality.Gold;
-        } else {
-            quality = ItemQuality.Iridium;
-        }
-        Fish fish = new Fish(null, null);
-        ArrayList<FishType> fishes = new ArrayList<>();
-        if (fishingPoleType.equals(FishingPoleType.TrainingFishingPole)) {
-            fishes.addAll(new ArrayList<>(Arrays.asList
-                (FishType.Sardine, FishType.Perch, FishType.Herring, FishType.SunFish)));
-        } else {
-            for (FishType fishType : FishType.values()) {
-                if (fishType.getSeason().equals(date.getSeason())) {
-                    fishes.add(fishType);
-                }
-            }
-        }
-        if (player.getAbilities().getFishingLevel() != 4) {
-            ArrayList<FishType> fishesToRemove = new ArrayList<>();
-            for (FishType fishType : fishes) {
-                if (fishType.isLegendary()) {
-                    fishesToRemove.add(fishType);
-                }
-            }
-            fishes.removeAll(fishesToRemove);
-        }
-        Random rand = new Random();
-        FishType randomElement = fishes.get(rand.nextInt(fishes.size()));
-        fish.setFishType(randomElement);
-        fish.setQuality(quality);
-//        for (int i = 0; i < count; i++) {
-//            player.getBackPack().addItemToInventory(fish);
-//        }
-        this.fish = fish;
-        this.fishCount = count;
-        player.getAbilities().increaseFishingAbility();
+
         //TODO: maybe graphical error
 
     }
@@ -329,5 +264,21 @@ public class FishingController {
 
     public void setBarHeight(float barHeight) {
         this.barHeight = barHeight;
+    }
+
+    public boolean isPerfect() {
+        return isPerfect;
+    }
+
+    public void setPerfect(boolean perfect) {
+        isPerfect = perfect;
+    }
+
+    public ItemQuality getFishQuality() {
+        return fishQuality;
+    }
+
+    public void setFishQuality(ItemQuality fishQuality) {
+        this.fishQuality = fishQuality;
     }
 }
