@@ -267,7 +267,11 @@ public class GameView implements Screen, InputProcessor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        checkOpenChat();
+        try {
+            checkOpenChat();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 
         if (animalsFromServer != null) {
@@ -428,10 +432,14 @@ public class GameView implements Screen, InputProcessor {
         System.out.println("you didnt click on any animal");
         return handleClick(worldCoordinates, button);
     }
-    public void checkOpenChat(){
+    public void checkOpenChat() throws Exception {
         if(Gdx.input.isKeyJustPressed(Input.Keys.C)){
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(chatView);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.F)){
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
     }
     @Override

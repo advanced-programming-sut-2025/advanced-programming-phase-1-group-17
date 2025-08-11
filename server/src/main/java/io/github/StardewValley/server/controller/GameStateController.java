@@ -22,6 +22,7 @@ import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
 import io.github.StardewValley.shared.models.backpack.*;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.enums.CheatCodeCommands;
+import io.github.StardewValley.shared.models.enums.FishType;
 import io.github.StardewValley.shared.models.enums.Gender;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
@@ -31,9 +32,7 @@ import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
 import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.market.MarketsController;
-import io.github.StardewValley.shared.models.market.ShippingBin;
-import io.github.StardewValley.shared.models.market.StoreInventory;
+import io.github.StardewValley.shared.models.market.*;
 import io.github.StardewValley.shared.models.plant.Fertilizer;
 import io.github.StardewValley.shared.models.plant.Sapling;
 import io.github.StardewValley.shared.models.plant.Seed;
@@ -155,6 +154,110 @@ public class GameStateController {
         String token = authHeader.substring(7);
         String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(username);
+    }
+    @PostMapping("/catch")
+    public ResponseEntity<Void> submitFishingCatch(
+        @RequestHeader("Authorization") String token,
+        @RequestBody FishingResultDTO result) {
+
+        // TODO: بازیکن را از روی توکن پیدا کنید
+         Player player = getPlayerFromToken(token);
+         System.out.println(result);
+
+        int index = ItemQuality.valueOf(result.getQuality().name()).ordinal();
+        if(result.isPerfectCatch()){
+            ItemQuality[]qualities = ItemQuality.values();
+            if(index!=3){
+                index++;
+            }
+        }
+        if(result.getFish()==null){
+            System.out.println("fish in null");
+            result.setFish(new Fish(FishType.SunFish,ItemQuality.Silver));
+        }
+
+        result.getFish().setQuality(ItemQuality.values()[index]);
+        for(int i=0;i<result.getFishCount();i++){
+            player.getBackPack().addItemToInventory(result.getFish());
+        }
+        System.out.println("Player caught a " + result.getQuality() + " " + result.getFishType());
+
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/creatFish") // از POST استفاده می‌کنیم چون ممکن است بعدا وضعیت را تغییر دهد
+    public ResponseEntity<FishingResultDTO> calculateFishCatch(@RequestHeader("Authorization") String token) {
+
+        // ۱. بازیکن و بازی فعلی را از روی توکن پیدا کن
+        Player player = getPlayerFromToken(token); // فرض می‌کنیم این متد را دارید
+        Game game = AppServer.getCurrentGame();
+
+        if (player == null || game == null) {
+            return ResponseEntity.status(400).build(); // Bad Request
+        }
+
+        double R = Math.random();
+        double M = 1;
+        TimeAndDate date = game.getDate();
+        switch (date.getTodayWeatherType()) {
+            case Sunny -> M = 1.5;
+            case Rainy -> M = 1.2;
+            case Storm -> M = 0.5;
+            default -> M = 1;
+        }
+        FishingPoleType fishingPoleType = player.getCurrentTool().getFishingPoleMaterial();
+        if (player.getCurrentTool() != null && player.getCurrentTool().getFishingPoleMaterial() != null) {
+            fishingPoleType = player.getCurrentTool().getFishingPoleMaterial();
+        } else {
+            // یک حالت پیش‌فرض در نظر بگیرید
+            fishingPoleType = FishingPoleType.TrainingFishingPole;
+        }
+        int level = player.getAbilities().getFishingLevel();
+        int count = (int) Math.ceil(R * M * (level + 2));
+        count = Math.min(6, count);
+        double pole = fishingPoleType.getPole();
+        double qualityInt = ((R * (level + 2) * pole) / (7 - M));
+        ItemQuality quality;
+        if (qualityInt < 0.5) {
+            quality = ItemQuality.Regular;
+        } else if (qualityInt < 0.7) {
+            quality = ItemQuality.Silver;
+        } else if (qualityInt < 0.9) {
+            quality = ItemQuality.Gold;
+        } else {
+            quality = ItemQuality.Iridium;
+        }
+        Fish fish = new Fish(null, null);
+        ArrayList<FishType> fishes = new ArrayList<>();
+        if (fishingPoleType.equals(FishingPoleType.TrainingFishingPole)) {
+            fishes.addAll(new ArrayList<>(Arrays.asList
+                (FishType.Sardine, FishType.Perch, FishType.Herring, FishType.SunFish)));
+        } else {
+            for (FishType fishType : FishType.values()) {
+                if (fishType.getSeason().equals(date.getSeason())) {
+                    fishes.add(fishType);
+                }
+            }
+        }
+        if(fishes.isEmpty()){
+            System.out.println("fishes is empty");
+        }
+        if (player.getAbilities().getFishingLevel() != 4) {
+            ArrayList<FishType> fishesToRemove = new ArrayList<>();
+            for (FishType fishType : fishes) {
+                if (fishType.isLegendary()) {
+                    fishesToRemove.add(fishType);
+                }
+            }
+            fishes.removeAll(fishesToRemove);
+        }
+        Random rand = new Random();
+        FishType randomElement = fishes.get(rand.nextInt(fishes.size()));
+        fish.setFishType(randomElement);
+        fish.setQuality(quality);
+
+        player.getAbilities().increaseFishingAbility();
+        return ResponseEntity.ok(new FishingResultDTO(fish,count,quality));
+
     }
 
     @PostMapping("/exitGame")
