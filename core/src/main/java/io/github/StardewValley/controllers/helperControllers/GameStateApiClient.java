@@ -47,6 +47,78 @@ public class GameStateApiClient {
     public GameStateApiClient(String jwtToken) {
         this.token = jwtToken;
     }
+    public void collectProduct(AnimalProductDTO productToCollect) throws Exception {
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(AnimalURL + "/collect");
+            conn = (HttpURLConnection) url.openConnection();
+
+            // --- مرحله ۱: تمام تنظیمات را اینجا انجام دهید ---
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true); // برای POST لازم است
+            conn.setRequestProperty("Content-Type", "application/json"); // هدر صحیح
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+
+            // --- مرحله ۲: حالا بدنه درخواست را بنویس و ارسال کن ---
+            // متد getOutputStream() به طور خودکار اتصال را برقرار می‌کند
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonInput = mapper.writeValueAsString(productToCollect);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonInput.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            // --- مرحله ۳: پاسخ را چک کن ---
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed to collect product: " + conn.getResponseCode());
+            }
+
+        } finally {
+            // --- مرحله ۴: همیشه اتصال را قطع کن ---
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+    }
+    // ...
+    public void sendChatMessage(ChatMessageDTO message) throws Exception {
+        URL url = new URL(BASE_URL + "/send");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInput = mapper.writeValueAsString(message);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(jsonInput.getBytes("utf-8"));
+        }
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed to send chat message: " + conn.getResponseCode());
+        }
+        conn.disconnect();
+    }
+
+    public List<ChatMessageDTO> getChatMessages() throws Exception {
+        URL url = new URL(BASE_URL + "/messages");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, new TypeReference<List<ChatMessageDTO>>() {});
+            }
+        } else {
+            throw new RuntimeException("Failed to get chat messages: " + conn.getResponseCode());
+        }
+    }
+
     public void sendFishingResult(FishingResultDTO result) throws Exception {
         URL url = new URL(BASE_URL + "/catch");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -65,6 +137,26 @@ public class GameStateApiClient {
 
         if (conn.getResponseCode() != 200) {
             throw new RuntimeException("Failed to send fishing result: " + String.valueOf(result.getFish() == null));
+        }
+    }
+    public void addMusic(MusicDTO musicDTO) throws Exception {
+        URL url = new URL(BASE_URL + "/addMusic");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInput = mapper.writeValueAsString(musicDTO);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInput.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed to add music");
         }
     }
     public FishingResultDTO calculateFishCatch() throws Exception {
@@ -102,6 +194,26 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
         }
     }
+    public ArrayList<MusicDTO> getAllMusic() throws Exception {
+        URL url = new URL(BASE_URL + "/allMusic"); // آدرس Endpoint در سرور
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
+                // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<MusicDTO>>() {
+                });
+            }
+        } else {
+            // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
+            throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
+        }
+    }
     public ArrayList<AnimalPlaceDTO> getAllAnimalPlaces() throws Exception {
         URL url = new URL(AnimalURL + "/allAnimalPlaces"); // آدرس Endpoint در سرور
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -115,6 +227,25 @@ public class GameStateApiClient {
                 // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
                 // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
                 return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalPlaceDTO>>() {});
+            }
+        } else {
+            // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
+            throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
+        }
+    }
+    public ArrayList<AnimalProductDTO> getAllAnimalProducts() throws Exception {
+        URL url = new URL(AnimalURL + "/allProducts"); // آدرس Endpoint در سرور
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
+                // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalProductDTO>>() {});
             }
         } else {
             // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن

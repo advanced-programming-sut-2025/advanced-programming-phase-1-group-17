@@ -1,28 +1,19 @@
 package io.github.StardewValley.shared;
 
+// هیچ import jakarta.persistence ای وجود ندارد!
 import io.github.StardewValley.shared.models.enums.DaysOfTheWeek;
 import io.github.StardewValley.shared.models.enums.Season;
 import io.github.StardewValley.shared.models.enums.WeatherType;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
-@Embeddable
 public class TimeAndDateDTO {
-    @Enumerated(EnumType.STRING)
     private WeatherType todayWeather;
-    @Enumerated(EnumType.STRING)
     private WeatherType tomorrowWeather;
     private int hour, minute;
     private int day, month, year;
-    @Enumerated(EnumType.STRING)
     private Season season;
-    @Enumerated(EnumType.STRING)
     private DaysOfTheWeek dayOfTheWeek;
 
-    public TimeAndDateDTO() {
-    }
-
+    public TimeAndDateDTO() {}
     public TimeAndDateDTO(WeatherType todayWeather, WeatherType tomorrowWeather,
                           int hour, int minute, int day, int month, int year,
                           Season season, DaysOfTheWeek dayOfTheWeek) {
@@ -108,4 +99,7 @@ public class TimeAndDateDTO {
     public void setDayOfTheWeek(DaysOfTheWeek dayOfTheWeek) {
         this.dayOfTheWeek = dayOfTheWeek;
     }
+
+    // کانستراکتور کامل و تمام گتر/سترها را اینجا قرار دهید...
+    // (کد آنها دقیقاً مثل کلاس قبلی است، فقط بدون حاشیه‌نویسی)
 }

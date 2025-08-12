@@ -2,12 +2,12 @@ package io.github.StardewValley.server.controller.logicControllers;
 
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.TimeAndDate;
-import io.github.StardewValley.shared.models.animal.Animal;
-import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
@@ -259,17 +259,17 @@ public class ToolController {
 
     private HandleWorldClickResponse useMilkPail(Player player) {
         player.setEnergy(player.getEnergy() - 4 * leverage);
-        if (tile.getPlaceable() instanceof Animal animal) {
+        if (tile.getPlaceable() instanceof AnimalDTO animal) {
             if (animal.getAnimalType().equals(AnimalType.Cow)) {
-                ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
-                for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
+                ArrayList<AnimalProductDTO> toRemoved = new ArrayList<>();
+                for (AnimalProductDTO animalProduct : animal.getAnimalProductDTOS()) {
                     player.getBackPack().addItemToInventory(animalProduct);
                     toRemoved.add(animalProduct);
                     if (player.getBackPack().isBackPackFull()) {
-                        animal.getAnimalProducts().removeAll(toRemoved);
+                        animal.getAnimalProductDTOS().removeAll(toRemoved);
                         StringBuilder sb = new StringBuilder();
-                        for (Map.Entry<AnimalProduct, Integer> entry : Animal.getMapListOfAnimalProducts(toRemoved).entrySet()) {
-                            sb.append(entry.getKey().getAnimalProductType().name()).append(" : ")
+                        for (Map.Entry<AnimalProductDTO, Integer> entry : AnimalLogicService.getMapListOfAnimalProducts(toRemoved).entrySet()) {
+                            sb.append(entry.getKey().getType().name()).append(" : ")
                                 .append(entry.getValue()).append("\n");
                         }
                         return new HandleWorldClickResponse(false, "backpack gets full , you collect these -> \n"
@@ -277,11 +277,11 @@ public class ToolController {
                     }
                 }
                 StringBuilder sb = new StringBuilder();
-                for (Map.Entry<AnimalProduct, Integer> entry : Animal.getMapListOfAnimalProducts(toRemoved).entrySet()) {
-                    sb.append(entry.getKey().getAnimalProductType().name()).append(" : ")
+                for (Map.Entry<AnimalProductDTO, Integer> entry : AnimalLogicService.getMapListOfAnimalProducts(toRemoved).entrySet()) {
+                    sb.append(entry.getKey().getType().name()).append(" : ")
                         .append(entry.getValue()).append("\n");
                 }
-                animal.getAnimalProducts().removeAll(toRemoved);
+                animal.getAnimalProductDTOS().removeAll(toRemoved);
                 return new HandleWorldClickResponse(true, "you collected all product -> \n " +
                     sb.toString(), HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
@@ -292,24 +292,24 @@ public class ToolController {
 
     private HandleWorldClickResponse useShear(Player player) {
         player.setEnergy(player.getEnergy() - 4 * leverage);
-        if (tile.getPlaceable() instanceof Animal animal) {
+        if (tile.getPlaceable() instanceof AnimalDTO animal) {
             if (animal.getAnimalType().equals(AnimalType.Sheep)) {
-                if (animal.getAnimalProducts().isEmpty()) {
+                if (animal.getAnimalProductDTOS().isEmpty()) {
                     return new HandleWorldClickResponse(false, "this sheep has no product"
                     , HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                 }
-                ArrayList<AnimalProduct> toRemoved = new ArrayList<>();
-                for (AnimalProduct animalProduct : animal.getAnimalProducts()) {
+                ArrayList<AnimalProductDTO> toRemoved = new ArrayList<>();
+                for (AnimalProductDTO animalProduct : animal.getAnimalProductDTOS()) {
                     player.getBackPack().addItemToInventory(animalProduct);
                     toRemoved.add(animalProduct);
                     if (player.getBackPack().isBackPackFull()) {
-                        animal.getAnimalProducts().removeAll(toRemoved);
+                        animal.getAnimalProductDTOS().removeAll(toRemoved);
                         return new HandleWorldClickResponse(false, "back pack gets full , you collected these -> \n" +
-                            animalProduct.getAnimalProductType().name() + " -> " + toRemoved.size(),
+                            animalProduct.getType().name() + " -> " + toRemoved.size(),
                             HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
                     }
                 }
-                animal.getAnimalProducts().removeAll(toRemoved);
+                animal.getAnimalProductDTOS().removeAll(toRemoved);
                 return new HandleWorldClickResponse(true, true, "you collected all " + toRemoved.size() + " wools of " + animal.getName(),
                     HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
             }
@@ -342,10 +342,10 @@ public class ToolController {
 
 
     public HandleWorldClickResponse fishing(String fishingPole, Player player, Game game) {
-        if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
-            return new HandleWorldClickResponse(false, "first go near water",
-                HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
-        }
+//        if (!Animal.areWeNearWater(player.getTileX(), player.getTileY())) {
+//            return new HandleWorldClickResponse(false, "first go near water",
+//                HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
+//        }
         if (player.getBackPack().isBackPackFull()) {
             return new HandleWorldClickResponse(false, "your backpack is full",
                 HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);

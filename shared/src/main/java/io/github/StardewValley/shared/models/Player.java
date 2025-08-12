@@ -9,7 +9,6 @@ import io.github.StardewValley.shared.dto.TradeRequestDto;
 import io.github.StardewValley.shared.models.NPCS.Gift;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.NPCS.Talk;
-import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
@@ -47,7 +46,6 @@ public class Player {
     private TextureRegion currentFrame;
     private float animationTimer = 0f;
     private float passOutTimer = 0f;
-    private ArrayList<Animal> animals = new ArrayList<>();
     private boolean moved;
     private Direction lastDirection = Direction.DOWN;
     private Direction currentDirection = Direction.IDLE;
@@ -223,7 +221,6 @@ public class Player {
         this.coin = playerSave.getCoin();
         this.animationTimer = playerSave.getAnimationTimer();
         this.passOutTimer = playerSave.getPassOutTimer();
-        this.animals = new ArrayList<>(playerSave.getAnimals() != null ? playerSave.getAnimals() : List.of());
         this.moved = playerSave.isMoved();
         this.lastDirection = playerSave.getLastDirection();
         this.currentDirection = playerSave.getCurrentDirection();
@@ -792,13 +789,7 @@ public class Player {
         return currentDirection;
     }
 
-    public ArrayList<Animal> getAnimals() {
-        return animals;
-    }
 
-    public void setAnimals(ArrayList<Animal> animals) {
-        this.animals = animals;
-    }
 
     public boolean isEnergyUnlimited() {
         return isEnergyUnlimited;
