@@ -2,9 +2,14 @@ package io.github.StardewValley.server.controller.logicControllers;
 
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.models.enums.Direction;
 import io.github.StardewValley.shared.models.map.Tile;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AnimalLogicService {
@@ -87,5 +92,16 @@ public class AnimalLogicService {
 
     private Direction getRandomDirection() {
         return Direction.values()[(int)(Math.random() * 4)];
+    }
+    public static Map<AnimalProductDTO, Integer> getMapListOfAnimalProducts(ArrayList<AnimalProductDTO> animalProducts) {
+        Map<AnimalProductDTO, Integer> productIntegerMap = new HashMap<>();
+        for (AnimalProductDTO animalProduct : animalProducts) {
+            if (productIntegerMap.containsKey(animalProduct)) {
+                productIntegerMap.put(animalProduct, productIntegerMap.get(animalProduct) + 1);
+            } else {
+                productIntegerMap.put(animalProduct, 1);
+            }
+        }
+        return productIntegerMap;
     }
 }

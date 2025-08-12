@@ -9,6 +9,8 @@ import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Direction;
 
+import java.util.ArrayList;
+
 // این کلاس فقط داده حمل می‌کند. هیچ منطقی ندارد.
 public class AnimalDTO {
     private String id;
@@ -31,6 +33,7 @@ public class AnimalDTO {
     private float timeSinceLastDirectionChange = 0f;
     private float directionChangeInterval = 3f; // مقدار اولیه
     private AnimalPlaceDTO animalPlaceDTO;
+    private ArrayList<AnimalProductDTO> animalProductDTOS;
 
     // ... گتر و ستر برای دو فیلد جدید ...
 
@@ -134,5 +137,13 @@ public class AnimalDTO {
 
     public void setAnimalPlaceDTO(AnimalPlaceDTO animalPlaceDTO) {
         this.animalPlaceDTO = animalPlaceDTO;
+    }
+
+    public ArrayList<AnimalProductDTO> getAnimalProductDTOS() {
+        return animalProductDTOS;
+    }
+
+    public void setAnimalProductDTOS(ArrayList<AnimalProductDTO> animalProductDTOS) {
+        this.animalProductDTOS = animalProductDTOS;
     }
 }

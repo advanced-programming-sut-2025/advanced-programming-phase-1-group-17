@@ -1,7 +1,7 @@
 package io.github.StardewValley.shared.models.saveClasses;
 
+import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.models.*;
-import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.cooking.Buff;
 import io.github.StardewValley.shared.models.cooking.Recipe;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
@@ -23,7 +23,7 @@ public class PlayerSave {
     private double coin;
     private float animationTimer;
     private float passOutTimer;
-    private ArrayList<Animal> animals;
+    private ArrayList<AnimalDTO> animals;
     private boolean moved;
     private Player.Direction lastDirection;
     private Player.Direction currentDirection;
@@ -79,7 +79,8 @@ public class PlayerSave {
         this.coin = player.getCoin();
         this.animationTimer = player.getAnimationTimer();
         this.passOutTimer = player.getPassOutTimer();
-        this.animals = new ArrayList<>(player.getAnimals());
+        //todo
+        this.animals = new ArrayList<>();
         this.moved = player.isMoved();
         this.lastDirection = player.getLastDirection();
         this.currentDirection = player.getCurrentDirection();
@@ -235,11 +236,11 @@ public class PlayerSave {
         this.passOutTimer = passOutTimer;
     }
 
-    public ArrayList<Animal> getAnimals() {
+    public ArrayList<AnimalDTO> getAnimals() {
         return animals;
     }
 
-    public void setAnimals(ArrayList<Animal> animals) {
+    public void setAnimals(ArrayList<AnimalDTO> animals) {
         this.animals = animals;
     }
 

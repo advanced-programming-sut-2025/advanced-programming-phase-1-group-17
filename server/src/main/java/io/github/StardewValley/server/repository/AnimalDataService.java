@@ -133,5 +133,13 @@ public class AnimalDataService {
             }
         }
     }
+    public static AnimalDTO findAnimalByName(String animalName){
+        for(AnimalDTO animalDTO:findAll()) {
+            if(animalDTO.getName().equals(animalName)) {
+                return animalDTO;
+            }
+        }
+        return null;
+    }
 
 }

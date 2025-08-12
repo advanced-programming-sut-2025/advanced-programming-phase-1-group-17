@@ -2,6 +2,7 @@ package io.github.StardewValley.shared.models.market;
 
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
@@ -9,7 +10,6 @@ import io.github.StardewValley.shared.models.NPCS.Ring;
 import io.github.StardewValley.shared.models.NPCS.RingType;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.animal.AnimalProductType;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.artisan.ArtisanProductType;
@@ -572,8 +572,8 @@ public class MarketsController {
                                         } catch (IllegalArgumentException e9) {
                                             try {
                                                 type = AnimalProductType.valueOf(itemName);
-                                                AnimalProduct a = new AnimalProduct();
-                                                a.setAnimalProductType((AnimalProductType) type);
+                                                AnimalProductDTO a = new AnimalProductDTO();
+                                                a.setType((AnimalProductType) type);
                                                 a.setQuality(ItemQuality.Regular);
                                                 sampleItem = a;
 

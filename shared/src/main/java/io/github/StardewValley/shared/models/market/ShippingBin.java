@@ -2,12 +2,12 @@ package io.github.StardewValley.shared.models.market;
 
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
+import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.Player;
-import io.github.StardewValley.shared.models.animal.AnimalProduct;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.Fruit;
 import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
@@ -68,8 +68,8 @@ public class ShippingBin implements Placeable, BackPackable {
                 if (item.getClass().equals(Crop.class)) {
                     ItemQuality quality = ((Crop)item).getQuality();
                     total += (item.getPrice() * quality.getLeverage());
-                } else if (item.getClass().equals(AnimalProduct.class)) {
-                    ItemQuality quality = ((AnimalProduct)item).getQuality();
+                } else if (item.getClass().equals(AnimalProductDTO.class)) {
+                    ItemQuality quality = ((AnimalProductDTO)item).getQuality();
                     total += (item.getPrice() * quality.getLeverage());
                 } else if (item.getClass().equals(Fish.class)) {
                     ItemQuality quality = ((Fish)item).getQuality();
