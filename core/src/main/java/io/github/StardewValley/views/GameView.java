@@ -493,7 +493,7 @@ public class GameView implements Screen, InputProcessor {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(chatView);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.F)){
+        if(Gdx.input.isKeyPressed(Input.Keys.N)){
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
         }

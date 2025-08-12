@@ -37,8 +37,9 @@ public class GameLoopService {
         // ۱. آپدیت زمان بازی (منطق قبلی شما)
         currentGame.getDate().increaseMinute(delta * 5,AppServer.getCurrentGame());
         currentGame.getLightningLogicController().updateLightning(delta);
+        //12 for test
         if(currentGame.getDate().getHour()>=12){
-            AppServer.getCurrentGame().getDate().goToNextDay(AppServer.getCurrentGame());
+            //AppServer.getCurrentGame().getDate().goToNextDay(AppServer.getCurrentGame());
             animalLogicService.animalGoToNextDay();
         }
 
