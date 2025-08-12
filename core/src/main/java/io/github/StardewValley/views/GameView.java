@@ -77,8 +77,7 @@ public class GameView implements Screen, InputProcessor {
 
 
     public GameView(GameController controller, GameMenuController menuController) {
-        this.chatService = new ChatService();
-        this.chatView = new ChatView(GameAssetManagerClient.getGameAssetManager().getSkin(), chatService);
+        this.chatView = new ChatView(GameAssetManagerClient.getGameAssetManager().getSkin(),this);
         this.apiClient = GameClient.getGameStateApiClient();
         this.animalView = new AnimalView(); // هنرمند را استخدام کن
         this.animalPlaceView = new AnimalPlaceView();

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.LightningLogicController;
 import io.github.StardewValley.shared.dto.AnimalProductDTO;
+import io.github.StardewValley.shared.dto.ChatMessageDTO;
 import io.github.StardewValley.shared.models.NPCS.*;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.TimeAndDate;
@@ -41,6 +42,7 @@ public class Game implements Serializable {
     private final ArrayList<NPC> NPCHuts = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private int numOfPlayers=0;
+    private final List<ChatMessageDTO> chatLog = Collections.synchronizedList(new ArrayList<>());
 
     private final ArrayList<GreenHouse> greenHouses = new ArrayList<>();
     private final HashMap<GreenHouse, Rectangle> greenHouseBounds = new HashMap<>();
@@ -397,6 +399,9 @@ public class Game implements Serializable {
 
     public void setNumOfPlayers(int numOfPlayers) {
         this.numOfPlayers = numOfPlayers;
+    }
+    public List<ChatMessageDTO> getChatLog() {
+        return chatLog;
     }
 }
 

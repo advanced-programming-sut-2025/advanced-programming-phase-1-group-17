@@ -2,75 +2,90 @@ package io.github.StardewValley.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.shared.dto.ChatMessageDTO;
-import io.reactivex.disposables.CompositeDisposable;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.StompClient;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.*;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ChatService {
-    private StompClient stompClient;
-    private CompositeDisposable compositeDisposable;
-    private final ObjectMapper mapper = new ObjectMapper();
+
+    private StompSession stompSession;
+    private WebSocketStompClient stompClient;
+    private volatile boolean isConnected = false;
     public final List<ChatMessageDTO> messages = Collections.synchronizedList(new ArrayList<>());
 
+    public boolean isConnected() {
+        return this.isConnected;
+    }
+
     public void connect(String serverIp, int serverPort) {
-        // برای سازگاری با SockJS سرور، از آدرس http استفاده می‌کنیم
-        String url = "ws://" + serverIp + ":" + serverPort + "/ws/websocket";
+        // برای اتصال مستقیم، از پروتکل ws:// استفاده می‌کنیم
+        String url = "ws://" + serverIp + ":" + serverPort + "/ws";
+        System.out.println("1. CHAT_SERVICE: Attempting to connect to URL: " + url);
 
-        System.out.println("1. CHAT_SERVICE: Attempting to connect via OKHTTP to: " + url);
+        this.stompClient = new WebSocketStompClient(new StandardWebSocketClient());
+        this.stompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
-        // به صراحت می‌گوییم که از موتور OKHTTP استفاده کن
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
+        System.out.println("2. CHAT_SERVICE: StompClient created. Calling connect()...");
 
-        stompClient.connect();
-        compositeDisposable = new CompositeDisposable();
-
-        // به وضعیت چرخه حیات اتصال گوش می‌دهیم
-        compositeDisposable.add(stompClient.lifecycle().subscribe(lifecycleEvent -> {
-            switch (lifecycleEvent.getType()) {
-                case OPENED:
-                    System.out.println("2. CHAT_SERVICE: SUCCESS! Stomp connection opened!");
+        try {
+            this.stompClient.connect(url, new StompSessionHandlerAdapter() {
+                @Override
+                public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+                    System.out.println("3. CHAT_SERVICE: SUCCESS! afterConnected callback was executed.");
+                    stompSession = session;
+                    isConnected = true;
                     subscribeToPublicTopic();
-                    break;
-                case ERROR:
-                    System.err.println("3. CHAT_SERVICE: ERROR! Stomp connection error.");
-                    lifecycleEvent.getException().printStackTrace();
-                    break;
-                case CLOSED:
-                    System.out.println("4. CHAT_SERVICE: Stomp connection closed.");
-                    break;
-            }
-        }));
+                }
+
+                @Override
+                public void handleTransportError(StompSession session, Throwable exception) {
+                    System.err.println("4. CHAT_SERVICE: ERROR! WebSocket transport error occurred.");
+                    exception.printStackTrace();
+                    isConnected = false;
+                }
+
+                @Override
+                public void handleException(StompSession s, StompCommand c, StompHeaders h, byte[] p, Throwable ex) {
+                    System.err.println("5. CHAT_SERVICE: ERROR! STOMP protocol error.");
+                    ex.printStackTrace();
+                    isConnected = false;
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("An unexpected exception occurred during the connect call itself.");
+            e.printStackTrace();
+        }
     }
 
     private void subscribeToPublicTopic() {
-        if (stompClient == null) return;
-
-        System.out.println("2.1. CHAT_SERVICE: Subscribing to /topic/public...");
-        compositeDisposable.add(stompClient.topic("/topic/public").subscribe(stompMessage -> {
-            try {
-                ChatMessageDTO message = mapper.readValue(stompMessage.getPayload(), ChatMessageDTO.class);
-                messages.add(message);
-                System.out.println("New message received: " + message.getContent());
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (!isConnected) {
+            System.err.println("Cannot subscribe, not connected.");
+            return;
+        }
+        System.out.println("3.1. CHAT_SERVICE: Attempting to subscribe to /topic/public");
+        stompSession.subscribe("/topic/public", new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return ChatMessageDTO.class;
             }
-        }, throwable -> {
-            System.err.println("Error on topic subscription!");
-            throwable.printStackTrace();
-        }));
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                System.out.println("Message received on topic!");
+                messages.add((ChatMessageDTO) payload);
+            }
+        });
     }
 
     public void sendMessage(String username, String content) {
-        if (content == null || content.trim().isEmpty() || stompClient == null) {
-            System.err.println("Cannot send message. Client is null.");
-            return;
-        }
+        if (content == null || content.trim().isEmpty()) return;
 
-        if (!stompClient.isConnected()) {
+        if (!isConnected) {
             System.err.println("Cannot send message. Not connected.");
             return;
         }
@@ -78,21 +93,17 @@ public class ChatService {
         ChatMessageDTO chatMessage = new ChatMessageDTO();
         chatMessage.setSenderUsername(username);
         chatMessage.setContent(content);
-
-        try {
-            String jsonMessage = mapper.writeValueAsString(chatMessage);
-            compositeDisposable.add(stompClient.send("/app/chat.sendMessage", jsonMessage).subscribe());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        stompSession.send("/app/chat.sendMessage", chatMessage);
     }
 
     public void disconnect() {
+        if (stompSession != null && stompSession.isConnected()) {
+            stompSession.disconnect();
+        }
         if (stompClient != null) {
-            stompClient.disconnect();
+            stompClient.stop();
         }
-        if (compositeDisposable != null) {
-            compositeDisposable.dispose();
-        }
+        isConnected = false;
+        System.out.println("Chat service disconnected.");
     }
 }

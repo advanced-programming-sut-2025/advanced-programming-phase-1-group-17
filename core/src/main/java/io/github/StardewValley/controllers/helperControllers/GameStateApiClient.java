@@ -81,6 +81,43 @@ public class GameStateApiClient {
             }
         }
     }
+    // ...
+    public void sendChatMessage(ChatMessageDTO message) throws Exception {
+        URL url = new URL(BASE_URL + "/send");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInput = mapper.writeValueAsString(message);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(jsonInput.getBytes("utf-8"));
+        }
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed to send chat message: " + conn.getResponseCode());
+        }
+        conn.disconnect();
+    }
+
+    public List<ChatMessageDTO> getChatMessages() throws Exception {
+        URL url = new URL(BASE_URL + "/messages");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, new TypeReference<List<ChatMessageDTO>>() {});
+            }
+        } else {
+            throw new RuntimeException("Failed to get chat messages: " + conn.getResponseCode());
+        }
+    }
     public void sendFishingResult(FishingResultDTO result) throws Exception {
         URL url = new URL(BASE_URL + "/catch");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
