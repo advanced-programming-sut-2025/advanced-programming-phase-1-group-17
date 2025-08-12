@@ -123,7 +123,7 @@ public class WorldController {
                 if (tile.getPlaceableType().equals(Store.class.getSimpleName()))
                     continue;
 
-                //printTileTexture(tile, gameState.getTimeAndDateDTO().getSeason());
+                printTileTexture(tile, gameState.getTimeAndDateDTO().getSeason());
             }
         }
 

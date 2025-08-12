@@ -14,42 +14,34 @@ import org.springframework.stereotype.Service;
 public class GameLoopService {
 
     private final AnimalLogicService animalLogicService; // مغز متفکر حیوانات
+    private  int numOfProductsPerDay=0;
 
     @Autowired
     public GameLoopService(AnimalLogicService animalLogicService) {
         this.animalLogicService = animalLogicService;
     }
 
-    /**
-     * این متد هر 100 میلی‌ثانیه (10 بار در ثانیه) به طور خودکار اجرا می‌شود.
-     * این قلب تپنده کل دنیای بازی شما در سرور است.
-     */
     @Scheduled(fixedRate = 100)
     public void tick() {
-        // دلتای زمانی ثابت برای هر تیک سرور (0.1 ثانیه)
         final float delta = 0.1f;
 
         Game currentGame = AppServer.getCurrentGame();
         if (currentGame == null) {
-            return; // اگر بازی فعال نیست، کاری نکن
+            return;
         }
 
-        // ۱. آپدیت زمان بازی (منطق قبلی شما)
         currentGame.getDate().increaseMinute(delta * 5,AppServer.getCurrentGame());
         currentGame.getLightningLogicController().updateLightning(delta);
         //12 for test
-        if(currentGame.getDate().getHour()>=12){
-            //AppServer.getCurrentGame().getDate().goToNextDay(AppServer.getCurrentGame());
-            animalLogicService.animalGoToNextDay();
-        }
 
-        // ۲. آپدیت تمام حیوانات (منطق جدید، دقیقا کنار قبلی)
+
         for(AnimalPlaceDTO animalPlaceDTO:AnimalDataService.findAllPlaces()){
             for(AnimalDTO animalDTO:animalPlaceDTO.getAnimals()){
                 animalLogicService.updateAnimalState(animalDTO,delta);
 
             }
         }
+
 
     }
 
