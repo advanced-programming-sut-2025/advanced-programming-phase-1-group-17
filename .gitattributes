@@ -1,2 +1,4 @@
 * text=auto eol=lf
 *.bat text=auto eol=crlf
+data/mygame-db.mv.db filter=lfs diff=lfs merge=lfs -text
+data/mygame-db.trace.db filter=lfs diff=lfs merge=lfs -text
