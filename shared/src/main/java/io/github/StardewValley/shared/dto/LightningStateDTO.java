@@ -57,4 +57,5 @@ public class LightningStateDTO {
     public void setAnimationTime(float animationTime) {
         this.animationTime = animationTime;
     }
+}
 

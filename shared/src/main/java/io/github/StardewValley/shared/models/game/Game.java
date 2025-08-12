@@ -449,6 +449,7 @@ public class Game implements Serializable {
 
     public boolean isDCPaused() {
         return DCPaused;
+        }
     public int getNumOfPlayers() {
         return numOfPlayers;
     }
@@ -456,7 +457,6 @@ public class Game implements Serializable {
     public void setDCPaused(boolean DCPaused) {
         this.DCPaused = DCPaused;
     }
-}
 
     public void setNumOfPlayers(int numOfPlayers) {
         this.numOfPlayers = numOfPlayers;
