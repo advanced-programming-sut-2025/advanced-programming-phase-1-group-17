@@ -20,7 +20,7 @@ public class AnimalLogicService {
      * @param delta مدت زمان گذشته از آخرین فریم.
      */
     public void updateAnimalState(AnimalDTO animal, float delta) {
-        if (!animal.isOutside()) return;
+        //if (!animal.isOutside()) return;
 
         // TODO: منطق مسیر یابی (Pathfinding) شما هم باید به اینجا منتقل شود
         // if (animal.isFollowingPath()) { ... }
@@ -61,7 +61,7 @@ public class AnimalLogicService {
 
         float newX = animal.getX();
         float newY = animal.getY();
-        float speed = 50; // TODO: سرعت را از DTO یا AnimalType بگیرید
+        float speed = 70; // TODO: سرعت را از DTO یا AnimalType بگیرید
 
         switch (animal.getDirection()) {
             case Up -> newY += speed * delta;
@@ -72,8 +72,14 @@ public class AnimalLogicService {
 
         // TODO: منطق بررسی برخورد با موانع
         Tile tile = AppServer.getCurrentGame().getTileFromPixel((int)newX,(int)newY);
-        if(tile == null) return;
-        if(!tile.isWalkAble()) return;
+        if(tile == null) {
+            //System.out.println("tile is null");
+            return;
+        }
+        if(!tile.isWalkAble()) {
+            //System.out.println("tile is not walkable");
+            return;
+        }
         animal.setX(newX);
         animal.setY(newY);
 

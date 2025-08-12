@@ -59,6 +59,7 @@ public class GameStateController {
     private final ToolController toolController = new ToolController();
     private final FarmingController farmingController = new FarmingController();
     private final GameWorldController gameWorldController = new GameWorldController();
+    private  AnimalApiController animalApiController;
 
     private final UserRepository userRepository;
     private final GameSaveRepository gameSaveRepository;
@@ -68,6 +69,7 @@ public class GameStateController {
         this.gameSaveRepository = gameSaveRepository;
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.animalApiController = new AnimalApiController(jwtService);
     }
 
     @PostMapping("/game/map")

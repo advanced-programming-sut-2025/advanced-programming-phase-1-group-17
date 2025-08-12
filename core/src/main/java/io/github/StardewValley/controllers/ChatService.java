@@ -3,15 +3,9 @@ package io.github.StardewValley.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.shared.dto.ChatMessageDTO;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
-import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
-import org.springframework.web.socket.sockjs.client.SockJsClient;
-import org.springframework.web.socket.sockjs.client.Transport;
-import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -19,35 +13,46 @@ import java.util.Collections;
 import java.util.List;
 
 public class ChatService {
-    private StompSession stompSession;
-    private final ObjectMapper mapper = new ObjectMapper();
-    private volatile boolean isConnected = false; // برای چک کردن وضعیت اتصال
 
+    private StompSession stompSession;
+    private WebSocketStompClient stompClient;
+    private volatile boolean isConnected = false;
     public final List<ChatMessageDTO> messages = Collections.synchronizedList(new ArrayList<>());
 
+    public boolean isConnected() {
+        return this.isConnected;
+    }
+
     public void connect(String serverIp, int serverPort) {
-        String url = "http://" + serverIp + ":" + serverPort + "/ws"; // <<-- تغییر کلیدی اینجاست
-        // استفاده از SockJsClient برای سازگاری بهتر
-        List<Transport> transports = new ArrayList<>(1);
-        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
-        SockJsClient sockJsClient = new SockJsClient(transports);
+        String url = "ws://" + serverIp + ":" + serverPort + "/ws";
+        System.err.println("1. CHAT_SERVICE: Attempting to connect to URL: " + url);
 
-        WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
-        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+        this.stompClient = new WebSocketStompClient(new StandardWebSocketClient());
+        this.stompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
-        // دیگر از .get() استفاده نمی‌کنیم!
-        stompClient.connect(url, new StompSessionHandlerAdapter() {
+        System.err.println("2. CHAT_SERVICE: StompClient created. Calling connect()...");
+
+        this.stompClient.connect(url, new StompSessionHandlerAdapter() {
             @Override
             public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-                System.out.println("SUCCESS: Connected to WebSocket server!");
+                System.err.println("3. CHAT_SERVICE: SUCCESS! afterConnected callback was executed.");
                 stompSession = session;
                 isConnected = true;
                 subscribeToPublicTopic();
             }
 
             @Override
+            public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
+                System.err.println("5. CHAT_SERVICE: ERROR! STOMP protocol error.");
+                System.err.println("Command: " + command + ", Payload: " + new String(payload));
+                exception.printStackTrace();
+                isConnected = false;
+            }
+
+            @Override
             public void handleTransportError(StompSession session, Throwable exception) {
-                System.err.println("ERROR: WebSocket transport error!");
+                // این متد برای خطاهای سطح پایین شبکه است
+                System.err.println("4. CHAT_SERVICE: ERROR! WebSocket transport error occurred.");
                 exception.printStackTrace();
                 isConnected = false;
             }
@@ -55,15 +60,19 @@ public class ChatService {
     }
 
     private void subscribeToPublicTopic() {
-        if (!isConnected) return;
+        if (!isConnected) {
+            System.err.println("Cannot subscribe, not connected.");
+            return;
+        }
+        System.err.println("3.1. CHAT_SERVICE: Attempting to subscribe to /topic/public");
         stompSession.subscribe("/topic/public", new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return ChatMessageDTO.class;
             }
-
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
+                System.err.println("Message received on topic!");
                 messages.add((ChatMessageDTO) payload);
             }
         });
@@ -76,7 +85,7 @@ public class ChatService {
             System.err.println("Cannot send message. Not connected.");
             return;
         }
-
+        System.out.println("Sending message: " + content);
         ChatMessageDTO chatMessage = new ChatMessageDTO();
         chatMessage.setSenderUsername(username);
         chatMessage.setContent(content);
@@ -87,6 +96,14 @@ public class ChatService {
         if (stompSession != null && stompSession.isConnected()) {
             stompSession.disconnect();
         }
+        if (stompClient != null) {
+            stompClient.stop();
+        }
         isConnected = false;
+        System.out.println("Chat service disconnected.");
+    }
+
+    public void setConnected(boolean connected) {
+        isConnected = connected;
     }
 }

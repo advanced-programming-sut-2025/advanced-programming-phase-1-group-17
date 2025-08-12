@@ -3,6 +3,7 @@ package io.github.StardewValley.shared.models.game;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.LightningLogicController;
+import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.models.NPCS.*;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.TimeAndDate;
@@ -39,6 +40,7 @@ public class Game implements Serializable {
     private final CrowAttackLogic crowAttackLogic = new CrowAttackLogic();
     private final ArrayList<NPC> NPCHuts = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
+    private int numOfPlayers=0;
 
     private final ArrayList<GreenHouse> greenHouses = new ArrayList<>();
     private final HashMap<GreenHouse, Rectangle> greenHouseBounds = new HashMap<>();
@@ -389,6 +391,13 @@ public class Game implements Serializable {
         return getTile(tx,ty);
     }
 
+    public int getNumOfPlayers() {
+        return numOfPlayers;
     }
+
+    public void setNumOfPlayers(int numOfPlayers) {
+        this.numOfPlayers = numOfPlayers;
+    }
+}
 
 

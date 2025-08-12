@@ -11,11 +11,8 @@ import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.UIControllers.*;
 import io.github.StardewValley.shared.GameAssetManager;
-import io.github.StardewValley.shared.dto.AnimalDTO;
-import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
-import io.github.StardewValley.shared.dto.CraftingItemDTO;
+import io.github.StardewValley.shared.dto.*;
 import io.github.StardewValley.controllers.helperControllers.ToolRenderController;
-import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.controllers.helperControllers.CrowAttackEffect;
 import io.github.StardewValley.views.*;
@@ -246,6 +243,15 @@ public class GameController {
             if(animalPlaceDTO.getHitBox().contains(worldCoordinates.x, worldCoordinates.y)){
                 Main.getMain().getScreen().dispose();
                 Main.getMain().setScreen(new AnimalPlaceShow(GameAssetManagerClient.getGameAssetManager().getSkin(), view,animalPlaceDTO));
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean handleAnimalProductClick(Vector3 worldCoordinates) throws Exception {
+        for(AnimalProductDTO animalProductDTO:GameClient.gameStateApiClient.getAllAnimalProducts()){
+            if(animalProductDTO.getHitBox().contains(worldCoordinates.x, worldCoordinates.y)){
+                GameClient.gameStateApiClient.collectProduct(animalProductDTO);
                 return true;
             }
         }

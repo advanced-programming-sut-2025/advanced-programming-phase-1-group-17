@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.animal.AnimalPlaceType;
+import io.github.StardewValley.shared.models.map.Tile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class AnimalPlaceDTO {
     private float x, y;
     private boolean isDoorOpen;
     private List<AnimalDTO> animals; // لیستی از DTO های حیوانات داخل این ساختمان
-
+    private int spawnX, spawnY;
     /**
      * کانستراکتور خالی برای کتابخانه Jackson.
      */
@@ -51,5 +53,21 @@ public class AnimalPlaceDTO {
     public Rectangle getHitBox(){
         return new Rectangle(x,y, new Texture(this.animalPlaceType.getInventoryTexturePath()).getWidth(),
             new Texture(this.animalPlaceType.getInventoryTexturePath()).getHeight());
+    }
+
+    public int getSpawnX() {
+        return spawnX;
+    }
+
+    public void setSpawnX(int spawnX) {
+        this.spawnX = spawnX;
+    }
+
+    public int getSpawnY() {
+        return spawnY;
+    }
+
+    public void setSpawnY(int spawnY) {
+        this.spawnY = spawnY;
     }
 }
