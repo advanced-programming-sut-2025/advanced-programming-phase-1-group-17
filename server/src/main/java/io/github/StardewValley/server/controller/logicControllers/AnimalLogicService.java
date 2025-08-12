@@ -91,6 +91,7 @@ public class AnimalLogicService {
             //System.out.println("tile is not walkable");
             return;
         }
+
 //        for(AnimalPlaceDTO animalPlaceDTO:AnimalDataService.findAllPlaces()){
 //            if(animalPlaceDTO.getHitBox().contains(newX,newY)){
 //                return;
