@@ -3,6 +3,7 @@ package io.github.StardewValley.server.controller.logicControllers;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.repository.AnimalDataService;
 import io.github.StardewValley.shared.dto.AnimalDTO;
+import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
 import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.models.animal.AnimalProductType;
 import io.github.StardewValley.shared.models.animal.AnimalType;
@@ -90,6 +91,11 @@ public class AnimalLogicService {
             //System.out.println("tile is not walkable");
             return;
         }
+//        for(AnimalPlaceDTO animalPlaceDTO:AnimalDataService.findAllPlaces()){
+//            if(animalPlaceDTO.getHitBox().contains(newX,newY)){
+//                return;
+//            }
+//        }
         animal.setX(newX);
         animal.setY(newY);
 
