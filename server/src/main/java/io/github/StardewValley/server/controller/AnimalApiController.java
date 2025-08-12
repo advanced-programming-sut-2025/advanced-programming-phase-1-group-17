@@ -42,6 +42,30 @@ public class AnimalApiController {
         return ResponseEntity.ok().build();
     }
 
+
+
+    @PostMapping("/{name}/toggle-outside")
+    public ResponseEntity<AnimalDTO> toggleOutsideStatus(@PathVariable String name) {
+        // ۱. حیوان را از انبار داده پیدا کن
+        AnimalDTO animal = AnimalDataService.findAnimalByName(name);
+        if (animal == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // ۲. وضعیت isOutside را برعکس کن
+        animal.setOutside(!animal.isOutside());
+
+        // ۳. DTO تغییر کرده را دوباره در انبار ذخیره کن
+        AnimalDataService.save(animal);
+
+        // ۴. وضعیت جدید را به کلاینت برگردان تا UI خود را بلافاصله آپدیت کند
+        return ResponseEntity.ok(animal);
+    }
+
+
+
+
+
     @GetMapping("/allProducts")
     public ResponseEntity<List<AnimalProductDTO>> getAllAnimalProducts() {
 
