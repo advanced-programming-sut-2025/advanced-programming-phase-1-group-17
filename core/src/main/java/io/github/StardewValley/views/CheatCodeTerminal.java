@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.UIControllers.CheatCodeTerminalController;
 
 public class CheatCodeTerminal implements Screen {

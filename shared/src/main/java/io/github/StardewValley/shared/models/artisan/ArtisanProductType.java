@@ -176,10 +176,12 @@ public enum ArtisanProductType implements BackPackableType {
         String name = backpackableTypeDTO.getName();
         for (Object ingredient : ingredients.keySet()) {
             if (ingredient instanceof IngredientGroup ingredientGroup) {
-                if (ingredientGroup.getName().equals(name))
-                    return true;
-            } else if (ingredient instanceof BackPackType backPackType) {
-                if (backPackType.getName().equals(name))
+                for (BackPackableType member : ingredientGroup.getMembers()) {
+                    if (member.getName().equals(name))
+                        return true;
+                }
+            } else if (ingredient instanceof BackPackableType backPackableType) {
+                if (backPackableType.getName().equals(name))
                     return true;
             }
         }

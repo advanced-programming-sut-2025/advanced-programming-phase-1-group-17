@@ -1575,7 +1575,8 @@ public class GameStateApiClient {
 
     public GameState getGameState(int minTileX, int maxTileX, int minTileY, int maxTileY) {
         try {
-            // Build URL with query params
+            sendHeartBeat();
+
             String url = String.format("%s/game/map?minX=%d&maxX=%d&minY=%d&maxY=%d",
                 BASE_URL, minTileX, maxTileX, minTileY, maxTileY);
 
@@ -1597,6 +1598,25 @@ public class GameStateApiClient {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void sendHeartBeat() {
+        try {
+            Request request = new Request.Builder()
+                .url("http://%s:%d/game/heartbeat".formatted(Main.getServerIP(), Main.getServerPort()))
+                .addHeader("Authorization", "Bearer " + token)
+                .post(RequestBody.create("", MediaType.parse("text/plain; charset=utf-8")))
+                .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Map<Integer, ArrayList<Integer>> getPlayerHutsLocationsFromServer() {
@@ -2123,5 +2143,26 @@ public class GameStateApiClient {
             return false;
         }
         return true;
+    }
+
+    public Result resumeOngoingGame() {
+        try {
+            Request request = new Request.Builder()
+                .url("http://%s:%d/game/resume".formatted(Main.getServerIP(), Main.getServerPort()))
+                .addHeader("Authorization", "Bearer " + token)
+                .post(RequestBody.create("", MediaType.parse("text/plain; charset=utf-8")))
+                .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+                String responseBody = response.body().string();
+                return objectMapper.readValue(responseBody, Result.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

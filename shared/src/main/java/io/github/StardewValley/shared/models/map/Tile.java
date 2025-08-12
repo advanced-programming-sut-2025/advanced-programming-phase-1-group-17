@@ -158,21 +158,13 @@ public class Tile {
    // }
 
     public void lightningStrike() {
-        //TODO
-        //LightningController.getLightningController().triggerLightning();
         if (placeable instanceof Tree tree) {
             if (!tree.isInsideGreenhouse()) {
                 placeable = new Mineral(MineralType.Coal, false);
-//              TODO
-//                Main.getGameView().showNotification("Tree (%s) in tile (%d, %d) was lightninged."
-//                    .formatted(tree.getType().name(), tree.getTile().getX(), tree.getTile().getY()));
             }
         } else if (placeable instanceof Crop crop) {
             if (!crop.isInsideGreenhouse()) {
                 crop.getTile().setPlaceable(null);
-                //TODO
-                //                Main.getGameView().showNotification("Tree (%s) in tile (%d, %d) was lightninged."
-//                    .formatted(crop.getType().name(), crop.getTile().getX(), crop.getTile().getY()));
             }
         }
     }

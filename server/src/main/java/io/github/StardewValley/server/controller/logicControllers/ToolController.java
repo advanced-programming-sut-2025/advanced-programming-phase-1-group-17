@@ -180,6 +180,7 @@ public class ToolController {
 
 
     private HandleWorldClickResponse useWateringCan(Player player) {
+        System.out.println("Using watering Can.");
         double energy = ToolType.WateringCan.getEnergyCosts()[tool.getLevel()];
         if (player.getAbilities().getForagingLevel() == 4) {
             energy--;

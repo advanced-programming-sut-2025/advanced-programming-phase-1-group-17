@@ -15,14 +15,17 @@ public class GameState {
 
     //For voting
     private boolean paused;
+    private boolean DCPaused;
     private String targetUsername;
     private VotingSession.VotingType type;
+    private boolean shouldQuitGame;
 
     public GameState() {
     }
 
     public GameState(List<CraftingItemDTO> craftingItems, List<TileDTO> tiles, LightningStateDTO lightningStateDTO,
-                     TimeAndDateDTO timeAndDateDTO, boolean paused, String targetUsername, VotingSession.VotingType type) {
+                     TimeAndDateDTO timeAndDateDTO, boolean paused, String targetUsername, VotingSession.VotingType type,
+                     boolean DCPaused, boolean shouldQuitGame) {
         this.craftingItems = craftingItems;
         this.tiles = tiles;
         this.lightningStateDTO = lightningStateDTO;
@@ -32,7 +35,8 @@ public class GameState {
         this.paused = paused;
         this.targetUsername = targetUsername;
         this.type = type;
-
+        this.DCPaused = DCPaused;
+        this.shouldQuitGame = shouldQuitGame;
     }
 
     public List<CraftingItemDTO> getCraftingItems() {
@@ -89,5 +93,21 @@ public class GameState {
 
     public void setType(VotingSession.VotingType type) {
         this.type = type;
+    }
+
+    public boolean isDCPaused() {
+        return DCPaused;
+    }
+
+    public void setDCPaused(boolean DCPaused) {
+        this.DCPaused = DCPaused;
+    }
+
+    public boolean isShouldQuitGame() {
+        return shouldQuitGame;
+    }
+
+    public void setShouldQuitGame(boolean shouldQuitGame) {
+        this.shouldQuitGame = shouldQuitGame;
     }
 }

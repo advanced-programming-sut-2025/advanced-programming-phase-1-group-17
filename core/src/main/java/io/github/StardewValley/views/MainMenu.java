@@ -12,6 +12,8 @@ import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.MainMenuController;
 
+import java.awt.datatransfer.FlavorEvent;
+
 public class MainMenu implements Screen {
     private TextButton backButton;
     private Stage stage;
@@ -20,7 +22,9 @@ public class MainMenu implements Screen {
     private TextButton gameMenuButton;
     private TextButton logoutAndGotoLoginMenuButton;
     private TextButton loadSavedGamesButton;
+    private TextButton resumeOngoingGameButton;
     private TextButton menuTitle;
+    private Label errorLabel;
     public Table table;
     public Table buttons;
     private Image avatar;
@@ -47,7 +51,10 @@ public class MainMenu implements Screen {
         this.gameMenuButton = new TextButton("Lobby", skin);
         this.profileMenuButton = new TextButton("Profile menu", skin);
         this.loadSavedGamesButton = new TextButton("Load Saved Games", skin);
+        this.resumeOngoingGameButton = new TextButton("Resume Ongoing Game", skin);
         this.menuTitle = new TextButton("Main menu", skin);
+        this.errorLabel = new Label("", skin);
+        this.errorLabel.setColor(255, 0, 0, 1);
 
 
         menuTitle.setColor(0, 0, 1, 1);
@@ -74,9 +81,13 @@ public class MainMenu implements Screen {
         buttons.row().pad(10, 0, 10, 0);
         buttons.add(loadSavedGamesButton).width(500);
         buttons.row().pad(10, 0, 10, 0);
+        buttons.add(resumeOngoingGameButton).width(500);
+        buttons.row().pad(10, 0, 10, 0);
         buttons.add(profileMenuButton).width(500);
         buttons.row().pad(10, 0, 10, 0);
         buttons.add(logoutAndGotoLoginMenuButton).width(500);
+        buttons.row().pad(10, 0, 10, 0);
+        buttons.add(errorLabel).width(500);
         buttons.row().pad(10, 0, 10, 0);
         buttons.row().pad(10, 0, 10, 0);
         stage.addActor(nickName);
@@ -155,5 +166,13 @@ public class MainMenu implements Screen {
 
     public TextButton getLoadSavedGamesButton() {
         return loadSavedGamesButton;
+    }
+
+    public TextButton getResumeOngoingGameButton() {
+        return resumeOngoingGameButton;
+    }
+
+    public Label getErrorLabel() {
+        return errorLabel;
     }
 }

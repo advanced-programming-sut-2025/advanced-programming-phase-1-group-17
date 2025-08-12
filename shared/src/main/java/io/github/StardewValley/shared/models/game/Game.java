@@ -16,6 +16,7 @@ import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.enums.Gender;
 import io.github.StardewValley.shared.models.greenhouse.GreenHouse;
+import io.github.StardewValley.shared.models.map.Hut;
 import io.github.StardewValley.shared.models.map.PlayerMap;
 import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.MarketsController;
@@ -52,6 +53,7 @@ public class Game implements Serializable {
     private final HashMap<ShippingBin, Rectangle> shippingBinBounds = new HashMap<>();
 
     private VotingSession votingSession = null;
+    private boolean DCPaused = false;
 
     public Game() {}
 
@@ -106,11 +108,55 @@ public class Game implements Serializable {
         }
         this.date = fullGameDTO.getTimeAndDate();
         this.marketsController = new MarketsController(fullGameDTO.getMarketsControllerSave());
-        for (TileSave tileSave : fullGameDTO.getTiles()) {
-            this.tiles.add(new Tile(tileSave, this));
-        }
+        int counter = 1;
 
-        //TODO PlayerMap
+        for (Player player : players) {
+            player.setPlayerMap(new PlayerMap(player, this));
+        }
+        for (TileSave tileSave : fullGameDTO.getTiles()) {
+            Tile tile = new Tile(tileSave, this);
+            this.tiles.add(tile);
+            if (counter++ <= 10000) {
+                PlayerMap playerMap = this.players.get(0).getPlayerMap();
+                playerMap.getTiles().add(tile);
+                if (tile.getPlaceable() instanceof GreenHouse greenHouse && playerMap.getGreenHouse() == null)
+                    playerMap.setGreenHouse(greenHouse);
+                else if (tile.getPlaceable() instanceof Hut hut && playerMap.getHut() == null)
+                    playerMap.setHut(hut);
+            }
+            else if (counter++ <= 20000) {
+                PlayerMap playerMap = this.players.get(1).getPlayerMap();
+                playerMap.getTiles().add(tile);
+                if (tile.getPlaceable() instanceof GreenHouse greenHouse && playerMap.getGreenHouse() == null)
+                    playerMap.setGreenHouse(greenHouse);
+                else if (tile.getPlaceable() instanceof Hut hut && playerMap.getHut() == null)
+                    playerMap.setHut(hut);
+            }
+            else if (counter++ <= 30000) {
+                PlayerMap playerMap = this.players.get(2).getPlayerMap();
+                playerMap.getTiles().add(tile);
+                if (tile.getPlaceable() instanceof GreenHouse greenHouse && playerMap.getGreenHouse() == null)
+                    playerMap.setGreenHouse(greenHouse);
+                else if (tile.getPlaceable() instanceof Hut hut && playerMap.getHut() == null)
+                    playerMap.setHut(hut);
+            }
+            else if (counter++ <= 40000) {
+                PlayerMap playerMap = this.players.get(3).getPlayerMap();
+                playerMap.getTiles().add(tile);
+                if (tile.getPlaceable() instanceof GreenHouse greenHouse && playerMap.getGreenHouse() == null)
+                    playerMap.setGreenHouse(greenHouse);
+                else if (tile.getPlaceable() instanceof Hut hut && playerMap.getHut() == null)
+                    playerMap.setHut(hut);
+            }
+            else {
+                PlayerMap playerMap = this.players.get(4).getPlayerMap();
+                playerMap.getTiles().add(tile);
+                if (tile.getPlaceable() instanceof GreenHouse greenHouse && playerMap.getGreenHouse() == null)
+                    playerMap.setGreenHouse(greenHouse);
+                else if (tile.getPlaceable() instanceof Hut hut && playerMap.getHut() == null)
+                    playerMap.setHut(hut);
+            }
+        }
     }
 
     private NPC getNPCFromSave(NPCSave npcSave) {
@@ -322,7 +368,7 @@ public class Game implements Serializable {
     }
 
     public void getPlaceableFromSave(Tile tile, TileSave tileSave) {
-        if (tile.getPlaceable() == null)
+        if (tileSave.getPlaceableSave() == null)
             return;
         switch (tileSave.getPlaceableSave().getType()) {
             case "Crop":
@@ -401,9 +447,16 @@ public class Game implements Serializable {
         return getTile(tx,ty);
     }
 
+    public boolean isDCPaused() {
+        return DCPaused;
     public int getNumOfPlayers() {
         return numOfPlayers;
     }
+
+    public void setDCPaused(boolean DCPaused) {
+        this.DCPaused = DCPaused;
+    }
+}
 
     public void setNumOfPlayers(int numOfPlayers) {
         this.numOfPlayers = numOfPlayers;

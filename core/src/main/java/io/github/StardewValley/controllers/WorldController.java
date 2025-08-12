@@ -12,6 +12,7 @@ import io.github.StardewValley.controllers.UIControllers.LightningRenderControll
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.CraftingItemDTO;
+import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.game.GameState;
 import io.github.StardewValley.shared.models.TileDTO;
 import io.github.StardewValley.shared.models.enums.Season;
@@ -21,6 +22,7 @@ import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.Tree;
 import io.github.StardewValley.views.ForceTerminateMenu;
+import io.github.StardewValley.views.MainMenu;
 import io.github.StardewValley.views.VotingMenu;
 import kotlin.Pair;
 
@@ -45,6 +47,7 @@ public class WorldController {
     private List<CraftingItemDTO> craftingItems = new ArrayList<>();
     private final HashMap<String, ProgressBar> progressBarMap = new HashMap<>();
     private final LightningRenderController lightningRenderController;
+    private long timeSinceLastDisconnectionNotif = System.currentTimeMillis();
 
     public WorldController(OrthographicCamera camera) {
         this.lightningRenderController = LightningRenderController.getLightningController();
@@ -74,6 +77,10 @@ public class WorldController {
         treeTextureRegions.clear();
 
         gameState = GameClient.getGameStateApiClient().getGameState(minTileX, maxTileX, minTileY, maxTileY);
+        if (gameState.isShouldQuitGame()) {
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManagerClient.getGameAssetManager().getSkin()));
+        }
         if (gameState.isPaused()) {
             if (gameState.getType().equals(VotingSession.VotingType.FORCE_TERMINATE)) {
                 Main.getMain().getScreen().dispose();
@@ -90,13 +97,17 @@ public class WorldController {
                     ));
             }
             return;
+        } else if (gameState.isDCPaused()) {
+            if (System.currentTimeMillis() - timeSinceLastDisconnectionNotif > 120_000) {
+                timeSinceLastDisconnectionNotif = System.currentTimeMillis();
+                Main.getGameView().showNotification("A Player has disconnected from the game.");
+            }
         }
 
         List<TileDTO> tiles = gameState.getTiles();
         craftingItems = gameState.getCraftingItems();
 
         lightningRenderController.applyLightningState(gameState.getLightningStateDTO());
-        lightningRenderController.renderLightning(Main.getBatch(), GameClient.getPlayer());
 
         for (int x = minTileX - 1; x < maxTileX; x++) {
             for (int y = minTileY - 1; y < maxTileY; y++) {
@@ -132,6 +143,7 @@ public class WorldController {
         drawStores();
         drawTrees();
         drawGiantCrops();
+        lightningRenderController.renderLightning(Main.getBatch(), GameClient.getPlayer());
     }
 
     private void drawGiantCrops() {
@@ -175,10 +187,17 @@ public class WorldController {
                 printX = (tile.getX() * tileWidth) +
                     ((tileWidth - textureRegion.getRegionWidth()) / 2f);
                 printY = (tile.getY() * tileHeight) + 10;
+                if (textureRegion != null) {
+                    System.out.println("Tree Type: "+ tile.getTreeType() + " textureRegion not null");
+                }
                 treeTextureRegions.add(new Pair<>(textureRegion, new float[]{printX, printY}));
-            } else
+            } else {
+                System.out.println("Tree Type: "+ tile.getTreeType() + " " + tile.getTexturePath());
                 treesInThisFrame.add(new Pair<>(texture, new float[]{printX, printY}));
+            }
             return;
+        } if (tile.getPlaceableType().equals(NormalItem.class.getSimpleName())) {
+            System.out.println(tile.getGrassTextureID() + tile.getTexturePath());
         }
         switch (tile.getPlaceableType()) {
             case "Fence" -> Main.getBatch().draw(texture, printX, printY, 80, 80);
@@ -195,14 +214,21 @@ public class WorldController {
                 }
             }
             case "normalItem" -> {
-                if (tile.getGrassTextureID() != 0)
+                if (tile.getGrassTextureID() != 0) {
+                    System.out.println(tile.getGrassTextureID());
                     Main.getBatch().draw(GameAssetManager.getGameAssetManager().getGrassTextures().get(tile.getGrassTextureID()),
                         printX, printY,
                         printWidth, printHeight);
-                else
+                    System.out.println("Printed");
+                }
+                else {
+                    System.out.println(tile.getTexturePath());
+                    System.out.println(tile.getPlaceableType());
                     Main.getBatch().draw(texture,
                         printX, printY,
                         printWidth, printHeight);
+                    System.out.println("Printed");
+                }
             }
             case "Lake" -> Main.getBatch().draw(texture, tile.getX() * tileWidth, tile.getY() * tileHeight);
             case null, default -> {

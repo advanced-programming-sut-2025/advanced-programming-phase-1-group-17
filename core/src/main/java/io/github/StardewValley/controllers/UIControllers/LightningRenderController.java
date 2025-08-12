@@ -50,6 +50,7 @@ public class LightningRenderController {
     public void renderLightning(SpriteBatch batch, PlayerClient player) {
         // Flash (white screen)
         if (lightningAlpha > 0f) {
+            System.out.println("Lightning: Alpha: " + lightningAlpha);
             Color prev = batch.getColor().cpy();
             batch.setColor(1f, 1f, 1f, lightningAlpha);
             int x = player.getX() - Gdx.graphics.getWidth() / 2;

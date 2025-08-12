@@ -73,6 +73,8 @@ public class ToolRenderController {
     }
 
     public void update(float delta, PlayerDto player) {
+        if (player.getToolType() == null)
+            return;
         this.player = player;
         updateToolAnimation(delta);
         drawTool();

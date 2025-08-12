@@ -5,6 +5,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
+import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
+import io.github.StardewValley.server.controller.logicControllers.FarmingController;
+import io.github.StardewValley.server.controller.logicControllers.GameWorldController;
+import io.github.StardewValley.server.controller.logicControllers.ToolController;
+import io.github.StardewValley.server.model.ConnectionMonitor;
 import io.github.StardewValley.server.controller.logicControllers.*;
 import io.github.StardewValley.server.model.GameSaveService;
 import io.github.StardewValley.server.model.User;
@@ -115,7 +120,9 @@ public class GameStateController {
             TimeAndDate.getDTO(game.getDate()),
             voting != null && voting.isActive(),
             targetUsername,
-            type
+            type,
+            game.isDCPaused(),
+            ConnectionMonitor.isShouldQuitGame()
         ));
     }
     @PostMapping("/send")
@@ -385,8 +392,8 @@ public class GameStateController {
 
         try {
             gameSaveService.saveGame(game.getId(), new FullGameDTO(game), game.getCreator().getUser().getUsername());
-            AppServer.setCurrentGame(null);
             System.out.println("Game saved.");
+            AppServer.setCurrentGame(null);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.ok(false);
@@ -616,7 +623,7 @@ public class GameStateController {
             result = CheatCodeHandler.cheatThor(
                 Integer.parseInt(matcher.group("x")),
                 Integer.parseInt(matcher.group("y")),
-                getGameFromToken(token)
+                AppServer.getCurrentGame()
             );
         } else if ((matcher = CheatCodeCommands.CheatWeatherSet.getMatcher(command)) != null) {
             result = CheatCodeHandler.changeWeather(
@@ -775,7 +782,9 @@ public class GameStateController {
     public ResponseEntity<Result> craftArtisan(@RequestBody CraftArtisanRequest request,
                                                @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
-        Tile craftingItemTile = AppServer.getCurrentGame().getTile(request.getCraftingItemDTO().getTileX(), request.getCraftingItemDTO().getTileY());
+        Game game = AppServer.getCurrentGame();
+
+        Tile craftingItemTile = game.getTile(request.getCraftingItemDTO().getTileX(), request.getCraftingItemDTO().getTileY());
         if (craftingItemTile == null)
             return ResponseEntity.ok(new Result(false, "Crafting Item not found."));
         CraftingItem artisan = (CraftingItem) craftingItemTile.getPlaceable();
@@ -793,9 +802,6 @@ public class GameStateController {
             boolean matched = true;
             for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems()) {
                 if (!product.containsDTO(backPackableTypeDTO)) {
-                    matched = false;
-                    break;
-                } else if (backPackableTypeDTO.getCountInBackPack() < product.getIngredients().get(backPackableTypeDTO)) {
                     matched = false;
                     break;
                 }
@@ -818,13 +824,19 @@ public class GameStateController {
             for (BackpackableTypeDTO backPackableTypeDTO : request.getSelectedItems()) {
                 try {
                     BackPackableType backPackableType = AppServer.getEnumInstance(backPackableTypeDTO.getClassName(), backPackableTypeDTO.getName());
+                    if (backPackableTypeDTO.getCountInBackPack() < product.getIngredients().get(backPackableType)) {
+                        matched = false;
+                        break;
+                    }
                     if (backPackableTypeDTO.getCountInBackPack() > 0) {
-                        player.getBackPack().getBackPackItems().get(backPackableType).subList(0, backPackableTypeDTO.getCountInBackPack()).clear();
+                        player.getBackPack().getBackPackItems().get(backPackableType).subList(0, backPackableTypeDTO.getCountInBackPack() + 1).clear();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+            if (!matched)
+                continue;
 
             return ResponseEntity.ok(new Result(true, "%s is now being crafted".formatted(product.getName())));
         }

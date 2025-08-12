@@ -341,6 +341,7 @@ public class GameController {
         if (result.getActionType().equals(HandleWorldClickResponse.ActionType.NONE))
             return false;
 
+        System.out.println("Clicked " + result.isStartToolAnimation());
         if (result.isStartToolAnimation()) {
             toolRenderController.startToolAnimation();
             System.out.println("Tool Animation started.");

@@ -53,7 +53,7 @@ public class CheatCodeHandler {
     }
 
     public static String cheatThor(int x, int y, Game game) {
-        Tile tile = Tile.getTile(x, y);
+        Tile tile = game.getTile(x, y);
         if (tile == null)
             return "tile not found";
         game.getLightningLogicController().triggerLightning();
