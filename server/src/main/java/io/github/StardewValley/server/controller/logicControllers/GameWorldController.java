@@ -34,7 +34,7 @@ public class GameWorldController {
         if (response.isSuccessful()) {
             return response;
         }
-        return checkStoreBounds(worldCoordinates, player);
+        return checkStoreBounds(worldCoordinates, player, game);
     }
 
     private HandleWorldClickResponse checkGreenHouseBounds(Vector3 worldCoordinates, Player player, Game game) {
@@ -76,9 +76,8 @@ public class GameWorldController {
     }
 
 
-    private HandleWorldClickResponse checkStoreBounds(Vector3 worldCoordinates, Player player) {
-        Game currentGame = player.getUser().getActiveGame();
-        HashMap<StoreType, Rectangle> storeBounds = currentGame.getMarketsController().getStoreBounds();
+    private HandleWorldClickResponse checkStoreBounds(Vector3 worldCoordinates, Player player, Game game) {
+        HashMap<StoreType, Rectangle> storeBounds = game.getMarketsController().getStoreBounds();
         for (StoreType storeType : storeBounds.keySet()) {
             Rectangle rectangle = storeBounds.get(storeType);
             if (rectangle.contains(worldCoordinates.x, worldCoordinates.y)) {

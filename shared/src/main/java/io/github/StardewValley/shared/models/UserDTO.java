@@ -1,8 +1,6 @@
 package io.github.StardewValley.shared.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.models.enums.Gender;
-import io.github.StardewValley.shared.models.game.Game;
 
 public class UserDTO {
     /*
@@ -20,10 +18,6 @@ public class UserDTO {
     private int numOfPlay = 0;
     private double theMostMoneyInGame;
     private String passwordHash;
-    @JsonIgnore
-    private transient Game activeGame;
-    @JsonIgnore
-    private transient Game lastGame;
     private String avatar = "avatar/avatar7.jpg";
 
     public UserDTO() {}
@@ -66,14 +60,6 @@ public class UserDTO {
         this.gender = gender;
     }
 
-    public Game getActiveGame() {
-        return activeGame;
-    }
-
-    public void setActiveGame(Game activeGame) {
-        this.activeGame = activeGame;
-    }
-
     public int getNumOfPlay() {
         return numOfPlay;
     }
@@ -112,14 +98,6 @@ public class UserDTO {
 
     public void setTheMostMoneyInGame(double theMostMoneyInGame) {
         this.theMostMoneyInGame = theMostMoneyInGame;
-    }
-
-    public Game getLastGame() {
-        return lastGame;
-    }
-
-    public void setLastGame(Game lastGame) {
-        this.lastGame = lastGame;
     }
 
     public String getEmail() {

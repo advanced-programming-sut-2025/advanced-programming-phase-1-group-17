@@ -16,6 +16,16 @@ public class Ability {
     private int fishingLevel = 0;
     private Player player;
 
+    public Ability() {
+    }
+
+    public Ability(AbilityDTO dto) {
+        this.farmingLevel = dto.getFarmingLevel();
+        this.fishingLevel = dto.getFishingLevel();
+        this.foragingLevel = dto.getForagingLevel();
+        this.miningLevel = dto.getMiningLevel();
+    }
+
     Ability(Player player) {
         this.player = player;
     }
@@ -147,5 +157,61 @@ public class Ability {
             ability.foragingLevel,
             ability.fishingLevel
         );
+    }
+
+    public int getFarmingAbility() {
+        return farmingAbility;
+    }
+
+    public void setFarmingAbility(int farmingAbility) {
+        this.farmingAbility = farmingAbility;
+    }
+
+    public int getMiningAbility() {
+        return miningAbility;
+    }
+
+    public void setMiningAbility(int miningAbility) {
+        this.miningAbility = miningAbility;
+    }
+
+    public int getForagingAbility() {
+        return foragingAbility;
+    }
+
+    public void setForagingAbility(int foragingAbility) {
+        this.foragingAbility = foragingAbility;
+    }
+
+    public int getFishingAbility() {
+        return fishingAbility;
+    }
+
+    public void setFishingAbility(int fishingAbility) {
+        this.fishingAbility = fishingAbility;
+    }
+
+    public void setFarmingLevel(int farmingLevel) {
+        this.farmingLevel = farmingLevel;
+    }
+
+    public void setMiningLevel(int miningLevel) {
+        this.miningLevel = miningLevel;
+    }
+
+    public void setForagingLevel(int foragingLevel) {
+        this.foragingLevel = foragingLevel;
+    }
+
+    public void setFishingLevel(int fishingLevel) {
+        this.fishingLevel = fishingLevel;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

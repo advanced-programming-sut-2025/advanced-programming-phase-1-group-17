@@ -1,6 +1,8 @@
 package io.github.StardewValley.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
@@ -64,11 +66,16 @@ public class GameStateController {
     private final UserRepository userRepository;
     private final GameSaveRepository gameSaveRepository;
     private final JwtService jwtService;
+    private final GameSaveService gameSaveService;
 
     public GameStateController(UserRepository userRepository, JwtService jwtService, GameSaveRepository gameSaveRepository) {
         this.gameSaveRepository = gameSaveRepository;
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.gameSaveService = new GameSaveService(gameSaveRepository, objectMapper);
         this.animalApiController = new AnimalApiController(jwtService);
     }
 
@@ -208,7 +215,7 @@ public class GameStateController {
             , Ability.getDTO(player.getAbilities())
             , currentTool == null ? null : currentTool.getToolType()
             , currentTool == null ? null : currentTool.getMaterial()
-            , currentTool == null ? null : currentTool.getFishingPoleMaterial(),
+            , currentTool == null ? null : currentTool.getFishingPoleType(),
             player.getTargetPlayerToTrade());
         pd.setNewMessage(player.isNewMessage());
 
@@ -359,9 +366,9 @@ public class GameStateController {
         if (!username.equals(AppServer.getCurrentGame().getCreator().getUser().getUsername()))
             return ResponseEntity.ok(false);
         for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.isGuest())
+                continue;
             User user = userRepository.findByUsername(p.getUser().getUsername()).get();
-            p.getUser().setLastGame(AppServer.getCurrentGame());
-            p.getUser().setActiveGame(null);
             if (p.isGuest()) continue;
             p.getUser().setTheMostMoneyInGame(Math.max(p.getUser().getTheMostMoneyInGame(), p.getCoin()));
             UserDTO userDTO = p.getUser();
@@ -377,11 +384,11 @@ public class GameStateController {
             userRepository.save(user);
         }
         Game game = AppServer.getCurrentGame();
-        AppServer.setCurrentGame(null);
 
-        GameSaveService gameSaveService = new GameSaveService(gameSaveRepository, new ObjectMapper());
         try {
             gameSaveService.saveGame(game.getId(), new FullGameDTO(game), game.getCreator().getUser().getUsername());
+            AppServer.setCurrentGame(null);
+            System.out.println("Game saved.");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.ok(false);
@@ -645,7 +652,7 @@ public class GameStateController {
     public ResponseEntity<Result> purchaseItem(@RequestBody PurchaseRequest request, @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
         Game game = AppServer.getCurrentGame();
-        MarketsController marketsController = player.getUser().getActiveGame().getMarketsController();
+        MarketsController marketsController = game.getMarketsController();
         return ResponseEntity.ok(
             marketsController.purchase(request.getShopItemDTO(), request.getCount(),
                 request.getStoreType(), player, game.getDate().getSeason(), game)
@@ -656,8 +663,8 @@ public class GameStateController {
     public ResponseEntity<GetMarketInventoryResponse> getMarketInventory(@RequestBody GetMarketInventoryRequest request,
                                                                          @RequestHeader("Authorization") String token) {
         Player player = getPlayerFromToken(token);
-        Game game = player.getUser().getActiveGame();
-        MarketsController marketsController = player.getUser().getActiveGame().getMarketsController();
+        Game game = AppServer.getCurrentGame();
+        MarketsController marketsController = game.getMarketsController();
         StoreInventory inventory = marketsController.getInventory(request.getStoreType());
         return ResponseEntity.ok(new GetMarketInventoryResponse(
             inventory.getItemDTOs(game.getDate().getSeason(), request.getStoreType()),
@@ -1374,7 +1381,7 @@ public class GameStateController {
                     , Ability.getDTO(player.getAbilities())
                     , currentTool == null ? null : currentTool.getToolType()
                     , currentTool == null ? null : currentTool.getMaterial()
-                    , currentTool == null ? null : currentTool.getFishingPoleMaterial(),
+                    , currentTool == null ? null : currentTool.getFishingPoleType(),
                     player.getTargetPlayerToTrade());
                 pd.setNewMessage(player.isNewMessage());
                 pd.setGender(player.getUser().getGender().equals(Gender.Male) ? "Male" : "Female");

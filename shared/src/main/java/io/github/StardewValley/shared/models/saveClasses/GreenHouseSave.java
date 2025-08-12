@@ -50,4 +50,44 @@ public class GreenHouseSave {
     public String getOwnerUsername() {
         return ownerUsername;
     }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public GreenHouseFence getFence() {
+        return fence;
+    }
+
+    public void setFence(GreenHouseFence fence) {
+        this.fence = fence;
+    }
+
+    public GreenHouseLake getLake() {
+        return lake;
+    }
+
+    public void setLake(GreenHouseLake lake) {
+        this.lake = lake;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setStarting_x(int starting_x) {
+        this.starting_x = starting_x;
+    }
+
+    public void setStarting_y(int starting_y) {
+        this.starting_y = starting_y;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
+    }
 }

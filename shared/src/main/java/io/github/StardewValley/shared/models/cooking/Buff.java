@@ -3,6 +3,10 @@ package io.github.StardewValley.shared.models.cooking;
 public class Buff {
     private BuffType buffType;
     private int duration;
+
+    public Buff() {
+    }
+
     public Buff(BuffType buffType, int duration) {
         this.buffType = buffType;
         this.duration = duration;

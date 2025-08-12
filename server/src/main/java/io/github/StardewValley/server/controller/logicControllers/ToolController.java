@@ -324,7 +324,7 @@ public class ToolController {
                 HandleWorldClickResponse.ActionType.SHOW_NOTIFICATION);
         }
         double energy = 2;
-        switch (tool.getFishingPoleMaterial()) {
+        switch (tool.getFishingPoleType()) {
             case TrainingFishingPole -> energy = 8;
             case BambooFishingPole -> energy = 6;
             case FiberglassFishingPole -> energy = 4;
@@ -337,7 +337,7 @@ public class ToolController {
             energy--;
         }
         player.setEnergy(player.getEnergy() - energy * leverage);
-        return fishing(tool.getFishingPoleMaterial().name(), player, game);
+        return fishing(tool.getFishingPoleType().name(), player, game);
     }
 
 

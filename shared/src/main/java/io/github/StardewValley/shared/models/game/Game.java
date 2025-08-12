@@ -56,10 +56,6 @@ public class Game implements Serializable {
     public Game() {}
 
     public Game(UserDTO user1, UserDTO user2, UserDTO user3, UserDTO user4) {
-        user1.setActiveGame(this);
-        user2.setActiveGame(this);
-        user3.setActiveGame(this);
-        user4.setActiveGame(this);
         players.add(creator = new Player(user1, false));
         players.add(new Player(user2, user2.getUsername().startsWith("guest")));
         players.add(new Player(user3, user3.getUsername().startsWith("guest")));
@@ -113,6 +109,8 @@ public class Game implements Serializable {
         for (TileSave tileSave : fullGameDTO.getTiles()) {
             this.tiles.add(new Tile(tileSave, this));
         }
+
+        //TODO PlayerMap
     }
 
     private NPC getNPCFromSave(NPCSave npcSave) {
@@ -324,12 +322,18 @@ public class Game implements Serializable {
     }
 
     public void getPlaceableFromSave(Tile tile, TileSave tileSave) {
+        if (tile.getPlaceable() == null)
+            return;
         switch (tileSave.getPlaceableSave().getType()) {
             case "Crop":
-                tile.setPlaceable(new Crop(tileSave.getPlaceableSave().getCropSave()));
+                Crop crop = new Crop(tileSave.getPlaceableSave().getCropSave());
+                crop.setTile(tile);
+                tile.setPlaceable(crop);
                 break;
             case "Tree":
-                tile.setPlaceable(new Tree(tileSave.getPlaceableSave()));
+                Tree tree = new Tree(tileSave.getPlaceableSave());
+                tree.setTile(tile);
+                tile.setPlaceable(tree);
                 break;
             case "Hut":
                 tile.setPlaceable(tileSave.getPlaceableSave().getHut());
@@ -339,8 +343,12 @@ public class Game implements Serializable {
                 break;
             case "GreenHouse":
                 GreenHouse greenHouse = new GreenHouse(tileSave.getPlaceableSave());
-                tile.setPlaceable(greenHouse);
                 this.addGreenHouses(greenHouse);
+                for (Player player : players) {
+                    if (player.getUser().getUsername().equals(tileSave.getPlaceableSave().getGreenHouseSave().getOwnerUsername()))
+                        greenHouse.setOwner(player);
+                }
+                tile.setPlaceable(greenHouse);
                 break;
             case "GreenHouseLake":
                 tile.setPlaceable(tileSave.getPlaceableSave().getGreenHouseLake());

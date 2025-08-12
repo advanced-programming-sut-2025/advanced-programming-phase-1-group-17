@@ -10,9 +10,9 @@ public class ArtisanAssetManager {
 
     private ArtisanAssetManager() {
         for (ArtisanProductType type : ArtisanProductType.values()) {
-            if (type.equals(ArtisanProductType.Coal))
-                artisanProductTypeTextureHashMap.put(type, "Resource/Coal.png");
-            else if (type.equals(ArtisanProductType.Oil))
+//            if (type.equals(ArtisanProductType.Coal))
+//                artisanProductTypeTextureHashMap.put(type, "Resource/Coal.png");
+            if (type.equals(ArtisanProductType.Oil))
                 artisanProductTypeTextureHashMap.put(type, "Ingredient/Oil.png");
             else if (type.equals(ArtisanProductType.SmokedFish))
                 artisanProductTypeTextureHashMap.put(type, "Fish/Smoked_Fish.png");

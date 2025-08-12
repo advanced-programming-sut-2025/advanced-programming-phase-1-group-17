@@ -160,7 +160,7 @@ public class AnimalPlace implements Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         return null;
     }
 

@@ -1,9 +1,9 @@
 package io.github.StardewValley.shared.models.plant;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Placeable;
 import io.github.StardewValley.shared.models.map.Tile;
-import io.github.StardewValley.shared.models.saveClasses.CropSave;
 import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 import io.github.StardewValley.shared.models.saveClasses.TreeSave;
 
@@ -12,6 +12,7 @@ import java.util.Random;
 public abstract class Plant implements Placeable {
     protected boolean isInsideGreenhouse;
     protected boolean isWateredToday = false;
+    @JsonIgnore
     protected Tile tile;
     protected boolean hasFruit = false;
     protected boolean isFullyGrown;
@@ -181,5 +182,9 @@ public abstract class Plant implements Placeable {
 
     public boolean isHasFruit() {
         return hasFruit;
+    }
+
+    public void setTile(Tile tile) {
+        this.tile = tile;
     }
 }

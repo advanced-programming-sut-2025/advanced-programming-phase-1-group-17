@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.saveClasses;
 
-import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.models.Fence;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.foraging.Mineral;
@@ -18,9 +17,9 @@ public class PlaceableSave {
     private CropSave cropSave;
     private TreeSave treeSave;
     private CraftingItemSave craftingItemSave;
-    private AnimalDTO animalDTO;
+    //private AnimalDTO animalDTO;
     //TODO Save
-    private AnimalPlaceSave animalPlaceSave;
+    //private AnimalPlaceSave animalPlaceSave;
     private Fence fence;
     private GreenHouseSave greenHouseSave;
     private GreenHouseLake greenHouseLake;
@@ -34,6 +33,9 @@ public class PlaceableSave {
     private ShippingBinSave shippingBinSave;
     private Store store;
     private NPCSave NPCSave;
+
+    public PlaceableSave() {
+    }
 
     public PlaceableSave(String type) {
         this.type = type;
@@ -71,21 +73,21 @@ public class PlaceableSave {
         this.craftingItemSave = craftingItemSave;
     }
 
-    public AnimalDTO getAnimalDTO() {
-        return animalDTO;
-    }
-
-    public void setAnimalDTO(AnimalDTO animalDTO) {
-        this.animalDTO = animalDTO;
-    }
-
-    public AnimalPlaceSave getAnimalPlaceSave() {
-        return animalPlaceSave;
-    }
-
-    public void setAnimalPlaceSave(AnimalPlaceSave animalPlaceSave) {
-        this.animalPlaceSave = animalPlaceSave;
-    }
+//    public AnimalDTO getAnimalDTO() {
+//        return animalDTO;
+//    }
+//
+//    public void setAnimalDTO(AnimalDTO animalDTO) {
+//        this.animalDTO = animalDTO;
+//    }
+//
+//    public AnimalPlaceSave getAnimalPlaceSave() {
+//        return animalPlaceSave;
+//    }
+//
+//    public void setAnimalPlaceSave(AnimalPlaceSave animalPlaceSave) {
+//        this.animalPlaceSave = animalPlaceSave;
+//    }
 
     public GreenHouseSave getGreenHouseSave() {
         return greenHouseSave;

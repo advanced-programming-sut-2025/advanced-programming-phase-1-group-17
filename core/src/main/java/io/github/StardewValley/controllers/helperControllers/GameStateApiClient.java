@@ -4,7 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.GameController;
+import io.github.StardewValley.controllers.GameMenuController;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
@@ -21,6 +25,7 @@ import io.github.StardewValley.shared.models.market.Fish;
 import io.github.StardewValley.shared.models.market.ShopItemDTO;
 import io.github.StardewValley.shared.models.market.StoreType;
 import io.github.StardewValley.shared.models.tools.FishingPoleType;
+import io.github.StardewValley.views.GameView;
 import okhttp3.*;
 
 import java.io.InputStream;
@@ -30,14 +35,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameStateApiClient {
     private static final String BASE_URL = "http://%s:%d/api/gameState".formatted(Main.getServerIP(), Main.getServerPort());
     private static final String AnimalURL = "http://%s:%d/api/animals".formatted(Main.getServerIP(), Main.getServerPort());
+    private static final String SAVE_URL = "http://%s:%d/savedGames".formatted(Main.getServerIP(), Main.getServerPort());
 
     private String token;
 
@@ -46,6 +49,8 @@ public class GameStateApiClient {
 
     public GameStateApiClient(String jwtToken) {
         this.token = jwtToken;
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
     public void collectProduct(AnimalProductDTO productToCollect) throws Exception {
         HttpURLConnection conn = null;
@@ -2041,5 +2046,82 @@ public class GameStateApiClient {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<SavedGameInfo> getSavedGames() {
+        try {
+            Request request = new Request.Builder()
+                .url(SAVE_URL)
+                .addHeader("Authorization", "Bearer " + token)
+                .get()
+                .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new Exception("Server Error: " + response.code());
+                }
+
+                String responseBody = response.body().string();
+                return objectMapper.readValue(
+                    responseBody,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, SavedGameInfo.class)
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+
+    public boolean waitForLoadGame(UUID gameId) {
+        try {
+            System.out.println(gameId);
+            ReadyRequest req = new ReadyRequest(gameId);
+            String json = objectMapper.writeValueAsString(req);
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request readyRequest = new Request.Builder()
+                .url(SAVE_URL + "/ready")
+                .addHeader("Authorization", "Bearer " + token)
+                .post(body)
+                .build();
+
+            try (Response readyResponse = client.newCall(readyRequest).execute()) {
+                if (!readyResponse.isSuccessful()) {
+                    throw new Exception("Server Error (ready): " + readyResponse.code());
+                }
+                String responseBody = readyResponse.body().string();
+                GameLoadStatus status = objectMapper.readValue(responseBody, GameLoadStatus.class);
+
+                return status.isAllReady();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean loadGame(UUID gameId) {
+        try {
+            ReadyRequest req = new ReadyRequest(gameId);
+            String json = objectMapper.writeValueAsString(req);
+            RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+
+            Request readyRequest = new Request.Builder()
+                .url(SAVE_URL + "/load")
+                .addHeader("Authorization", "Bearer " + token)
+                .post(body)
+                .build();
+
+            try (Response readyResponse = client.newCall(readyRequest).execute()) {
+                if (!readyResponse.isSuccessful()) {
+                    throw new Exception("Server Error (ready): " + readyResponse.code());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

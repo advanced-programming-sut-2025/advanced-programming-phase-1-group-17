@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.artisan;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.backpack.BackPackType;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
@@ -42,8 +41,8 @@ public enum ArtisanProductType implements BackPackableType {
     Coffee("Coffee", 75, 0, 2,
         mapOf(entry(CropType.CoffeeBean, 5)), 150, CraftingItemType.Keg),
 
-    Coal("Coal", -1, 0, 1,
-        mapOf(entry(NormalItemType.Wood, 10)), 50, CraftingItemType.CharcoalKlin),
+//    Coal("Coal", -1, 0, 1,
+//        mapOf(entry(NormalItemType.Wood, 10)), 50, CraftingItemType.CharcoalKlin),
 
     Mead("Mead", 100, 0, 10,
         mapOf(entry(Honey, 1)), 300, CraftingItemType.Keg),

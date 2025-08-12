@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StoreInventory {
-    private final StoreType storeType;
+    private StoreType storeType;
     private final List<ShopItem> items = new ArrayList<>();
     private final List<UpgradeService> upgrades = new ArrayList<>();
+
+    public StoreInventory() {
+    }
 
     public StoreInventory(StoreType storeType) {
         this.storeType = storeType;
@@ -51,6 +54,10 @@ public class StoreInventory {
     }
 
     public List<UpgradeService> getUpgradeServices() {
+        return upgrades;
+    }
+
+    public List<UpgradeService> getUpgrades() {
         return upgrades;
     }
 }

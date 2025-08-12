@@ -1,12 +1,16 @@
 package io.github.StardewValley.shared.models.tools;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.github.StardewValley.shared.models.Deserializers.ToolDeserializer;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
-import io.github.StardewValley.shared.models.saveClasses.BackPackSave;
 import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = ToolDeserializer.class)
 public class Tool implements BackPackable {
     private ToolType type;
     private ToolMaterial material;
@@ -14,14 +18,16 @@ public class Tool implements BackPackable {
     private double price;
     private int wateringCanStorage = 0;
     private boolean isWateringCanFull = true;
-    private FishingPoleType fishingPoleMaterial;
+    private FishingPoleType fishingPoleType;
 
+    public Tool() {
+    }
 
-    public Tool(ToolType type, ToolMaterial material,FishingPoleType fishingPoleMaterial) {
+    public Tool(ToolType type, ToolMaterial material, FishingPoleType fishingPoleType) {
         this.type = type;
         this.material = material;
         handleWateringCanStorage();
-        this.fishingPoleMaterial = fishingPoleMaterial;
+        this.fishingPoleType = fishingPoleType;
     }
 
     public void handleWateringCanStorage() {
@@ -110,8 +116,8 @@ public class Tool implements BackPackable {
 
     @Override
     public BackPackableType getType() {
-        if (type == ToolType.FishingPole && fishingPoleMaterial != null) {
-            return fishingPoleMaterial;
+        if (type == ToolType.FishingPole && fishingPoleType != null) {
+            return fishingPoleType;
         }
         return type;
     }
@@ -140,11 +146,15 @@ public class Tool implements BackPackable {
         isWateringCanFull = wateringCanFull;
     }
 
-    public FishingPoleType getFishingPoleMaterial() {
-        return fishingPoleMaterial;
+    public FishingPoleType getFishingPoleType() {
+        return fishingPoleType;
     }
 
-    public void setFishingPoleMaterial(FishingPoleType fishingPoleMaterial) {
-        this.fishingPoleMaterial = fishingPoleMaterial;
+    public void setFishingPoleType(FishingPoleType fishingPoleType) {
+        this.fishingPoleType = fishingPoleType;
+    }
+
+    public void setMaterial(ToolMaterial material) {
+        this.material = material;
     }
 }

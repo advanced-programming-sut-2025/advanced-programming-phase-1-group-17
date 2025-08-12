@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models.map;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
@@ -19,6 +20,7 @@ public class Tile {
     private Placeable placeable;
     private boolean isWalkAble = true;
     private boolean isPlowed = false;
+    @JsonBackReference
     private Player owner;
     private NPC npcIsHere;
     private boolean crowImmunity = false;
@@ -81,17 +83,9 @@ public class Tile {
     }
 
     public void setPlaceable(Placeable placeable) {
-        if (owner.getUser().getActiveGame() == null) {
-            this.placeable = placeable;
-            if (placeable instanceof Tree) {
-                this.setWalkAble(false);
-            }
-        }
-        else {
-            this.placeable = placeable;
-            if (placeable instanceof Tree) {
-                this.setWalkAble(false);
-            }
+        this.placeable = placeable;
+        if (placeable instanceof Tree) {
+            this.setWalkAble(false);
         }
     }
 

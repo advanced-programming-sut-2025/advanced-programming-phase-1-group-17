@@ -5,8 +5,6 @@ import io.github.StardewValley.shared.models.plant.Crop;
 import io.github.StardewValley.shared.models.plant.CropType;
 import io.github.StardewValley.shared.models.plant.FertilizerType;
 
-import java.util.ArrayList;
-
 public class CropSave {
     private CropType type;
     private boolean isGiant;
@@ -25,11 +23,11 @@ public class CropSave {
 
     private int TileX;
     private int TileY;
-    private ArrayList<Pair<Integer, Integer>> neighbourGiantTilesCoordinates;
+    //private ArrayList<Pair<Integer, Integer>> neighbourGiantTilesCoordinates;
 
     public CropSave() {}
 
-    public CropSave(Crop crop) {
+    public CropSave(Crop crop, int tileX, int tileY) {
         this.type = crop.getType();
         this.isGiant = crop.isGiant();
         this.isLeftBottomTileOfGiant = crop.isLeftBottomTileOfGiant();
@@ -45,19 +43,19 @@ public class CropSave {
         this.daysWithoutWater = crop.getDaysWithoutWater();
         this.daysTillNextHarvest = crop.getDaysTillNextHarvest();
 
-        this.TileX = crop.getTile().getX();
-        this.TileY = crop.getTile().getY();
+        this.TileX = tileX;
+        this.TileY = tileY;
 
-        if (crop.getNeighborGiantTiles().isEmpty()) {
-            this.neighbourGiantTilesCoordinates = new ArrayList<>();
-        } else {
-            this.neighbourGiantTilesCoordinates = new ArrayList<>();
-            crop.getNeighborGiantTiles().forEach(giantTile -> {
-                this.neighbourGiantTilesCoordinates.add(
-                    new Pair<>(giantTile.getTile().getX(), giantTile.getTile().getY())
-                );
-            });
-        }
+//        if (crop.getNeighborGiantTiles().isEmpty()) {
+//            this.neighbourGiantTilesCoordinates = new ArrayList<>();
+//        } else {
+//            this.neighbourGiantTilesCoordinates = new ArrayList<>();
+//            crop.getNeighborGiantTiles().forEach(giantTile -> {
+//                this.neighbourGiantTilesCoordinates.add(
+//                    new Pair<>(giantTile.getTile().getX(), giantTile.getTile().getY())
+//                );
+//            });
+//        }
     }
 
     public CropType getType() {
@@ -124,8 +122,77 @@ public class CropSave {
         return TileY;
     }
 
-    public ArrayList<Pair<Integer, Integer>> getNeighbourGiantTilesCoordinates() {
-        return neighbourGiantTilesCoordinates;
+//    public ArrayList<Pair<Integer, Integer>> getNeighbourGiantTilesCoordinates() {
+//        return neighbourGiantTilesCoordinates;
+//    }
+
+
+    public void setType(CropType type) {
+        this.type = type;
+    }
+
+    public void setGiant(boolean giant) {
+        isGiant = giant;
+    }
+
+    public void setLeftBottomTileOfGiant(boolean leftBottomTileOfGiant) {
+        isLeftBottomTileOfGiant = leftBottomTileOfGiant;
+    }
+
+    public void setQuality(ItemQuality quality) {
+        this.quality = quality;
+    }
+
+    public void setInsideGreenhouse(boolean insideGreenhouse) {
+        isInsideGreenhouse = insideGreenhouse;
+    }
+
+    public void setWateredToday(boolean wateredToday) {
+        isWateredToday = wateredToday;
+    }
+
+    public boolean isHasFruit() {
+        return hasFruit;
+    }
+
+    public void setHasFruit(boolean hasFruit) {
+        this.hasFruit = hasFruit;
+    }
+
+    public void setFullyGrown(boolean fullyGrown) {
+        isFullyGrown = fullyGrown;
+    }
+
+    public void setForaging(boolean foraging) {
+        isForaging = foraging;
+    }
+
+    public void setCurrentStageIndex(int currentStageIndex) {
+        this.currentStageIndex = currentStageIndex;
+    }
+
+    public void setWhichDayOfStage(int whichDayOfStage) {
+        this.whichDayOfStage = whichDayOfStage;
+    }
+
+    public void setFertilizerType(FertilizerType fertilizerType) {
+        this.fertilizerType = fertilizerType;
+    }
+
+    public void setDaysWithoutWater(int daysWithoutWater) {
+        this.daysWithoutWater = daysWithoutWater;
+    }
+
+    public void setDaysTillNextHarvest(int daysTillNextHarvest) {
+        this.daysTillNextHarvest = daysTillNextHarvest;
+    }
+
+    public void setTileX(int tileX) {
+        TileX = tileX;
+    }
+
+    public void setTileY(int tileY) {
+        TileY = tileY;
     }
 }
 

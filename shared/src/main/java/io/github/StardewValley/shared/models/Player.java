@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.Map;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.dto.TradeRequestDto;
 import io.github.StardewValley.shared.models.NPCS.Gift;
@@ -29,6 +30,7 @@ import io.github.StardewValley.shared.models.tools.*;
 import java.util.*;
 
 public class Player {
+    @JsonManagedReference
     private PlayerMap playerMap;
     private UUID activeGameID;
     private UserDTO user;
@@ -152,10 +154,11 @@ public class Player {
         // NPC relationships
         this.friendShipsWithNPCs.clear();
         if (playerSave.getFriendShipsWithNPCs() != null) {
-            for (NPCSave npcSave : playerSave.getFriendShipsWithNPCs().keySet()) {
+            for (int i = 0; i < playerSave.getFriendShipsWithNPCs().size(); i++) {
                 for (NPC npc : npcs) {
+                    NPCSave npcSave = playerSave.getFriendShipsWithNPCs().get(i);
                     if (npc.getName().equals(npcSave.getName())) {
-                        this.friendShipsWithNPCs.put(npc, playerSave.getFriendShipsWithNPCs().get(npcSave));
+                        this.friendShipsWithNPCs.put(npc, playerSave.getFriendShipsWithNPCValues().get(i));
                         break;
                     }
                 }
@@ -164,10 +167,11 @@ public class Player {
 
         this.talkedNPCToday.clear();
         if (playerSave.getTalkedNPCToday() != null) {
-            for (NPCSave npcSave : playerSave.getTalkedNPCToday().keySet()) {
+            for (int i = 0; i < playerSave.getTalkedNPCToday().size(); i++) {
                 for (NPC npc : npcs) {
+                    NPCSave npcSave = playerSave.getTalkedNPCToday().get(i);
                     if (npc.getName().equals(npcSave.getName())) {
-                        this.talkedNPCToday.put(npc, playerSave.getTalkedNPCToday().get(npcSave));
+                        this.talkedNPCToday.put(npc, playerSave.getTalkedNPCTodayValues().get(i));
                         break;
                     }
                 }
@@ -176,10 +180,11 @@ public class Player {
 
         this.giftNPCToday.clear();
         if (playerSave.getGiftNPCToday() != null) {
-            for (NPCSave npcSave : playerSave.getGiftNPCToday().keySet()) {
+            for (int i = 0; i < playerSave.getGiftNPCToday().size(); i++) {
                 for (NPC npc : npcs) {
+                    NPCSave npcSave = playerSave.getGiftNPCToday().get(i);
                     if (npc.getName().equals(npcSave.getName())) {
-                        this.giftNPCToday.put(npc, playerSave.getGiftNPCToday().get(npcSave));
+                        this.giftNPCToday.put(npc, playerSave.getGiftNPCTodayValue().get(i));
                         break;
                     }
                 }
@@ -204,7 +209,7 @@ public class Player {
         this.currentTool = wateringCan;
         this.equippedItem = wateringCan;
         this.getCraftingRecipes().add(new CraftingRecipe(CraftingItemType.MegaBomb));
-        backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));
+        //backPack.addItemToInventory(new Tool(ToolType.FishingPole, null, FishingPoleType.IridiumFishingPole));
         this.getRecipes().add(new Recipe(FoodType.MakiRoll));
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
         this.buff = new Buff(BuffType.None, 0);
@@ -221,6 +226,7 @@ public class Player {
         this.coin = playerSave.getCoin();
         this.animationTimer = playerSave.getAnimationTimer();
         this.passOutTimer = playerSave.getPassOutTimer();
+        //this.animals = new ArrayList<>(playerSave.getAnimals() != null ? playerSave.getAnimals() : List.of());
         this.moved = playerSave.isMoved();
         this.lastDirection = playerSave.getLastDirection();
         this.currentDirection = playerSave.getCurrentDirection();
@@ -247,7 +253,7 @@ public class Player {
 
         // Recipes & Abilities
         this.recipes = new HashSet<>(playerSave.getRecipes() != null ? playerSave.getRecipes() : Set.of());
-        this.abilities = playerSave.getAbilities() != null ? playerSave.getAbilities() : new Ability(this);
+        this.abilities = playerSave.getAbilities() != null ? new Ability(playerSave.getAbilities()) : new Ability(this);
         this.craftingRecipes = new HashSet<>(playerSave.getCraftingRecipes() != null ? playerSave.getCraftingRecipes() : Set.of());
 
         // Misc
@@ -255,23 +261,13 @@ public class Player {
     }
 
     private void getBackPackItemsFromSave(PlayerSave playerSave, Game game) {
-        playerSave.getBackPack().getBackPackItems().forEach((typePair, saves) -> {
-            String name = typePair.getFirst();
-            String className = typePair.getSecond();
-            BackPackableType type;
-            try {
-                Class<?> clazz = Class.forName(className);
-                type = (BackPackableType) clazz.getConstructor(String.class).newInstance(name);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to load backpack type: " + name + " / " + className, e);
-            }
-
+        playerSave.getBackPack().getBackPackItems().forEach((backPackableType, saves) -> {
             ArrayList<BackPackable> backpackables = new ArrayList<>();
             for (BackPackableSave save : saves) {
                 backpackables.add(fromBackPackableSave(save, game));
             }
 
-            backPack.getBackPackItems().put(type, backpackables);
+            backPack.getBackPackItems().put(backPackableType, backpackables);
         });
     }
 

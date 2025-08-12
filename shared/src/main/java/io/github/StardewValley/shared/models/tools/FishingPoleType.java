@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.tools;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum FishingPoleType implements BackPackableType {
@@ -33,7 +32,10 @@ public enum FishingPoleType implements BackPackableType {
 
     @Override
     public String getInventoryTexturePath() {
-        //TODO
-        return null;
+        return ToolAssetManager.getToolAssetManager().getToolTexturePath(
+            ToolType.FishingPole,
+            null,
+            this
+        );
     }
 }

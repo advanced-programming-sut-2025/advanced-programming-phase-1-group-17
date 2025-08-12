@@ -5,6 +5,9 @@ import io.github.StardewValley.shared.models.Player;
 public class Recipe {
     private FoodType foodToBeCooked;
 
+    public Recipe() {
+    }
+
     public Recipe(FoodType foodToBeCooked) {
         this.foodToBeCooked = foodToBeCooked;
     }

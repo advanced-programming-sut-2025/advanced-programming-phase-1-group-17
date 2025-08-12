@@ -1,10 +1,13 @@
 package io.github.StardewValley.server.model;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +21,7 @@ public class GameSave {
 
     @Lob
     private String serializedState; // JSON or binary
+
 
     public UUID getId() {
         return id;

@@ -4,6 +4,10 @@ import io.github.StardewValley.shared.models.Player;
 
 public class CraftingRecipe {
     private CraftingItemType targetItem;
+
+    public CraftingRecipe() {
+    }
+
     public CraftingRecipe(CraftingItemType targetItem) {
         this.targetItem = targetItem;
     }

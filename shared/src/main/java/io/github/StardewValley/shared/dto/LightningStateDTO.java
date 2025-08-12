@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.dto;
 
-// هیچ import jakarta.persistence ای وجود ندارد!
 public class LightningStateDTO {
     private boolean flashing;
     private float lightningAlpha;
@@ -8,7 +7,9 @@ public class LightningStateDTO {
     private int currentFrame;
     private float animationTime;
 
-    public LightningStateDTO() {}
+    public LightningStateDTO() {
+    }
+
     public LightningStateDTO(boolean flashing, float lightningAlpha, boolean boltActive, int currentFrame, float animationTime) {
         this.flashing = flashing;
         this.lightningAlpha = lightningAlpha;
@@ -57,5 +58,3 @@ public class LightningStateDTO {
         this.animationTime = animationTime;
     }
 
-    // کانستراکتور کامل و تمام گتر/سترها را اینجا قرار دهید...
-}

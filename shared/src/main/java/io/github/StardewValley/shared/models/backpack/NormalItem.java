@@ -12,6 +12,8 @@ public class NormalItem implements BackPackable, Placeable {
     private NormalItemType type;
     private int grassTextureID;
 
+    public NormalItem() {}
+
     public NormalItem(NormalItemType type) {
         this.type = type;
         if (type.equals(NormalItemType.Grass)) {
@@ -48,7 +50,7 @@ public class NormalItem implements BackPackable, Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(NormalItem.class.getSimpleName());
         placeableSave.setNormalItem(this);
         return placeableSave;
@@ -61,5 +63,13 @@ public class NormalItem implements BackPackable, Placeable {
 
     public int getGrassTextureID() {
         return grassTextureID;
+    }
+
+    public void setType(NormalItemType type) {
+        this.type = type;
+    }
+
+    public void setGrassTextureID(int grassTextureID) {
+        this.grassTextureID = grassTextureID;
     }
 }

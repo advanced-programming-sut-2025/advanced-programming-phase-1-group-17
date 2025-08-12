@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models.backpack;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.models.Player;
 
 import java.util.ArrayList;

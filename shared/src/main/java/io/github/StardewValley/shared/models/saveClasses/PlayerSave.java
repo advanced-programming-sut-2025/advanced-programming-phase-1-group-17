@@ -29,21 +29,26 @@ public class PlayerSave {
     private Player.Direction currentDirection;
 
     //For friendShip
-    private HashMap<String, Integer> friendShips;
-    private HashMap<String, TalkSave> talk;
+    private HashMap<String, Integer> friendShips = new HashMap<>();
+    private HashMap<String, TalkSave> talk = new HashMap<>();
     private boolean newMessage;
 
-    private HashMap<String, ArrayList<GiftSaved>> gifts;
-    private ArrayList<MessageSave> Messages;
-    private ArrayList<Trade> trades;
+    private HashMap<String, ArrayList<GiftSaved>> gifts = new HashMap<>();
+    private ArrayList<MessageSave> Messages = new ArrayList<>();
+    private ArrayList<Trade> trades = new ArrayList<>();
     private String partnerUsername;
     private boolean interactionWithPartner;
     private int isbrokenUp;
 
     //For NPC
-    private HashMap<NPCSave, Integer> friendShipsWithNPCs;
-    private HashMap<NPCSave, Boolean> talkedNPCToday;
-    private HashMap<NPCSave, Boolean> giftNPCToday;
+    private ArrayList<NPCSave> friendShipsWithNPCs = new ArrayList<>();
+    private ArrayList<Integer> friendShipsWithNPCValues = new ArrayList<>();
+
+    private ArrayList<NPCSave> talkedNPCToday = new ArrayList<>();
+    private ArrayList<Boolean> talkedNPCTodayValues = new ArrayList<>();
+
+    private ArrayList<NPCSave> giftNPCToday = new ArrayList<>();
+    private ArrayList<Boolean> giftNPCTodayValue = new ArrayList<>();
 
     //For Energy
     private double energy;
@@ -60,9 +65,9 @@ public class PlayerSave {
     private Tool currentTool;
     private BackPackableSave equippedItem;
 
-    private HashSet<Recipe> recipes;
-    private Ability abilities;
-    private HashSet<CraftingRecipe> craftingRecipes;
+    private HashSet<Recipe> recipes = new HashSet<>();
+    private AbilityDTO abilities;
+    private HashSet<CraftingRecipe> craftingRecipes = new HashSet<>();
 
     private int daysSinceBrakeUp;
 
@@ -120,17 +125,19 @@ public class PlayerSave {
         this.isbrokenUp = player.getIsbrokenUp();
 
         // NPC friendships
-        this.friendShipsWithNPCs = new HashMap<>();
         for (var entry : player.getFriendShipsWithNPCs().entrySet()) {
-            this.friendShipsWithNPCs.put(new NPCSave(entry.getKey()), entry.getValue());
+            this.friendShipsWithNPCs.add(new NPCSave(entry.getKey()));
+            this.friendShipsWithNPCValues.add(entry.getValue());
         }
-        this.talkedNPCToday = new HashMap<>();
+
         for (var entry : player.getTalkedNPCToday().entrySet()) {
-            this.talkedNPCToday.put(new NPCSave(entry.getKey()), entry.getValue());
+            this.talkedNPCToday.add(new NPCSave(entry.getKey()));
+            this.talkedNPCTodayValues.add(entry.getValue());
         }
-        this.giftNPCToday = new HashMap<>();
+
         for (var entry : player.getGiftNPCToday().entrySet()) {
-            this.giftNPCToday.put(new NPCSave(entry.getKey()), entry.getValue());
+            this.giftNPCToday.add(new NPCSave(entry.getKey()));
+            this.giftNPCTodayValue.add(entry.getValue());
         }
 
         // Energy
@@ -150,7 +157,12 @@ public class PlayerSave {
 
         // Recipes & crafting
         this.recipes = new HashSet<>(player.getRecipes());
-        this.abilities = player.getAbilities();
+        this.abilities = new AbilityDTO(
+            player.getAbilities().getFarmingLevel(),
+            player.getAbilities().getMiningLevel(),
+            player.getAbilities().getForagingLevel(),
+            player.getAbilities().getFishingLevel()
+        );
         this.craftingRecipes = new HashSet<>(player.getCraftingRecipes());
 
         this.daysSinceBrakeUp = player.getDaysSinceBrakeUp();
@@ -340,28 +352,52 @@ public class PlayerSave {
         this.isbrokenUp = isbrokenUp;
     }
 
-    public HashMap<NPCSave, Integer> getFriendShipsWithNPCs() {
+    public ArrayList<NPCSave> getFriendShipsWithNPCs() {
         return friendShipsWithNPCs;
     }
 
-    public void setFriendShipsWithNPCs(HashMap<NPCSave, Integer> friendShipsWithNPCs) {
+    public void setFriendShipsWithNPCs(ArrayList<NPCSave> friendShipsWithNPCs) {
         this.friendShipsWithNPCs = friendShipsWithNPCs;
     }
 
-    public HashMap<NPCSave, Boolean> getTalkedNPCToday() {
+    public ArrayList<Integer> getFriendShipsWithNPCValues() {
+        return friendShipsWithNPCValues;
+    }
+
+    public void setFriendShipsWithNPCValues(ArrayList<Integer> friendShipsWithNPCValues) {
+        this.friendShipsWithNPCValues = friendShipsWithNPCValues;
+    }
+
+    public ArrayList<NPCSave> getTalkedNPCToday() {
         return talkedNPCToday;
     }
 
-    public void setTalkedNPCToday(HashMap<NPCSave, Boolean> talkedNPCToday) {
+    public void setTalkedNPCToday(ArrayList<NPCSave> talkedNPCToday) {
         this.talkedNPCToday = talkedNPCToday;
     }
 
-    public HashMap<NPCSave, Boolean> getGiftNPCToday() {
+    public ArrayList<Boolean> getTalkedNPCTodayValues() {
+        return talkedNPCTodayValues;
+    }
+
+    public void setTalkedNPCTodayValues(ArrayList<Boolean> talkedNPCTodayValues) {
+        this.talkedNPCTodayValues = talkedNPCTodayValues;
+    }
+
+    public ArrayList<NPCSave> getGiftNPCToday() {
         return giftNPCToday;
     }
 
-    public void setGiftNPCToday(HashMap<NPCSave, Boolean> giftNPCToday) {
+    public void setGiftNPCToday(ArrayList<NPCSave> giftNPCToday) {
         this.giftNPCToday = giftNPCToday;
+    }
+
+    public ArrayList<Boolean> getGiftNPCTodayValue() {
+        return giftNPCTodayValue;
+    }
+
+    public void setGiftNPCTodayValue(ArrayList<Boolean> giftNPCTodayValue) {
+        this.giftNPCTodayValue = giftNPCTodayValue;
     }
 
     public double getEnergy() {
@@ -444,11 +480,11 @@ public class PlayerSave {
         this.recipes = recipes;
     }
 
-    public Ability getAbilities() {
+    public AbilityDTO getAbilities() {
         return abilities;
     }
 
-    public void setAbilities(Ability abilities) {
+    public void setAbilities(AbilityDTO abilities) {
         this.abilities = abilities;
     }
 

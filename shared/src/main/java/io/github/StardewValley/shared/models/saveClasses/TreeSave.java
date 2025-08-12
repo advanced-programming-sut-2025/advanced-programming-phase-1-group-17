@@ -22,7 +22,7 @@ public class TreeSave {
 
     public TreeSave() {}
 
-    public TreeSave(Tree tree) {
+    public TreeSave(Tree tree, int tileX, int tileY) {
         this.isInsideGreenhouse = tree.isInsideGreenhouse();
         this.isWateredToday = tree.isWateredToday();
         this.hasFruit = tree.isHasFruit();
@@ -35,10 +35,9 @@ public class TreeSave {
         this.daysTillNextHarvest = tree.getDaysTillNextHarvest();
         this.type = tree.getType();
 
-        this.tileX = tree.getTile().getX();
-        this.tileY = tree.getTile().getY();
+//        this.tileX = tileX;
+//        this.tileY = tileY;
     }
-
     public boolean isInsideGreenhouse() {
         return isInsideGreenhouse;
     }
@@ -89,5 +88,57 @@ public class TreeSave {
 
     public int getTileY() {
         return tileY;
+    }
+
+    public void setInsideGreenhouse(boolean insideGreenhouse) {
+        isInsideGreenhouse = insideGreenhouse;
+    }
+
+    public void setWateredToday(boolean wateredToday) {
+        isWateredToday = wateredToday;
+    }
+
+    public void setHasFruit(boolean hasFruit) {
+        this.hasFruit = hasFruit;
+    }
+
+    public void setFullyGrown(boolean fullyGrown) {
+        isFullyGrown = fullyGrown;
+    }
+
+    public void setForaging(boolean foraging) {
+        isForaging = foraging;
+    }
+
+    public void setCurrentStageIndex(int currentStageIndex) {
+        this.currentStageIndex = currentStageIndex;
+    }
+
+    public void setWhichDayOfStage(int whichDayOfStage) {
+        this.whichDayOfStage = whichDayOfStage;
+    }
+
+    public void setFertilizerType(FertilizerType fertilizerType) {
+        this.fertilizerType = fertilizerType;
+    }
+
+    public void setDaysWithoutWater(int daysWithoutWater) {
+        this.daysWithoutWater = daysWithoutWater;
+    }
+
+    public void setDaysTillNextHarvest(int daysTillNextHarvest) {
+        this.daysTillNextHarvest = daysTillNextHarvest;
+    }
+
+    public void setType(TreeType type) {
+        this.type = type;
+    }
+
+    public void setTileX(int tileX) {
+        this.tileX = tileX;
+    }
+
+    public void setTileY(int tileY) {
+        this.tileY = tileY;
     }
 }

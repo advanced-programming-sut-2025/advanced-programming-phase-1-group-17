@@ -1,6 +1,7 @@
 package io.github.StardewValley.shared.models.market;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.models.game.Game;
@@ -21,6 +22,7 @@ public class ShippingBin implements Placeable, BackPackable {
     private ShippingBinType type = ShippingBinType.Basic;
     private ArrayList<BackPackable> items = new ArrayList<>();
     //only one player can have items in a shipping bin each day
+    @JsonIgnore
     private Player todayItemOwner = null;
     private int tileX;
     private int tileY;
@@ -107,7 +109,7 @@ public class ShippingBin implements Placeable, BackPackable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(ShippingBin.class.getSimpleName());
         placeableSave.setShippingBinSave(new ShippingBinSave(this));
         return placeableSave;

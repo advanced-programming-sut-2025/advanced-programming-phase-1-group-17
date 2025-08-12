@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models.NPCS;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.UserDTO;
 import io.github.StardewValley.shared.models.map.Placeable;
@@ -14,6 +15,7 @@ abstract public class NPC implements Placeable {
     protected int x;
     protected int y;
     private static UserDTO fatherUser;
+    @JsonIgnore
     private static Player fatherPlayer;
     protected String name;
     protected String job;
@@ -125,7 +127,7 @@ abstract public class NPC implements Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(this.name);
         placeableSave.setNPCSave(new NPCSave(this));
         return placeableSave;

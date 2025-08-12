@@ -1,11 +1,13 @@
 package io.github.StardewValley.shared.models.saveClasses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.NPCS.Quest;
 import io.github.StardewValley.shared.models.UserDTO;
 
 import java.util.ArrayList;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NPCSave {
     private String name;
     private int x;
@@ -142,4 +144,6 @@ public class NPCSave {
     public ArrayList<Quest> getRequests() {
         return requests;
     }
+
+
 }
