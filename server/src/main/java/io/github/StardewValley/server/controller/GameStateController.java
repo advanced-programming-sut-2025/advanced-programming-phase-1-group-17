@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
-import io.github.StardewValley.server.controller.logicControllers.CheatCodeHandler;
-import io.github.StardewValley.server.controller.logicControllers.FarmingController;
-import io.github.StardewValley.server.controller.logicControllers.GameWorldController;
-import io.github.StardewValley.server.controller.logicControllers.ToolController;
+import io.github.StardewValley.server.controller.logicControllers.*;
 import io.github.StardewValley.server.model.GameSaveService;
 import io.github.StardewValley.server.model.User;
+import io.github.StardewValley.server.repository.AnimalDataService;
+import io.github.StardewValley.server.repository.MusicRepository;
 import io.github.StardewValley.shared.models.game.VotingSession;
 import io.github.StardewValley.server.repository.GameSaveRepository;
 import io.github.StardewValley.server.repository.UserRepository;
@@ -150,6 +149,7 @@ public class GameStateController {
         return ResponseEntity.ok().build();
     }
 
+
     @GetMapping("/messages")
     public ResponseEntity<List<ChatMessageDTO>> getMessages(@RequestHeader("Authorization") String token) {
         Game currentGame = AppServer.getCurrentGame();
@@ -213,6 +213,16 @@ public class GameStateController {
         pd.setNewMessage(player.isNewMessage());
 
         return ResponseEntity.ok(pd);
+    }
+    @GetMapping("/allMusic")
+    public ResponseEntity<ArrayList<MusicDTO>> getAllMusic() {
+        return ResponseEntity.ok(MusicRepository.getAll());
+    }
+    @PostMapping("/addMusic")
+    public ResponseEntity<Void> addMusic(@RequestBody MusicDTO musicDTO, @RequestHeader("Authorization") String token) {
+        MusicRepository.addMusic(musicDTO);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/selectMap")
@@ -422,6 +432,7 @@ public class GameStateController {
             player.isEnergyUnlimited(),
             timeAngle
         );
+        hudData.setHour(date.getHour());
 
         return ResponseEntity.ok(hudData);
     }
@@ -1753,5 +1764,6 @@ public class GameStateController {
             game.getPlayers().remove(game.getVotingSession().getTargetPlayer());
         return ResponseEntity.ok(result);
     }
+
 
 }

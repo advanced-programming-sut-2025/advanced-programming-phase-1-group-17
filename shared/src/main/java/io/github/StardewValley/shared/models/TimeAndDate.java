@@ -123,6 +123,7 @@ public class TimeAndDate {
 
         if (!game.getPlayers().isEmpty()) { //Added for Unit Test
            // Animal.goToNextDay(); todo
+
             normalizeMaxEnergies(game);
             //Actions Needed to be done every day
             weatherEffect();

@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -34,6 +35,7 @@ import java.util.Objects;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Gender;
 import models.PlayerClient;
+
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -74,9 +76,15 @@ public class GameView implements Screen, InputProcessor {
     private ChatView chatView;
     private ChatService chatService;
     private AnimalProductView animalProductView;
+    private Texture overlayTexture; // تکسچر جدید برای تاریکی
 
 
     public GameView(GameController controller, GameMenuController menuController) {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.BLACK); // رنگ پایه تاریکی
+        pixmap.fill();
+        overlayTexture = new Texture(pixmap);
+        pixmap.dispose();
         this.chatView = new ChatView(GameAssetManagerClient.getGameAssetManager().getSkin(),this);
         this.apiClient = GameClient.getGameStateApiClient();
         this.animalView = new AnimalView(); // هنرمند را استخدام کن
@@ -330,6 +338,8 @@ public class GameView implements Screen, InputProcessor {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
+//
+
     }
 
     public void updateNearPlayerAndNpc() {
@@ -486,6 +496,10 @@ public class GameView implements Screen, InputProcessor {
         if(Gdx.input.isKeyPressed(Input.Keys.F)){
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.M)){
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new MusicScreen(this,GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
     }
     @Override

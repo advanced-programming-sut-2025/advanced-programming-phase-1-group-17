@@ -28,6 +28,7 @@ public class ChatView implements Screen {
     private final ScrollPane scrollPane;
     private final TextField messageField;
     private final TextButton sendButton;
+    private GameView gameView;
 
     // کلاینت لیست پیام‌های نمایش داده شده را در خود نگه می‌دارد
     private List<ChatMessageDTO> displayedMessages;
@@ -37,6 +38,7 @@ public class ChatView implements Screen {
     private static final float POLL_INTERVAL = 2.0f; // هر ۲ ثانیه یکبار
 
     public ChatView(Skin skin,GameView gameView) {
+        this.gameView = gameView;
         this.backButton = new TextButton("back",skin);
         this.skin = skin;
         this.stage = new Stage(new ScreenViewport());
@@ -49,17 +51,7 @@ public class ChatView implements Screen {
         scrollPane.setFadeScrollBars(false);
         messageField = new TextField("", skin);
         sendButton = new TextButton("Send", skin);
-        Table backTable = new Table();
-        backTable.setFillParent(true);
-        backButton.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                Main.getMain().getScreen().dispose();
-                Main.getMain().setScreen(gameView);
-            }
-        });
-        backTable.add(backButton);
-        backTable.right().top();
-        stage.addActor(backTable);
+
 
         // ۲. چیدمان UI
         layoutUI();
@@ -80,6 +72,17 @@ public class ChatView implements Screen {
         inputTable.add(messageField).growX();
         inputTable.add(sendButton).padLeft(5);
         rootTable.add(inputTable).growX().padTop(10);
+        Table backTable = new Table();
+        backTable.setFillParent(true);
+        backButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(gameView);
+            }
+        });
+        backTable.add(backButton);
+        backTable.right().top();
+        stage.addActor(backTable);
     }
 
     private void addListeners() {

@@ -1,7 +1,5 @@
 package io.github.StardewValley.server.controller;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.controller.logicControllers.AnimalLogicService;
 import io.github.StardewValley.server.repository.AnimalDataService;
@@ -11,7 +9,6 @@ import io.github.StardewValley.shared.models.game.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class GameLoopService {
@@ -40,11 +37,16 @@ public class GameLoopService {
         // ۱. آپدیت زمان بازی (منطق قبلی شما)
         currentGame.getDate().increaseMinute(delta * 5,AppServer.getCurrentGame());
         currentGame.getLightningLogicController().updateLightning(delta);
+        if(currentGame.getDate().getHour()>=12){
+            AppServer.getCurrentGame().getDate().goToNextDay(AppServer.getCurrentGame());
+            animalLogicService.animalGoToNextDay();
+        }
 
         // ۲. آپدیت تمام حیوانات (منطق جدید، دقیقا کنار قبلی)
         for(AnimalPlaceDTO animalPlaceDTO:AnimalDataService.findAllPlaces()){
             for(AnimalDTO animalDTO:animalPlaceDTO.getAnimals()){
                 animalLogicService.updateAnimalState(animalDTO,delta);
+
             }
         }
 
