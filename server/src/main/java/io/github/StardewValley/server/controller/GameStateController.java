@@ -52,6 +52,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/gameState")
@@ -112,6 +113,63 @@ public class GameStateController {
             targetUsername,
             type
         ));
+    }
+    @PostMapping("/send")
+    public ResponseEntity<Void> sendMessage(@RequestBody ChatMessageDTO message) {
+        Game currentGame = AppServer.getCurrentGame();
+        if (currentGame == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        message.setTimestamp(System.currentTimeMillis());
+
+        // --- منطق جدید برای تشخیص پیام خصوصی ---
+        String content = message.getContent();
+        // الگویی برای پیدا کردن /w username message
+        Pattern pattern = Pattern.compile("^/w\\s+(\\w+)\\s+(.*)");
+        Matcher matcher = pattern.matcher(content);
+
+        // اگر پیام با الگو مطابقت داشت (یک پیام خصوصی است)
+        if (matcher.find()) {
+            String recipientUsername = matcher.group(1); // نام کاربری گیرنده
+            String privateContent = matcher.group(2);  // متن اصلی پیام
+
+            // TODO: چک کنید آیا کاربری با نام recipientUsername در بازی وجود دارد
+
+            message.setRecipientUsername(recipientUsername); // گیرنده را مشخص کن
+            message.setContent(privateContent); // متن پیام را تمیز کن
+            message.setPrivate(true); // این پیام را به عنوان خصوصی علامت بزن
+
+        } else {
+            message.setPrivate(false); // این یک پیام عمومی است
+        }
+
+        // در هر صورت، پیام را به لاگ کلی اضافه کن
+        currentGame.getChatLog().add(message);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/messages")
+    public ResponseEntity<List<ChatMessageDTO>> getMessages(@RequestHeader("Authorization") String token) {
+        Game currentGame = AppServer.getCurrentGame();
+        Player currentPlayer = getPlayerFromToken(token); // فرض می‌کنیم این متد را دارید
+
+        if (currentGame != null && currentPlayer != null) {
+            // به جای برگرداندن کل لاگ، آن را برای بازیکن فعلی فیلتر کن
+            List<ChatMessageDTO> visibleMessages = new ArrayList<>();
+            for (ChatMessageDTO msg : currentGame.getChatLog()) {
+                // اگر پیام عمومی است، یا اگر خصوصی است و برای من یا از طرف من است
+                if (!msg.isPrivate() ||
+                    msg.getSenderUsername().equals(currentPlayer.getUser().getUsername()) ||
+                    (msg.getRecipientUsername() != null && msg.getRecipientUsername().equals(currentPlayer.getUser().getUsername()))) {
+
+                    visibleMessages.add(msg);
+                }
+            }
+            return ResponseEntity.ok(visibleMessages);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
 
