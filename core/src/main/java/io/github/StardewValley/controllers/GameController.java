@@ -341,8 +341,10 @@ public class GameController {
         if (result.getActionType().equals(HandleWorldClickResponse.ActionType.NONE))
             return false;
 
-        if (result.isStartToolAnimation())
+        if (result.isStartToolAnimation()) {
             toolRenderController.startToolAnimation();
+            System.out.println("Tool Animation started.");
+        }
         switch (result.getActionType()) {
             case SHOW_NOTIFICATION -> view.showNotification(result.getMessage());
             case OPEN_STORE -> {

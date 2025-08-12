@@ -130,7 +130,7 @@ public class ToolRenderController {
         for (ToolMaterial material : ToolMaterial.values()) {
             String materialName = (material.equals(ToolMaterial.Basic)) ? "_Steel" : "_%s".formatted(material.name());
             Texture texture =   new Texture ("Tools/Trash_Can%s.png".formatted(materialName));
-            toolSprites.get(ToolType.Axe).put(material, new Sprite(texture));
+            toolSprites.get(ToolType.TrashCan).put(material, new Sprite(texture));
         }
     }
 

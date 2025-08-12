@@ -1731,15 +1731,16 @@ public class GameStateController {
         VotingSession votingSession = new VotingSession();
         Set<Player> players = new HashSet<>();
         Player targetPlayer = null;
-        for (Player gamePlayer : game.getVotingSession().getPlayers()) {
+        System.out.println("Input: candidate");
+        for (Player gamePlayer : game.getPlayers()) {
             if (gamePlayer.getUser().getUsername().equals(candidate))
                 targetPlayer = gamePlayer;
             if (gamePlayer.isGuest())
                 continue;
             players.add(gamePlayer);
         }
-        votingSession.start(players, VotingSession.VotingType.KICK_PLAYER, player, game);
-        System.out.println("Voting started.");
+        votingSession.start(players, VotingSession.VotingType.KICK_PLAYER, targetPlayer, game);
+        System.out.println("Voting started. " + candidate);
         game.setVotingSession(votingSession);
     }
 
@@ -1765,8 +1766,8 @@ public class GameStateController {
         if (canDelete)
             game.getVotingSession().setActive(false);
 
-        if (!result.message().equals("Game resuming...") && canDelete)
-            game.getPlayers().remove(game.getVotingSession().getTargetPlayer());
+//        if (!result.message().equals("Game resuming...") && canDelete)
+//            game.getPlayers().remove(game.getVotingSession().getTargetPlayer());
         return ResponseEntity.ok(result);
     }
 
