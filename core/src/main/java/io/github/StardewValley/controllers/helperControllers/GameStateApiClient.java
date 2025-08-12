@@ -47,6 +47,40 @@ public class GameStateApiClient {
     public GameStateApiClient(String jwtToken) {
         this.token = jwtToken;
     }
+    public void collectProduct(AnimalProductDTO productToCollect) throws Exception {
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(AnimalURL + "/collect");
+            conn = (HttpURLConnection) url.openConnection();
+
+            // --- مرحله ۱: تمام تنظیمات را اینجا انجام دهید ---
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true); // برای POST لازم است
+            conn.setRequestProperty("Content-Type", "application/json"); // هدر صحیح
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+
+            // --- مرحله ۲: حالا بدنه درخواست را بنویس و ارسال کن ---
+            // متد getOutputStream() به طور خودکار اتصال را برقرار می‌کند
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonInput = mapper.writeValueAsString(productToCollect);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonInput.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            // --- مرحله ۳: پاسخ را چک کن ---
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed to collect product: " + conn.getResponseCode());
+            }
+
+        } finally {
+            // --- مرحله ۴: همیشه اتصال را قطع کن ---
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+    }
     public void sendFishingResult(FishingResultDTO result) throws Exception {
         URL url = new URL(BASE_URL + "/catch");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -118,6 +152,25 @@ public class GameStateApiClient {
                 // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
                 // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
                 return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalPlaceDTO>>() {});
+            }
+        } else {
+            // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
+            throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
+        }
+    }
+    public ArrayList<AnimalProductDTO> getAllAnimalProducts() throws Exception {
+        URL url = new URL(AnimalURL + "/allProducts"); // آدرس Endpoint در سرور
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
+                // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalProductDTO>>() {});
             }
         } else {
             // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن

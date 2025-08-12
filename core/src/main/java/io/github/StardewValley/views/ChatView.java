@@ -16,6 +16,7 @@ public class ChatView implements Screen {
     private Stage stage;
     private Skin skin; // پوسته برای ظاهر UI
     private ChatService chatService;
+    private Label connectionStatusLabel; // یک لیبل جدید برای نمایش وضعیت
 
     // عناصر UI
     private Table messageTable; // جدولی برای نگهداری لیبل پیام‌ها
@@ -41,6 +42,7 @@ public class ChatView implements Screen {
         Table rootTable = new Table();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
+        connectionStatusLabel = new Label("Connecting to server...", skin);
 
         // ۱. ساخت بخش نمایش پیام‌ها
         messageTable = new Table();
@@ -54,6 +56,7 @@ public class ChatView implements Screen {
         // ۳. چیدمان عناصر در جدول اصلی
         rootTable.pad(10);
         // بخش پیام‌ها ۹۰٪ ارتفاع را می‌گیرد
+        rootTable.add(connectionStatusLabel).top().left().row();
         rootTable.add(scrollPane).grow().row();
         // بخش ورودی ۱۰٪ ارتفاع را می‌گیرد
         Table inputTable = new Table();
@@ -103,7 +106,12 @@ public class ChatView implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // یک پس‌زمینه تیره
-
+        if (chatService.isConnected() && sendButton.isDisabled()) {
+            // اگر متصل شدیم و دکمه‌ها هنوز غیرفعال هستند
+            connectionStatusLabel.setText("Connected!");
+            messageField.setDisabled(false);
+            sendButton.setDisabled(false);
+        }
         // چک کن آیا پیام جدیدی برای نمایش وجود دارد
         updateChatLog();
 

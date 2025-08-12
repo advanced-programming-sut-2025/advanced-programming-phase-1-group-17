@@ -30,6 +30,7 @@ public class AnimalDTO {
     private float eatingTimer=0;
     private float timeSinceLastDirectionChange = 0f;
     private float directionChangeInterval = 3f; // مقدار اولیه
+    private AnimalPlaceDTO animalPlaceDTO;
 
     // ... گتر و ستر برای دو فیلد جدید ...
 
@@ -127,5 +128,11 @@ public class AnimalDTO {
     public float getDirectionChangeInterval() { return directionChangeInterval; }
     public void setDirectionChangeInterval(float interval) { this.directionChangeInterval = interval; }
 
+    public AnimalPlaceDTO getAnimalPlaceDTO() {
+        return animalPlaceDTO;
+    }
 
+    public void setAnimalPlaceDTO(AnimalPlaceDTO animalPlaceDTO) {
+        this.animalPlaceDTO = animalPlaceDTO;
+    }
 }

@@ -21,6 +21,7 @@ import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
+import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.NPCdto;
 import io.github.StardewValley.shared.models.PlayerDto;
@@ -68,9 +69,11 @@ public class GameView implements Screen, InputProcessor {
     private float timeSinceLastApiCall = 0f;
     private static final float API_CALL_INTERVAL = 0.1f; //
     private ArrayList<AnimalPlaceDTO> animalPlacesFromServer;
+    private ArrayList<AnimalProductDTO> animalProductsFromServer;
     private AnimalPlaceView animalPlaceView;
     private ChatView chatView;
     private ChatService chatService;
+    private AnimalProductView animalProductView;
 
 
     public GameView(GameController controller, GameMenuController menuController) {
@@ -80,7 +83,9 @@ public class GameView implements Screen, InputProcessor {
         this.animalView = new AnimalView(); // هنرمند را استخدام کن
         this.animalPlaceView = new AnimalPlaceView();
         this.animalsFromServer = new ArrayList<AnimalDTO>(); // لیست را خالی مقداردهی اولیه کن
+        this.animalProductsFromServer = new ArrayList<>();
         this.animalPlacesFromServer = new ArrayList<>();
+        this.animalProductView = new AnimalProductView();
         this.hud = new HUD();
         this.font = new BitmapFont();
         int i = 0;
@@ -252,6 +257,7 @@ public class GameView implements Screen, InputProcessor {
                 System.out.println("Fetching animal data from server...");
                 this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
                 this.animalPlacesFromServer = apiClient.getAllAnimalPlaces();
+                this.animalProductsFromServer = apiClient.getAllAnimalProducts();
             } catch (Exception e) {
                 System.err.println("Failed to fetch animal data: " + e.getMessage());
             }
@@ -278,11 +284,19 @@ public class GameView implements Screen, InputProcessor {
         }
 
         if (animalsFromServer != null) {
-            for (AnimalDTO animalDto : animalsFromServer) {
-                animalView.render(Main.getBatch(), animalDto, delta);
-            }
+
             for(AnimalPlaceDTO animalPlaceDTO:animalPlacesFromServer){
                 animalPlaceView.render(Main.getBatch(),animalPlaceDTO);
+                for (AnimalDTO animalDto : animalPlaceDTO.getAnimals()) {
+                    animalView.render(Main.getBatch(), animalDto, delta);
+                }
+            }
+            if(animalProductsFromServer.isEmpty())System.out.println("animalProductsFromServer is empty");
+            else{
+                System.out.println(animalPlacesFromServer.size());
+            }
+            for(AnimalProductDTO animalProductDTO:animalProductsFromServer){
+                animalProductView.render(Main.getBatch(),animalProductDTO);
             }
         }
 
@@ -447,6 +461,7 @@ public class GameView implements Screen, InputProcessor {
                 else if(controller.handleAnimalPlaceClick(worldCoordinates)){
                     return true;
                 }
+                else if(controller.handleAnimalProductClick(worldCoordinates));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
