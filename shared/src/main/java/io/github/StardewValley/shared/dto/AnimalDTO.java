@@ -146,4 +146,5 @@ public class AnimalDTO {
     public void setAnimalProductDTOS(ArrayList<AnimalProductDTO> animalProductDTOS) {
         this.animalProductDTOS = animalProductDTOS;
     }
+
 }

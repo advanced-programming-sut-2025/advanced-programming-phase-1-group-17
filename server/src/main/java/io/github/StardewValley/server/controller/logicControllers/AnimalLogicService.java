@@ -1,8 +1,11 @@
 package io.github.StardewValley.server.controller.logicControllers;
 
 import io.github.StardewValley.server.AppServer;
+import io.github.StardewValley.server.repository.AnimalDataService;
 import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.AnimalProductDTO;
+import io.github.StardewValley.shared.models.animal.AnimalProductType;
+import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Direction;
 import io.github.StardewValley.shared.models.map.Tile;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static io.github.StardewValley.shared.models.market.ItemQuality.*;
 
 @Service
 public class AnimalLogicService {
@@ -104,4 +109,61 @@ public class AnimalLogicService {
         }
         return productIntegerMap;
     }
+    public void produce(AnimalDTO animalDTO) {
+        if (!animalDTO.isFedToday()) {
+            return;
+        }
+        if(animalDTO.getAnimalType().equals(AnimalType.Pig) && !animalDTO.isOutside()){
+            return ;
+        }
+        double randomNumber = 0.5 + Math.random();
+        double chance = (double) (animalDTO.getFriendship() + 150 * randomNumber) / 1500;
+        double r = Math.random();
+        double quality = ((double) animalDTO.getFriendship() / 1000) * (0.5 + r / 2);
+        AnimalProductType animalProductType;
+        AnimalProductDTO animalProduct = new AnimalProductDTO();
+        if (Math.random() <= chance && animalDTO.getFriendship() > 100) {
+            if (animalDTO.getAnimalType().getProductTypes().size() == 2) {
+                animalProduct.setType(animalDTO.getAnimalType().getProductTypes().get(1));
+            }
+        } else {
+            animalProduct.setType(animalDTO.getAnimalType().getProductTypes().get(0));
+        }
+        if (quality < 0.5) {
+            animalProduct.setQuality(Regular);
+        } else if (quality < 0.7) {
+            animalProduct.setQuality(Silver);
+        } else if (quality < 0.9) {
+            animalProduct.setQuality(Gold);
+        } else {
+            animalProduct.setQuality(Iridium);
+        }
+        animalProduct.setAnimalDTO(animalDTO);
+        animalDTO.getAnimalProductDTOS().add(animalProduct);
+    }
+    public void animalGoToNextDay(){
+        for(AnimalDTO animal : AnimalDataService.findAll()) {
+            if(animal.isFedToday() ){
+                produce(animal);
+                animal.setFedToday(false);
+
+            }
+
+            else{
+                animal.setFriendship(animal.getFriendship()-20);
+            }
+            if (!animal.isPettedToday()) {
+                animal.setFriendship(animal.getFriendship() - 10);
+            }
+            else{
+                animal.setFriendship(animal.getFriendship() + 15);
+            }
+            if(animal.isOutside()){
+                animal.setFriendship(animal.getFriendship() - 20);
+                animal.setOutside(false);
+            }
+
+        }
+    }
+
 }

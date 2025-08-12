@@ -15,6 +15,7 @@ public class AnimalProductDTO implements BackPackable {
     private ItemQuality quality;
     private float x;
     private float y;
+    private AnimalDTO animalDTO;
 
     // کانستراکتور خالی برای Jackson
     public AnimalProductDTO() {}
@@ -52,8 +53,18 @@ public class AnimalProductDTO implements BackPackable {
     public void setX(float x) { this.x = x; }
     public float getY() { return y; }
     public void setY(float y) { this.y = y; }
+
+    public AnimalDTO getAnimalDTO() {
+        return animalDTO;
+    }
+
+    public void setAnimalDTO(AnimalDTO animalDTO) {
+        this.animalDTO = animalDTO;
+    }
+
     @JsonIgnore
     public Rectangle getHitBox() {
         return new Rectangle(x,y, new Texture(this.type.getInventoryTexturePath()).getWidth(),new Texture(this.type.getInventoryTexturePath()).getHeight());
     }
+
 }

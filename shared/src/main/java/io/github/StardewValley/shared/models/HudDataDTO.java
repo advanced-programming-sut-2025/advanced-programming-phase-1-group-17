@@ -11,6 +11,7 @@ public class HudDataDTO {
     private double playerMaxEnergy;
     private boolean playerEnergyUnlimited;
     private float timeAngle; // زاویه عقربه ساعت که در سرور محاسبه شده
+    private int hour;
 
     // Constructor خالی برای Jackson
     public HudDataDTO() {}
@@ -98,5 +99,13 @@ public class HudDataDTO {
 
     public void setTimeAngle(float timeAngle) {
         this.timeAngle = timeAngle;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
     }
 }

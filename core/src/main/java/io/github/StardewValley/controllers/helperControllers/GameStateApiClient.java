@@ -118,6 +118,7 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to get chat messages: " + conn.getResponseCode());
         }
     }
+
     public void sendFishingResult(FishingResultDTO result) throws Exception {
         URL url = new URL(BASE_URL + "/catch");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -136,6 +137,26 @@ public class GameStateApiClient {
 
         if (conn.getResponseCode() != 200) {
             throw new RuntimeException("Failed to send fishing result: " + String.valueOf(result.getFish() == null));
+        }
+    }
+    public void addMusic(MusicDTO musicDTO) throws Exception {
+        URL url = new URL(BASE_URL + "/addMusic");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInput = mapper.writeValueAsString(musicDTO);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInput.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed to add music");
         }
     }
     public FishingResultDTO calculateFishCatch() throws Exception {
@@ -169,6 +190,26 @@ public class GameStateApiClient {
                 // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
                 // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
                 return mapper.readValue(inputStream, new TypeReference<ArrayList<AnimalDTO>>() {
+                });
+            }
+        } else {
+            // اگر سرور خطایی برگرداند (مثل 404 یا 500)، یک Exception پرتاب کن
+            throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
+        }
+    }
+    public ArrayList<MusicDTO> getAllMusic() throws Exception {
+        URL url = new URL(BASE_URL + "/allMusic"); // آدرس Endpoint در سرور
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Jackson برای تبدیل JSON به یک لیست از آبجکت‌های پیچیده (مثل AnimalDTO)
+                // به TypeReference نیاز دارد تا نوع دقیق لیست را بداند.
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<MusicDTO>>() {
                 });
             }
         } else {
