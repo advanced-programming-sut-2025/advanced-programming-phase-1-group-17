@@ -15,8 +15,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
-import io.github.StardewValley.shared.models.animal.Animal;
-import io.github.StardewValley.shared.models.animal.AnimalPlace;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;

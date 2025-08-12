@@ -3,6 +3,7 @@ package io.github.StardewValley.server;
 
 import io.github.StardewValley.server.model.Lobby;
 import io.github.StardewValley.server.model.User;
+import io.github.StardewValley.server.repository.AnimalDataService;
 import io.github.StardewValley.server.repository.LobbyRepository;
 import io.github.StardewValley.server.repository.UserRepository;
 import io.github.StardewValley.shared.models.*;
@@ -139,10 +140,17 @@ public class LobbyService {
         User user1 = null, user2 = null, user3 = null, user4 = null;
         user1 = userRepository.findByUsername(playerUsernames.get(0)).get();
         user2 = userRepository.findByUsername(playerUsernames.get(1)).get();
+        int numOfPlayers=2;
         for (int j = 2; j < 4; j++) {
             if (userRepository.existsByUsername(playerUsernames.get(j))) {
-                if (j == 2) user3 = userRepository.findByUsername(playerUsernames.get(j)).get();
-                else user4 = userRepository.findByUsername(playerUsernames.get(j)).get();
+                if (j == 2) {
+                    user3 = userRepository.findByUsername(playerUsernames.get(j)).get();
+                    numOfPlayers=3;
+                }
+                else {
+                    user4 = userRepository.findByUsername(playerUsernames.get(j)).get();
+                    numOfPlayers=4;
+                }
             }
         }
 
@@ -173,6 +181,8 @@ public class LobbyService {
         user2.setActiveGame(game);
         user3.setActiveGame(game);
         user4.setActiveGame(game);
+        game.setNumOfPlayers(numOfPlayers);
+        AnimalDataService.initial();
         return toDto(game);
     }
 
