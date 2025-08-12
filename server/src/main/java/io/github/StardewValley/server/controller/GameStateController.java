@@ -3,7 +3,6 @@ package io.github.StardewValley.server.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.*;
@@ -48,7 +47,6 @@ import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -303,9 +301,9 @@ public class GameStateController {
             case Storm -> M = 0.5;
             default -> M = 1;
         }
-        FishingPoleType fishingPoleType = player.getCurrentTool().getFishingPoleMaterial();
-        if (player.getCurrentTool() != null && player.getCurrentTool().getFishingPoleMaterial() != null) {
-            fishingPoleType = player.getCurrentTool().getFishingPoleMaterial();
+        FishingPoleType fishingPoleType = player.getCurrentTool().getFishingPoleType();
+        if (player.getCurrentTool() != null && player.getCurrentTool().getFishingPoleType() != null) {
+            fishingPoleType = player.getCurrentTool().getFishingPoleType();
         } else {
             // یک حالت پیش‌فرض در نظر بگیرید
             fishingPoleType = FishingPoleType.TrainingFishingPole;
