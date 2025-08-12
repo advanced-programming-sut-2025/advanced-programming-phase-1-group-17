@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -21,6 +22,7 @@ import io.github.StardewValley.controllers.*;
 import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
+import io.github.StardewValley.shared.dto.AnimalProductDTO;
 import io.github.StardewValley.shared.dto.HandleWorldClickResponse;
 import io.github.StardewValley.shared.models.NPCdto;
 import io.github.StardewValley.shared.models.PlayerDto;
@@ -33,6 +35,7 @@ import java.util.Objects;
 import io.github.StardewValley.shared.models.animal.AnimalType;
 import io.github.StardewValley.shared.models.enums.Gender;
 import models.PlayerClient;
+
 
 public class GameView implements Screen, InputProcessor {
     private Stage stage;
@@ -68,19 +71,28 @@ public class GameView implements Screen, InputProcessor {
     private float timeSinceLastApiCall = 0f;
     private static final float API_CALL_INTERVAL = 0.1f; //
     private ArrayList<AnimalPlaceDTO> animalPlacesFromServer;
+    private ArrayList<AnimalProductDTO> animalProductsFromServer;
     private AnimalPlaceView animalPlaceView;
     private ChatView chatView;
     private ChatService chatService;
+    private AnimalProductView animalProductView;
+    private Texture overlayTexture; // تکسچر جدید برای تاریکی
 
 
     public GameView(GameController controller, GameMenuController menuController) {
-        this.chatService = new ChatService();
-        this.chatView = new ChatView(GameAssetManagerClient.getGameAssetManager().getSkin(), chatService);
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.BLACK); // رنگ پایه تاریکی
+        pixmap.fill();
+        overlayTexture = new Texture(pixmap);
+        pixmap.dispose();
+        this.chatView = new ChatView(GameAssetManagerClient.getGameAssetManager().getSkin(),this);
         this.apiClient = GameClient.getGameStateApiClient();
         this.animalView = new AnimalView(); // هنرمند را استخدام کن
         this.animalPlaceView = new AnimalPlaceView();
         this.animalsFromServer = new ArrayList<AnimalDTO>(); // لیست را خالی مقداردهی اولیه کن
+        this.animalProductsFromServer = new ArrayList<>();
         this.animalPlacesFromServer = new ArrayList<>();
+        this.animalProductView = new AnimalProductView();
         this.hud = new HUD();
         this.font = new BitmapFont();
         int i = 0;
@@ -252,6 +264,7 @@ public class GameView implements Screen, InputProcessor {
                 System.out.println("Fetching animal data from server...");
                 this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
                 this.animalPlacesFromServer = apiClient.getAllAnimalPlaces();
+                this.animalProductsFromServer = apiClient.getAllAnimalProducts();
             } catch (Exception e) {
                 System.err.println("Failed to fetch animal data: " + e.getMessage());
             }
@@ -278,11 +291,19 @@ public class GameView implements Screen, InputProcessor {
         }
 
         if (animalsFromServer != null) {
-            for (AnimalDTO animalDto : animalsFromServer) {
-                animalView.render(Main.getBatch(), animalDto, delta);
-            }
+
             for(AnimalPlaceDTO animalPlaceDTO:animalPlacesFromServer){
                 animalPlaceView.render(Main.getBatch(),animalPlaceDTO);
+                for (AnimalDTO animalDto : animalPlaceDTO.getAnimals()) {
+                    animalView.render(Main.getBatch(), animalDto, delta);
+                }
+            }
+            if(animalProductsFromServer.isEmpty())System.out.println("animalProductsFromServer is empty");
+            else{
+                System.out.println(animalPlacesFromServer.size());
+            }
+            for(AnimalProductDTO animalProductDTO:animalProductsFromServer){
+                animalProductView.render(Main.getBatch(),animalProductDTO);
             }
         }
 
@@ -316,6 +337,8 @@ public class GameView implements Screen, InputProcessor {
         }
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+
+//
 
     }
 
@@ -447,6 +470,7 @@ public class GameView implements Screen, InputProcessor {
                 else if(controller.handleAnimalPlaceClick(worldCoordinates)){
                     return true;
                 }
+                else if(controller.handleAnimalProductClick(worldCoordinates));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -472,6 +496,10 @@ public class GameView implements Screen, InputProcessor {
         if(Gdx.input.isKeyPressed(Input.Keys.F)){
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.M)){
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new MusicScreen(this,GameAssetManagerClient.getGameAssetManager().getSkin()));
         }
     }
     @Override

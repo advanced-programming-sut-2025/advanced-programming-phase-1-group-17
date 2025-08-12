@@ -1,8 +1,12 @@
 package io.github.StardewValley.server.controller;
 
+import io.github.StardewValley.server.AppServer;
+import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.repository.AnimalDataService;
 import io.github.StardewValley.shared.dto.AnimalDTO; // فقط از DTO استفاده می‌کند
 import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
+import io.github.StardewValley.shared.dto.AnimalProductDTO;
+import io.github.StardewValley.shared.models.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/animals")
 public class AnimalApiController {
+    private JwtService jwtService;
+    public AnimalApiController(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
 
 
 
@@ -20,6 +28,24 @@ public class AnimalApiController {
     public ResponseEntity<List<AnimalDTO>> getAllAnimals() {
 
         return ResponseEntity.ok(AnimalDataService.findAll());
+    }
+    @PostMapping("/collect")
+    // به جای @PathVariable، از @RequestBody استفاده می‌کنیم
+    public ResponseEntity<Void> collectProduct(@RequestBody AnimalProductDTO productDto, @RequestHeader("Authorization") String token) {
+        // ۲. محصول را از روی زمین حذف کن
+        AnimalDataService.deleteProductById(productDto.getId());
+
+        // ۳. محصول معتبر (که از دیتابیس خودمان خواندیم) را به کوله‌پشتی اضافه کن
+        Player player = getPlayerFromToken(token);
+        player.getBackPack().addItemToInventory(productDto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/allProducts")
+    public ResponseEntity<List<AnimalProductDTO>> getAllAnimalProducts() {
+
+        return ResponseEntity.ok(AnimalDataService.findAllProductsOnGround());
     }
 
     @PostMapping("/{id}/pet")
@@ -71,4 +97,17 @@ public class AnimalApiController {
 
     // TODO: متد update حیوانات هم باید در یک سرویس مثل GameLoopService
     // و با همین الگو پیاده‌سازی شود.
+    public Player getPlayerFromToken(String token) {
+        String username = jwtService.extractUsername(token.replace("Bearer ", ""));
+//        User user = userRepository.findByUsername(username)
+//            .orElseThrow(() -> new RuntimeException("User not found"));
+
+//        Game activeGame = user.getActiveGame();
+//        if (activeGame == null) {
+//            throw new RuntimeException("User is not in an active game");
+//        }
+
+        //return activeGame.getPlayerByUsername(username);
+        return AppServer.getCurrentGame().getPlayerByUsername(username);
+    }
 }

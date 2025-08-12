@@ -280,4 +280,12 @@ public class HUD {
         tooltipFont.dispose();
         shapeRenderer.dispose();
     }
+
+    public HudDataDTO getHudData() {
+        return hudData;
+    }
+
+    public void setHudData(HudDataDTO hudData) {
+        this.hudData = hudData;
+    }
 }

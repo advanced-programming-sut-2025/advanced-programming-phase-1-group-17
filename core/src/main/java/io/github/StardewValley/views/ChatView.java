@@ -2,6 +2,7 @@ package io.github.StardewValley.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -9,59 +10,82 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameClient;
-import io.github.StardewValley.controllers.ChatService; // سرویس چت که ساختیم
+import io.github.StardewValley.Main;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
 import io.github.StardewValley.shared.dto.ChatMessageDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChatView implements Screen {
-    private Stage stage;
-    private Skin skin; // پوسته برای ظاهر UI
-    private ChatService chatService;
+    private final Stage stage;
+    private final Skin skin;
+    private final GameStateApiClient apiClient;
+    private TextButton backButton ;
 
     // عناصر UI
-    private Table messageTable; // جدولی برای نگهداری لیبل پیام‌ها
-    private ScrollPane scrollPane; // برای اسکرول کردن پیام‌ها
-    private TextField messageField; // فیلد برای نوشتن پیام
-    private TextButton sendButton; // دکمه ارسال
+    private final Table messageTable;
+    private final ScrollPane scrollPane;
+    private final TextField messageField;
+    private final TextButton sendButton;
+    private GameView gameView;
 
-    private int lastMessageIndex = 0; // برای ردیابی آخرین پیام نمایش داده شده
+    // کلاینت لیست پیام‌های نمایش داده شده را در خود نگه می‌دارد
+    private List<ChatMessageDTO> displayedMessages;
 
-    public ChatView(Skin skin, ChatService chatService) {
+    // تایمر برای درخواست دوره‌ای پیام‌های جدید
+    private float pollTimer = 0f;
+    private static final float POLL_INTERVAL = 2.0f; // هر ۲ ثانیه یکبار
+
+    public ChatView(Skin skin,GameView gameView) {
+        this.gameView = gameView;
+        this.backButton = new TextButton("back",skin);
         this.skin = skin;
-        this.chatService = chatService;
         this.stage = new Stage(new ScreenViewport());
+        this.apiClient = GameClient.getGameStateApiClient();
+        this.displayedMessages = new ArrayList<>();
 
-        buildUI();
-    }
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
-    }
-    private void buildUI() {
-        // جدول اصلی که کل صفحه را می‌گیرد
-        Table rootTable = new Table();
-        rootTable.setFillParent(true);
-        stage.addActor(rootTable);
-
-        // ۱. ساخت بخش نمایش پیام‌ها
+        // ۱. ساختن عناصر UI
         messageTable = new Table();
         scrollPane = new ScrollPane(messageTable, skin);
-        scrollPane.setFadeScrollBars(false); // برای اینکه نوار اسکرول همیشه دیده شود
-
-        // ۲. ساخت بخش ورودی پیام
+        scrollPane.setFadeScrollBars(false);
         messageField = new TextField("", skin);
         sendButton = new TextButton("Send", skin);
 
-        // ۳. چیدمان عناصر در جدول اصلی
+
+        // ۲. چیدمان UI
+        layoutUI();
+
+        // ۳. اضافه کردن Listener به دکمه
+        addListeners();
+    }
+
+    private void layoutUI() {
+        Table rootTable = new Table();
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
         rootTable.pad(10);
-        // بخش پیام‌ها ۹۰٪ ارتفاع را می‌گیرد
+
         rootTable.add(scrollPane).grow().row();
-        // بخش ورودی ۱۰٪ ارتفاع را می‌گیرد
+
         Table inputTable = new Table();
         inputTable.add(messageField).growX();
         inputTable.add(sendButton).padLeft(5);
         rootTable.add(inputTable).growX().padTop(10);
+        Table backTable = new Table();
+        backTable.setFillParent(true);
+        backButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(gameView);
+            }
+        });
+        backTable.add(backButton);
+        backTable.right().top();
+        stage.addActor(backTable);
+    }
 
-        // اضافه کردن منطق به دکمه ارسال
+    private void addListeners() {
         sendButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -72,43 +96,97 @@ public class ChatView implements Screen {
 
     private void sendMessage() {
         String messageText = messageField.getText();
-        if (!messageText.isEmpty()) {
-            String username = GameClient.getLoggedInUser().getUsername();
-            chatService.sendMessage(username, messageText);
-            messageField.setText(""); // خالی کردن فیلد پس از ارسال
+        if (messageText == null || messageText.trim().isEmpty()) {
+            return;
+        }
+
+        String username = GameClient.getPlayer().getUser().getUsername();
+        ChatMessageDTO message = new ChatMessageDTO();
+        message.setSenderUsername(username);
+        message.setContent(messageText);
+
+        try {
+            apiClient.sendChatMessage(message);
+            messageField.setText("");
+            // پس از ارسال پیام، بلافاصله لیست را آپدیت کن تا پیام خودمان را ببینیم
+            updateChatLog(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // TODO: یک پیام خطا در UI نمایش بده
         }
     }
-    // این متد را در حلقه render صدا می‌زنیم
-    private void updateChatLog() {
-        // اگر تعداد پیام‌های دریافتی بیشتر از پیام‌های نمایش داده شده است
-        if (chatService.messages.size() > lastMessageIndex) {
-            // به ازای هر پیام جدید
-            for (int i = lastMessageIndex; i < chatService.messages.size(); i++) {
-                ChatMessageDTO message = chatService.messages.get(i);
-                String formattedMessage = message.getSenderUsername() + ": " + message.getContent();
 
-                Label messageLabel = new Label(formattedMessage, skin);
-                messageLabel.setWrap(true); // برای شکستن خطوط طولانی
+    /**
+     * پیام‌ها را از سرور می‌گیرد و در صورت وجود تغییر، UI را آپدیت می‌کند.
+     * @param forceUpdate اگر true باشد، بدون در نظر گرفتن تعداد پیام‌ها، UI را بازسازی می‌کند.
+     */
+    // این متغیر را به عنوان فیلد در کلاس ChatView نگه دارید
+    private int lastMessageIndex = 0;
 
-                messageTable.add(messageLabel).growX().pad(5).row();
+    private void updateChatLog(boolean forceUpdate) {
+        try {
+            List<ChatMessageDTO> newMessages = apiClient.getChatMessages();
+            if (newMessages == null) return;
+
+            // فقط اگر پیام جدیدی وجود دارد یا مجبور به آپدیت هستیم، کار کن
+            if (forceUpdate || newMessages.size() > lastMessageIndex) {
+
+                // بهینه سازی: فقط پیام‌های جدید را اضافه کن
+                for (int i = lastMessageIndex; i < newMessages.size(); i++) {
+                    ChatMessageDTO message = newMessages.get(i);
+
+                    String formattedMessage;
+                    Color messageColor = Color.WHITE; // رنگ پیش‌فرض
+
+                    // ۱. باگ متن اصلاح شد: اول متن و رنگ را مشخص کن
+                    if (message.isPrivate()) {
+                        formattedMessage = "[Private] " + message.getSenderUsername() + ": " + message.getContent();
+                        messageColor = Color.MAGENTA;
+                    } else {
+                        formattedMessage = message.getSenderUsername() + ": " + message.getContent();
+                    }
+
+                    // ۲. سپس لیبل را با اطلاعات صحیح بساز
+                    Label messageLabel = new Label(formattedMessage, skin);
+                    messageLabel.setWrap(true);
+                    messageLabel.setColor(messageColor);
+
+                    messageTable.add(messageLabel).growX().left().pad(5).row();
+                }
+
+                lastMessageIndex = newMessages.size();
+
+                // ۳. باگ اسکرول اصلاح شد: دستور اسکرول را به فریم بعدی موکول کن
+                Gdx.app.postRunnable(() -> {
+                    scrollPane.layout();
+                    scrollPane.setScrollPercentY(1.0f);
+                });
             }
-            lastMessageIndex = chatService.messages.size(); // به‌روزرسانی اندیس
-
-            // اسکرول را به پایین‌ترین نقطه ببر
-            scrollPane.layout();
-            scrollPane.setScrollPercentY(1);
+        } catch (Exception e) {
+            // System.err.println("Could not fetch chat messages.");
         }
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1); // یک پس‌زمینه تیره
+        ScreenUtils.clear(0.1f, 0.1f, 0.2f, 1);
 
-        // چک کن آیا پیام جدیدی برای نمایش وجود دارد
-        updateChatLog();
+        // تایمر برای درخواست دوره‌ای پیام‌ها
+        pollTimer += delta;
+        if (pollTimer >= POLL_INTERVAL) {
+            pollTimer = 0f;
+            updateChatLog(false); // آپدیت عادی و دوره‌ای
+        }
 
         stage.act(delta);
         stage.draw();
+    }
+
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(stage);
+        // به محض باز شدن صفحه، یک بار پیام‌ها را آپدیت کن
+        updateChatLog(true);
     }
 
     @Override
