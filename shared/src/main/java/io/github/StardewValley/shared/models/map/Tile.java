@@ -2,7 +2,6 @@ package io.github.StardewValley.shared.models.map;
 
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
-import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.backpack.NormalItem;
 import io.github.StardewValley.shared.models.backpack.NormalItemType;
 import io.github.StardewValley.shared.models.foraging.Mineral;
@@ -147,7 +146,7 @@ public class Tile {
         this.npcIsHere = npcIsHere;
     }
 
-    public static boolean findAround(Animal animal){
+    //public static boolean findAround(Animal animal){
         //TODO
         //        Player player= App.getCurrentGame().getCurrentPlayingPlayer();
 //        int x=player.getTileX();
@@ -161,8 +160,8 @@ public class Tile {
 //                }
 //            }
 //        }
-        return false;
-    }
+  //      return false;
+   // }
 
     public void lightningStrike() {
         //TODO

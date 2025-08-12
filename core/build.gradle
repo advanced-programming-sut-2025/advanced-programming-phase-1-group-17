@@ -9,23 +9,15 @@ dependencies {
   // کتابخانه‌های شبکه و JSON
   implementation "com.squareup.okhttp3:okhttp:4.12.0"
   implementation "com.fasterxml.jackson.core:jackson-databind:2.16.0"
-  implementation 'com.google.code.gson:gson:2.10.1'
 
-  // کتابخانه‌های WebSocket و وابستگی آن
-  implementation 'org.springframework:spring-websocket:6.1.10' // از آخرین نسخه سازگار استفاده کنید
-  implementation 'org.springframework:spring-messaging:6.1.10'
-  implementation 'javax.websocket:javax.websocket-api:1.1'
-
-  implementation 'org.glassfish.tyrus.bundles:tyrus-standalone-client:2.1.5'
+  // --- فقط از این کتابخانه‌ها برای چت استفاده می‌کنیم ---
+  implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.6.6'
+  implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+  implementation 'com.github.NaikSoftware:ok-http-stomp-connection-provider:1.6.6'
 
   // وابستگی‌های اصلی LibGDX و پروژه شما
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
   implementation project(":shared")
-
-  // بخش مربوط به GraalVM
-  if (enableGraalNative == 'true') {
-    implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
-  }
 }
 allprojects {
   tasks.withType(JavaCompile).configureEach {

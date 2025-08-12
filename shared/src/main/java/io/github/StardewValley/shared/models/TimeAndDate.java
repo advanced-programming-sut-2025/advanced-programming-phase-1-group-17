@@ -3,7 +3,6 @@ package io.github.StardewValley.shared.models;
 import io.github.StardewValley.shared.TimeAndDateDTO;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
-import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.artisan.ArtisanProduct;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
 import io.github.StardewValley.shared.models.foraging.ForagingController;
@@ -123,7 +122,7 @@ public class TimeAndDate {
         setTomorrowWeather(getRandomWeather());
 
         if (!game.getPlayers().isEmpty()) { //Added for Unit Test
-            Animal.goToNextDay();
+           // Animal.goToNextDay(); todo
             normalizeMaxEnergies(game);
             //Actions Needed to be done every day
             weatherEffect();

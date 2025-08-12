@@ -1,9 +1,10 @@
 package io.github.StardewValley.server.controller.logicControllers;
 
+import io.github.StardewValley.server.repository.AnimalDataService;
+import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.Result;
-import io.github.StardewValley.shared.models.animal.Animal;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.crafting.CraftingItem;
@@ -105,13 +106,13 @@ public class CheatCodeHandler {
     }
 
     public static String setFriendship(String animalName, String amount) {
-        Animal animal = Animal.findAnimalByName(animalName);
+        AnimalDTO animal = AnimalDataService.findAnimalByName(animalName);
         if (animal == null) {
             return "animal not found";
         }
 
         int amountInt = Integer.parseInt(amount);
-        animal.cheatSetFriendship(amountInt);
+        animal.setFriendship(amountInt);
         return "friendship is now " + animal.getFriendship();
     }
 
