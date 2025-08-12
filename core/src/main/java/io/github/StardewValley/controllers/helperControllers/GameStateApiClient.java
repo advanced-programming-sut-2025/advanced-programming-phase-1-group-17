@@ -82,6 +82,24 @@ public class GameStateApiClient {
         }
     }
     // ...
+    public AnimalDTO toggleAnimalOutside(String animalName) throws Exception {
+        URL url = new URL(AnimalURL + animalName + "/toggle-outside");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                // DTO آپدیت شده را از پاسخ سرور بخوان
+                return mapper.readValue(inputStream, AnimalDTO.class);
+            }
+        } else {
+            throw new RuntimeException("Failed to toggle outside status: " + conn.getResponseCode());
+        }
+    }
     public void sendChatMessage(ChatMessageDTO message) throws Exception {
         URL url = new URL(BASE_URL + "/send");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

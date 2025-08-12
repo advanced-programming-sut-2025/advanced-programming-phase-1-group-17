@@ -97,6 +97,9 @@ public class AnimalView {
 
     public void render(SpriteBatch batch, AnimalDTO dto, float delta) {
         stateTime += delta;
+        if(!dto.isOutside()){
+            return;
+        }
 
 
         EnumMap<Direction, Animation<TextureRegion>> animalAnims = animalsAnimationMap.get(dto.getAnimalType());

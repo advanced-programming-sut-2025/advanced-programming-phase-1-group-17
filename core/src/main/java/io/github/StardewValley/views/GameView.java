@@ -261,7 +261,7 @@ public class GameView implements Screen, InputProcessor {
             }
 
             try {
-                System.out.println("Fetching animal data from server...");
+                //System.out.println("Fetching animal data from server...");
                 this.animalsFromServer = apiClient.getAllAnimals(); // گرفتن لیست جدید از سرور
                 this.animalPlacesFromServer = apiClient.getAllAnimalPlaces();
                 this.animalProductsFromServer = apiClient.getAllAnimalProducts();
@@ -298,10 +298,7 @@ public class GameView implements Screen, InputProcessor {
                     animalView.render(Main.getBatch(), animalDto, delta);
                 }
             }
-            if(animalProductsFromServer.isEmpty())System.out.println("animalProductsFromServer is empty");
-            else{
-                System.out.println(animalPlacesFromServer.size());
-            }
+
             for(AnimalProductDTO animalProductDTO:animalProductsFromServer){
                 animalProductView.render(Main.getBatch(),animalProductDTO);
             }
