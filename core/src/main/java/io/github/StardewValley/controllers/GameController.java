@@ -322,7 +322,7 @@ public class GameController {
             Main.getMain().getScreen().dispose();
             //TODO
             //Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
                 , GameAssetManagerClient.getGameAssetManager().getSkin(), view));
