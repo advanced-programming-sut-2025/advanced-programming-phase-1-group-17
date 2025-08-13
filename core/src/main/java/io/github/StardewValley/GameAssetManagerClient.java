@@ -56,8 +56,8 @@ public class GameAssetManagerClient {
         loadStoreTextures();
         loadNormalItemTextures();
         loadGrassTextures();
-        //loadFullyGrownTextures();
-        //loadStageTextures();
+//        loadFullyGrownTextures();
+//        loadStageTextures();
     }
 
     public static GameAssetManagerClient getGameAssetManager() {
@@ -250,6 +250,7 @@ public class GameAssetManagerClient {
     }
 
     public TextureRegion getFullyGrownTexture(TreeType treeType, Season season) {
+        System.out.println(treeType);
         HashMap<Season, TextureRegion> textures = fullyGrownTextures.get(treeType);
         if (textures == null) {
             List<Season> seasons = Arrays.asList(Season.Spring, Season.Summer, Season.Fall, Season.Winter);
@@ -283,6 +284,7 @@ public class GameAssetManagerClient {
                 fullyGrownTextures.put(treeType, seasonalTextures);
             }
         }
+        System.out.println(fullyGrownTextures.get(treeType).get(season));
         return fullyGrownTextures.get(treeType).get(season);
     }
 }

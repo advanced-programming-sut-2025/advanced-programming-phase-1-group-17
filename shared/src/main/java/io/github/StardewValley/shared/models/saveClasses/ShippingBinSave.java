@@ -52,4 +52,6 @@ public class ShippingBinSave {
     public void setTileY(int tileY) {
         this.tileY = tileY;
     }
+
+
 }

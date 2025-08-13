@@ -7,7 +7,6 @@ import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -44,12 +43,10 @@ public class AppServer {
     public static BackpackableTypeDTO getDTO(BackPackableType backPackableType, BackPack backPack) {
         String texturePath = backPackableType.getInventoryTexturePath();
         if (backPackableType instanceof ToolType toolType) {
-            System.out.println("Fishing Pole texture ...");
             if (toolType.equals(ToolType.FishingPole)) {
-                System.out.println("Fishing Pole texture ...2");
                 texturePath = toolType.getTexturePath(
                     null,
-                    ((Tool) backPack.getBackPackItems().get(toolType).get(0)).getFishingPoleMaterial()
+                    ((Tool) backPack.getBackPackItems().get(toolType).get(0)).getFishingPoleType()
                 );
             }
             else texturePath = toolType.getTexturePath(

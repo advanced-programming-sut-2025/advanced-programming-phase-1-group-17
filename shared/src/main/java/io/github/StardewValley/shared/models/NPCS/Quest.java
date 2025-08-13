@@ -7,6 +7,9 @@ public class Quest {
     private boolean completed;
     private String questExplanation;
     private boolean isActive = true;
+
+    public Quest() {}
+
     public Quest(String questExplanation, int level, boolean completed, String item, int amount) {
         this.questExplanation = questExplanation;
         this.level = level;

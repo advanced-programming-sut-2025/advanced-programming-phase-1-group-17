@@ -4,11 +4,14 @@ import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public class UpgradeService {
     private int soldToday = 0;
-    private final String name;
-    private final BackPackableType requiredMaterial;
-    private final int requiredQuantity;
-    private final int cost;
-    private final int dailyLimit;
+    private String name;
+    private BackPackableType requiredMaterial;
+    private int requiredQuantity;
+    private int cost;
+    private int dailyLimit;
+
+    public UpgradeService() {
+    }
 
     public UpgradeService(String name, BackPackableType requiredMaterial, int requiredQuantity, int cost, int dailyLimit) {
         this.name = name;
@@ -55,5 +58,25 @@ public class UpgradeService {
 
     public void setSoldToday(int soldToday) {
         this.soldToday = soldToday;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRequiredMaterial(BackPackableType requiredMaterial) {
+        this.requiredMaterial = requiredMaterial;
+    }
+
+    public void setRequiredQuantity(int requiredQuantity) {
+        this.requiredQuantity = requiredQuantity;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public void setDailyLimit(int dailyLimit) {
+        this.dailyLimit = dailyLimit;
     }
 }

@@ -55,4 +55,32 @@ public class CraftingItemSave {
     public String getOwnerUsername() {
         return ownerUsername;
     }
+
+    public void setType(CraftingItemType type) {
+        this.type = type;
+    }
+
+    public void setArtisanProductInProgress(ArtisanProduct artisanProductInProgress) {
+        this.artisanProductInProgress = artisanProductInProgress;
+    }
+
+    public void setStart_x(int start_x) {
+        this.start_x = start_x;
+    }
+
+    public void setStart_y(int start_y) {
+        this.start_y = start_y;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
+    }
 }

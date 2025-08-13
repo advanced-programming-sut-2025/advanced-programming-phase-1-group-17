@@ -322,7 +322,7 @@ public class GameController {
             Main.getMain().getScreen().dispose();
             //TODO
             //Main.getMain().setScreen(new FishingView(new FishingController(),GameAssetManagerClient.getGameAssetManager().getSkin()));
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new NPCMenu(new NPCMenuController()
                 , GameAssetManagerClient.getGameAssetManager().getSkin(), view));
@@ -341,8 +341,11 @@ public class GameController {
         if (result.getActionType().equals(HandleWorldClickResponse.ActionType.NONE))
             return false;
 
-        if (result.isStartToolAnimation())
+        System.out.println("Clicked " + result.isStartToolAnimation());
+        if (result.isStartToolAnimation()) {
             toolRenderController.startToolAnimation();
+            System.out.println("Tool Animation started.");
+        }
         switch (result.getActionType()) {
             case SHOW_NOTIFICATION -> view.showNotification(result.getMessage());
             case OPEN_STORE -> {

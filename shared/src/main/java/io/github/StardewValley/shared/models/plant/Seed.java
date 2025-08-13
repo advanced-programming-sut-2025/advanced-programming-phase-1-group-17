@@ -10,6 +10,9 @@ import java.util.List;
 
 public class Seed implements BackPackable, Placeable {
     private SeedType type;
+
+    public Seed() {}
+
     public Seed(SeedType type) {
         this.type = type;
     }
@@ -45,7 +48,7 @@ public class Seed implements BackPackable, Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(Seed.class.getSimpleName());
         placeableSave.setSeed(this);
         return placeableSave;
@@ -55,4 +58,6 @@ public class Seed implements BackPackable, Placeable {
     public Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList) {
         return this;
     }
+
+
 }

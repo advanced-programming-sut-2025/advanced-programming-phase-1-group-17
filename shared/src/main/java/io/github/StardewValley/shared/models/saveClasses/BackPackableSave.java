@@ -34,6 +34,9 @@ public class BackPackableSave {
     private ShopItem shopItem;
     private Tool tool;
 
+    public BackPackableSave() {
+    }
+
     public BackPackableSave(String type) {
         this.type = type;
     }

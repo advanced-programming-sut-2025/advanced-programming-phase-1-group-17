@@ -136,7 +136,7 @@ public class CraftingItem implements BackPackable, Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(CraftingItem.class.getSimpleName());
         placeableSave.setCraftingItemSave(new CraftingItemSave(this));
         return placeableSave;

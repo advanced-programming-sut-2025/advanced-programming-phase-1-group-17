@@ -34,6 +34,11 @@ public class PlayerMap {
     private Quarry quarry;
     private boolean setType = false;
 
+    public PlayerMap(Player player, Game game) {
+        this.player = player;
+        this.hut = new Hut("hut.png", 4 + row, 4 + col);
+        this.greenHouse = new GreenHouse(this.player, 6, 8, 35 + row, 2 + col, new GreenHouseLake(), game);
+    }
 
     public GreenHouse getGreenHouse() {
         return greenHouse;

@@ -1,6 +1,5 @@
 package io.github.StardewValley.shared.models.NPCS;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 public enum FlowerType implements BackPackableType {

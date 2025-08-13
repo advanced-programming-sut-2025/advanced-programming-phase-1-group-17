@@ -32,7 +32,8 @@ public class GameLoopService {
         Game currentGame = AppServer.getCurrentGame();
         if (currentGame == null) {
             return; // اگر بازی فعال نیست، کاری نکن
-        }
+        } else if (currentGame.isDCPaused())
+            return;
 
         // ۱. آپدیت زمان بازی (منطق قبلی شما)
         currentGame.getDate().increaseMinute(delta * 5,AppServer.getCurrentGame());

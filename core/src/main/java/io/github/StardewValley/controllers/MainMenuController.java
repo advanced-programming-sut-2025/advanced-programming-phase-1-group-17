@@ -3,9 +3,12 @@ package io.github.StardewValley.controllers;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.StardewValley.GameAssetManagerClient;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.TokenStorage;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.controllers.UIControllers.LoadSavedGamesController;
+import io.github.StardewValley.controllers.helperControllers.GameStateApiClient;
+import io.github.StardewValley.shared.models.Result;
 import io.github.StardewValley.views.*;
 
 public class MainMenuController {
@@ -47,7 +50,18 @@ public class MainMenuController {
                 ));
             }
         });
-
+        view.getResumeOngoingGameButton().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Result result = GameClient.getGameStateApiClient().resumeOngoingGame();
+                if (result.successful()) {
+                    Main.getMain().getScreen().dispose();
+                    Main.getMain().setScreen(new GameView(new GameController(), new GameMenuController()));
+                } else {
+                    view.getErrorLabel().setText(result.message());
+                }
+            }
+        });
     }
 
 }

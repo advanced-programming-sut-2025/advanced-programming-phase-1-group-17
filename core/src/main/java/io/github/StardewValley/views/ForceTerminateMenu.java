@@ -41,7 +41,7 @@ public class ForceTerminateMenu implements Screen {
                     hasVoted = true;
                     vote = true;
                     controller.vote(true);
-                    errorLabel.setText("Your vote has been placed.\nWaiting for others...");
+                    errorLabel.setText("Your vote has been registered.\nWaiting for others...");
                 } else {
                     errorLabel.setText("You have already voted.\nPlease wait for others...");
                     errorLabel.setColor(255, 0, 0, 1);

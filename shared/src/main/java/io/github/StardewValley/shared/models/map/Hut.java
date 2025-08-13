@@ -12,6 +12,9 @@ public class Hut implements Placeable {
     private int x;
     private int y;
 
+    public Hut() {
+    }
+
     public Hut(String texture, int x, int y) {
         this.texture = texture;
         this.x = x;
@@ -32,7 +35,7 @@ public class Hut implements Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(Hut.class.getSimpleName());
         placeableSave.setHut(this);
         return  placeableSave;
@@ -49,5 +52,17 @@ public class Hut implements Placeable {
 
     public int getY() {
         return y;
+    }
+
+    public void setTexture(String texture) {
+        this.texture = texture;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }

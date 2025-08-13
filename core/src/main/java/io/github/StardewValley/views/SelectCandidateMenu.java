@@ -49,6 +49,7 @@ public class SelectCandidateMenu implements Screen {
                 public void clicked(InputEvent event, float x, float y) {
                     Main.getMain().getScreen().dispose();
                     GameClient.getGameStateApiClient().sendCandidate(playerUsername);
+                    System.out.println("Candidate: playerUsername");
                     Main.getMain().setScreen(new VotingMenu(
                         new VotingMenuController(),
                         GameAssetManagerClient.getGameAssetManager().getSkin(),

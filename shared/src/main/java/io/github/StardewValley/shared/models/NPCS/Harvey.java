@@ -9,12 +9,14 @@ import io.github.StardewValley.shared.models.saveClasses.NPCSave;
 import java.util.List;
 
 public class Harvey extends NPC implements Placeable {
+    {
+        name = "Harvey";
+        job = "teacher";
+    }
     private final String  texture1 = "Harvey.png";
     private final String  texture2 = "hut2.png";
 
     public Harvey(boolean isHarvey) {
-        this.name = "Harvey";
-        this.job = "teacher";
         isNPC = isHarvey;
         this.dialogueText.add("hello i am harvey");
         this.dialogueText.add("hi how are you?");

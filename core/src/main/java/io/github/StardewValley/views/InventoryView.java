@@ -15,13 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.StardewValley.GameAssetManagerClient;
 import io.github.StardewValley.GameClient;
 import io.github.StardewValley.controllers.InventoryController;
 import io.github.StardewValley.shared.models.backpack.BackpackableTypeDTO;
 import io.github.StardewValley.shared.models.tools.ToolType;
-import kotlin.reflect.KClassesImplKt;
 
 public class InventoryView implements Screen {
     private Stage stage;

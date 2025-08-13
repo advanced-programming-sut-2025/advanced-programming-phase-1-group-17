@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface Placeable {
     String getTexture();
-    PlaceableSave toDTO();
+    PlaceableSave toDTO(int x, int y, String ownerUsername);
     Placeable loadFromDTO(PlaceableSave dto, List<Player> playerList);
 }

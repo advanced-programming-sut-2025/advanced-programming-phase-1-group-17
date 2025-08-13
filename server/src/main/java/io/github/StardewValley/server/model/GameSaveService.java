@@ -1,13 +1,14 @@
 package io.github.StardewValley.server.model;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.StardewValley.server.repository.GameSaveRepository;
 import io.github.StardewValley.shared.models.saveClasses.FullGameDTO;
+import io.github.StardewValley.shared.models.saveClasses.PlayerSave;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class GameSaveService {
@@ -21,25 +22,32 @@ public class GameSaveService {
 
     @Transactional
     public GameSave saveGame(UUID gameId, FullGameDTO gameDTO, String creatorUsername) throws Exception {
-        String jsonState = mapper.writeValueAsString(gameDTO);
+        try {
+            String jsonState = mapper.writeValueAsString(gameDTO);
 
-        GameSave gameSave = repo.findById(gameId).orElse(new GameSave());
-        gameSave.setId(gameId);
-        gameSave.setCreatorUsername(creatorUsername);
-        gameSave.setLastSaved(java.time.LocalDateTime.now());
+            GameSave gameSave = repo.findById(gameId).orElse(new GameSave());
+            gameSave.setId(gameId);
+            gameSave.setCreatorUsername(creatorUsername);
+            gameSave.setLastSaved(java.time.LocalDateTime.now());
 
-        List<String> usernames = gameDTO.getPlayerSaves()
-            .stream()
-            .map(playerSave -> playerSave.getUser().getUsername())
-            .collect(Collectors.toList());
+            List<String> usernames = new ArrayList<>();
+            for (PlayerSave playerSave : gameDTO.getPlayerSaves()) {
+                usernames.add(playerSave.getUser().getUsername());
+            }
 
-        String csv = String.join(",", usernames);
-        gameSave.setPlayerUsernamesCSV(csv);
+            String csv = String.join(",", usernames);
+            gameSave.setPlayerUsernamesCSV(csv);
 
-        gameSave.setSerializedState(jsonState);
+            gameSave.setSerializedState(jsonState);
 
-        return repo.save(gameSave);
+            return repo.save(gameSave);
+        } catch (JsonMappingException e) {
+            System.err.println("JSON mapping failed at path: " + e.getPathReference());
+            System.exit(0);
+        }
+        return null;
     }
+
 
     public Optional<FullGameDTO> loadGame(UUID gameId) throws Exception {
         Optional<GameSave> gameSaveOpt = repo.findById(gameId);
@@ -48,8 +56,13 @@ public class GameSaveService {
         GameSave gameSave = gameSaveOpt.get();
         String jsonState = gameSave.getSerializedState();
 
-        FullGameDTO gameDTO = mapper.readValue(jsonState, FullGameDTO.class);
-        return Optional.of(gameDTO);
+        try {
+            FullGameDTO gameDTO = mapper.readValue(jsonState, FullGameDTO.class);
+            return Optional.of(gameDTO);
+        } catch (JsonMappingException e) {
+            e.getPathReference(); // or e.getPathReference() in newer versions
+            throw e;
+        }
     }
 
 

@@ -17,7 +17,6 @@ public class LightningLogicController {
         this.currentFrame = 0;
     }
 
-    //TODo: use inside game Loop
     public void updateLightning(float delta) {
         if (flashing) {
             lightningAlpha -= delta * 2f;

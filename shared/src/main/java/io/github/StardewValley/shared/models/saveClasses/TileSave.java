@@ -1,7 +1,5 @@
 package io.github.StardewValley.shared.models.saveClasses;
 
-import io.github.StardewValley.shared.models.NPCS.NPC;
-import io.github.StardewValley.shared.models.Player;
 import io.github.StardewValley.shared.models.map.Tile;
 
 public class TileSave {
@@ -19,10 +17,10 @@ public class TileSave {
     public TileSave(Tile tile) {
         this.x = tile.getX();
         this.y = tile.getY();
-        this.placeableSave = tile.getPlaceable().toDTO();
+        this.owner = tile.getOwner().getUser().getUsername();
+        this.placeableSave = tile.getPlaceable() == null ? null : tile.getPlaceable().toDTO(x, y ,owner);
         this.isWalkAble = tile.isWalkAble();
         this.isPlowed = tile.isPlowed();
-        this.owner = tile.getOwner().getUser().getUsername();
         this.npcIsHere = (tile.getNpcIsHere() == null) ? null : new NPCSave(tile.getNpcIsHere());
         this.crowImmunity = tile.isCrowImmunity();
     }

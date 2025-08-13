@@ -7,7 +7,6 @@ import io.github.StardewValley.shared.models.map.Tile;
 import io.github.StardewValley.shared.models.market.ItemQuality;
 import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 import io.github.StardewValley.shared.models.saveClasses.CropSave;
-import io.github.StardewValley.shared.models.saveClasses.Pair;
 import io.github.StardewValley.shared.models.saveClasses.PlaceableSave;
 
 import java.util.ArrayList;
@@ -358,9 +357,9 @@ public class Crop extends Plant implements BackPackable, Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(Crop.class.getSimpleName());
-        placeableSave.setCropSave(new CropSave(this));
+        placeableSave.setCropSave(new CropSave(this, x, y));
         return placeableSave;
     }
 

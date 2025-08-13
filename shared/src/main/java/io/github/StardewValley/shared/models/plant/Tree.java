@@ -29,12 +29,10 @@ public class Tree extends Plant implements Placeable {
     }
 
     public Tree(PlaceableSave dto) {
-        super(dto); // calls Plant(PlaceableSave dto) for common fields
+        super(dto);
 
         TreeSave save = dto.getTreeSave();
         this.type = save.getType();
-        //TODO
-        //this.tile = new Tile(save.getTileX(), save.getTileY());
     }
 
 
@@ -109,9 +107,9 @@ public class Tree extends Plant implements Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(Tree.class.getSimpleName());
-        placeableSave.setTreeSave(new TreeSave(this));
+        placeableSave.setTreeSave(new TreeSave(this, x, y));
         return placeableSave;
     }
 

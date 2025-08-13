@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.StardewValley.shared.TimeAndDateDTO;
 import io.github.StardewValley.shared.models.NPCS.Flower;
 import io.github.StardewValley.shared.models.NPCS.FlowerType;
@@ -20,6 +21,7 @@ import io.github.StardewValley.shared.models.plant.Tree;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TimeAndDate {
     private WeatherType todayWeather;
     private WeatherType tomorrowWeather;
@@ -313,5 +315,17 @@ public class TimeAndDate {
             timeAndDate.season,
             timeAndDate.dayOfTheWeek
         );
+    }
+
+    public WeatherType getTodayWeather() {
+        return todayWeather;
+    }
+
+    public float getIncreaseAmount() {
+        return increaseAmount;
+    }
+
+    public void setIncreaseAmount(float increaseAmount) {
+        this.increaseAmount = increaseAmount;
     }
 }

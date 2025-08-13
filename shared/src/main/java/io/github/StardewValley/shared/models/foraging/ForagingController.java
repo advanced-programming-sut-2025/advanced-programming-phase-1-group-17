@@ -19,7 +19,7 @@ import java.util.Random;
 public final class ForagingController {
     public static void setForagingForNextDay(Game game) {
         Random random = new Random();
-        for (Tile tile : Tile.getTiles()) {
+        for (Tile tile : game.getTiles()) {
             if (tile.getPlaceable() instanceof Quarry) {
                 if (random.nextInt(100) == 1)
                     setMineralForaging(tile);

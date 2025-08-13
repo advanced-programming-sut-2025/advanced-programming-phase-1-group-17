@@ -1,5 +1,6 @@
 package io.github.StardewValley.shared.models.market;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.enums.Season;
@@ -9,15 +10,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShopItem implements BackPackable {
     private boolean isAvailable = true;
     private int soldToday = 0;
-    private final BackPackableType type;
-    private final int dailyLimit;
-    private final double price;
-    private final HashMap<BackPackableType, Integer> cost;
-    private final String description;
-    private final List<Season> availableSeasons;
+    private BackPackableType type;
+    private int dailyLimit;
+    private double price;
+    private HashMap<BackPackableType, Integer> cost;
+    private String description;
+    private List<Season> availableSeasons;
+
+    public ShopItem() {
+    }
 
     public ShopItem(BackPackableType type, double price, int dailyLimit, String description) {
         this(type, price, dailyLimit, description, List.of(Season.Spring, Season.Summer, Season.Fall, Season.Winter));

@@ -2,13 +2,14 @@ package io.github.StardewValley.shared.models.saveClasses;
 
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.backpack.BackPackType;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BackPackSave {
     private String playerUsername;
-    private HashMap<Pair<String, String>, ArrayList<BackPackableSave>> backPackItems;
+    private HashMap<BackPackableType, ArrayList<BackPackableSave>> backPackItems = new HashMap<>();
     private BackPackType type;
 
     public BackPackSave () {}
@@ -19,7 +20,7 @@ public class BackPackSave {
             ArrayList<BackPackableSave> backPackableSaves = new ArrayList<>();
             backPackables.forEach((backPackable -> backPackableSaves.add(backPackable.toBackpackableSave())));
             this.backPackItems.put(
-                new Pair<String, String>(backPackableType.getName(), backPackableType.getClass().getSimpleName()),
+                backPackableType,
                 backPackableSaves
             );
         }));
@@ -30,7 +31,7 @@ public class BackPackSave {
         return playerUsername;
     }
 
-    public HashMap<Pair<String, String>, ArrayList<BackPackableSave>> getBackPackItems() {
+    public HashMap<BackPackableType, ArrayList<BackPackableSave>> getBackPackItems() {
         return backPackItems;
     }
 

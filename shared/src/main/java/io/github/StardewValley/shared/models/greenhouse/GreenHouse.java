@@ -1,4 +1,5 @@
 package io.github.StardewValley.shared.models.greenhouse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.GameAssetManager;
 import io.github.StardewValley.shared.models.game.Game;
 import io.github.StardewValley.shared.models.map.Placeable;
@@ -17,6 +18,7 @@ public class GreenHouse implements Placeable {
     private int height;
     private int starting_x;
     private int starting_y;
+    @JsonIgnore
     private Player owner;
 
 
@@ -70,7 +72,7 @@ public class GreenHouse implements Placeable {
     }
 
     @Override
-    public PlaceableSave toDTO() {
+    public PlaceableSave toDTO(int x, int y, String ownerUsername) {
         PlaceableSave placeableSave = new PlaceableSave(GreenHouse.class.getSimpleName());
         placeableSave.setGreenHouseSave(new GreenHouseSave(this));
         return placeableSave;
@@ -103,5 +105,9 @@ public class GreenHouse implements Placeable {
 
     public Player getOwner() {
         return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 }
