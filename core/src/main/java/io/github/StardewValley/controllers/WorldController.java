@@ -47,7 +47,7 @@ public class WorldController {
     private List<CraftingItemDTO> craftingItems = new ArrayList<>();
     private final HashMap<String, ProgressBar> progressBarMap = new HashMap<>();
     private final LightningRenderController lightningRenderController;
-    private long timeSinceLastDisconnectionNotif = System.currentTimeMillis();
+    private boolean disconnectionNotifShown = false;
 
     public WorldController(OrthographicCamera camera) {
         this.lightningRenderController = LightningRenderController.getLightningController();
@@ -98,8 +98,8 @@ public class WorldController {
             }
             return;
         } else if (gameState.isDCPaused()) {
-            if (System.currentTimeMillis() - timeSinceLastDisconnectionNotif > 120_000) {
-                timeSinceLastDisconnectionNotif = System.currentTimeMillis();
+            if (!disconnectionNotifShown) {
+                disconnectionNotifShown = true;
                 Main.getGameView().showNotification("A Player has disconnected from the game.");
             }
         }

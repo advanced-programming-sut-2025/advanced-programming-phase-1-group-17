@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
+import io.github.StardewValley.server.model.ConnectionMonitor;
 import io.github.StardewValley.server.model.GameSave;
 import io.github.StardewValley.server.model.GameSaveService;
 import io.github.StardewValley.server.repository.GameSaveRepository;
@@ -106,6 +107,7 @@ public class SavedGamesController {
         System.out.println("Loading: game found");
 
         ObjectMapper objectMapper = new ObjectMapper();
+        ConnectionMonitor.setShouldQuitGame(false);
         try {
             FullGameDTO fullGameDTO = objectMapper.readValue(save.getSerializedState(), FullGameDTO.class);
             AppServer.setCurrentGame(new Game(fullGameDTO));
