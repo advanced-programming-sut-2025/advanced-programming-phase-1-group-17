@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -12,30 +11,37 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
-import io.github.StardewValley.controllers.CookingController;
+import io.github.StardewValley.GameClient;
+import io.github.StardewValley.Main;
+import io.github.StardewValley.shared.models.backpack.BackPackableType;
+import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
+import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 
-public class CookingShow implements Screen {
+import java.util.ArrayList;
+import java.util.Map;
+
+public class Refrigerator implements Screen {
     private Stage stage;
     private Skin skin;
     private Table table;
     private Window infoWindow;
     private GameView gameView;
     private Label ingredients;
-    private CookingController controller;
     private Label errorMessage;
     private TextButton backButton;
+    private ArrayList<Food>foods = new ArrayList<>();
 
 
-    public CookingShow(Skin skin, GameView gameView,CookingController controller) {
+    public Refrigerator(Skin skin, GameView gameView) throws Exception {
+        foods = GameClient.gameStateApiClient.updateRef();
         this.skin = skin;
         this.gameView = gameView;
         this.stage = new Stage();
         this.table = new Table();
-        this.controller = controller;
         this.errorMessage = new Label("", skin);
         this.backButton = new TextButton("back",skin);
-        controller.setView(this,gameView);
+        handleButtons();
 
     }
 
@@ -44,10 +50,10 @@ public class CookingShow implements Screen {
         Gdx.input.setInputProcessor(stage);
         table.setFillParent(true);
 
-        for (FoodType food : FoodType.values()) {
+        for (Food food : foods) {
 
 
-            Texture texture = new Texture(food.getInventoryTexturePath());
+            Texture texture = new Texture(food.getType().getInventoryTexturePath());
             ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
             style.imageUp = new TextureRegionDrawable(new TextureRegion(texture));
 
@@ -56,13 +62,11 @@ public class CookingShow implements Screen {
             btn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    Vector2 stageCoords = btn.localToStageCoordinates(new Vector2(0, 0));
-                    if(infoWindow != null) {
-                        infoWindow.remove();
-                        infoWindow = null;
-                    }
-                    else{
-                        showDetails(food, stageCoords.x, stageCoords.y);
+                    try {
+                        GameClient.gameStateApiClient.addToBackPack(food);
+                        foods = GameClient.gameStateApiClient.updateRef();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }
             });
@@ -75,29 +79,22 @@ public class CookingShow implements Screen {
         stage.addActor(backButton);
     }
 
+
+
     private void showDetails(FoodType type, float x, float y) {
         if (infoWindow != null && infoWindow.hasParent()) {
             infoWindow.remove();
         }
 
         infoWindow = new Window("",skin);
-        //infoWindow.pad(100);
-        ingredients = new Label("first sentence",skin);
-        controller.handleIngredientsLabel(type);
+
         errorMessage.setText("");
-        //infoWindow.add(new Label("You clicked on: " + type.getName(), skin)).pad(10).row();
 
         TextButton okButton = new TextButton("Cook", skin);
         okButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.handleIngredients(type);
-            }
-        });
-        TextButton moveButton = new TextButton("moveToRef",skin);
-        moveButton.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                controller.handleMove(type);
+                handleIngredients(type);
             }
         });
         infoWindow.add(ingredients).pad(10);
@@ -105,11 +102,46 @@ public class CookingShow implements Screen {
         infoWindow.add(errorMessage);
         infoWindow.row();
         infoWindow.add(okButton);
-        infoWindow.add(moveButton);
         infoWindow.pack();
         infoWindow.setSize(600, 300);
         infoWindow.setPosition(x + 70, y);
         stage.addActor(infoWindow);
+    }
+    public void handleIngredients(FoodType item) {
+        try {
+            // 1. درخواست به سرور ارسال می‌شود
+            CookResponseDTO response = GameClient.gameStateApiClient.attemptCook(item);
+
+            // 2. نتیجه‌ای که از سرور آمده نمایش داده می‌شود
+            errorMessage.setText(response.getMessage());
+
+            // اگر موفق بود، می‌توانید صفحه را ببندید یا هر کار دیگری بکنید
+            if (response.isSuccess()) {
+                // مثلا می‌توانید inventory را رفرش کنید
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // نمایش یک خطای عمومی در صورت مشکل در ارتباط با سرور
+            errorMessage.setText("Error connecting to the server.");
+        }
+    }
+    public void handleIngredientsLabel(FoodType item) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<BackPackableType, Integer> entry : item.getIngredients().entrySet()) {
+            sb.append(entry.getKey().getName()).append(": ").append(entry.getValue()).append("\n");
+        }
+        ingredients.setText(sb.toString());
+    }
+    public void handleButtons(){
+        backButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getMain().getScreen().dispose();
+                Main.getMain().setScreen(gameView);
+            }
+
+        });
     }
 
     @Override
@@ -117,6 +149,11 @@ public class CookingShow implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);
         stage.act(delta);
         stage.draw();
+        try {
+            foods = GameClient.gameStateApiClient.updateRef();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override public void resize(int width, int height) {}

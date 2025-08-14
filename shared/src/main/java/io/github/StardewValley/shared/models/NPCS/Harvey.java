@@ -72,7 +72,7 @@ public class Harvey extends NPC implements Placeable {
         } else {
             for (int i = 0; i < 5; i++) {
                 Food f = new Food(FoodType.Pizza);
-                f.setFoodtype(FoodType.Salad);
+                f.setType(FoodType.Salad);
                 player.getBackPack().addItemToInventory(f);
             }
         }
