@@ -1,7 +1,6 @@
 package io.github.StardewValley.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.badlogic.gdx.math.Vector3;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.server.JwtService;
 import io.github.StardewValley.server.controller.logicControllers.*;
@@ -9,6 +8,8 @@ import io.github.StardewValley.server.model.GameSaveService;
 import io.github.StardewValley.server.model.User;
 import io.github.StardewValley.server.repository.AnimalDataService;
 import io.github.StardewValley.server.repository.MusicRepository;
+import io.github.StardewValley.shared.models.cooking.Recipe;
+import io.github.StardewValley.shared.models.crafting.CraftingRecipe;
 import io.github.StardewValley.shared.models.game.VotingSession;
 import io.github.StardewValley.server.repository.GameSaveRepository;
 import io.github.StardewValley.server.repository.UserRepository;
@@ -46,7 +47,6 @@ import io.github.StardewValley.shared.models.tools.FishingPoleType;
 import io.github.StardewValley.shared.models.tools.Tool;
 import io.github.StardewValley.shared.models.tools.ToolType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -221,6 +221,22 @@ public class GameStateController {
     @PostMapping("/addMusic")
     public ResponseEntity<Void> addMusic(@RequestBody MusicDTO musicDTO, @RequestHeader("Authorization") String token) {
         MusicRepository.addMusic(musicDTO);
+
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("fromRefToBackPack")
+    public ResponseEntity<Void> fromRefToBackpack(@RequestBody Food food, @RequestHeader("Authorization") String token) {
+
+
+        Food target = null;
+        Player player = getPlayerFromToken(token);
+        for(Food food1:player.getRefrigerator()){
+            if(food1.getId().equals(food.getId())){
+                target = food1;
+            }
+        }
+        player.getBackPack().addItemToInventory(target);
+        player.getRefrigerator().remove(target);
 
         return ResponseEntity.ok().build();
     }
@@ -414,10 +430,14 @@ public class GameStateController {
         time.append(displayHour).append(":");
         time.append(String.format("%02d", date.getMinute())); // همیشه دو رقمی
         time.append(hour < 12 ? " am" : " pm");
+        if(date.getHour()>22){
+            date.setHour(9);
+            date.setDay(0);
+        }
 
         String dateString = date.getDayOfTheWeek().toString().substring(0, 3) + ". " + date.getDay(); // مثال
 
-        float timeAngle = ((float) ((date.getHour() - 9) * 180) / 13 + date.getMinute()) * 3 / 13;
+        float timeAngle = ((date.getHour() - 9) + date.getMinute() / 60f) * (180f / 13f);
 
 
         // ساخت DTO
@@ -461,6 +481,9 @@ public class GameStateController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new CraftResponseDTO(false, "Invalid item type."));
         }
+        if(!checkCraftingRecipe(typeToCraft,player)){
+            return ResponseEntity.ok(new CraftResponseDTO(false,"you dont have this recipe"));
+        }
 
         // --- تمام منطق از CraftingController به اینجا منتقل می‌شود ---
         BackPack backPack = player.getBackPack();
@@ -489,6 +512,79 @@ public class GameStateController {
         // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
         return ResponseEntity.ok(new CraftResponseDTO(true, "Crafted successfully!"));
     }
+    @PostMapping("/moveToRef")
+    public ResponseEntity<CookResponseDTO> attemptToMove(
+            @RequestHeader("Authorization") String token,
+            @RequestParam String itemTypeName) { // نام آیتم را از کلاینت می‌گیریم
+
+        String username = jwtService.extractUsername(token.substring(7));
+        Player player = null;
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                player = p;
+                break;
+            }
+        }
+        if (player == null) {
+            return ResponseEntity.status(401).body(new CookResponseDTO(false, "Player not found."));
+        }
+
+        FoodType type;
+        try {
+            type = FoodType.valueOf(itemTypeName);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new CookResponseDTO(false, "Invalid item type."));
+        }
+        if(!checkCookingRecipe(type,player)){
+            return ResponseEntity.ok(new CookResponseDTO(false, "you dont have this recipe"));
+        }
+
+
+        // --- تمام منطق از CraftingController به اینجا منتقل می‌شود ---
+        BackPack backPack = player.getBackPack();
+        Map<BackPackableType, Integer> ingredients = type.getIngredients();
+
+        // 1. بررسی موجودی (در سرور!)
+        for (Map.Entry<BackPackableType, Integer> entry : type.getIngredients().entrySet()) {
+            if (!(player.getBackPack().getBackPackItems().containsKey(entry.getKey())
+                    && player.getBackPack().getBackPackItems().get(entry.getKey()).size() >= entry.getValue())) {
+                String message = "Not enough " + entry.getKey().getName() + ".";
+                return ResponseEntity.ok(new CookResponseDTO(false, message));
+            }
+        }
+
+        // 2. کم کردن آیتم‌ها (در سرور!)
+        for (Map.Entry<BackPackableType, Integer> entry : ingredients.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                backPack.useItem(entry.getKey());
+            }
+        }
+
+        // 3. اضافه کردن آیتم جدید (در سرور!)
+        Food food = new Food(type);
+        player.getRefrigerator().add(food);
+
+        // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
+        return ResponseEntity.ok(new CookResponseDTO(true, "Cooked successfully!"));
+    }
+    @GetMapping("/updateRef")
+    public ResponseEntity<ArrayList<Food>> updateRef(
+            @RequestHeader("Authorization") String token) { // نام آیتم را از کلاینت می‌گیریم
+
+        String username = jwtService.extractUsername(token.substring(7));
+        Player player = null;
+        for (Player p : AppServer.getCurrentGame().getPlayers()) {
+            if (p.getUser().getUsername().equals(username)) {
+                player = p;
+                break;
+            }
+        }
+        if(player == null){
+            System.err.println("player is null");
+
+        }
+        return ResponseEntity.ok(player.getRefrigerator());
+    }
 
     @PostMapping("/cook")
     public ResponseEntity<CookResponseDTO> attemptToCook(
@@ -513,8 +609,12 @@ public class GameStateController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new CookResponseDTO(false, "Invalid item type."));
         }
+        if(!checkCookingRecipe(type,player)){
+            return ResponseEntity.ok(new CookResponseDTO(false, "you dont have this recipe"));
+        }
 
-        // --- تمام منطق از CraftingController به اینجا منتقل می‌شود ---
+
+            // --- تمام منطق از CraftingController به اینجا منتقل می‌شود ---
         BackPack backPack = player.getBackPack();
         Map<BackPackableType, Integer> ingredients = type.getIngredients();
 
@@ -540,6 +640,22 @@ public class GameStateController {
 
         // 4. ارسال پاسخ موفقیت‌آمیز به کلاینت
         return ResponseEntity.ok(new CookResponseDTO(true, "Cooked successfully!"));
+    }
+    public boolean checkCookingRecipe(FoodType type,Player player){
+        for(Recipe cookingRecipe : player.getRecipes()){
+            if(cookingRecipe.getFoodToBeCooked().equals(type)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean checkCraftingRecipe(CraftingItemType type,Player player){
+        for(CraftingRecipe craftingRecipe : player.getCraftingRecipes()){
+            if(craftingRecipe.getTargetItem().equals(type)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @PostMapping("/game/handleClick")

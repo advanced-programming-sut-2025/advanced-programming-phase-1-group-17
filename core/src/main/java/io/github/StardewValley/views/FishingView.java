@@ -57,6 +57,10 @@ public class FishingView implements Screen {
             Main.getMain().setScreen(Main.getGameView());
 
         }
+        if(controller.getSuccess()<=0){
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(Main.getGameView());
+        }
 
         Main.getBatch().end();
     }

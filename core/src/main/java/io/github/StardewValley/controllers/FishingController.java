@@ -62,15 +62,13 @@ public class FishingController {
 
         // بررسی موفقیت
         if (isBarOverTarget()) {
-            success+=delta*5;
+            success+=delta*10;
         }
         else{
             success-= delta*4;
             isPerfect=false;
         }
-        if(success >= 100){
 
-        }
     }
 
     public boolean isFinished() {

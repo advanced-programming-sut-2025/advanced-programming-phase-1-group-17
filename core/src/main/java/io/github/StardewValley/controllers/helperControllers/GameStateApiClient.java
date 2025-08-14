@@ -8,6 +8,7 @@ import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.models.*;
 import io.github.StardewValley.shared.models.NPCS.NPC;
 import io.github.StardewValley.shared.models.cooking.CookResponseDTO;
+import io.github.StardewValley.shared.models.cooking.Food;
 import io.github.StardewValley.shared.models.cooking.FoodType;
 import io.github.StardewValley.shared.models.crafting.CraftingItemType;
 import io.github.StardewValley.shared.dto.*;
@@ -83,7 +84,7 @@ public class GameStateApiClient {
     }
     // ...
     public AnimalDTO toggleAnimalOutside(String animalName) throws Exception {
-        URL url = new URL(AnimalURL + animalName + "/toggle-outside");
+        URL url = new URL(AnimalURL + "/" +animalName + "/toggle-outside");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Authorization", "Bearer " + token);
@@ -99,6 +100,24 @@ public class GameStateApiClient {
         } else {
             throw new RuntimeException("Failed to toggle outside status: " + conn.getResponseCode());
         }
+    }
+    public void sellAnimal(String animalName) throws Exception {
+        // آدرس Endpoint را با ID حیوان می‌سازیم
+        URL url = new URL(AnimalURL  +  "/" + animalName + "/sellAnimal");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // متد را POST قرار می‌دهیم چون در حال تغییر داده هستیم
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setDoOutput(true); // برای POST لازم است
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) { // اگر پاسخ موفقیت‌آمیز نبود
+            throw new RuntimeException("Failed to sell animal. Server responded with: " + responseCode);
+        }
+        // چون پاسخی انتظار نداریم، کار تمام است
+        conn.disconnect();
     }
     public void sendChatMessage(ChatMessageDTO message) throws Exception {
         URL url = new URL(BASE_URL + "/send");
@@ -177,6 +196,26 @@ public class GameStateApiClient {
             throw new RuntimeException("Failed to add music");
         }
     }
+    public void addToBackPack(Food food) throws Exception {
+        URL url = new URL(BASE_URL + "/fromRefToBackPack");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInput = mapper.writeValueAsString(food);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInput.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("failed to add");
+        }
+    }
     public FishingResultDTO calculateFishCatch() throws Exception {
         URL url = new URL(BASE_URL +"/creatFish" );
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -210,6 +249,23 @@ public class GameStateApiClient {
             }
         } else {
             throw new RuntimeException("Failed to fetch animals data: " + conn.getResponseCode());
+        }
+    }
+    public ArrayList<Food> updateRef() throws Exception {
+        URL url = new URL(BASE_URL + "/updateRef");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        if (conn.getResponseCode() == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, new TypeReference<ArrayList<Food>>() {
+                });
+            }
+        } else {
+            throw new RuntimeException("Failed to updateRef" + conn.getResponseCode());
         }
     }
     public ArrayList<MusicDTO> getAllMusic() throws Exception {
@@ -559,6 +615,25 @@ public class GameStateApiClient {
             }
         } else {
             throw new RuntimeException("Failed to cook item. Response code: " + responseCode);
+        }
+    }
+    public CookResponseDTO attemptMove(FoodType type) throws Exception {
+        String urlString = BASE_URL + "/moveToRef?itemTypeName=" + URLEncoder.encode(type.name(), "UTF-8");
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            try (InputStream inputStream = conn.getInputStream()) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(inputStream, CookResponseDTO.class);
+            }
+        } else {
+            throw new RuntimeException("Failed to move item. Response code: " + responseCode);
         }
     }
 

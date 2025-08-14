@@ -52,6 +52,7 @@ public class Player {
     private String targetPlayerToTrade = null;
     private HashMap<String, Integer> suggestions = new HashMap<>();
     private HashMap<String, Integer> requierd = new HashMap<>();
+    private ArrayList<Food>refrigerator = new ArrayList<>();
 
 
     //For friendShip
@@ -85,9 +86,8 @@ public class Player {
     private Tool wateringCan = new Tool(ToolType.WateringCan, ToolMaterial.Basic, null);
     private Tool currentTool;
     private BackPackable equippedItem;
-
-    private HashSet<Recipe> recipes = new HashSet<>();
     private Ability abilities = new Ability(this);
+    private HashSet<Recipe> recipes = new HashSet<>();
     private HashSet<CraftingRecipe> craftingRecipes = new HashSet<>();
 
     private int daysSinceBrakeUp = 0;
@@ -208,6 +208,10 @@ public class Player {
         this.getRecipes().add(new Recipe(FoodType.MakiRoll));
         this.getRecipes().add(new Recipe(FoodType.FarmersLunch));
         this.buff = new Buff(BuffType.None, 0);
+
+        //test
+        this.refrigerator.add(new Food(FoodType.Bread));
+        this.refrigerator.add(new Food(FoodType.FriedEgg));
     }
 
     public Player(PlayerSave playerSave, Game game) {
@@ -928,5 +932,13 @@ public class Player {
 
     public void setRequierd(HashMap<String, Integer> requierd) {
         this.requierd = requierd;
+    }
+
+    public ArrayList<Food> getRefrigerator() {
+        return refrigerator;
+    }
+
+    public void setRefrigerator(ArrayList<Food> refrigerator) {
+        this.refrigerator = refrigerator;
     }
 }

@@ -63,6 +63,14 @@ public class AnimalDataService {
         }
         return animals;
     }
+    public static void removeAnimal(AnimalDTO animal) {
+        for(AnimalPlaceDTO animalPlaceDTO:animalPlaceDatabase){
+            if(animalPlaceDTO.getAnimals().contains(animal)){
+                animalPlaceDTO.getAnimals().remove(animal);
+                return;
+            }
+        }
+    }
 
     public static AnimalDTO findById(String id) {
         for(AnimalDTO animalDTO:findAll()) {
