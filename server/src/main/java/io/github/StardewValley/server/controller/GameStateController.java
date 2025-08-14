@@ -122,28 +122,24 @@ public class GameStateController {
 
         message.setTimestamp(System.currentTimeMillis());
 
-        // --- منطق جدید برای تشخیص پیام خصوصی ---
         String content = message.getContent();
-        // الگویی برای پیدا کردن /w username message
         Pattern pattern = Pattern.compile("^/w\\s+(\\w+)\\s+(.*)");
         Matcher matcher = pattern.matcher(content);
 
-        // اگر پیام با الگو مطابقت داشت (یک پیام خصوصی است)
         if (matcher.find()) {
-            String recipientUsername = matcher.group(1); // نام کاربری گیرنده
-            String privateContent = matcher.group(2);  // متن اصلی پیام
+            String recipientUsername = matcher.group(1);
+            String privateContent = matcher.group(2);
 
             // TODO: چک کنید آیا کاربری با نام recipientUsername در بازی وجود دارد
 
-            message.setRecipientUsername(recipientUsername); // گیرنده را مشخص کن
-            message.setContent(privateContent); // متن پیام را تمیز کن
+            message.setRecipientUsername(recipientUsername);
+            message.setContent(privateContent);
             message.setPrivate(true); // این پیام را به عنوان خصوصی علامت بزن
 
         } else {
-            message.setPrivate(false); // این یک پیام عمومی است
+            message.setPrivate(false);
         }
 
-        // در هر صورت، پیام را به لاگ کلی اضافه کن
         currentGame.getChatLog().add(message);
 
         return ResponseEntity.ok().build();
