@@ -74,7 +74,6 @@ public class GameView implements Screen, InputProcessor {
     private ArrayList<AnimalProductDTO> animalProductsFromServer;
     private AnimalPlaceView animalPlaceView;
     private ChatView chatView;
-    private ChatService chatService;
     private AnimalProductView animalProductView;
     private Texture overlayTexture; // تکسچر جدید برای تاریکی
 
@@ -497,6 +496,10 @@ public class GameView implements Screen, InputProcessor {
         if(Gdx.input.isKeyJustPressed(Input.Keys.M)){
             Main.getMain().getScreen().dispose();
             Main.getMain().setScreen(new MusicScreen(this,GameAssetManagerClient.getGameAssetManager().getSkin()));
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            Main.getMain().getScreen().dispose();
+            Main.getMain().setScreen(new Refrigerator(GameAssetManagerClient.getGameAssetManager().getSkin(), this));
         }
     }
     @Override

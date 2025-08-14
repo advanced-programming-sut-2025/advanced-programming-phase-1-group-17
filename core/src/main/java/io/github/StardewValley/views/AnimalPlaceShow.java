@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.StardewValley.GameClient;
 import io.github.StardewValley.Main;
 import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
@@ -49,11 +50,26 @@ public class AnimalPlaceShow implements Screen {
             TextButton tb = new TextButton(animal.isOutside()?"isOutside":"isInside", skin);
             tb.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
-                    animal.setOutside(!animal.isOutside());
+                    try {
+                        GameClient.gameStateApiClient.toggleAnimalOutside(animal.getName());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                     tb.setText(animal.isOutside()?"isOutside":"isInside");
                 }
             });
             table.add(tb);
+            TextButton sellButton = new TextButton("sell",skin);
+            sellButton.addListener(new ClickListener(){
+                public void clicked(InputEvent event, float x, float y) {
+                    try {
+                        GameClient.gameStateApiClient.sellAnimal(animal.getName());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            table.add(sellButton);
             table.row();
 
         }

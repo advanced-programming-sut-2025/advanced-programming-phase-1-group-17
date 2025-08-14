@@ -37,6 +37,7 @@ public class GameSaveService {
 
             String csv = String.join(",", usernames);
             gameSave.setPlayerUsernamesCSV(csv);
+            ConnectionMonitor.setShouldQuitGame(true);
 
             gameSave.setSerializedState(jsonState);
 

@@ -1,5 +1,6 @@
 package io.github.StardewValley.server.repository;
 
+import com.badlogic.gdx.graphics.Texture;
 import io.github.StardewValley.server.AppServer;
 import io.github.StardewValley.shared.dto.AnimalDTO;
 import io.github.StardewValley.shared.dto.AnimalPlaceDTO;
@@ -19,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AnimalDataService {
-    // برای سادگی، داده‌ها را در حافظه نگه می‌داریم
     private static final ArrayList<AnimalPlaceDTO> animalPlaceDatabase = new ArrayList<>();
     private static final ArrayList<AnimalProductDTO> productsOnGround = new ArrayList<>();
 
@@ -63,6 +63,14 @@ public class AnimalDataService {
         }
         return animals;
     }
+    public static void removeAnimal(AnimalDTO animal) {
+        for(AnimalPlaceDTO animalPlaceDTO:animalPlaceDatabase){
+            if(animalPlaceDTO.getAnimals().contains(animal)){
+                animalPlaceDTO.getAnimals().remove(animal);
+                return;
+            }
+        }
+    }
 
     public static AnimalDTO findById(String id) {
         for(AnimalDTO animalDTO:findAll()) {
@@ -104,7 +112,15 @@ public class AnimalDataService {
     }
     public static void savePlace(AnimalPlaceDTO place) {
         animalPlaceDatabase.add(place);
-        int y = (int) place.getY()-120;
+//        int width = new Texture(place.getAnimalPlaceType().getInventoryTexturePath()).getWidth();
+//        int height = new Texture(place.getAnimalPlaceType().getInventoryTexturePath()).getHeight();
+//        for(int i = (int) place.getX(); i<place.getX()+width; i+=110) {
+//            for(int j = (int) place.getY(); j<place.getY() + height;j+=110){
+//                Tile tile = AppServer.getCurrentGame().getTileFromPixel(i,j);
+//                tile.setWalkAble(false);
+//            }
+//        }
+        int y = (int) place.getY()-200;
         while(y>0){
             Tile tile = AppServer.getCurrentGame().getTileFromPixel((int) (place.getX()+200),y);
             if(tile.isWalkAble() && tile != null){

@@ -114,6 +114,26 @@ public class AnimalApiController {
 
         return ResponseEntity.ok().build();
     }
+    @PostMapping("/{animalName}/sellAnimal")
+    public ResponseEntity<Void> sellAnimal(@PathVariable String animalName,@RequestHeader("Authorization") String token) {
+        // ۱. DTO (ظرف داده) را از انبار بگیر
+        AnimalDTO animal = AnimalDataService.findAnimalByName(animalName);
+        Player player = getPlayerFromToken(token);
+        if(player == null){
+            System.out.println("player is null");
+            return ResponseEntity.notFound().build();
+        }
+        if (animal == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // ۲. تمام منطق بازی را مستقیماً در کنترلر اجرا کن
+        AnimalDataService.removeAnimal(animal);
+        player.setCoin(player.getCoin()+animal.getPrice());
+
+
+        return ResponseEntity.ok().build();
+    }
     @GetMapping("/allAnimalPlaces")
     public ResponseEntity<List<AnimalPlaceDTO>>getAllAnimalPlaces(){
         return ResponseEntity.ok(AnimalDataService.findAllPlaces());

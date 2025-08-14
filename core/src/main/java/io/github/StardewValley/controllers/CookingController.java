@@ -40,6 +40,25 @@ public class CookingController {
             view.getErrorMessage().setText("Error connecting to the server.");
         }
     }
+    public void handleMove(FoodType item) {
+        try {
+            // 1. درخواست به سرور ارسال می‌شود
+            CookResponseDTO response = GameClient.gameStateApiClient.attemptMove(item);
+
+            // 2. نتیجه‌ای که از سرور آمده نمایش داده می‌شود
+            view.getErrorMessage().setText(response.getMessage());
+
+            // اگر موفق بود، می‌توانید صفحه را ببندید یا هر کار دیگری بکنید
+            if (response.isSuccess()) {
+                // مثلا می‌توانید inventory را رفرش کنید
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // نمایش یک خطای عمومی در صورت مشکل در ارتباط با سرور
+            view.getErrorMessage().setText("Error connecting to the server.");
+        }
+    }
     public void handleIngredientsLabel(FoodType item) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<BackPackableType, Integer> entry : item.getIngredients().entrySet()) {

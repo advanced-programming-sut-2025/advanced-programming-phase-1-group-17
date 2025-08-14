@@ -117,12 +117,12 @@ public class AnimalLogicService {
         return productIntegerMap;
     }
     public void produce(AnimalDTO animalDTO) {
-        if (!animalDTO.isFedToday()) {
-            return;
-        }
-        if(animalDTO.getAnimalType().equals(AnimalType.Pig) && !animalDTO.isOutside()){
-            return ;
-        }
+//        if (!animalDTO.isFedToday()) {
+//            return;
+//        }
+//        if(animalDTO.getAnimalType().equals(AnimalType.Pig) && !animalDTO.isOutside()){
+//            return ;
+//        }
         double randomNumber = 0.5 + Math.random();
         double chance = (double) (animalDTO.getFriendship() + 150 * randomNumber) / 1500;
         double r = Math.random();
@@ -145,8 +145,7 @@ public class AnimalLogicService {
         } else {
             animalProduct.setQuality(Iridium);
         }
-        animalProduct.setAnimalDTO(animalDTO);
-        animalDTO.getAnimalProductDTOS().add(animalProduct);
+
     }
     public void animalGoToNextDay(){
         for(AnimalDTO animal : AnimalDataService.findAll()) {

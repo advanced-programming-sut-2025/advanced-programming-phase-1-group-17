@@ -52,4 +52,8 @@ public class ConnectionMonitor {
     public static boolean isShouldQuitGame() {
         return shouldQuitGame;
     }
+
+    public static void setShouldQuitGame(boolean shouldQuitGame) {
+        ConnectionMonitor.shouldQuitGame = shouldQuitGame;
+    }
 }

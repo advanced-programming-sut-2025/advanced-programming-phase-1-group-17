@@ -1,31 +1,40 @@
 package io.github.StardewValley.shared.models.cooking;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.StardewValley.shared.models.backpack.BackPackable;
 import io.github.StardewValley.shared.models.backpack.BackPackableType;
 import io.github.StardewValley.shared.models.backpack.BackPack;
 import io.github.StardewValley.shared.models.saveClasses.BackPackableSave;
 
+import java.util.UUID;
+
 public class Food implements BackPackable {
-    private FoodType foodtype;
+    private FoodType type;
     private int count;
     private Recipe recipe;
+    private String id;
 
     public Food(FoodType foodtype){
-        this.foodtype = foodtype;
+        this.type = foodtype;
+        this.id = UUID.randomUUID().toString();
     }
+    public Food (){
 
+    }
+    @JsonIgnore
     public String getName() {
-        return foodtype.name();
+        return type.name();
     }
 
     @Override
+    @JsonIgnore
     public double getPrice() {
-        return 0;
+        return type.getPrice();
     }
 
     @Override
     public BackPackableType getType() {
-        return foodtype;
+        return type;
     }
 
     @Override
@@ -52,12 +61,9 @@ public class Food implements BackPackable {
         this.recipe = recipe;
     }
 
-    public FoodType getFoodtype() {
-        return foodtype;
-    }
 
-    public void setFoodtype(FoodType foodtype) {
-        this.foodtype = foodtype;
+    public void setType(FoodType type) {
+        this.type = type;
     }
 
     public Food findFoodInBackPack(String foodName) {
@@ -68,11 +74,19 @@ public class Food implements BackPackable {
         for (BackPackableType backPackableType : backPack.getBackPackItems().keySet()) {
             if (backPackableType instanceof FoodType foodType) {
                 Food food = (Food) backPack.getBackPackItems().get(foodType).get(0);
-                if(food.getFoodtype().getName().equals(foodName)) {
+                if(food.getType().getName().equals(foodName)) {
                     return food;
                 }
             }
         }
         return null;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

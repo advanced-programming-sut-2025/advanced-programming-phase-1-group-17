@@ -146,5 +146,9 @@ public class AnimalDTO {
     public void setAnimalProductDTOS(ArrayList<AnimalProductDTO> animalProductDTOS) {
         this.animalProductDTOS = animalProductDTOS;
     }
+    @JsonIgnore
+    public int getPrice(){
+        return (int) this.animalType.getPrice();
+    }
 
 }
